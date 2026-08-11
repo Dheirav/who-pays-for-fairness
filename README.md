@@ -369,6 +369,15 @@ Not implemented — recorded so the design choices above have visible motivation
 - **Fairness generalisation gap.** Report φ(h) on train *and* test as ε tightens;
   constraints can be satisfied in-sample and violated out-of-sample.
 
+## License
+
+MIT — see [`LICENSE`](LICENSE). The analysis modules are deliberately
+dataset-agnostic and reusable on their own: `src/incidence.py` (who-pays
+decomposition), `src/intersectional.py` (multi-group metrics with Wilson intervals
+and reliability gating), and `FairnessDataset.attribute_leakage()` (how well the
+protected attribute can be recovered from the remaining features) all operate on any
+`(y_true, y_pred, sensitive)` triple or any `FairnessDataset`, not just Adult.
+
 ## References
 
 - Agarwal, Beygelzimer, Dudík, Langford & Wallach (2018). *A Reductions Approach to
