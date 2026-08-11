@@ -147,3 +147,17 @@ passing):
 * Adversarial training must not collapse to a constant predictor. Predicting all-zero
   trivially defeats the adversary and scores ~76% on Adult's class imbalance while
   being useless, so the positive-prediction rate is checked, not just accuracy.
+
+### Reproducibility note
+
+The two PyTorch methods are **seed-stable but not bit-reproducible**. Refitting
+Prejudice Remover three times at the same seed gives weights that differ in the
+seventh decimal (`W[0,0]` = −0.5747696, −0.5747700, −0.5747703), because CPU
+reduction order under multithreading is not fixed. In the table above this surfaces as
+movement of ±0.0001 in the `prejudice_remover` row between runs.
+
+That is **85× smaller than the row's own seed-to-seed standard deviation** (0.0085), so
+it affects no claim in this document — but a reader re-running the experiment will see
+the last digit move, and should know why rather than wondering whether something else
+changed. The `fairlearn`-based rows (`expgrad_dp`, `expgrad_eo`, `gridsearch_dp`) and
+the `scikit-learn` baseline are exactly reproducible.

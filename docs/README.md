@@ -49,6 +49,9 @@ description of what the method did, which is a different and more useful claim.
   four-fifths threshold. They are not interchangeable and are never averaged together.
 * Every metric is implemented from its definition in `src/metrics.py` and
   cross-checked against `fairlearn.metrics` on every run.
+* The `fairlearn` and `scikit-learn` rows are exactly reproducible. The two PyTorch
+  methods are seed-stable but not bit-reproducible, and can move by ±0.0001 between
+  runs — see the reproducibility note in [document 04](04-ablation.md).
 * "Privileged" = Male, "unprivileged" = Female, throughout. This is a statement about
   base rates in the data (31.2% vs 11.4% earn >$50K), not about individuals.
 
