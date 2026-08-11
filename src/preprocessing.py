@@ -40,10 +40,21 @@ class SplitData:
     a_test: np.ndarray
     feature_names: list[str]
     encoder: ColumnTransformer
+    # Original dataframe labels for each half. Carried so that an analysis needing a
+    # column the split does not expose -- `race`, for the intersectional experiment --
+    # can recover it from the source frame in the right order, rather than re-deriving
+    # the split and risking a silent misalignment between rows and attributes.
+    idx_train: pd.Index
+    idx_test: pd.Index
 
     @property
     def n_features(self) -> int:
         return self.X_train.shape[1]
+
+    def column(self, dataset: FairnessDataset, name: str, *, train: bool = False) -> np.ndarray:
+        """Recover an original column of ``dataset`` aligned to this split."""
+        index = self.idx_train if train else self.idx_test
+        return dataset.X.loc[index, name].to_numpy()
 
 
 def build_encoder(dataset: FairnessDataset) -> ColumnTransformer:
@@ -110,4 +121,6 @@ def prepare(
         a_test=dataset.a.loc[idx_test].to_numpy(),
         feature_names=list(encoder.get_feature_names_out()),
         encoder=encoder,
+        idx_train=idx_train,
+        idx_test=idx_test,
     )

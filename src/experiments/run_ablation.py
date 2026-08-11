@@ -2,14 +2,9 @@
 
 Produces the full results table from section 7 of the initiation document.
 
-Every row uses **logistic regression** as the base classifier, including the
-reductions rows -- which is why this experiment exists separately from
-``run_mitigation`` (that one uses the decision tree the document specifies for the
-base-paper track). Prejudice Remover and Adversarial Debiasing cannot wrap a decision
-tree: one adds a term to a likelihood, the other needs gradients to flow from an
-adversary into the predictor. Reporting a tree for some rows and a linear model for
-others would vary the hypothesis class *and* the mitigation at once, so the table
-would not isolate what it claims to.
+The six rows themselves live in :mod:`src.experiments.methods`, shared with the
+who-pays analysis so the two experiments cannot drift into comparing differently
+configured models. That module also documents why every row uses logistic regression.
 
 All six methods are in-processing: none modifies, reweights-on-disk, resamples, or
 relabels the training data. Only the objective handed to the learner changes.
@@ -22,93 +17,35 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import time
 from pathlib import Path
 
 import pandas as pd
 
 from ..datasets.adult import AdultLoader
-from ..inprocessing import AdversarialDebiasing, PrejudiceRemover
 from ..metrics import evaluate, group_breakdown
-from ..mitigation import fit_exponentiated_gradient, fit_grid_search
-from ..models import build
 from ..preprocessing import prepare
+from .methods import BASE_MODEL, METHOD_ORDER, MethodParams, fit_all
 
 RESULTS_DIR = Path(__file__).resolve().parents[2] / "results"
-BASE_MODEL = "logistic_regression"
-
-ROW_ORDER = [
-    "baseline",
-    "expgrad_dp",
-    "expgrad_eo",
-    "gridsearch_dp",
-    "prejudice_remover",
-    "adversarial_debiasing",
-]
+ROW_ORDER = METHOD_ORDER
 
 
-def run_seed(dataset, seed: int, *, eps: float, eta: float, alpha: float, epochs: int):
+def run_seed(dataset, seed: int, params: MethodParams):
     split = prepare(dataset, random_state=seed)
     group_kw = {
         "privileged": dataset.privileged_value,
         "unprivileged": dataset.unprivileged_value,
     }
-    rows, breakdowns = [], {}
 
-    def record(label: str, y_pred, elapsed: float) -> None:
+    predictors, seconds = fit_all(split, seed, params)
+
+    rows, breakdowns = [], {}
+    for label, predict in predictors.items():
+        y_pred = predict(seed)
         row = evaluate(split.y_test, y_pred, split.a_test, label=label, **group_kw)
-        row.update({"seed": seed, "fit_seconds": round(elapsed, 1)})
+        row.update({"seed": seed, "fit_seconds": round(seconds[label], 1)})
         rows.append(row)
         breakdowns[label] = group_breakdown(split.y_test, y_pred, split.a_test, **group_kw)
-
-    def timed(label: str, fn) -> None:
-        t0 = time.perf_counter()
-        y_pred = fn()
-        record(label, y_pred, time.perf_counter() - t0)
-        print(f"    {label:<24} {time.perf_counter() - t0:6.1f}s", flush=True)
-
-    def baseline():
-        model = build(BASE_MODEL, random_state=seed)
-        model.fit(split.X_train, split.y_train)
-        return model.predict(split.X_test)
-
-    def expgrad(constraint):
-        def run():
-            model = fit_exponentiated_gradient(
-                build(BASE_MODEL, random_state=seed),
-                split.X_train, split.y_train, split.a_train,
-                constraint=constraint, eps=eps,
-            )
-            return model.predict(split.X_test, random_state=seed)
-        return run
-
-    def gridsearch():
-        model = fit_grid_search(
-            build(BASE_MODEL, random_state=seed),
-            split.X_train, split.y_train, split.a_train,
-            constraint="demographic_parity",
-        )
-        return model.predict(split.X_test)
-
-    def prejudice_remover():
-        model = PrejudiceRemover(eta=eta, random_state=seed).fit(
-            split.X_train, split.y_train, split.a_train
-        )
-        # Requires the protected attribute at inference -- see the module docstring.
-        return model.predict(split.X_test, split.a_test)
-
-    def adversarial():
-        model = AdversarialDebiasing(
-            adversary_weight=alpha, epochs=epochs, random_state=seed
-        ).fit(split.X_train, split.y_train, split.a_train)
-        return model.predict(split.X_test)
-
-    timed("baseline", baseline)
-    timed("expgrad_dp", expgrad("demographic_parity"))
-    timed("expgrad_eo", expgrad("equalized_odds"))
-    timed("gridsearch_dp", gridsearch)
-    timed("prejudice_remover", prejudice_remover)
-    timed("adversarial_debiasing", adversarial)
 
     return rows, breakdowns
 
@@ -122,6 +59,7 @@ def main() -> None:
     parser.add_argument("--epochs", type=int, default=30, help="adversarial training epochs")
     args = parser.parse_args()
 
+    params = MethodParams(eps=args.eps, eta=args.eta, alpha=args.alpha, epochs=args.epochs)
     dataset = AdultLoader().load()
     print(f"=== ablation on {dataset.name}: base classifier = {BASE_MODEL} ===")
     print(dataset.base_rates().to_string(index=False))
@@ -129,9 +67,7 @@ def main() -> None:
     all_rows, first = [], {}
     for seed in args.seeds:
         print(f"\n--- seed {seed} ---", flush=True)
-        rows, breakdowns = run_seed(
-            dataset, seed, eps=args.eps, eta=args.eta, alpha=args.alpha, epochs=args.epochs
-        )
+        rows, breakdowns = run_seed(dataset, seed, params)
         all_rows.extend(rows)
         if not first:
             first = breakdowns

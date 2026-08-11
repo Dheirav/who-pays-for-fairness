@@ -7,6 +7,32 @@ modified, only the optimisation problem given to the learner.
 Course project for a Responsible AI class. The full specification is in
 [`INITIATION_DOC.md`](INITIATION_DOC.md).
 
+> **📖 Full write-up of every result is in [`docs/`](docs/README.md)** — eight
+> documents covering setup, the base-paper reproduction, the ablation, and three
+> analyses that go beyond the specification, each compared against the base paper.
+
+## Headline
+
+**The base paper's method works exactly as claimed, and confirming that is only half
+the story.** Agarwal et al.'s reduction takes demographic parity difference from 0.161
+to 0.019 — an 88% reduction — for 1.5 accuracy points, on any base classifier, without
+touching the training data. Every claim it makes held up.
+
+What the fairness metric does not say is *how* it got there:
+
+| | Finding | Where |
+|---|---|---|
+| 1 | **Every mitigation shrank the pie.** All five reduced the total number of favourable decisions, by 8–22%. None closed the gap primarily by lifting the disadvantaged group. ExpGrad-DP: 909 men lost approval so 316 women could gain it. | [docs/05](docs/05-who-pays.md) |
+| 2 | **Rates and people disagree.** In rates the burden looks split ~50/50; in people it is ~2.7 lost per 1 gained, because the privileged group is 2.1× larger. | [docs/05](docs/05-who-pays.md) |
+| 3 | **62% of ExpGrad-EO's individual-level effect is a coin flip** — two draws from the *same fitted model* disagree on 3.2% of subjects against a 5.2% total change. | [docs/05](docs/05-who-pays.md) |
+| 4 | **The fairest models use sex proxies *more*.** `sex` is absent from the features, yet ExpGrad-DP raises proxy reliance 9.7% over the unmitigated baseline and both DP methods **doubled** their use of `relationship` (+108%). To equalise rates without reading sex, the model must first infer it. | [docs/06](docs/06-proxy-reliance-shap.md) |
+| 5 | **Fixing sex leaves a 9× larger gap at Sex × Race** (0.020 vs 0.178), and moves the worst-off subgroup from Black women to **Black men** — protected by no constraint at all. | [docs/07](docs/07-intersectional.md) |
+| 6 | **Half the intersectional subgroups cannot be measured.** 5 of 10 are too small; one has zero positive labels, making its TPR undefined by division. 70% of the apparent gap in the intersectional arm comes from those cells. | [docs/07](docs/07-intersectional.md) |
+
+Nothing above contradicts the base paper — all six sit outside its frame. The two
+predictions that *were* refuted came from this project's own initiation document; see
+[docs/08](docs/08-vs-base-paper.md).
+
 ## Status
 
 | Component | State |
@@ -16,9 +42,12 @@ Course project for a Responsible AI class. The full specification is in
 | Multi-seed baseline experiment | Implemented |
 | Exponentiated Gradient (DP / EO constraints) | Implemented — base-paper deliverables 1–3 |
 | GridSearch Pareto frontier | Implemented — base-paper deliverable 4 |
-| Prejudice Remover (Kamishima 2012) | Implemented from scratch (PyTorch) |
-| Adversarial Debiasing (Zhang et al. 2018) | Implemented from scratch (PyTorch) |
+| Prejudice Remover (Kamishima 2012) | Implemented from scratch (PyTorch), 4/4 tests |
+| Adversarial Debiasing (Zhang et al. 2018) | Implemented from scratch (PyTorch), 4/4 tests |
 | Full ablation table | Implemented |
+| Who-pays / levelling-down incidence analysis | Implemented, 8/8 tests — **beyond spec** |
+| SHAP proxy-reliance analysis | Implemented — spec stretch goal |
+| Intersectional Sex × Race analysis | Implemented — **beyond spec** |
 
 ## The problem
 
@@ -49,6 +78,19 @@ python -m src.experiments.run_mitigation --seeds 0 1 2 3 4   # baseline + ExpGra
 python -m src.experiments.run_pareto                         # GridSearch frontier (DP)
 python -m src.experiments.run_pareto --constraint equalized_odds
 python -m src.experiments.run_ablation --seeds 0 1 2 3 4     # all six methods
+
+# Analyses beyond the specification
+python -m src.experiments.run_who_pays --seeds 0 1 2 3 4     # levelling up vs down
+python -m src.experiments.plot_who_pays                      # incidence chart
+python -m src.experiments.run_shap --seed 0                  # proxy reliance
+python -m src.experiments.run_intersectional --seeds 0 1 2   # Sex x Race
+```
+
+Correctness checks:
+
+```bash
+python -m tests.test_inprocessing   # the from-scratch method implementations (4/4)
+python -m tests.test_incidence      # the who-pays decomposition (8/8)
 ```
 
 Adult is downloaded from OpenML on first run and cached to `data/`.
@@ -186,16 +228,26 @@ src/
 ├── preprocessing.py  # split + encoding
 ├── models.py         # base classifiers (must support sample_weight)
 ├── mitigation.py     # ExponentiatedGradient, GridSearch, Pareto frontier
+├── incidence.py      # who-pays decomposition: levelling up vs down
+├── explain.py        # SHAP attribution aggregated to source features
+├── intersectional.py # multi-group metrics + Wilson intervals + reliability gating
 ├── inprocessing/
 │   ├── prejudice_remover.py      # Kamishima 2012, from scratch
 │   └── adversarial_debiasing.py  # Zhang et al. 2018, from scratch
-tests/
-└── test_inprocessing.py  # degenerate-case checks on the from-scratch methods
 └── experiments/
-    ├── run_baseline.py    # unmitigated reference
-    ├── run_mitigation.py  # baseline vs ExpGrad (DP, EO), decision tree
-    ├── run_pareto.py      # GridSearch sweep + frontier plot
-    └── run_ablation.py    # all six methods, logistic-regression base
+    ├── methods.py             # the six ablation rows, defined once and shared
+    ├── run_baseline.py        # unmitigated reference
+    ├── run_mitigation.py      # baseline vs ExpGrad (DP, EO), decision tree
+    ├── run_pareto.py          # GridSearch sweep + frontier plot
+    ├── run_ablation.py        # all six methods, logistic-regression base
+    ├── run_who_pays.py        # incidence analysis
+    ├── plot_who_pays.py       # diverging incidence chart
+    ├── run_shap.py            # proxy-reliance attribution
+    └── run_intersectional.py  # Sex x Race, three arms
+tests/
+├── test_inprocessing.py  # degenerate-case checks on the from-scratch methods
+└── test_incidence.py     # exactness of the who-pays decomposition
+docs/                 # the written analysis — start at docs/README.md
 results/              # generated tables and figures (.png + .pdf)
 ```
 

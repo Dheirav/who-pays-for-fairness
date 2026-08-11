@@ -1,0 +1,67 @@
+# Results documentation
+
+Every finding this project produced, what it means, and how it stands against the
+base paper. Written to be read in order, but each file stands alone.
+
+| # | Document | What it answers |
+|---|---|---|
+| 01 | [Setup and method](01-setup-and-method.md) | What was measured, on what, and why those choices |
+| 02 | [Baseline](02-baseline.md) | How unfair is the unmitigated model? |
+| 03 | [Base-paper reproduction](03-base-paper-reproduction.md) | Does Agarwal et al. (2018) do what it says on this data? |
+| 04 | [Ablation](04-ablation.md) | Six mitigations, one table, three questions |
+| 05 | [Who pays](05-who-pays.md) | Did the gap close by lifting anyone up, or by pulling people down? |
+| 06 | [Proxy reliance (SHAP)](06-proxy-reliance-shap.md) | Do the mitigated models stop using stand-ins for sex? |
+| 07 | [Intersectional](07-intersectional.md) | Does fixing sex leave a Sex×Race subgroup behind? |
+| 08 | [Comparison with the base paper](08-vs-base-paper.md) | Consolidated: confirmed, extended, contradicted |
+
+## The short version
+
+The base paper's algorithm works. It does what it claims: it drives the fairness
+violation to near zero for a small accuracy cost, on any base classifier, without
+touching the training data. Documents 02–04 confirm that.
+
+Documents 05–07 are this project's own contribution, and they are less comfortable.
+The same algorithm that scores best on the fairness metric also:
+
+* closed the gap mostly by **taking approvals away from the advantaged group**, not by
+  extending them to the disadvantaged one — every method shrank the total number of
+  favourable decisions, by 8–22%;
+* **increased** its reliance on sex proxies, doubling its use of `relationship` —
+  the opposite of what the initiation document predicted SHAP would show;
+* and, at the intersection of sex and race, operates on subgroups half of which are
+  too small to measure at all.
+
+None of that makes the method wrong. It makes the headline metric an incomplete
+description of what the method did, which is a different and more useful claim.
+
+## Reading the numbers
+
+* Unless stated otherwise, every figure is the mean over **5 random seeds**
+  (0–4), each seed being an independent train/test split stratified on the
+  `(sex, income)` interaction.
+* **Demographic parity difference** and **equalized odds difference** are fair at
+  **0**. **Disparate impact** is a ratio, fair at **1**, with 0.8 the conventional
+  four-fifths threshold. They are not interchangeable and are never averaged together.
+* Every metric is implemented from its definition in `src/metrics.py` and
+  cross-checked against `fairlearn.metrics` on every run.
+* "Privileged" = Male, "unprivileged" = Female, throughout. This is a statement about
+  base rates in the data (31.2% vs 11.4% earn >$50K), not about individuals.
+
+## Reproducing
+
+```bash
+python -m src.experiments.run_baseline       --seeds 0 1 2 3 4
+python -m src.experiments.run_mitigation     --seeds 0 1 2 3 4
+python -m src.experiments.run_pareto
+python -m src.experiments.run_ablation       --seeds 0 1 2 3 4
+python -m src.experiments.run_who_pays       --seeds 0 1 2 3 4
+python -m src.experiments.run_shap           --seed 0
+python -m src.experiments.run_intersectional --seeds 0 1 2
+```
+
+Correctness checks:
+
+```bash
+python -m tests.test_inprocessing   # the from-scratch method implementations
+python -m tests.test_incidence      # the who-pays decomposition
+```

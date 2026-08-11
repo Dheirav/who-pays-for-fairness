@@ -4,10 +4,16 @@ numpy>=1.24
 fairlearn>=0.10
 matplotlib>=3.7
 
-# Required only for the ablation rows not yet implemented (Prejudice Remover,
-# Adversarial Debiasing). Pinned separately because aif360 pulls a heavy and
-# version-sensitive TensorFlow dependency chain.
+# Deliberately NOT used. aif360 ships Prejudice Remover and Adversarial Debiasing,
+# but its PrejudiceRemover shells out to Kamishima's original script through temp
+# files and its AdversarialDebiasing needs a tensorflow.compat.v1 chain. Both are
+# implemented from their papers instead, in ~90 and ~120 lines of torch, and verified
+# against degenerate cases in tests/test_inprocessing.py.
 # aif360[AdversarialDebiasing]>=0.6
+
+# Feature attribution for the proxy-reliance analysis (docs/06). Note that installing
+# shap constrains numpy: it pulls numba, which lags the newest numpy release.
+shap>=0.44
 
 # Adversarial Debiasing and Prejudice Remover are implemented from scratch against
 # this. CPU build is sufficient: the models are linear (~100 parameters) and 85% of
