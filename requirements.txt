@@ -1,0 +1,10 @@
+scikit-learn>=1.3
+pandas>=2.0
+numpy>=1.24
+fairlearn>=0.10
+matplotlib>=3.7
+
+# Required only for the ablation rows not yet implemented (Prejudice Remover,
+# Adversarial Debiasing). Pinned separately because aif360 pulls a heavy and
+# version-sensitive TensorFlow dependency chain.
+# aif360[AdversarialDebiasing]>=0.6
