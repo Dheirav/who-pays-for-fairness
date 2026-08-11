@@ -31,11 +31,15 @@ RESULTS = ROOT / "results"
 EXEMPT = {"__init__.py", "methods.py"}
 
 
-def test_no_experiment_writes_to_the_shared_root() -> None:
-    """Every write target must be dataset-scoped, not ``RESULTS_DIR / "..."``.
+def test_no_experiment_writes_a_file_to_the_shared_root() -> None:
+    """No module may write a *file* directly into ``results/``.
 
-    A literal ``RESULTS_DIR / "file.csv"`` in a module that also writes is the exact
-    shape of the bug: it ignores which dataset produced the numbers.
+    The bug is a result file landing in the shared root, where the next dataset
+    overwrites it. Creating a *subdirectory* there is the opposite -- it is how
+    namespacing works -- so the two are distinguished by whether the literal looks
+    like a filename. ``RESULTS_DIR / "who_pays_runs.csv"`` is the bug;
+    ``RESULTS_DIR / "sweep"`` is a namespace for an analysis that deliberately spans
+    every dataset and therefore belongs to none of them.
     """
     offenders = []
     for path in EXPERIMENTS:
@@ -43,8 +47,10 @@ def test_no_experiment_writes_to_the_shared_root() -> None:
             continue
         source = path.read_text()
         for match in re.finditer(r'RESULTS_DIR\s*/\s*f?"([^"]+)"', source):
-            # RESULTS_DIR / dataset.name inside output_dir() is the fix, not the bug.
-            offenders.append(f"{path.name}: RESULTS_DIR / \"{match.group(1)}\"")
+            target = match.group(1)
+            if "." not in target:            # a directory, not a result file
+                continue
+            offenders.append(f"{path.name}: RESULTS_DIR / \"{target}\"")
     print(f"  scanned {len(EXPERIMENTS)} modules")
     assert not offenders, (
         "these write to the shared results root and would clobber another dataset:\n  "
@@ -52,14 +58,19 @@ def test_no_experiment_writes_to_the_shared_root() -> None:
     )
 
 
-def test_every_experiment_exposes_a_dataset_flag() -> None:
-    """An experiment that cannot be pointed at a dataset cannot be replicated."""
+def test_every_experiment_can_be_pointed_at_its_populations() -> None:
+    """A runnable module must accept ``--dataset``, or ``--states`` if it spans many.
+
+    Cross-population analyses belong to no single dataset by construction, so
+    requiring ``--dataset`` of them would be requiring the wrong thing. What must hold
+    is that no module has its populations hardcoded.
+    """
     missing = [
         path.name
         for path in EXPERIMENTS
         if path.name not in EXEMPT
         and "def main(" in path.read_text()
-        and '"--dataset"' not in path.read_text()
+        and not any(flag in path.read_text() for flag in ('"--dataset"', '"--states"'))
     ]
     print(f"  {len([p for p in EXPERIMENTS if p.name not in EXEMPT])} runnable modules")
     assert not missing, f"no --dataset flag: {missing}"
@@ -170,8 +181,8 @@ def test_canonical_results_are_guarded_against_a_different_run() -> None:
 
 def main() -> None:
     tests = [
-        test_no_experiment_writes_to_the_shared_root,
-        test_every_experiment_exposes_a_dataset_flag,
+        test_no_experiment_writes_a_file_to_the_shared_root,
+        test_every_experiment_can_be_pointed_at_its_populations,
         test_output_dir_separates_datasets,
         test_shap_writes_one_file_per_seed,
         test_no_dataset_specific_column_names_in_experiments,
