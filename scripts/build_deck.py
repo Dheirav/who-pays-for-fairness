@@ -537,8 +537,10 @@ def slide_shap(prs, n) -> None:
             "—" if key == "baseline" else f"{change:+.1f}%",
             f"{rel:.3f}",
         ])
+    # row_height trimmed so seven rows clear the heading beneath -- at the default
+    # 0.36 the table bottom lands at 4.43 against a heading at 4.35.
     table(slide, 0.70, 1.85, 11.90, rows, col_widths=[4.2, 2.9, 2.2, 2.6],
-          highlight=2)
+          highlight=2, row_height=0.32)
 
     textbox(slide, 0.70, 4.35, 11.90, 0.36, "Sex is not in the feature matrix. At all.",
             size=15, bold=True, color=NAVY, font=HEAD_FONT)
