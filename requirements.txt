@@ -8,3 +8,8 @@ matplotlib>=3.7
 # Adversarial Debiasing). Pinned separately because aif360 pulls a heavy and
 # version-sensitive TensorFlow dependency chain.
 # aif360[AdversarialDebiasing]>=0.6
+
+# Adversarial Debiasing and Prejudice Remover are implemented from scratch against
+# this. CPU build is sufficient: the models are linear (~100 parameters) and 85% of
+# experiment runtime is scikit-learn refits, not tensor ops.
+torch>=2.0

@@ -16,7 +16,9 @@ Course project for a Responsible AI class. The full specification is in
 | Multi-seed baseline experiment | Implemented |
 | Exponentiated Gradient (DP / EO constraints) | Implemented — base-paper deliverables 1–3 |
 | GridSearch Pareto frontier | Implemented — base-paper deliverable 4 |
-| Prejudice Remover, Adversarial Debiasing | Not yet implemented |
+| Prejudice Remover (Kamishima 2012) | Implemented from scratch (PyTorch) |
+| Adversarial Debiasing (Zhang et al. 2018) | Implemented from scratch (PyTorch) |
+| Full ablation table | Implemented |
 
 ## The problem
 
@@ -46,6 +48,7 @@ python -m src.experiments.run_baseline --include-protected   # give the model `s
 python -m src.experiments.run_mitigation --seeds 0 1 2 3 4   # baseline + ExpGrad DP/EO
 python -m src.experiments.run_pareto                         # GridSearch frontier (DP)
 python -m src.experiments.run_pareto --constraint equalized_odds
+python -m src.experiments.run_ablation --seeds 0 1 2 3 4     # all six methods
 ```
 
 Adult is downloaded from OpenML on first run and cached to `data/`.
@@ -120,6 +123,58 @@ constraint has four components (TPR and FPR × two groups) instead of one. Repor
 GridSearch and ExponentiatedGradient as interchangeable "Agarwal et al. 2018" rows
 would hide that entirely.
 
+## Ablation: all six methods
+
+Logistic-regression base throughout, mean ± std over 5 seeds. Only the mitigation
+mechanism varies; data, base classifier and metrics are held fixed.
+
+| Method | Accuracy | DP diff ↓ | EO diff ↓ | Disparate impact →1 |
+|---|---|---|---|---|
+| Baseline | 0.847 ± 0.003 | 0.186 ± 0.008 | 0.095 ± 0.030 | 0.300 ± 0.030 |
+| ExpGrad (DP) | 0.828 ± 0.002 | 0.018 ± 0.009 | 0.280 ± 0.019 | 0.895 ± 0.052 |
+| ExpGrad (EO) | 0.836 ± 0.001 | 0.107 ± 0.010 | **0.032 ± 0.014** | 0.521 ± 0.039 |
+| GridSearch (DP) | 0.827 ± 0.007 | **0.015 ± 0.019** | 0.304 ± 0.046 | **0.986 ± 0.138** |
+| Prejudice Remover | 0.837 ± 0.002 | 0.065 ± 0.009 | 0.188 ± 0.025 | 0.686 ± 0.037 |
+| Adversarial Debiasing | 0.826 ± 0.001 | 0.020 ± 0.009 | 0.250 ± 0.015 | 0.889 ± 0.050 |
+
+### The three ablation questions
+
+**1. Closest to zero bias for the smallest accuracy cost?** These are two different
+questions and they have two different answers. *Lowest absolute* demographic parity
+difference goes to GridSearch (0.015) and ExpGrad-DP (0.018). But *most efficient* is
+Prejudice Remover: it removes 0.122 of DP difference for 1.0 accuracy points — 11.7
+points of parity per point of accuracy, against 9.0 for ExpGrad-DP and 7.9 for
+Adversarial Debiasing. Prejudice Remover buys the most fairness per unit of accuracy;
+it simply stops further along the curve. Reporting only "who got closest to zero"
+would hide that.
+
+**2. Most stable across runs?** The initiation document predicted adversarial
+training would be the high-variance method. **It is not — it is the most stable one**
+(accuracy std 0.0011, the lowest in the table). The unstable method is **GridSearch**:
+6× the accuracy variance of the others (0.0070), 2× the DP variance, and a disparate
+impact std of 0.138 — nearly 3× anything else. The mechanism explains it. GridSearch
+picks one model from a discrete grid by a selection rule, so a small change in the
+split can flip which grid point wins and the reported model jumps discontinuously.
+That is selection instability, not optimisation instability, and it does not shrink
+by training longer.
+
+**3. Does the ranking change with the metric?** Yes, and severely enough to invert
+the conclusion. Ranked by demographic parity difference, the order is GridSearch →
+ExpGrad-DP → Adversarial → Prejudice Remover → ExpGrad-EO → Baseline. Ranked by
+equalized odds difference it becomes ExpGrad-EO → **Baseline** → Prejudice Remover →
+Adversarial → ExpGrad-DP → GridSearch.
+
+**Four of the five mitigation methods are worse than no mitigation at all on
+equalized odds.** The unmitigated baseline ranks *second of six*. Only the method
+that explicitly targets EO beats it. A paper reporting only demographic parity would
+present GridSearch as the clear winner; the same model is dead last on the other
+criterion, at 0.304 against the baseline's 0.095.
+
+This is not a defect in any of the implementations — it is the documented
+incompatibility between parity criteria showing up empirically. It is also the
+strongest argument in this project for reporting multiple fairness metrics rather
+than the one a method was built to optimise.
+
 ## Structure
 
 ```
@@ -131,10 +186,16 @@ src/
 ├── preprocessing.py  # split + encoding
 ├── models.py         # base classifiers (must support sample_weight)
 ├── mitigation.py     # ExponentiatedGradient, GridSearch, Pareto frontier
+├── inprocessing/
+│   ├── prejudice_remover.py      # Kamishima 2012, from scratch
+│   └── adversarial_debiasing.py  # Zhang et al. 2018, from scratch
+tests/
+└── test_inprocessing.py  # degenerate-case checks on the from-scratch methods
 └── experiments/
     ├── run_baseline.py    # unmitigated reference
-    ├── run_mitigation.py  # baseline vs ExpGrad (DP, EO), multi-seed
-    └── run_pareto.py      # GridSearch sweep + frontier plot
+    ├── run_mitigation.py  # baseline vs ExpGrad (DP, EO), decision tree
+    ├── run_pareto.py      # GridSearch sweep + frontier plot
+    └── run_ablation.py    # all six methods, logistic-regression base
 results/              # generated tables and figures (.png + .pdf)
 ```
 
@@ -186,6 +247,30 @@ reduction returns a distribution over classifiers and samples one per call, so
 identical feature vectors can receive different decisions. Fixing the seed makes
 results reproducible but does not remove the behaviour — quantifying it is the
 stochastic-instability item in Future Work.
+
+**Prejudice Remover and Adversarial Debiasing are implemented from scratch rather
+than taken from `aif360`.** Two reasons. The objective and the gradient rule are the
+entire content of these papers, so writing them out makes the ablation legible in a
+way a library call does not; and `aif360`'s Adversarial Debiasing carries a
+TensorFlow-1-compat dependency chain that the rest of this project does not need.
+Both are ~130 lines of PyTorch against a linear base model.
+
+**Prejudice Remover needs the protected attribute at prediction time; the others do
+not.** Kamishima parameterises the model per group (`σ(w_a · x + b_a)`), so two
+applicants identical on every feature but differing in `sex` are scored by different
+weight vectors. That is disparate treatment in the legal sense, arrived at while
+trying to reduce disparate impact. It is a real qualitative difference between that
+row and the rest of the table, not an implementation detail, so `predict` takes `a`
+as a required argument to keep the dependency visible.
+
+**The from-scratch methods are verified by degenerate cases, not trusted.**
+`tests/test_inprocessing.py` checks that Prejudice Remover at `eta=0` reproduces
+per-group logistic regression (99.9% prediction agreement), that raising each
+method's fairness knob moves disparity monotonically *down*, and that the adversarial
+predictor does not collapse to a constant — which would defeat the adversary
+perfectly while scoring 76% on Adult's class imbalance. The monotonicity checks are
+the ones that catch a sign error, the failure mode where a "mitigation" increases
+disparity while every metric still looks plausible.
 
 **Figure colors were validated, not chosen by eye.** The Pareto plots use three
 categorical hues checked against colorblind-separation, lightness and contrast
