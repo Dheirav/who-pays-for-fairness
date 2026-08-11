@@ -1,0 +1,6 @@
+method,dp_closure,dp_from_priv_loss,dp_from_unpriv_gain,dp_share_levelling_down,people_share_levelling_down,lost_per_gained,positives_pct_change
+expgrad_dp,0.0106,0.0052,0.0054,0.4336,0.4185,0.8939,-0.0127
+expgrad_eo,-0.0282,-0.0161,-0.0121,,0.3472,0.8069,0.7873
+gridsearch_dp,0.0218,0.0121,0.0097,0.5574,0.4496,1.1042,-0.5049
+prejudice_remover,-0.0165,-0.0207,0.0042,,0.3415,0.7346,4.2944
+adversarial_debiasing,0.0279,0.0967,-0.0688,4.287,0.8545,6.1488,-28.017

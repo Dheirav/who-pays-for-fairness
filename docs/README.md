@@ -15,6 +15,7 @@ base paper. Written to be read in order, but each file stands alone.
 | 08 | [Comparison with the base paper](08-vs-base-paper.md) | Consolidated: confirmed, extended, contradicted |
 | 09 | [Proxy removal](09-proxy-removal.md) | If the model leans on a leaky feature, does deleting it help? *(negative control — deliberately not in-processing)* |
 | 10 | [Epsilon sweep](10-epsilon-sweep.md) | Is levelling down just an artifact of a tight constraint? |
+| 11 | [Replication across populations](11-replication-across-populations.md) | Which findings are about the method, and which about Adult? *(beyond the course submission)* |
 
 ## The short version
 
@@ -38,6 +39,13 @@ The same algorithm that scores best on the fairness metric also:
 
 None of that makes the method wrong. It makes the headline metric an incomplete
 description of what the method did, which is a different and more useful claim.
+
+[Document 11](11-replication-across-populations.md) then tests three of these findings
+on nine other populations. One held cleanly, one held only under a condition that had
+to be discovered, and one did not hold. Two failures out of three is the informative
+outcome: a clean sweep would suggest the predictions had been fitted to the data they
+came from. Nothing in documents 01–10 is retracted, and the course deliverables are
+unaffected — the claim that failed appears in neither of them.
 
 ## Scope: purely in-processing
 

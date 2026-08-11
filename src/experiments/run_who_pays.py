@@ -65,6 +65,11 @@ def run_seed(dataset, seed: int, params: MethodParams, *, detail: bool = False) 
     predictors, _ = fit_all(split, seed, params)
     predictions = {name: fn(seed) for name, fn in predictors.items()}
     y_base = predictions["baseline"]
+    # Carried on every row so one run answers both "who paid" and "what did
+    # constraining one metric cost the other" -- the latter needs the unmitigated
+    # reference beside each mitigated result, and refitting to get it would double
+    # the cost of a multi-population sweep.
+    base_scores = evaluate(split.y_test, y_base, split.a_test, label="baseline", **group_kw)
 
     rows = []
     for name in MITIGATIONS:
@@ -91,6 +96,13 @@ def run_seed(dataset, seed: int, params: MethodParams, *, detail: bool = False) 
             "seed": seed,
             "method": name,
             "accuracy": scores["accuracy"],
+            "dp_diff": scores["demographic_parity_diff"],
+            "eo_diff": scores["equalized_odds_diff"],
+            "baseline_accuracy": base_scores["accuracy"],
+            "baseline_dp_diff": base_scores["demographic_parity_diff"],
+            "baseline_eo_diff": base_scores["equalized_odds_diff"],
+            "n_priv": int((split.a_test == dataset.privileged_value).sum()),
+            "n_unpriv": int((split.a_test == dataset.unprivileged_value).sum()),
             # -- selection-rate gap (the demographic parity story) --
             "dp_closure": selection["closure"],
             "dp_from_priv_loss": selection["from_privileged_loss"],

@@ -47,6 +47,20 @@ All five land between 0.50 and 0.58 — "mixed", slightly weighted toward the
 privileged group giving something up. On this evidence, the methods look reasonable
 and roughly interchangeable.
 
+> **Replication note (added after [document 11](11-replication-across-populations.md)).**
+> The measurements in this document are Adult and have been re-verified. But the
+> rate-to-people conversion below was later claimed to be *pure population arithmetic*,
+> and testing that on nine other populations showed it holds only when the mitigation
+> performs a **clean transfer** — privileged lose, unprivileged gain, nobody moving the
+> other way. Adult's cross-flow share is 0.045 and the conversion predicts it to within
+> 0.014. On populations under ~10,000 rows the cross-flow share reaches 0.3–0.4 and the
+> error grows fivefold. The divergence reported here is real; the general formula needs
+> that condition attached.
+>
+> The relevant diagnostic is the cross-flow share,
+> `(priv_gained + unpriv_lost) / (priv_lost + unpriv_gained)`, which correlates with the
+> conversion's error at r = 0.88.
+
 ## Finding 2 — measured in people, the same methods are lopsided
 
 The rate decomposition is **population-size blind**. The privileged group has 9,158
