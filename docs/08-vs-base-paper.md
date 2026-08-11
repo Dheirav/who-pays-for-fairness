@@ -84,10 +84,13 @@ Calmon & Ustun 2020; Cooper et al. 2024).
 ### 2.4 The method never needs the protected attribute at inference — but the model reconstructs it
 
 The reduction's operational selling point is that the deployed classifier does not
-require `sex`. True. But SHAP attribution shows that **ExpGrad-DP increases its
-reliance on sex proxies by 9.7% over the unmitigated baseline**, and both
-DP-constrained methods **more than doubled** their use of `relationship` (+108%) — a
-feature whose levels are Husband and Wife.
+require `sex`. True. But SHAP attribution over 5 seeds shows that **ExpGrad-DP
+increases its reliance on sex proxies by 7.6% ± 2.3 over the unmitigated baseline**,
+and raises its attribution to `relationship` by **151%** — with no overlap between the
+baseline and mitigated distributions in any seed. `relationship` is the feature whose
+Husband/Wife levels **determine sex with certainty for 45.9% of the dataset**, while
+`marital-status`, which the same models de-emphasise, never exceeds 89.5%. The
+constrained model does not stop using proxies; it **relocates onto the best one**.
 
 The mechanism is not mysterious: to equalise selection rates across sex while
 forbidden to read sex, the model must infer sex in order to compensate. **The
@@ -167,9 +170,11 @@ is fragile. That is a caution, not a refutation.
 
 *(Initiation document, section 6)*
 
-**False for the two best DP methods, which increased proxy reliance** (+9.7% and
-+7.3%). Only Adversarial Debiasing reduced it meaningfully (−12.9%), and even it
-retains 47.6% of attribution on proxies.
+**False for the two best DP methods, which increased proxy reliance** (+7.6% and
++7.5% over 5 seeds, and +151% / +110% on `relationship` specifically). Only
+Adversarial Debiasing reduced the total meaningfully (−11.7%), and even it retains
+48.1% of attribution on proxies — having *relocated* much of the rest onto
+`occupation` and `relationship` rather than removing it.
 
 The prediction assumed mitigation works by *removing* the model's access to
 sex-related signal. For constraint-based reductions it works by *using* that signal to

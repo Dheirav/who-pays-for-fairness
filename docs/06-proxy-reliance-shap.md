@@ -37,25 +37,44 @@ reported in the output rather than hidden.
 
 ## Result
 
+**5 seeds, mean ± std.**
+
 | model | proxy share | vs baseline | `relationship` alone | SHAP quality |
 |---|---|---|---|---|
-| baseline | 0.546 | — | 0.078 | exact |
-| **expgrad_dp** | **0.599** | **+9.7%** | **0.163 (+108%)** | sampled |
-| gridsearch_dp | 0.586 | +7.3% | **0.162 (+108%)** | exact |
-| prejudice_remover [Female] | 0.553 | +1.4% | 0.079 | exact |
-| prejudice_remover [Male] | 0.499 | −8.6% | 0.061 | exact |
-| expgrad_eo | 0.482 | −11.6% | 0.065 | sampled |
-| **adversarial_debiasing** | **0.476** | **−12.9%** | 0.107 | exact |
+| baseline | 0.545 ± 0.006 | — | 0.075 ± 0.010 | exact |
+| **expgrad_dp** | **0.586 ± 0.015** | **+7.6% ± 2.3** | **0.189 ± 0.016 (+151%)** | sampled |
+| **gridsearch_dp** | **0.586 ± 0.023** | **+7.5% ± 3.3** | **0.158 ± 0.023 (+110%)** | exact |
+| prejudice_remover [Female] | 0.596 ± 0.077 | +9.4% ± 13.7 | 0.076 | exact |
+| prejudice_remover [Male] | 0.505 ± 0.007 | −7.3% ± 1.8 | 0.071 | exact |
+| expgrad_eo | 0.475 ± 0.022 | −12.8% ± 3.2 | 0.082 ± 0.015 | sampled |
+| **adversarial_debiasing** | **0.481 ± 0.005** | **−11.7% ± 1.6** | 0.098 ± 0.006 | exact |
+
+Only `prejudice_remover [Female]` is noise-dominated (±13.7 on a +9.4 mean) and no
+claim is made from it — its Female-group model is fitted on the smaller group and is
+correspondingly unstable. Every other row's sign is consistent across all five seeds.
 
 ## Finding 1 — the best demographic-parity methods use proxies *more*, not less
 
 ExpGrad-DP achieves the second-lowest DP violation in the study (0.018) and
-**increases** its reliance on sex proxies by 9.7% relative to the unmitigated
+**increases** its reliance on sex proxies by 7.6% relative to the unmitigated
 baseline. GridSearch-DP achieves the lowest violation (0.015) and increases proxy
-reliance by 7.3%.
+reliance by 7.5%.
 
-Both **exactly doubled** their use of `relationship`, the most blatant sex proxy in
-the dataset.
+The `relationship` result is the sharp one. **ExpGrad-DP raises its attribution to
+`relationship` by 151%**, and it does so in every seed with no overlap between the two
+distributions at all:
+
+| seed | baseline | expgrad_dp |
+|---|---|---|
+| 0 | 0.0780 | 0.1656 |
+| 1 | 0.0652 | 0.1943 |
+| 2 | 0.0900 | 0.1896 |
+| 3 | 0.0745 | 0.1856 |
+| 4 | 0.0687 | 0.2093 |
+
+The lowest mitigated value (0.1656) is nearly double the highest baseline value
+(0.0900). This is not a marginal effect that five seeds happened to average into
+significance; the two sets of numbers do not touch.
 
 **Why this is the expected result.** To equalise selection rates between men and women
 *while forbidden from reading sex*, a model must first work out who is likely to be a
@@ -68,22 +87,60 @@ Put bluntly: **ExpGrad-DP achieves demographic parity by reconstructing sex inte
 and correcting for it.** That is disparate treatment in substance, arrived at by a
 method whose selling point is that it never sees the protected attribute at inference.
 
-## Finding 2 — this is not an artifact of the sampled explainer
+## Finding 2 — the models do not reduce proxy reliance, they *relocate* it
 
-The natural objection is that ExpGrad's +9.7% comes from `KernelExplainer` sampling
+Looking at where the attribution moved makes the mechanism concrete. Every constrained
+method takes mass *off* `marital-status` and puts it *on* `relationship`:
+
+| feature | baseline | expgrad_dp | change | gridsearch_dp | change |
+|---|---|---|---|---|---|
+| `marital-status` | 0.304 | 0.235 | **−23%** | 0.276 | −9% |
+| `relationship` | 0.075 | 0.189 | **+151%** | 0.158 | **+110%** |
+
+That specific direction is not arbitrary, because the two features are not equally
+good at revealing sex:
+
+| `relationship` level | P(Male) | n | | `marital-status` level | P(Male) | n |
+|---|---|---|---|---|---|---|
+| **Husband** | **1.000** | 18,666 | | Married-civ-spouse | 0.895 | 21,055 |
+| **Wife** | **0.000** | 2,091 | | Widowed | 0.188 | 1,277 |
+| Unmarried | 0.237 | 4,788 | | Divorced | 0.399 | 6,297 |
+
+`relationship` **determines sex with certainty for 45.9% of the dataset** — Husband is
+100% male, Wife is 100% female. `marital-status` never exceeds 89.5% for any level.
+
+**So the constrained model shifts attribution away from a merely sex-*correlated*
+feature and onto the one feature that sex-*determines*.** It is not incidentally using
+a proxy; it is selecting the best available reconstruction of the attribute it was
+forbidden to read. That is the mechanism, stated precisely enough to be checked.
+
+Adversarial Debiasing shows the same relocation with a different destination: it cuts
+`marital-status` hardest of all (−45%) but raises `occupation` (+49%) and
+`relationship` (+30%). Its net proxy share falls, but the mass does not disappear — it
+moves. This is proxy substitution occurring *without anyone removing a feature*, which
+is the strongest reason to doubt that dropping `relationship` would help.
+
+One incidental result worth recording: attribution to `race` falls under every
+mitigation, from −27% to −71%. Constraining on sex reduced reliance on race as a side
+effect, which no metric in the ablation would have shown.
+
+## Finding 3 — this is not an artifact of the sampled explainer
+
+The natural objection is that ExpGrad's increase comes from `KernelExplainer` sampling
 noise. It does not:
 
 * **GridSearch-DP's number is exact linear SHAP**, computed with no sampling at all,
-  and it shows the same direction and the same +108% on `relationship`.
+  and it shows the same direction and a +110% shift on `relationship`.
 * Two different estimators — one sampled, one exact — on two different algorithms that
   share only the demographic-parity constraint, agree.
+* Across 5 seeds the sign is consistent in every single run, for both methods.
 
 The shared factor is the constraint, not the estimator.
 
-## Finding 3 — the one method that does reduce proxy reliance is the one theory predicts
+## Finding 4 — the one method that does reduce proxy reliance is the one theory predicts
 
 Adversarial Debiasing is the only method that substantially cuts proxy reliance
-(−12.9%), and it is precisely the method whose objective *is* to make the output
+(−11.7% ± 1.6), and it is precisely the method whose objective *is* to make the output
 uninformative about sex — an adversary is explicitly trained to recover `a` from the
 prediction, and the predictor is updated to defeat it.
 
@@ -92,10 +149,11 @@ the finding a mechanism rather than a coincidence — and it means the +12.4% on
 ExpGrad-DP should be read as a real property of constraint-based reductions, not as
 noise.
 
-Note it still keeps **46.7%** of its attribution on proxies. "Reduced" is not
+Note it still keeps **48.1%** of its attribution on proxies, and Finding 2 shows it
+relocated rather than removed a good deal of what it did cut. "Reduced" is not
 "removed".
 
-## Finding 4 — Prejudice Remover's two models really do reason differently
+## Finding 5 — Prejudice Remover's two models really do reason differently
 
 Kamishima's method fits one weight vector per protected group. Explained separately,
 the two models differ in what they use: `native-country` carries **0.056** of
@@ -125,9 +183,9 @@ answer, and on this evidence it is a misleading one.
 
 ## Limits
 
-* One seed (0). The model fits are expensive and SHAP over 13,567 rows more so. The
-  effect sizes here (+100% on a single feature) are far larger than the seed-to-seed
-  variation in document 04, but multi-seed confirmation is not done.
+* Five seeds. The `relationship` effect is separated with no overlap between the
+  baseline and mitigated distributions, so it is not a seed artifact. The one row that
+  *is* noise-dominated, `prejudice_remover [Female]`, is flagged and not used.
 * `KernelExplainer` used 150 explained rows against a 25-point k-means background for
   the two ensemble rows. The exact rows corroborate the direction, but the ensemble
   magnitudes carry sampling error.

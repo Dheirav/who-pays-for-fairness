@@ -100,9 +100,47 @@ def score_fn_for(name: str, model):
     raise KeyError(name)
 
 
+def aggregate(results_dir: Path) -> pd.DataFrame | None:
+    """Combine every per-seed run present into mean/std summaries.
+
+    Attribution shares are seed-dependent in a way the ablation metrics are not: the
+    model is refitted, and the sampled explainer resamples. Reporting a single seed
+    invites the objection that the effect is noise, so the aggregate carries the
+    standard deviation and the seed count alongside every mean.
+    """
+    proxy_files = sorted(results_dir.glob("shap_proxy_reliance_seed*.csv"))
+    if not proxy_files:
+        return None
+
+    proxies = pd.concat(
+        [pd.read_csv(path, index_col=0).assign(seed=int(path.stem.split("seed")[-1]))
+         for path in proxy_files]
+    )
+    summary = proxies.groupby(level=0).agg(
+        proxy_share=("proxy_share", "mean"),
+        proxy_share_std=("proxy_share", "std"),
+        pct_change=("pct_change", "mean"),
+        pct_change_std=("pct_change", "std"),
+        n_seeds=("proxy_share", "size"),
+    )
+    summary["shap_quality"] = proxies.groupby(level=0)["shap_quality"].first()
+    summary.to_csv(results_dir / "shap_proxy_reliance.csv")
+
+    share_files = sorted(results_dir.glob("shap_feature_shares_seed*.csv"))
+    shares = pd.concat([pd.read_csv(path, index_col=0) for path in share_files])
+    shares.groupby(level=0).mean().to_csv(results_dir / "shap_feature_shares.csv")
+    shares.groupby(level=0).std().to_csv(results_dir / "shap_feature_shares_std.csv")
+
+    print(f"\n=== aggregate over {len(proxy_files)} seed(s) ===")
+    print(summary.round(4).to_string())
+    return summary
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--aggregate-only", action="store_true",
+                        help="recombine existing per-seed files without refitting")
     parser.add_argument("--instances", type=int, default=KERNEL_INSTANCES,
                         help="test rows explained by the sampled explainer")
     parser.add_argument("--eps", type=float, default=0.01)
@@ -110,6 +148,11 @@ def main() -> None:
     parser.add_argument("--alpha", type=float, default=1.0)
     parser.add_argument("--epochs", type=int, default=30)
     args = parser.parse_args()
+
+    if args.aggregate_only:
+        if aggregate(RESULTS_DIR) is None:
+            raise SystemExit("no per-seed SHAP results found in results/")
+        return
 
     import shap
 
@@ -167,10 +210,15 @@ def main() -> None:
     print("change. A method near zero change corrected its output without changing how")
     print("it reasons -- the metric moved, the mechanism did not.")
 
+    # Written per seed. A single shared filename would let concurrent or sequential
+    # seeds overwrite each other, and anything reading the result -- the docs, the
+    # deck -- would silently quote whichever seed happened to finish last.
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    table.to_csv(RESULTS_DIR / "shap_feature_shares.csv")
-    proxies.to_csv(RESULTS_DIR / "shap_proxy_reliance.csv")
-    print(f"\nwrote {RESULTS_DIR / 'shap_feature_shares.csv'} and shap_proxy_reliance.csv")
+    table.to_csv(RESULTS_DIR / f"shap_feature_shares_seed{args.seed}.csv")
+    proxies.to_csv(RESULTS_DIR / f"shap_proxy_reliance_seed{args.seed}.csv")
+    print(f"\nwrote per-seed results for seed {args.seed}")
+
+    aggregate(RESULTS_DIR)
 
 
 if __name__ == "__main__":

@@ -45,6 +45,14 @@ LABEL = {
     "expgrad_dp": "ExpGrad (DP)",
     "expgrad_eo": "ExpGrad (EO)",
 }
+# Offset in points for each direct label, fanned so the three reference markers --
+# which sit close together by construction -- do not overprint one another. The
+# baseline's label is the longest, so it is the one pushed left of its marker.
+LABEL_OFFSET = {
+    "baseline": (-12, 8),
+    "expgrad_dp": (10, -14),
+    "expgrad_eo": (-10, 9),
+}
 SURFACE, INK, MUTED, GRID = "#fcfcfb", "#0b0b0b", "#52514e", "#d9d8d4"
 
 VIOLATION_COLUMN = {
@@ -92,11 +100,20 @@ def plot(sweep: pd.DataFrame, refs: pd.DataFrame, violation_col: str, out: Path)
         # Direct labels are required, not decorative: the aqua slot sits at 2.74:1
         # against this surface, below the 3:1 bar, so the palette's relief rule
         # applies. They also keep the figure readable in greyscale print.
+        #
+        # The offset is per method rather than shared. The three reference models
+        # cluster in the top-left corner -- that is the whole point of the figure --
+        # so a single offset put all three labels on top of each other and on top of
+        # the markers they annotate.
         ax.annotate(
             LABEL[method], (row[violation_col], row["accuracy"]),
-            textcoords="offset points", xytext=(11, -4),
+            textcoords="offset points", xytext=LABEL_OFFSET[method],
             fontsize=9, color=INK, zorder=7,
+            ha="right" if LABEL_OFFSET[method][0] < 0 else "left",
         )
+
+    # Headroom so the fanned direct labels are not clipped by the axes box.
+    ax.margins(x=0.06, y=0.12)
 
     ax.set_xlabel(f"{violation_col.replace('_', ' ')}  (0 = fair)", fontsize=10, color=INK)
     ax.set_ylabel("Accuracy", fontsize=10, color=INK)
