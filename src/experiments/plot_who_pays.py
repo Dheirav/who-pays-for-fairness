@@ -17,10 +17,12 @@ floors, and both poles clear 3:1 contrast against the surface.
 
 Usage:
     python -m src.experiments.plot_who_pays
+    python -m src.experiments.plot_who_pays --dataset acs_income_wy_2018
 """
 
 from __future__ import annotations
 
+import argparse
 from pathlib import Path
 
 import matplotlib
@@ -33,6 +35,15 @@ from matplotlib.path import Path as MplPath
 from matplotlib.patches import PathPatch
 
 RESULTS_DIR = Path(__file__).resolve().parents[2] / "results"
+
+
+def output_dir(dataset_name: str) -> Path:
+    """Per-dataset results directory, matching the experiments' convention.
+
+    Adult keeps the flat ``results/`` paths; every other dataset gets its own
+    subdirectory, so plotting one dataset can never overwrite another's figure.
+    """
+    return RESULTS_DIR if dataset_name == "adult" else RESULTS_DIR / dataset_name
 
 LOSS, GAIN = "#eb6834", "#2a78d6"
 SURFACE, INK, MUTED, GRID = "#fcfcfb", "#0b0b0b", "#52514e", "#d9d8d4"
@@ -99,7 +110,17 @@ def _rounded_bar(ax, value: float, centre: float, height: float, color: str) -> 
 
 
 def main() -> None:
-    runs = pd.read_csv(RESULTS_DIR / "who_pays_runs.csv")
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--dataset", default="adult",
+                        help="dataset name as written under results/ (e.g. adult, "
+                             "acs_income_wy_2018)")
+    args = parser.parse_args()
+
+    out = output_dir(args.dataset)
+    source = out / "who_pays_runs.csv"
+    if not source.exists():
+        raise SystemExit(f"no who-pays results at {source}; run run_who_pays first")
+    runs = pd.read_csv(source)
     mean = runs.groupby("method").mean(numeric_only=True).reindex(ROW_ORDER)
 
     lost = mean["priv_lost"] + mean["unpriv_lost"]
@@ -162,7 +183,7 @@ def main() -> None:
 
     fig.tight_layout()
     for extension in ("png", "pdf"):
-        path = RESULTS_DIR / f"who_pays_incidence.{extension}"
+        path = out / f"who_pays_incidence.{extension}"
         fig.savefig(path, dpi=200, facecolor=SURFACE, bbox_inches="tight")
         print(f"wrote {path}")
 

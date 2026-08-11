@@ -1,0 +1,158 @@
+"""Guards against experiments overwriting each other's results.
+
+This bug class has bitten twice, and both times it was silent:
+
+* ``run_shap`` wrote every seed to one filename, so each seed overwrote the last and
+  the deck quoted whichever finished last;
+* every experiment wrote to a fixed path regardless of dataset, so the first ACS run
+  destroyed the committed Adult results the report and deck are built from.
+
+Neither raised an error. Both produced plausible numbers. The first was caught by
+noticing the deck disagreed with the docs, the second by noticing two different
+datasets reporting *identical* figures. Relying on noticing is not a control, so the
+invariants are asserted here instead.
+
+Run:  python -m tests.test_output_isolation
+"""
+
+from __future__ import annotations
+
+import ast
+import re
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+EXPERIMENTS = sorted((ROOT / "src" / "experiments").glob("*.py"))
+RESULTS = ROOT / "results"
+
+# Modules that legitimately hold no results-writing code.
+EXEMPT = {"__init__.py", "methods.py"}
+
+
+def test_no_experiment_writes_to_the_shared_root() -> None:
+    """Every write target must be dataset-scoped, not ``RESULTS_DIR / "..."``.
+
+    A literal ``RESULTS_DIR / "file.csv"`` in a module that also writes is the exact
+    shape of the bug: it ignores which dataset produced the numbers.
+    """
+    offenders = []
+    for path in EXPERIMENTS:
+        if path.name in EXEMPT:
+            continue
+        source = path.read_text()
+        for match in re.finditer(r'RESULTS_DIR\s*/\s*f?"([^"]+)"', source):
+            # RESULTS_DIR / dataset.name inside output_dir() is the fix, not the bug.
+            offenders.append(f"{path.name}: RESULTS_DIR / \"{match.group(1)}\"")
+    print(f"  scanned {len(EXPERIMENTS)} modules")
+    assert not offenders, (
+        "these write to the shared results root and would clobber another dataset:\n  "
+        + "\n  ".join(offenders)
+    )
+
+
+def test_every_experiment_exposes_a_dataset_flag() -> None:
+    """An experiment that cannot be pointed at a dataset cannot be replicated."""
+    missing = [
+        path.name
+        for path in EXPERIMENTS
+        if path.name not in EXEMPT
+        and "def main(" in path.read_text()
+        and '"--dataset"' not in path.read_text()
+    ]
+    print(f"  {len([p for p in EXPERIMENTS if p.name not in EXEMPT])} runnable modules")
+    assert not missing, f"no --dataset flag: {missing}"
+
+
+def test_output_dir_separates_datasets() -> None:
+    """Adult keeps the flat paths; anything else gets its own subdirectory."""
+    from src.experiments.run_who_pays import output_dir
+
+    class Fake:
+        def __init__(self, name):
+            self.name = name
+
+    adult = output_dir(Fake("adult"))
+    other = output_dir(Fake("acs_income_wy_2018"))
+    print(f"  adult -> {adult.name}/   other -> {other.relative_to(RESULTS)}/")
+    assert adult == RESULTS, "adult must keep the flat results/ paths"
+    assert other != RESULTS and other.parent == RESULTS
+    assert adult != other, "two datasets must not share an output directory"
+
+
+def test_shap_writes_one_file_per_seed() -> None:
+    """The per-seed filename must interpolate the seed, or seeds overwrite each other.
+
+    Checked on the f-string AST node rather than on string literals: an f-string is
+    parsed into alternating constants and ``FormattedValue`` holes, so the
+    interpolation never appears as a literal and a literal-based check would pass a
+    hardcoded name and fail a correct one.
+    """
+    tree = ast.parse((ROOT / "src" / "experiments" / "run_shap.py").read_text())
+    interpolated = []
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.JoinedStr):
+            continue
+        text = "".join(
+            part.value for part in node.values
+            if isinstance(part, ast.Constant) and isinstance(part.value, str)
+        )
+        if not text.startswith("shap_"):
+            continue
+        holes = [ast.unparse(p.value) for p in node.values
+                 if isinstance(p, ast.FormattedValue)]
+        interpolated.append((text, holes))
+
+    print(f"  per-seed write targets: {interpolated}")
+    assert interpolated, "run_shap writes no f-string-named shap_* file"
+    for text, holes in interpolated:
+        assert any("seed" in hole for hole in holes), (
+            f"'{text}' does not interpolate the seed, so seeds would overwrite it"
+        )
+
+
+def test_no_dataset_specific_column_names_in_experiments() -> None:
+    """Column names belong to the dataset, not to the experiment.
+
+    Hardcoding ``"race"`` or ``"relationship"`` is what made the experiments
+    Adult-only despite the interface claiming otherwise.
+    """
+    banned = ["relationship", "marital-status", "hours-per-week", "native-country",
+              "education-num", "capital-gain"]
+    offenders = []
+    for path in EXPERIMENTS:
+        source = path.read_text()
+        # Strip docstrings and comments: prose may name Adult's columns freely.
+        code = ast.unparse(ast.parse(source))
+        for name in banned:
+            if f'"{name}"' in code or f"'{name}'" in code:
+                offenders.append(f"{path.name}: {name!r}")
+    print(f"  checked {len(banned)} Adult column names")
+    assert not offenders, (
+        "dataset-specific column names in experiment code:\n  " + "\n  ".join(offenders)
+    )
+
+
+def main() -> None:
+    tests = [
+        test_no_experiment_writes_to_the_shared_root,
+        test_every_experiment_exposes_a_dataset_flag,
+        test_output_dir_separates_datasets,
+        test_shap_writes_one_file_per_seed,
+        test_no_dataset_specific_column_names_in_experiments,
+    ]
+    failures = 0
+    for test in tests:
+        print(f"\n{test.__name__}")
+        try:
+            test()
+            print("  PASS")
+        except AssertionError as exc:
+            failures += 1
+            print(f"  FAIL: {exc}")
+
+    print(f"\n{len(tests) - failures}/{len(tests)} passed")
+    raise SystemExit(1 if failures else 0)
+
+
+if __name__ == "__main__":
+    main()
