@@ -2,6 +2,25 @@
 
 **Not in the initiation document.** This is the causal follow-up to document 06.
 
+> ## ⚠ This experiment is deliberately *not* in-processing
+>
+> Every method in the ablation table changes only the objective handed to the learner;
+> the training data is never touched. **This experiment breaks that rule on purpose.**
+> Deleting features is pre-processing, and it is run here as a **negative control**,
+> not as a proposed mitigation.
+>
+> The question it answers is the obvious objection to document 06: *"if the constrained
+> model leans on `relationship`, why not just delete the column instead of doing any of
+> this?"* The answer is that it does not work and loses to the constraint on fairness
+> and accuracy simultaneously — which is why **this result defends the project's
+> in-processing scope rather than departing from it.** No row of the ablation table
+> comes from here, and nothing in this document is offered as a method to use.
+>
+> This is also why Reweighing (Kamiran & Calders 2012) was excluded from the ablation
+> despite being offered as an optional row in the specification: a pre-processing method
+> reported *alongside* in-processing ones would break the property that makes the table
+> a controlled comparison. Reported *against* them, as a control, it does not.
+
 ## The question
 
 Document 06 established that the demographic-parity constraint makes the model rely

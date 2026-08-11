@@ -638,6 +638,13 @@ def build(n: dict) -> list:
         "down, loosen it. Both were tested; neither works.")]
 
     story += [para("8.1 Deleting the leaky feature", "h2")]
+    story += callout(
+        "This sub-section is deliberately <i>not</i> in-processing. Every method in "
+        "sections 3 and 4 changes only the objective; deleting features is "
+        "pre-processing, and it is run here as a <b>negative control</b> rather than as "
+        "a proposed mitigation. Its result defends this project's in-processing scope "
+        "rather than departing from it: no row of the ablation table comes from here.",
+        accent=NAVY, fill=colors.HexColor("#F4F6FA"))
     story += [para(
         "<font face='Courier'>FairnessDataset.attribute_leakage()</font> trains a probe "
         "to predict <font face='Courier'>sex</font> from the <i>remaining</i> features "

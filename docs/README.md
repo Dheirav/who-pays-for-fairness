@@ -13,7 +13,7 @@ base paper. Written to be read in order, but each file stands alone.
 | 06 | [Proxy reliance (SHAP)](06-proxy-reliance-shap.md) | Do the mitigated models stop using stand-ins for sex? |
 | 07 | [Intersectional](07-intersectional.md) | Does fixing sex leave a Sex×Race subgroup behind? |
 | 08 | [Comparison with the base paper](08-vs-base-paper.md) | Consolidated: confirmed, extended, contradicted |
-| 09 | [Proxy removal](09-proxy-removal.md) | If the model leans on a leaky feature, does deleting it help? |
+| 09 | [Proxy removal](09-proxy-removal.md) | If the model leans on a leaky feature, does deleting it help? *(negative control — deliberately not in-processing)* |
 | 10 | [Epsilon sweep](10-epsilon-sweep.md) | Is levelling down just an artifact of a tight constraint? |
 
 ## The short version
@@ -38,6 +38,27 @@ The same algorithm that scores best on the fairness metric also:
 
 None of that makes the method wrong. It makes the headline metric an incomplete
 description of what the method did, which is a different and more useful claim.
+
+## Scope: purely in-processing
+
+**All six methods in the ablation table modify only the objective given to the learner.**
+No row is resampled, reweighted on disk, relabelled, or edited. `ExponentiatedGradient`
+reweights examples *inside* its optimisation loop, per iteration — the dataset on disk is
+never altered, which is what keeps it in-processing rather than making it Reweighing.
+
+Two consequences of holding that line:
+
+* **Reweighing (Kamiran & Calders 2012) is excluded**, though the specification offered it
+  as an optional row. It is pre-processing, and reporting it alongside the others would
+  break the single property that makes the table a controlled comparison.
+* **Document 09 breaks the rule on purpose**, as a negative control. It deletes features to
+  test whether the cheaper pre-processing alternative works — it does not — and its result
+  is a defence of this scope, not a departure from it. Nothing in the ablation table comes
+  from it.
+
+Encoding (one-hot, standardisation) and listwise deletion of rows with missing values are
+not interventions: they are applied identically to every method before any fairness work,
+and alter no label or class balance. See [document 01](01-setup-and-method.md).
 
 ## Reading the numbers
 

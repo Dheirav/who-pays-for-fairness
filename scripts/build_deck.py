@@ -613,8 +613,8 @@ def slide_intersectional(prs, n) -> None:
 
 def slide_proxy_removal(prs, n) -> None:
     slide = new_slide(prs, "Contribution 4 — \"Just Delete the Leaky Feature\" Backfires",
-                      "The obvious response to the previous slide, tested. Each round "
-                      "removes one more feature and re-measures.")
+                      "A NEGATIVE CONTROL, deliberately outside the in-processing scope: "
+                      "we break the rule once to show what leaving it costs.")
     rem = n["proxy"]
 
     rows = [["Features removed", "Sex recoverable (AUC)", "Baseline accuracy",
