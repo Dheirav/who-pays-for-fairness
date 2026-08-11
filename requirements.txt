@@ -19,3 +19,7 @@ shap>=0.44
 # this. CPU build is sufficient: the models are linear (~100 parameters) and 85% of
 # experiment runtime is scikit-learn refits, not tensor ops.
 torch>=2.0
+
+# ACS Income, the modern Adult replacement (Ding et al. 2021). Downloads ACS PUMS
+# microdata per state on first use.
+folktables>=0.0.12

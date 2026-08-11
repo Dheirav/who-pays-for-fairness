@@ -99,6 +99,11 @@ class AdultLoader:
             unprivileged_value=UNPRIVILEGED,
             categorical_features=categorical,
             numeric_features=numeric,
+            secondary_attribute="race",
+            # Ordered most sex-determining first: `relationship` has Husband/Wife as
+            # separate levels and fixes sex for 45.9% of rows; `marital-status` peaks
+            # at 89.5%; the other two are correlated but not determining.
+            proxy_features=["relationship", "marital-status", "occupation", "hours-per-week"],
             notes={
                 "source": "OpenML adult v2 (UCI Adult Census Income)",
                 "rows_raw": n_raw,

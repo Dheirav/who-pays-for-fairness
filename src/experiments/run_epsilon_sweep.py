@@ -27,7 +27,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from ..datasets.adult import AdultLoader
+from ..datasets import build as build_dataset
 from ..incidence import decompose_gap, flip_counts, outcome_total, people_incidence
 from ..metrics import evaluate
 from ..mitigation import fit_exponentiated_gradient
@@ -36,6 +36,22 @@ from ..preprocessing import prepare
 from .methods import BASE_MODEL
 
 RESULTS_DIR = Path(__file__).resolve().parents[2] / "results"
+
+def output_dir(dataset) -> Path:
+    """Per-dataset results directory.
+
+    Results are namespaced by dataset name. A shared filename means running a second
+    dataset overwrites the first one's committed numbers with no error and no warning
+    -- which is exactly what happened the first time ACS was run, clobbering the Adult
+    results that the report and deck read from. Adult keeps the flat ``results/`` paths
+    so existing references stay valid; every other dataset gets its own subdirectory.
+    """
+    if dataset.name == "adult":
+        return RESULTS_DIR
+    path = RESULTS_DIR / dataset.name
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
 
 # From "almost no slack" to "looser than the unmitigated gap", so the sweep spans the
 # whole meaningful range: the baseline violation is ~0.186, so ε = 0.20 imposes no
@@ -87,11 +103,13 @@ def run(dataset, seed: int, eps: float) -> dict:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--dataset", default="adult",
+                        help="adult | acs | acs:WY | acs:CA,TX")
     parser.add_argument("--seeds", type=int, nargs="+", default=[0, 1, 2])
     parser.add_argument("--eps", type=float, nargs="+", default=EPSILONS)
     args = parser.parse_args()
 
-    dataset = AdultLoader().load()
+    dataset = build_dataset(args.dataset).load()
     print("=== does levelling down survive a looser constraint? ===")
     print(f"base classifier: {BASE_MODEL}; unmitigated DP gap is ~0.186, so the largest")
     print("epsilon here imposes no real constraint and should reproduce the baseline.\n")
@@ -117,8 +135,9 @@ def main() -> None:
     print("the same at every strength, just smaller.")
 
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    results.to_csv(RESULTS_DIR / "epsilon_sweep_runs.csv", index=False)
-    summary.to_csv(RESULTS_DIR / "epsilon_sweep_summary.csv")
+    OUT = output_dir(dataset)
+    results.to_csv(OUT / "epsilon_sweep_runs.csv", index=False)
+    summary.to_csv(OUT / "epsilon_sweep_summary.csv")
     print(f"\nwrote {RESULTS_DIR / 'epsilon_sweep_runs.csv'} and epsilon_sweep_summary.csv")
 
 

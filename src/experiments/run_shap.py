@@ -32,7 +32,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from ..datasets.adult import AdultLoader
+from ..datasets import build as build_dataset
 from ..explain import (
     KERNEL_BACKGROUND,
     KERNEL_INSTANCES,
@@ -47,6 +47,22 @@ from ..preprocessing import prepare
 from .methods import METHOD_ORDER, MethodParams, fit_all
 
 RESULTS_DIR = Path(__file__).resolve().parents[2] / "results"
+
+def output_dir(dataset) -> Path:
+    """Per-dataset results directory.
+
+    Results are namespaced by dataset name. A shared filename means running a second
+    dataset overwrites the first one's committed numbers with no error and no warning
+    -- which is exactly what happened the first time ACS was run, clobbering the Adult
+    results that the report and deck read from. Adult keeps the flat ``results/`` paths
+    so existing references stay valid; every other dataset gets its own subdirectory.
+    """
+    if dataset.name == "adult":
+        return RESULTS_DIR
+    path = RESULTS_DIR / dataset.name
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
 
 # Rows explained with exact linear SHAP, and how to pull the linear score out of each.
 # Everything else falls back to sampling.
@@ -138,6 +154,8 @@ def aggregate(results_dir: Path) -> pd.DataFrame | None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--dataset", default="adult",
+                        help="adult | acs | acs:WY | acs:CA,TX")
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--aggregate-only", action="store_true",
                         help="recombine existing per-seed files without refitting")
@@ -150,14 +168,17 @@ def main() -> None:
     args = parser.parse_args()
 
     if args.aggregate_only:
-        if aggregate(RESULTS_DIR) is None:
-            raise SystemExit("no per-seed SHAP results found in results/")
+        # Resolve the dataset only for its output directory -- no data is loaded.
+        target = (RESULTS_DIR if args.dataset.partition(":")[0] == "adult"
+                  else RESULTS_DIR / build_dataset(args.dataset).name)
+        if aggregate(target) is None:
+            raise SystemExit(f"no per-seed SHAP results found in {target}")
         return
 
     import shap
 
     params = MethodParams(eps=args.eps, eta=args.eta, alpha=args.alpha, epochs=args.epochs)
-    dataset = AdultLoader().load()
+    dataset = build_dataset(args.dataset).load()
     split = prepare(dataset, random_state=args.seed)
 
     mapping = source_feature_map(
@@ -166,7 +187,7 @@ def main() -> None:
     print(f"=== SHAP attribution, seed {args.seed} ===")
     print(f"{len(split.feature_names)} encoded columns -> {len(mapping)} source features")
     print(f"sex is {'IN' if dataset.protected_attribute in mapping else 'NOT in'} "
-          f"the feature matrix; proxies examined: {', '.join(SEX_PROXIES)}\n")
+          f"the feature matrix; proxies examined: {', '.join(dataset.proxy_features)}\n")
 
     _, _, models = fit_all(split, args.seed, params, return_models=True)
 
@@ -197,14 +218,16 @@ def main() -> None:
     print(table.round(4).to_string())
 
     proxies = pd.DataFrame({
-        "proxy_share": {label: proxy_share(series) for label, series in shares.items()},
+        "proxy_share": {label: proxy_share(series, dataset.proxy_features)
+                        for label, series in shares.items()},
         "shap_quality": exactness,
     })
     baseline_share = proxies.loc["baseline", "proxy_share"]
     proxies["change_vs_baseline"] = proxies["proxy_share"] - baseline_share
     proxies["pct_change"] = 100.0 * proxies["change_vs_baseline"] / baseline_share
 
-    print(f"\n=== combined share of attribution on sex proxies ({', '.join(SEX_PROXIES)}) ===")
+    print(f"\n=== combined share of attribution on sex proxies "
+          f"({', '.join(dataset.proxy_features)}) ===")
     print(proxies.round(4).to_string())
     print("\nA method that genuinely stopped using proxies would show a large negative")
     print("change. A method near zero change corrected its output without changing how")
@@ -214,11 +237,12 @@ def main() -> None:
     # seeds overwrite each other, and anything reading the result -- the docs, the
     # deck -- would silently quote whichever seed happened to finish last.
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    table.to_csv(RESULTS_DIR / f"shap_feature_shares_seed{args.seed}.csv")
-    proxies.to_csv(RESULTS_DIR / f"shap_proxy_reliance_seed{args.seed}.csv")
+    OUT = output_dir(dataset)
+    table.to_csv(OUT / f"shap_feature_shares_seed{args.seed}.csv")
+    proxies.to_csv(OUT / f"shap_proxy_reliance_seed{args.seed}.csv")
     print(f"\nwrote per-seed results for seed {args.seed}")
 
-    aggregate(RESULTS_DIR)
+    aggregate(OUT)
 
 
 if __name__ == "__main__":

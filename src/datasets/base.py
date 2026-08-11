@@ -42,6 +42,14 @@ class FairnessDataset:
         unprivileged_value: Value of ``a`` for the historically disadvantaged group.
         categorical_features: Columns of ``X`` needing categorical encoding.
         numeric_features: Columns of ``X`` to be treated as continuous.
+        secondary_attribute: Column of ``X`` to cross with the protected attribute
+            for the intersectional analysis (e.g. race). ``None`` if the dataset has
+            no suitable second attribute.
+        proxy_features: Columns that carry information about the protected attribute
+            without being it, ordered **most determining first**. Declared per dataset
+            because the answer is a property of the data, not of the experiment: on
+            Adult `relationship` fixes sex outright, while on ACS the same relation is
+            recorded as a single husband/wife code and fixes nothing.
         notes: Free-form provenance/preprocessing notes, surfaced in reports.
     """
 
@@ -54,6 +62,8 @@ class FairnessDataset:
     unprivileged_value: Any
     categorical_features: list[str]
     numeric_features: list[str]
+    secondary_attribute: str | None = None
+    proxy_features: list[str] = field(default_factory=list)
     notes: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:

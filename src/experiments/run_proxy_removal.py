@@ -35,7 +35,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from ..datasets.adult import AdultLoader
+from ..datasets import build as build_dataset
 from ..explain import aggregate_attributions, linear_explainer_values, proxy_share, source_feature_map
 from ..incidence import outcome_total
 from ..metrics import evaluate
@@ -46,14 +46,32 @@ from .methods import BASE_MODEL
 
 RESULTS_DIR = Path(__file__).resolve().parents[2] / "results"
 
-# Cumulative removal rounds, ordered by how much sex each feature determines.
-ROUNDS = [
-    [],
-    ["relationship"],
-    ["relationship", "marital-status"],
-    ["relationship", "marital-status", "occupation"],
-    ["relationship", "marital-status", "occupation", "hours-per-week"],
-]
+def output_dir(dataset) -> Path:
+    """Per-dataset results directory.
+
+    Results are namespaced by dataset name. A shared filename means running a second
+    dataset overwrites the first one's committed numbers with no error and no warning
+    -- which is exactly what happened the first time ACS was run, clobbering the Adult
+    results that the report and deck read from. Adult keeps the flat ``results/`` paths
+    so existing references stay valid; every other dataset gets its own subdirectory.
+    """
+    if dataset.name == "adult":
+        return RESULTS_DIR
+    path = RESULTS_DIR / dataset.name
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+def removal_rounds(dataset) -> list[list[str]]:
+    """Cumulative removal rounds from the dataset's own proxy ranking.
+
+    The order is declared by the loader rather than hardcoded here, because which
+    feature leaks the protected attribute hardest is a property of the data. On Adult
+    that is `relationship`; on ACS the same relation carries almost no sex information,
+    which is exactly the contrast worth testing.
+    """
+    proxies = list(dataset.proxy_features)
+    return [proxies[:k] for k in range(len(proxies) + 1)]
 
 
 def round_label(removed: list[str]) -> str:
@@ -112,17 +130,19 @@ def run_round(dataset, removed: list[str], seed: int, eps: float) -> dict:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--dataset", default="adult",
+                        help="adult | acs | acs:WY | acs:CA,TX")
     parser.add_argument("--seeds", type=int, nargs="+", default=[0, 1, 2])
     parser.add_argument("--eps", type=float, default=0.01)
     args = parser.parse_args()
 
-    dataset = AdultLoader().load()
+    dataset = build_dataset(args.dataset).load()
     print("=== proxy removal: does deleting the leak remove the information? ===")
     print(f"protected attribute: {dataset.protected_attribute}  "
           f"(absent from features throughout)\n")
 
     rows = []
-    for removed in ROUNDS:
+    for removed in removal_rounds(dataset):
         print(f"--- {round_label(removed)} ---", flush=True)
         for seed in args.seeds:
             rows.append(run_round(dataset, removed, seed, args.eps))
@@ -149,8 +169,9 @@ def main() -> None:
     print("top_feature        : the feature carrying the most attribution that round.")
 
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    results.to_csv(RESULTS_DIR / "proxy_removal_runs.csv", index=False)
-    summary.to_csv(RESULTS_DIR / "proxy_removal_summary.csv")
+    OUT = output_dir(dataset)
+    results.to_csv(OUT / "proxy_removal_runs.csv", index=False)
+    summary.to_csv(OUT / "proxy_removal_summary.csv")
     print(f"\nwrote {RESULTS_DIR / 'proxy_removal_runs.csv'} and proxy_removal_summary.csv")
 
 

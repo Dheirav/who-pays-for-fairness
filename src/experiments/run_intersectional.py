@@ -34,7 +34,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from ..datasets.adult import AdultLoader
+from ..datasets import build as build_dataset
 from ..intersectional import (
     MIN_RELIABLE_DENOMINATOR,
     combine,
@@ -51,7 +51,22 @@ from ..preprocessing import prepare
 from .methods import BASE_MODEL
 
 RESULTS_DIR = Path(__file__).resolve().parents[2] / "results"
-SECOND_ATTRIBUTE = "race"
+
+def output_dir(dataset) -> Path:
+    """Per-dataset results directory.
+
+    Results are namespaced by dataset name. A shared filename means running a second
+    dataset overwrites the first one's committed numbers with no error and no warning
+    -- which is exactly what happened the first time ACS was run, clobbering the Adult
+    results that the report and deck read from. Adult keeps the flat ``results/`` paths
+    so existing references stay valid; every other dataset gets its own subdirectory.
+    """
+    if dataset.name == "adult":
+        return RESULTS_DIR
+    path = RESULTS_DIR / dataset.name
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
 
 ARMS = ["baseline", "expgrad_dp_sex", "expgrad_dp_intersectional"]
 
@@ -78,8 +93,8 @@ def run_seed(dataset, seed: int, eps: float, *, detail: bool) -> list[dict]:
         "unprivileged": dataset.unprivileged_value,
     }
 
-    subgroups_train = combine(split.a_train, split.column(dataset, SECOND_ATTRIBUTE, train=True))
-    subgroups_test = combine(split.a_test, split.column(dataset, SECOND_ATTRIBUTE))
+    subgroups_train = combine(split.a_train, split.column(dataset, dataset.secondary_attribute, train=True))
+    subgroups_test = combine(split.a_test, split.column(dataset, dataset.secondary_attribute))
 
     rows = []
     for arm in ARMS:
@@ -136,14 +151,18 @@ def run_seed(dataset, seed: int, eps: float, *, detail: bool) -> list[dict]:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--dataset", default="adult",
+                        help="adult | acs | acs:WY | acs:CA,TX")
     parser.add_argument("--seeds", type=int, nargs="+", default=[0, 1, 2])
     parser.add_argument("--eps", type=float, default=0.01)
     args = parser.parse_args()
 
-    dataset = AdultLoader().load()
+    dataset = build_dataset(args.dataset).load()
+    if dataset.secondary_attribute is None:
+        raise SystemExit(f"{dataset.name} declares no secondary attribute to cross with")
     print("=== intersectional fairness: sex x race ===")
     print(f"protected attribute constrained by the ablation: {dataset.protected_attribute}")
-    print(f"second attribute examined here: {SECOND_ATTRIBUTE}\n")
+    print(f"second attribute examined here: {dataset.secondary_attribute}\n")
 
     all_rows = []
     for seed in args.seeds:
@@ -171,8 +190,9 @@ def main() -> None:
     print("                              is contributed by unmeasurable subgroups.")
 
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    results.to_csv(RESULTS_DIR / "intersectional_runs.csv", index=False)
-    summary.to_csv(RESULTS_DIR / "intersectional_summary.csv")
+    OUT = output_dir(dataset)
+    results.to_csv(OUT / "intersectional_runs.csv", index=False)
+    summary.to_csv(OUT / "intersectional_summary.csv")
     print(f"\nwrote {RESULTS_DIR / 'intersectional_runs.csv'} and intersectional_summary.csv")
 
 
