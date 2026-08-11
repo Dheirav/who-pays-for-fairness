@@ -11,3 +11,6 @@ data/
 
 # OS
 .DS_Store
+
+# Windows "downloaded from internet" marker files
+*:Zone.Identifier
