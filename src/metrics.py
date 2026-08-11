@@ -75,11 +75,23 @@ def demographic_parity_difference(
 def equalized_odds_difference(
     y_true, y_pred, sensitive, *, privileged, unprivileged
 ) -> float:
+    """max(|TPR gap|, |FPR gap|), or NaN if either component is undefined.
+
+    The NaN check is explicit because Python's ``max`` handles NaN by argument
+    *order*: ``max(nan, 0.5)`` is nan but ``max(0.5, nan)`` is 0.5, since every
+    comparison against NaN is False. Written as a bare ``max`` this silently reported
+    a TPR-only gap as the full equalized-odds difference whenever a group had no
+    negative labels — an undefined quantity masquerading as a defined one, which is
+    exactly what ``_rates`` returning NaN rather than 0 exists to prevent. The
+    guarantee has to hold at this level too, not only one function down.
+    """
     table = group_breakdown(
         y_true, y_pred, sensitive, privileged=privileged, unprivileged=unprivileged
     )
     tpr_gap = abs(table.loc["privileged", "tpr"] - table.loc["unprivileged", "tpr"])
     fpr_gap = abs(table.loc["privileged", "fpr"] - table.loc["unprivileged", "fpr"])
+    if np.isnan(tpr_gap) or np.isnan(fpr_gap):
+        return float("nan")
     return float(max(tpr_gap, fpr_gap))
 
 

@@ -164,8 +164,16 @@ def main() -> None:
             "intersectional_gap_reliable", "gap_inflation", "worst_subgroup_rate",
         ]].mean().round(4).reindex(ARMS)
     )
+    # `.mode()` is empty when every subgroup was too small to be called reliable, and
+    # `.iat[0]` on an empty Series raises IndexError. That is not hypothetical: it is
+    # the expected state for a small population, which is precisely where this analysis
+    # is most likely to be run and most likely to be misread.
+    def modal_subgroup(series: pd.Series):
+        modes = series.dropna().mode()
+        return modes.iat[0] if len(modes) else "none reliable"
+
     summary["worst_subgroup_mode"] = (
-        results.groupby("arm")["worst_subgroup"].agg(lambda s: s.mode().iat[0]).reindex(ARMS)
+        results.groupby("arm")["worst_subgroup"].agg(modal_subgroup).reindex(ARMS)
     )
 
     print(f"\n=== summary over {len(args.seeds)} seeds ===")

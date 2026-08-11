@@ -79,6 +79,7 @@ RACE_LABELS = {
 # inflates the feature count far past Adult's 85 and makes the two datasets'
 # attribution shares incomparable. The threshold is reported in `notes`.
 RARE_LEVEL_THRESHOLD = 0.005
+POOLED_LABEL = "OTHER-RARE"
 
 
 class ACSIncomeLoader:
@@ -107,10 +108,16 @@ class ACSIncomeLoader:
         return f"acs_income_{'_'.join(self.states).lower()}_{self.year}"
 
     def _pool_rare_levels(self, column: pd.Series) -> pd.Series:
-        """Collapse levels rarer than the threshold into a single 'Other'."""
+        """Collapse levels rarer than the threshold into a single readable bucket.
+
+        Named rather than a numeric sentinel: these labels become one-hot column names
+        and then SHAP feature names, and ``OCCP_-1.0`` in an attribution table is
+        indistinguishable from a real occupation code to anyone reading it.
+        """
         frequencies = column.value_counts(normalize=True)
         keep = set(frequencies[frequencies >= RARE_LEVEL_THRESHOLD].index)
-        return column.where(column.isin(keep), other=-1)
+        pooled = column.astype(str).where(column.isin(keep), other=POOLED_LABEL)
+        return pooled
 
     def load(self, *, include_protected_in_features: bool = False) -> FairnessDataset:
         from folktables import ACSDataSource, ACSIncome
