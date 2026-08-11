@@ -28,6 +28,8 @@ What the fairness metric does not say is *how* it got there:
 | 4 | **The fairest models use sex proxies *more*.** `sex` is absent from the features, yet ExpGrad-DP raises proxy reliance 7.6% ± 2.3 over the unmitigated baseline and **+151% on `relationship`** — a feature that determines sex with certainty for 45.9% of the dataset. It de-emphasises `marital-status` (max 89.5% sex-informative) to do it: the constraint makes the model **relocate onto the best available reconstruction of sex**. 5 seeds, no distribution overlap. | [docs/06](docs/06-proxy-reliance-shap.md) |
 | 5 | **Fixing sex leaves a 9× larger gap at Sex × Race** (0.020 vs 0.178), and moves the worst-off subgroup from Black women to **Black men** — protected by no constraint at all. | [docs/07](docs/07-intersectional.md) |
 | 6 | **Half the intersectional subgroups cannot be measured.** 5 of 10 are too small; one has zero positive labels, making its TPR undefined by division. 70% of the apparent gap in the intersectional arm comes from those cells. | [docs/07](docs/07-intersectional.md) |
+| 7 | **Deleting the leaky feature backfires.** Removing `relationship` moves sex-recoverability only 0.934 → 0.868 AUC and makes the *unmitigated* model **more** unfair (DP 0.190 → 0.205). Deleting 4 of 11 features gives DP 0.076 at 80.8% accuracy — against **DP 0.020 at 83.0%** for the constraint on untouched data. Strictly dominated. | [docs/09](docs/09-proxy-removal.md) |
+| 8 | **Loosening the constraint does not help.** Across the whole binding range of ε the share of the closure paid by the advantaged group is flat at 0.74–0.78 in people, and a fixed amount of gap costs a near-constant number of approvals. ε is a dial on how much fairness you buy, not on how it is bought. | [docs/10](docs/10-epsilon-sweep.md) |
 
 Nothing above contradicts the base paper — all six sit outside its frame. The two
 predictions that *were* refuted came from this project's own initiation document; see
@@ -48,6 +50,8 @@ predictions that *were* refuted came from this project's own initiation document
 | Who-pays / levelling-down incidence analysis | Implemented, 8/8 tests — **beyond spec** |
 | SHAP proxy-reliance analysis | Implemented — spec stretch goal |
 | Intersectional Sex × Race analysis | Implemented — **beyond spec** |
+| Proxy-removal / attribute-leakage probe | Implemented — **beyond spec** |
+| Constraint-strength (ε) sweep | Implemented — **beyond spec** |
 
 ## The problem
 
@@ -84,6 +88,15 @@ python -m src.experiments.run_who_pays --seeds 0 1 2 3 4     # levelling up vs d
 python -m src.experiments.plot_who_pays                      # incidence chart
 python -m src.experiments.run_shap --seed 0                  # proxy reliance
 python -m src.experiments.run_intersectional --seeds 0 1 2   # Sex x Race
+python -m src.experiments.run_proxy_removal  --seeds 0 1 2   # does deleting the proxy help?
+python -m src.experiments.run_epsilon_sweep  --seeds 0 1 2   # does levelling down persist?
+```
+
+Deliverables:
+
+```bash
+python -m scripts.build_deck     # updates bias_mitigation_plan.pptx from results/
+python -m scripts.build_report   # writes bias_mitigation_report.pdf
 ```
 
 Correctness checks:

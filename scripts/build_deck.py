@@ -13,10 +13,15 @@ fixes and one it cannot fix by editing text alone:
 3. **Slide 5 said the model "is free to pick up a".** It is not — ``sex`` is dropped
    from the feature matrix. It can only reach proxies, which is a sharper claim and
    sets up the SHAP result.
-4. **The deck had no results at all.** Eight slides are appended.
+4. **The deck had no results at all.** Ten slides are appended.
 
 Every number is read from ``results/`` at build time rather than typed in, so the deck
 cannot drift away from the experiments the way hand-copied figures do.
+
+The input is ``assets/deck_source.pptx``, a pristine copy of the deck as originally
+drafted; the output is ``bias_mitigation_plan.pptx``. Reading and writing the same file
+made the build non-idempotent -- a second run appended a second copy of every result
+slide.
 
 Usage:
     python -m scripts.build_deck
@@ -35,6 +40,11 @@ from pptx.util import Emu, Inches, Pt
 
 ROOT = Path(__file__).resolve().parents[1]
 RESULTS = ROOT / "results"
+
+# Read from a pristine copy of the plan deck and write the deliverable beside it.
+# Editing the deliverable in place is not idempotent -- the appended result slides
+# accumulate on every run, which is exactly what happened once before this split.
+SOURCE = ROOT / "assets" / "deck_source.pptx"
 DECK = ROOT / "bias_mitigation_plan.pptx"
 
 # Design tokens lifted from the existing slides so additions are indistinguishable.
@@ -63,9 +73,12 @@ def load_numbers() -> dict:
     shap = pd.read_csv(RESULTS / "shap_proxy_reliance.csv", index_col=0)
     shares = pd.read_csv(RESULTS / "shap_feature_shares.csv", index_col=0)
     inter = pd.read_csv(RESULTS / "intersectional_summary.csv", index_col=0)
+    proxy = pd.read_csv(RESULTS / "proxy_removal_summary.csv").sort_values("n_removed")
+    eps = pd.read_csv(RESULTS / "epsilon_sweep_summary.csv", index_col=0)
     return {
         "baseline": base, "mitigation": mit, "ablation": abl,
         "who": who, "shap": shap, "shares": shares, "inter": inter,
+        "proxy": proxy, "eps": eps,
     }
 
 
@@ -596,6 +609,81 @@ def slide_intersectional(prs, n) -> None:
             "report Wilson intervals and gate on them.", size=13, color=INK, spacing=1.05)
 
 
+def slide_proxy_removal(prs, n) -> None:
+    slide = new_slide(prs, "Contribution 4 — \"Just Delete the Leaky Feature\" Backfires",
+                      "The obvious response to the previous slide, tested. Each round "
+                      "removes one more feature and re-measures.")
+    rem = n["proxy"]
+
+    rows = [["Features removed", "Sex recoverable (AUC)", "Baseline accuracy",
+             "Baseline DP", "ExpGrad accuracy", "ExpGrad DP"]]
+    for _, row in rem.iterrows():
+        rows.append([
+            row["removed"], f"{row['leakage_auc']:.3f}",
+            f"{row['baseline_accuracy']:.4f}", f"{row['baseline_dp']:.4f}",
+            f"{row['expgrad_accuracy']:.4f}", f"{row['expgrad_dp']:.4f}",
+        ])
+    table(slide, 0.70, 1.85, 11.90, rows,
+          col_widths=[4.4, 2.2, 1.9, 1.6, 1.9, 1.6], highlight=2)
+
+    textbox(slide, 0.70, 4.35, 11.90, 0.36,
+            "Deleting the feature does not delete the information.", size=15,
+            bold=True, color=NAVY, font=HEAD_FONT)
+    textbox(slide, 0.70, 4.76, 11.90, 0.95,
+            "`relationship` determines sex outright for 45.9% of people. Removing it "
+            "drops sex-recoverability only from 0.934 to 0.868 — the information is "
+            "spread across the other features — and it makes the unmitigated model MORE "
+            "unfair, 0.190 → 0.205. You must delete 4 of 11 features to suppress the "
+            "leak, at which point the probe is no better than guessing the majority class.",
+            size=13.5, color=INK)
+
+    panel(slide, 0.70, 5.85, 11.90, 1.15, fill=RGBColor(0xFD, 0xF3, 0xE2),
+          line=RGBColor(0xE8, 0xA3, 0x3D))
+    textbox(slide, 1.00, 6.02, 11.30, 0.85,
+            "Feature deletion is strictly dominated: 4 features removed gives DP 0.076 "
+            "at 80.8% accuracy, while the constraint on the untouched feature set gives "
+            "DP 0.020 at 83.0%. Worse fairness AND worse accuracy — and mitigation gets "
+            "more expensive afterwards.", size=13.5, bold=True, color=INK)
+
+
+def slide_epsilon(prs, n) -> None:
+    slide = new_slide(prs, "Contribution 5 — Loosening the Constraint Changes the Dose, Not the Mechanism",
+                      "The strongest objection to Contribution 1: maybe levelling down "
+                      "is just what a very tight constraint forces. Tested by sweeping ε.")
+    eps = n["eps"]
+
+    rows = [["ε (fairness slack)", "Accuracy", "DP diff", "Share paid by advantaged (people)",
+             "Lost per gained", "Change in total approvals"]]
+    for value, row in eps.iterrows():
+        binding = row["closure"] > 1e-9
+        rows.append([
+            f"{value:g}", f"{row['accuracy']:.4f}", f"{row['dp_diff']:.4f}",
+            f"{row['people_share_levelling_down']:.3f}" if binding else "not binding",
+            f"{row['lost_per_gained']:.2f}" if binding else "—",
+            f"{row['pie_change_pct']:+.1f}%",
+        ])
+    table(slide, 0.70, 1.85, 11.90, rows,
+          col_widths=[2.0, 1.8, 1.7, 3.2, 1.8, 2.4], highlight=2, row_height=0.33)
+
+    textbox(slide, 0.70, 4.75, 11.90, 0.36,
+            "The share does not move. Only the amount of work does.", size=15,
+            bold=True, color=NAVY, font=HEAD_FONT)
+    textbox(slide, 0.70, 5.16, 11.90, 0.95,
+            "Across the whole binding range the advantaged group pays 0.74–0.78 of the "
+            "closure in people, and closing a fixed amount of gap costs a near-constant "
+            "number of approvals (≈120–146 per unit) at every ε. The two non-binding rows "
+            "return the baseline exactly, which is the check that ε now does what it claims.",
+            size=13.5, color=INK)
+
+    panel(slide, 0.70, 6.20, 11.90, 0.95, fill=RGBColor(0xFD, 0xF3, 0xE2),
+          line=RGBColor(0xE8, 0xA3, 0x3D))
+    textbox(slide, 1.00, 6.34, 11.30, 0.70,
+            "At the loosest binding setting the split is the MOST lopsided per unit of "
+            "work — 3.41 favourable decisions destroyed per one created. A gentle "
+            "constraint is gentler in degree, and not even that per unit of gap closed.",
+            size=13.5, bold=True, color=INK)
+
+
 def slide_verdict(prs) -> None:
     slide = new_slide(prs, "Verdict — What We Confirmed, Extended, and Refuted",
                       "The distinction matters. It is easy to present an extension as a "
@@ -614,10 +702,12 @@ def slide_verdict(prs) -> None:
     textbox(slide, 5.03, 1.97, 3.25, 0.42, "Extended", size=17, bold=True,
             color=NAVY, font=HEAD_FONT)
     textbox(slide, 5.03, 2.48, 3.25, 3.20,
-            "Four questions the paper's frame does not ask.\n\n• Who was moved to "
+            "Six questions the paper's frame does not ask.\n\n• Who was moved to "
             "satisfy the constraint\n• Whether the total number of approvals fell\n"
             "• What randomization costs an individual\n• What the constrained model "
-            "leans on\n\nNone of these contradict it.", size=12.5, color=INK, spacing=1.08)
+            "leans on\n• What happens one level below the constrained attribute\n"
+            "• Whether deleting the proxy, or loosening ε, is a way out (neither is)"
+            "\n\nNone of these contradict it.", size=11.5, color=INK, spacing=1.05)
 
     panel(slide, 8.86, 1.80, 3.74, 4.05, fill=RGBColor(0xFD, 0xF3, 0xE2),
           line=RGBColor(0xE8, 0xA3, 0x3D))
@@ -627,7 +717,8 @@ def slide_verdict(prs) -> None:
             "Nothing in the base paper.\n\nTwo predictions from our own plan deck:\n\n"
             "• 'Adversarial training is higher-variance' — inverted\n"
             "• 'SHAP will show proxy reliance shrinking' — it grew\n\n"
-            "We published our own wrong guesses.", size=12.5, color=INK, spacing=1.08)
+            "Predictions from intuition: 0 for 2. From theory: 3 for 3.",
+            size=12.5, color=INK, spacing=1.08)
 
     panel(slide, 0.70, 6.05, 11.90, 1.10, fill=NAVY, line=NAVY)
     textbox(slide, 1.00, 6.20, 11.30, 0.85,
@@ -643,7 +734,7 @@ def slide_verdict(prs) -> None:
 
 def main() -> None:
     numbers = load_numbers()
-    prs = Presentation(str(DECK))
+    prs = Presentation(str(SOURCE))
 
     fix_group_rate_chart(prs)
     fix_proxy_claim(prs)
@@ -658,6 +749,8 @@ def main() -> None:
     slide_who_pays(prs, numbers)
     slide_shap(prs, numbers)
     slide_intersectional(prs, numbers)
+    slide_proxy_removal(prs, numbers)
+    slide_epsilon(prs, numbers)
     slide_verdict(prs)
 
     prs.save(str(DECK))

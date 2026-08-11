@@ -110,6 +110,66 @@ class FairnessDataset:
             )
         return pd.DataFrame(rows)
 
+    def without_features(self, names: list[str]) -> "FairnessDataset":
+        """A copy with the named columns removed from ``X``.
+
+        Used by the proxy-removal experiment, which asks whether deleting a feature
+        that leaks the protected attribute actually removes the leak or merely moves
+        it. Returning a new dataset rather than mutating keeps the frozen contract and
+        lets a caller hold several removal rounds at once for comparison.
+        """
+        from dataclasses import replace
+
+        missing = [n for n in names if n not in self.X.columns]
+        if missing:
+            raise KeyError(f"not in features: {missing}")
+        dropped = list(names)
+        return replace(
+            self,
+            X=self.X.drop(columns=dropped),
+            categorical_features=[c for c in self.categorical_features if c not in dropped],
+            numeric_features=[c for c in self.numeric_features if c not in dropped],
+            notes={**self.notes, "removed_features": dropped},
+        )
+
+    def attribute_leakage(self, *, random_state: int = 0) -> dict[str, float]:
+        """How well the protected attribute can be predicted from ``X`` alone.
+
+        This is the direct measurement the SHAP analysis can only approach indirectly.
+        If a model can recover ``sex`` from the remaining features at high AUC, then
+        removing ``sex`` from the inputs has removed a column and not the information,
+        and "the model does not use the protected attribute" is false in every sense
+        that matters.
+
+        Reported as ROC AUC of a logistic regression trained to predict ``a``, and as
+        the accuracy of the same model against the majority-class rate, so a reader can
+        see both discrimination and calibration to the base rate.
+        """
+        import numpy as np
+        from sklearn.linear_model import LogisticRegression
+        from sklearn.metrics import roc_auc_score
+        from sklearn.model_selection import train_test_split
+
+        from ..preprocessing import build_encoder
+
+        target = (self.a == self.privileged_value).to_numpy(dtype=int)
+        idx_train, idx_test = train_test_split(
+            self.X.index, test_size=0.3, random_state=random_state, stratify=target
+        )
+        encoder = build_encoder(self)
+        X_train = encoder.fit_transform(self.X.loc[idx_train])
+        X_test = encoder.transform(self.X.loc[idx_test])
+        y_train = target[self.X.index.get_indexer(idx_train)]
+        y_test = target[self.X.index.get_indexer(idx_test)]
+
+        probe = LogisticRegression(max_iter=2000).fit(X_train, y_train)
+        scores = probe.predict_proba(X_test)[:, 1]
+        return {
+            "leakage_auc": float(roc_auc_score(y_test, scores)),
+            "leakage_accuracy": float(np.mean((scores >= 0.5) == y_test)),
+            "majority_rate": float(max(y_test.mean(), 1 - y_test.mean())),
+        }
+
 
 @runtime_checkable
 class DatasetLoader(Protocol):

@@ -137,6 +137,38 @@ reporting sampling noise.
 
 → [Document 07](07-intersectional.md)
 
+### 2.7 The trade-off curve has one axis, and it is not the interesting one
+
+The paper presents ε as the knob tracing the accuracy–fairness trade-off, and it does:
+accuracy rises monotonically 0.828 → 0.847 as ε loosens, and the violation tracks the
+bound. Confirmed cleanly.
+
+**But moving along that curve does not change who pays.** Across the entire binding
+range the share of the closure borne by the privileged group is flat at 0.74–0.78 in
+people, and closing a fixed amount of gap costs a near-constant number of approvals
+(≈120–146 per unit) whatever ε is set to. The loosest binding setting is in fact the
+*most* lopsided per unit of work, at 3.41 favourable decisions destroyed per one
+created.
+
+So "loosen the constraint if levelling down bothers you" does not work. ε is a dial on
+how much fairness you buy, not on how the method buys it.
+
+→ [Document 10](10-epsilon-sweep.md)
+
+### 2.8 The obvious cheaper alternative is strictly worse
+
+The paper does not discuss feature selection, so this contradicts nothing — but it
+supplies a defence of the reduction that the paper does not make for itself.
+
+Deleting `relationship`, the feature that determines sex for 45.9% of the dataset,
+moves sex-recoverability only from **AUC 0.934 to 0.868** and makes the *unmitigated*
+model **more** unfair (DP 0.190 → 0.205). Deleting four of eleven features to suppress
+the leak yields DP 0.076 at 80.8% accuracy — against **DP 0.020 at 83.0%** for the
+reduction on the untouched feature set. Feature deletion loses on both axes at once,
+and makes the constraint more expensive to apply afterwards.
+
+→ [Document 09](09-proxy-removal.md)
+
 ---
 
 ## Pile 3 — Contradicted
@@ -202,3 +234,8 @@ was wrong.
 5. **If you use a randomized classifier, quantify its arbitrariness floor** before
    attributing individual-level changes to your fairness intervention. Here it
    accounted for the majority of one method's effect.
+6. **Do not delete the proxy.** It does not remove the information, it can make the
+   unmitigated model more biased, and the constraint beats it on fairness and accuracy
+   simultaneously.
+7. **Do not expect a looser constraint to be gentler in kind.** It is gentler only in
+   degree, and per unit of gap closed it is not even that.

@@ -13,6 +13,8 @@ base paper. Written to be read in order, but each file stands alone.
 | 06 | [Proxy reliance (SHAP)](06-proxy-reliance-shap.md) | Do the mitigated models stop using stand-ins for sex? |
 | 07 | [Intersectional](07-intersectional.md) | Does fixing sex leave a Sex×Race subgroup behind? |
 | 08 | [Comparison with the base paper](08-vs-base-paper.md) | Consolidated: confirmed, extended, contradicted |
+| 09 | [Proxy removal](09-proxy-removal.md) | If the model leans on a leaky feature, does deleting it help? |
+| 10 | [Epsilon sweep](10-epsilon-sweep.md) | Is levelling down just an artifact of a tight constraint? |
 
 ## The short version
 
@@ -28,8 +30,11 @@ The same algorithm that scores best on the fairness metric also:
   favourable decisions, by 8–22%;
 * **increased** its reliance on sex proxies, doubling its use of `relationship` —
   the opposite of what the initiation document predicted SHAP would show;
-* and, at the intersection of sex and race, operates on subgroups half of which are
-  too small to measure at all.
+* at the intersection of sex and race, operates on subgroups half of which are too
+  small to measure at all;
+* and cannot be talked out of any of it. Loosening the constraint changes the dose,
+  not the mechanism (doc 10), and deleting the leaky feature makes the unmitigated
+  model *more* biased while barely reducing how well sex can be recovered (doc 09).
 
 None of that makes the method wrong. It makes the headline metric an incomplete
 description of what the method did, which is a different and more useful claim.
@@ -57,6 +62,8 @@ python -m src.experiments.run_ablation       --seeds 0 1 2 3 4
 python -m src.experiments.run_who_pays       --seeds 0 1 2 3 4
 python -m src.experiments.run_shap           --seed 0
 python -m src.experiments.run_intersectional --seeds 0 1 2
+python -m src.experiments.run_proxy_removal   --seeds 0 1 2
+python -m src.experiments.run_epsilon_sweep  --seeds 0 1 2
 ```
 
 Correctness checks:

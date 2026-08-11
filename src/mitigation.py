@@ -47,10 +47,20 @@ CONSTRAINTS = {
 }
 
 
-def build_constraint(name: str):
+def build_constraint(name: str, *, difference_bound: float = 0.01):
+    """Build a fairness moment with its violation bound set explicitly.
+
+    **The bound must be set here, not on the reduction.** ``DemographicParity()``
+    constructed with no arguments silently pins its bound at fairlearn's
+    ``_DEFAULT_DIFFERENCE_BOUND`` of 0.01, and nothing passed to
+    ``ExponentiatedGradient`` changes it -- see :func:`fit_exponentiated_gradient` for
+    what that parameter actually does. Leaving this implicit produced a constraint
+    sweep in which every value of "epsilon" returned the same model, because the real
+    constraint never moved.
+    """
     if name not in CONSTRAINTS:
         raise KeyError(f"unknown constraint '{name}'; available: {sorted(CONSTRAINTS)}")
-    return CONSTRAINTS[name]()
+    return CONSTRAINTS[name](difference_bound=difference_bound)
 
 
 def fit_exponentiated_gradient(
@@ -63,10 +73,22 @@ def fit_exponentiated_gradient(
     eps: float = 0.01,
     max_iter: int = 50,
 ) -> ExponentiatedGradient:
-    """Fit the reduction. ``eps`` is the fairness slack ε, not a tolerance."""
+    """Fit the reduction with ``eps`` as the fairness slack ε.
+
+    ``eps`` is passed to **both** the moment and the reduction, and they are not the
+    same knob:
+
+    * on the moment it is ``difference_bound`` -- the actual constraint, φ(h) ≤ ε;
+    * on ``ExponentiatedGradient`` it only sets ``B = 1/eps``, the bound on the
+      Lagrange multipliers the regulator may play.
+
+    Passing it to the reduction alone leaves the constraint pinned at fairlearn's
+    default of 0.01 while appearing to have been set, which is the failure this
+    signature exists to prevent.
+    """
     model = ExponentiatedGradient(
         estimator=estimator,
-        constraints=build_constraint(constraint),
+        constraints=build_constraint(constraint, difference_bound=eps),
         eps=eps,
         max_iter=max_iter,
     )
@@ -82,16 +104,20 @@ def fit_grid_search(
     *,
     constraint: str,
     grid_size: int = 15,
+    difference_bound: float = 0.01,
 ) -> GridSearch:
     """Fit one model per λ on a fixed grid.
 
     Unlike the exponentiated-gradient run, every fitted model is retained on
     ``.predictors_``; the frontier is traced by evaluating all of them, not just the
     one fairlearn's selection rule prefers.
+
+    ``difference_bound`` is the moment's constraint, carried explicitly for the same
+    reason as in :func:`fit_exponentiated_gradient`.
     """
     model = GridSearch(
         estimator=estimator,
-        constraints=build_constraint(constraint),
+        constraints=build_constraint(constraint, difference_bound=difference_bound),
         grid_size=grid_size,
     )
     model.fit(X_train, y_train, sensitive_features=a_train)

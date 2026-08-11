@@ -171,6 +171,8 @@ def load() -> dict:
         "shap": read("shap_proxy_reliance.csv", index_col=0),
         "shares": read("shap_feature_shares.csv", index_col=0),
         "inter": read("intersectional_summary.csv", index_col=0),
+        "proxy": read("proxy_removal_summary.csv").sort_values("n_removed"),
+        "eps": read("epsilon_sweep_summary.csv", index_col=0),
     }
 
 
@@ -628,8 +630,98 @@ def build(n: dict) -> list:
         "constraint cannot satisfy itself by trimming one large group's numerator without "
         "opening gaps against the eight it is not trimming.")]
 
+    # --------------------------------------------------- proxy removal & epsilon
+    story += [PageBreak(), para("8. Two ways out that do not work", "h1")]
+    story += [para(
+        "Sections 5 and 6 invite two obvious responses. If the model leans on "
+        "<font face='Courier'>relationship</font>, delete it. If the constraint levels "
+        "down, loosen it. Both were tested; neither works.")]
+
+    story += [para("8.1 Deleting the leaky feature", "h2")]
+    story += [para(
+        "<font face='Courier'>FairnessDataset.attribute_leakage()</font> trains a probe "
+        "to predict <font face='Courier'>sex</font> from the <i>remaining</i> features "
+        "and reports ROC AUC. This is the direct measurement SHAP can only approach "
+        "sideways: if the attribute is still recoverable after a deletion, the column "
+        "went and the information stayed. Features are removed cumulatively, most "
+        "sex-determining first. 3 seeds.")]
+    P = n["proxy"]
+    rows = [["Features removed", "Sex leakage (AUC)", "Baseline acc", "Baseline DP",
+             "ExpGrad acc", "ExpGrad DP"]]
+    for _, r in P.iterrows():
+        rows.append([r["removed"], f"{r['leakage_auc']:.3f}",
+                     f"{r['baseline_accuracy']:.4f}", f"{r['baseline_dp']:.4f}",
+                     f"{r['expgrad_accuracy']:.4f}", f"{r['expgrad_dp']:.4f}"])
+    story += data_table(rows, widths=[FRAME_WIDTH * 0.34] + [FRAME_WIDTH * 0.132] * 5,
+                        highlight=[1, 2])
+    story += [para("Chance leakage is 0.500; the majority-class rate is 0.675.", "caption")]
+    story += [para(
+        "Removing <font face='Courier'>relationship</font> &mdash; which determines sex "
+        "outright for 45.9% of the dataset &mdash; moves leakage only from <b>0.934 to "
+        "0.868</b>. The information was never in that column alone. Suppressing the leak "
+        "takes four deletions out of eleven features, and at that point the probe's "
+        "accuracy (0.676) is indistinguishable from the majority-class rate (0.675).")]
+    story += [para(
+        "Worse, the deletion <b>made the unmitigated model more unfair</b>: demographic "
+        "parity difference rose from 0.190 to 0.205, with attribution simply relocating "
+        "to <font face='Courier'>marital-status</font>, which remained the top feature "
+        "in both rounds. The intervention that feels most obviously correct moved the "
+        "metric the wrong way.")]
+    story += callout(
+        "Feature deletion is strictly dominated. Removing four features yields DP 0.076 "
+        "at 80.8% accuracy; the constraint on the untouched feature set yields <b>DP "
+        "0.020 at 83.0%</b>. Worse on both axes &mdash; and mitigation becomes more "
+        "expensive afterwards, ExpGrad's accuracy falling from 0.830 to 0.803 as soon as "
+        "<i>relationship</i> is gone.")
+
+    story += [para("8.2 Loosening the constraint", "h2")]
+    story += [para(
+        "Every result in section 5 used &epsilon; = 0.01, which leaves almost no slack. "
+        "If levelling down is an artifact of an unusually tight constraint, the fix is "
+        "to loosen it. The sweep below tests that. The baseline gap is 0.190, so "
+        "&epsilon; &ge; 0.15 is non-binding and must reproduce the baseline exactly "
+        "&mdash; which it does, and that is the check that the parameter now controls "
+        "what it claims to.")]
+    E = n["eps"]
+    rows = [["&epsilon;", "Accuracy", "DP diff", "Share paid by advantaged (people)",
+             "Lost per gained", "Change in total approvals"]]
+    for value, r in E.iterrows():
+        binding = r["closure"] > 1e-9
+        rows.append([f"{value:g}", f"{r['accuracy']:.4f}", f"{r['dp_diff']:.4f}",
+                     f"{r['people_share_levelling_down']:.3f}" if binding else "not binding",
+                     f"{r['lost_per_gained']:.2f}" if binding else "&mdash;",
+                     f"{r['pie_change_pct']:+.1f}%"])
+    story += data_table(rows, widths=[FRAME_WIDTH * 0.10, FRAME_WIDTH * 0.14,
+                                      FRAME_WIDTH * 0.13, FRAME_WIDTH * 0.28,
+                                      FRAME_WIDTH * 0.16, FRAME_WIDTH * 0.19])
+    story += [para(
+        "<b>The share does not move.</b> Across the entire binding range the advantaged "
+        "group bears 0.739&ndash;0.777 of the closure measured in people. Total approvals "
+        "fall at every binding &epsilon;, and closing a fixed amount of gap costs a "
+        "near-constant number of approvals &mdash; roughly 120 to 146 per unit &mdash; "
+        "whatever &epsilon; is set to. &epsilon; is a dial on how much fairness is "
+        "bought, not on how it is bought.")]
+    story += [para(
+        "At the loosest binding setting the split is in fact the <i>most</i> lopsided per "
+        "unit of work, at 3.41 favourable decisions destroyed per one created. The likely "
+        "reason is that a small correction is cheapest to make by trimming the largest "
+        "group's selection rate slightly, which touches many people because that group is "
+        "2.1&times; larger.")]
+    story += [para(
+        "<b>A bug was found here before the finding was.</b> The first run of this sweep "
+        "returned identical numbers at every &epsilon;, including where the constraint "
+        "cannot bind. <font face='Courier'>fairlearn</font>'s "
+        "<font face='Courier'>DemographicParity()</font>, constructed with no arguments, "
+        "pins its violation bound at the library default of 0.01, and the "
+        "<font face='Courier'>eps</font> argument on "
+        "<font face='Courier'>ExponentiatedGradient</font> sets only the Lagrange "
+        "multiplier bound B = 1/&epsilon;. The sweep had been varying a parameter that "
+        "never touched the constraint. No previously reported result changes &mdash; every "
+        "other experiment used &epsilon; = 0.01, which coincides with that default, "
+        "verified by reproducing seed 0's gap of 0.0282 exactly after the fix.")]
+
     # ---------------------------------------------------------------- verdict
-    story += [PageBreak(), para("8. Verdict against the base paper", "h1")]
+    story += [PageBreak(), para("9. Verdict against the base paper", "h1")]
     story += [para(
         "The distinction between extending a paper and refuting it is easy to blur and "
         "worth keeping sharp.")]
@@ -649,10 +741,10 @@ def build(n: dict) -> list:
     story += [para(
         "Agarwal et al. is a paper about feasibility and optimality: given a constraint, "
         "find the most accurate classifier satisfying it. Within that frame every result "
-        "here is a success. The four findings in sections 5&ndash;7 are questions the frame "
+        "here is a success. The findings in sections 5&ndash;8 are questions the frame "
         "does not ask &mdash; who was moved, whether the total fell, what randomization "
-        "costs an individual, what the model leans on, and what happens one level below the "
-        "constrained attribute.")]
+        "costs an individual, what the model leans on, what happens one level below the "
+        "constrained attribute, and whether either obvious escape route works.")]
 
     story += [para("Refuted", "h2")]
     story += [para(
@@ -679,6 +771,11 @@ def build(n: dict) -> list:
         "harder.",
         "<b>Quantify the arbitrariness floor</b> before attributing individual-level "
         "changes to a fairness intervention.",
+        "<b>Do not delete the proxy.</b> It leaves the information in place, can make "
+        "the unmitigated model more biased, and loses to the constraint on fairness and "
+        "accuracy at the same time.",
+        "<b>Do not expect a looser constraint to be gentler in kind.</b> It is gentler "
+        "only in degree, and per unit of gap closed it is not even that.",
         "<b>Check one level below the attribute you constrained</b> &mdash; and report "
         "subgroup sizes, so a reader can tell a finding from a small sample.",
     ])
@@ -691,8 +788,8 @@ def build(n: dict) -> list:
         "replication on ACS Income is the obvious next step.",
         "Race is used as recorded in the source data: five administrative categories of "
         "very unequal size, the smallest of which are why half of section 7 is unmeasurable.",
-        "&epsilon;, &eta; and &alpha; are each fixed at one value; the trade-off curves they "
-        "trace are sampled at a point rather than swept, except for the GridSearch frontier.",
+        "&eta; and &alpha; are each fixed at one value. &epsilon; is swept in section 8.2, "
+        "on a coarse grid that does not resolve where the constraint stops binding.",
         "The reliability threshold of 30 is a conventional rule of thumb. Wilson intervals "
         "are reported for every subgroup so a reader can apply their own.",
     ])
