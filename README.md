@@ -14,8 +14,8 @@ Course project for a Responsible AI class. The full specification is in
 | Dataset interface + Adult loader | Implemented |
 | Fairness metrics (DP diff, EO diff, disparate impact) | Implemented, cross-checked against `fairlearn` |
 | Multi-seed baseline experiment | Implemented |
-| Exponentiated Gradient (DP / EO constraints) | Not yet implemented |
-| GridSearch Pareto frontier | Not yet implemented |
+| Exponentiated Gradient (DP / EO constraints) | Implemented — base-paper deliverables 1–3 |
+| GridSearch Pareto frontier | Implemented — base-paper deliverable 4 |
 | Prejudice Remover, Adversarial Debiasing | Not yet implemented |
 
 ## The problem
@@ -41,8 +41,11 @@ python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 
 python -m src.experiments.run_baseline                       # 5 seeds, both models
-python -m src.experiments.run_baseline --seeds 0 1 2         # fewer seeds
 python -m src.experiments.run_baseline --include-protected   # give the model `sex`
+
+python -m src.experiments.run_mitigation --seeds 0 1 2 3 4   # baseline + ExpGrad DP/EO
+python -m src.experiments.run_pareto                         # GridSearch frontier (DP)
+python -m src.experiments.run_pareto --constraint equalized_odds
 ```
 
 Adult is downloaded from OpenML on first run and cached to `data/`.
@@ -72,6 +75,51 @@ Note also that per-group *accuracy* is higher for the unprivileged group (0.93 v
 0.82) while its selection rate is far lower — a reminder that aggregate accuracy
 parity and fairness are different properties.
 
+## Mitigation results
+
+Decision tree (depth 8), mean ± std over 5 seeds. Arrows mark the fair direction.
+
+| Method | Accuracy | DP diff ↓ | EO diff ↓ | Disparate impact →1 |
+|---|---|---|---|---|
+| Baseline | 0.852 ± 0.003 | 0.161 ± 0.013 | 0.083 ± 0.023 | 0.309 ± 0.032 |
+| ExpGrad (DP) | 0.836 ± 0.002 | **0.019 ± 0.007** | 0.277 ± 0.017 | **0.883 ± 0.042** |
+| ExpGrad (EO) | 0.847 ± 0.003 | 0.113 ± 0.014 | **0.036 ± 0.024** | 0.457 ± 0.049 |
+
+**The reduction works, and it is cheap.** The DP constraint cuts demographic parity
+difference by 88% (0.161 → 0.019) for 1.5 percentage points of accuracy, and lifts
+disparate impact from 0.31 to 0.88 — from failing the four-fifths rule badly to
+clearing it. The EO constraint cuts equalized-odds difference by 57% for 0.5pp.
+
+**But the two fairness criteria actively conflict.** Constraining demographic parity
+makes equalized odds **3.3× worse** than doing nothing at all (0.083 → 0.277). A
+model reported only on the metric it was optimised for looks like a clear success;
+the same model is the worst of the three on the metric it ignored. This is the
+sharpest result so far and it answers ablation question 3 directly — the ranking of
+methods depends entirely on which metric you report.
+
+Per-group rates (seed 0) show *how* DP is achieved: the privileged group's TPR falls
+0.561 → 0.452 while the unprivileged group's rises 0.479 → 0.707. Parity comes partly
+from lifting the disadvantaged group and partly from pulling the advantaged group
+down — the decomposition that the "who pays" analysis in Future Work formalises.
+
+### Pareto frontier
+
+![GridSearch frontier under a demographic parity constraint](results/pareto_demographic_parity.png)
+
+Sweeping 15 λ values gives **3 non-dominated models under DP** — the other 12 are
+worse on both axes, so the trade-off is much lumpier than a frontier-only plot would
+suggest. `ExpGrad (DP)` lands essentially on the frontier, so the game-playing
+algorithm buys little over a plain grid *for this constraint*.
+
+Under **equalized odds it is a different story**: only **1 of 15** grid points is
+non-dominated, and it is the unmitigated baseline itself (the black ring around the
+blue star in `results/pareto_equalized_odds.png`). Every other grid point is worse
+than doing nothing on both axes, while `ExpGrad (EO)` reaches 0.849 accuracy at 0.021
+EO difference. The default grid simply does not cover the useful λ region when the
+constraint has four components (TPR and FPR × two groups) instead of one. Reporting
+GridSearch and ExponentiatedGradient as interchangeable "Agarwal et al. 2018" rows
+would hide that entirely.
+
 ## Structure
 
 ```
@@ -82,9 +130,12 @@ src/
 ├── metrics.py        # DP diff, EO diff, disparate impact, per-group breakdown
 ├── preprocessing.py  # split + encoding
 ├── models.py         # base classifiers (must support sample_weight)
+├── mitigation.py     # ExponentiatedGradient, GridSearch, Pareto frontier
 └── experiments/
-    └── run_baseline.py
-results/              # generated tables
+    ├── run_baseline.py    # unmitigated reference
+    ├── run_mitigation.py  # baseline vs ExpGrad (DP, EO), multi-seed
+    └── run_pareto.py      # GridSearch sweep + frontier plot
+results/              # generated tables and figures (.png + .pdf)
 ```
 
 ## Design decisions
@@ -125,6 +176,24 @@ plausible-looking numbers that are silently wrong; the assertion catches it.
 
 **Every experiment runs over multiple seeds.** One run cannot support a claim about
 stability, and stability is one of the questions the ablation asks.
+
+**Within a seed, all methods share one train/test split.** Differences between rows
+then come from the mitigation rather than from resampling; the reported standard
+deviations come from varying the split across seeds.
+
+**`ExponentiatedGradient.predict` is stochastic and a `random_state` is fixed.** The
+reduction returns a distribution over classifiers and samples one per call, so
+identical feature vectors can receive different decisions. Fixing the seed makes
+results reproducible but does not remove the behaviour — quantifying it is the
+stochastic-instability item in Future Work.
+
+**Figure colors were validated, not chosen by eye.** The Pareto plots use three
+categorical hues checked against colorblind-separation, lightness and contrast
+thresholds for a scatter's all-pairs requirement. The aqua slot falls below 3:1
+against the surface, so every reference point carries a direct text label rather than
+relying on color; marker shape gives a second, greyscale-safe channel for print. The
+grid sweep is drawn in neutral ink because it is a population of models, not a fourth
+named series.
 
 ## Future work
 
