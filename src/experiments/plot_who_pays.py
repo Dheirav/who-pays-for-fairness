@@ -34,16 +34,8 @@ import pandas as pd
 from matplotlib.path import Path as MplPath
 from matplotlib.patches import PathPatch
 
-RESULTS_DIR = Path(__file__).resolve().parents[2] / "results"
+from ..results_io import output_dir
 
-
-def output_dir(dataset_name: str) -> Path:
-    """Per-dataset results directory, matching the experiments' convention.
-
-    Adult keeps the flat ``results/`` paths; every other dataset gets its own
-    subdirectory, so plotting one dataset can never overwrite another's figure.
-    """
-    return RESULTS_DIR if dataset_name == "adult" else RESULTS_DIR / dataset_name
 
 LOSS, GAIN = "#eb6834", "#2a78d6"
 SURFACE, INK, MUTED, GRID = "#fcfcfb", "#0b0b0b", "#52514e", "#d9d8d4"

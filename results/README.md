@@ -6,19 +6,36 @@ read at build time.
 
 ## Layout
 
-Results are **namespaced by dataset**, because they were not always and a single ACS
-run silently overwrote the committed Adult numbers the report and deck are built from.
+**Dataset separates by directory. Parameters separate by filename.**
 
 ```
 results/
-├── *.csv, *.png, *.pdf          Adult — the flat paths, kept so existing references hold
-└── <dataset-name>/              every other dataset, e.g. acs_income_wy_2018/
-    └── *.csv, *.png, *.pdf
+├── <experiment>_<kind>.csv                  Adult, canonical — what the deck and report read
+├── <experiment>_<kind>__<signature>.csv     one per distinct parameter set, never overwritten
+├── <experiment>.json                        which run the canonical copy came from
+└── <dataset>/                               every non-Adult dataset, e.g. acs_income_wy_2018/
+    └── ... the same three, isolated
 ```
 
-`tests/test_output_isolation.py` asserts this: no experiment may write to the shared
-root, every experiment must accept `--dataset`, and the SHAP per-seed files must
-interpolate the seed. Re-introducing either overwrite bug fails that test.
+The signature is built from the run's own arguments, e.g.
+`ablation_summary__seeds0-4_eps0.01.csv`. Readable rather than hashed, so the
+directory tells you what each file is without opening it.
+
+Three overwrite bugs motivated this, all silent:
+
+1. every SHAP seed wrote to one filename, so the deck quoted whichever seed finished last;
+2. every experiment wrote to a fixed path regardless of dataset, so the first ACS run
+   destroyed the committed Adult results;
+3. re-running with different parameters replaced the canonical result — running the
+   baseline with `--seeds 0` turned the five-seed table into a one-seed table whose
+   standard deviations were all NaN.
+
+Overwriting the canonical copy with a **differently parameterised** run now raises.
+Re-running the *same* configuration overwrites freely, which is how results get
+regenerated. Pass `--force` to override. The archived copy is written either way, so
+nothing is ever lost.
+
+`tests/test_output_isolation.py` (6 tests) asserts all of it.
 
 ## Regenerating
 

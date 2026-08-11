@@ -30,23 +30,9 @@ from ..metrics import evaluate
 from ..mitigation import fit_exponentiated_gradient, fit_grid_search, pareto_frontier
 from ..models import build
 from ..preprocessing import prepare
+from ..results_io import output_dir, run_signature
 
 RESULTS_DIR = Path(__file__).resolve().parents[2] / "results"
-
-def output_dir(dataset) -> Path:
-    """Per-dataset results directory.
-
-    Results are namespaced by dataset name. A shared filename means running a second
-    dataset overwrites the first one's committed numbers with no error and no warning
-    -- which is exactly what happened the first time ACS was run, clobbering the Adult
-    results that the report and deck read from. Adult keeps the flat ``results/`` paths
-    so existing references stay valid; every other dataset gets its own subdirectory.
-    """
-    if dataset.name == "adult":
-        return RESULTS_DIR
-    path = RESULTS_DIR / dataset.name
-    path.mkdir(parents=True, exist_ok=True)
-    return path
 
 
 # Validated categorical palette (slots 1-3, all-pairs pairlist, light surface).
@@ -223,9 +209,11 @@ def main() -> None:
     print("\n=== reference models ===")
     print(refs[cols].round(4).to_string(index=False))
 
-    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    OUT = output_dir(dataset)
-    out = OUT / f"pareto_{args.constraint}"
+    OUT = output_dir(dataset.name)
+    signature = run_signature(dict(constraint=args.constraint,
+                                   grid=args.grid_size, seed=args.seed,
+                                   model=args.model))
+    out = OUT / f"pareto_{args.constraint}__{signature}"
     sweep.to_csv(out.with_name(out.name + "_sweep.csv"), index=False)
     plot(sweep, refs, violation_col, out)
     print(f"\nwrote {out}.png / .pdf and {out.name}_sweep.csv")

@@ -110,13 +110,13 @@ Adult is downloaded from OpenML on first run and cached to `data/`.
 
 ## Baseline results
 
-Unmitigated ERM, 30% test split, mean over 3 seeds, **protected attribute excluded
+Unmitigated ERM, 30% test split, mean over 5 seeds, **protected attribute excluded
 from the features**:
 
 | Model | Accuracy | DP diff ↓ | EO diff ↓ | Disparate impact →1 |
 |---|---|---|---|---|
-| Decision tree (depth 8) | 0.852 | 0.156 | 0.080 | 0.306 |
-| Logistic regression | 0.847 | 0.190 | 0.106 | 0.290 |
+| Decision tree (depth 8) | 0.852 | 0.161 | 0.083 | 0.309 |
+| Logistic regression | 0.847 | 0.186 | 0.095 | 0.300 |
 
 Group base rates: `P(y=1 | Male) = 0.312` vs `P(y=1 | Female) = 0.114`.
 

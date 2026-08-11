@@ -33,24 +33,10 @@ from ..metrics import evaluate
 from ..mitigation import fit_exponentiated_gradient
 from ..models import build
 from ..preprocessing import prepare
+from ..results_io import output_dir, save
 from .methods import BASE_MODEL
 
 RESULTS_DIR = Path(__file__).resolve().parents[2] / "results"
-
-def output_dir(dataset) -> Path:
-    """Per-dataset results directory.
-
-    Results are namespaced by dataset name. A shared filename means running a second
-    dataset overwrites the first one's committed numbers with no error and no warning
-    -- which is exactly what happened the first time ACS was run, clobbering the Adult
-    results that the report and deck read from. Adult keeps the flat ``results/`` paths
-    so existing references stay valid; every other dataset gets its own subdirectory.
-    """
-    if dataset.name == "adult":
-        return RESULTS_DIR
-    path = RESULTS_DIR / dataset.name
-    path.mkdir(parents=True, exist_ok=True)
-    return path
 
 
 # From "almost no slack" to "looser than the unmitigated gap", so the sweep spans the
@@ -103,6 +89,8 @@ def run(dataset, seed: int, eps: float) -> dict:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--force", action="store_true",
+                        help="replace canonical results produced by a different run")
     parser.add_argument("--dataset", default="adult",
                         help="adult | acs | acs:WY | acs:CA,TX")
     parser.add_argument("--seeds", type=int, nargs="+", default=[0, 1, 2])
@@ -133,12 +121,10 @@ def main() -> None:
     print("fall and pie_change_pct would approach zero as eps grows. Read those two")
     print("columns together: a shrinking pie with a stable share means the behaviour is")
     print("the same at every strength, just smaller.")
-
-    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    OUT = output_dir(dataset)
-    results.to_csv(OUT / "epsilon_sweep_runs.csv", index=False)
-    summary.to_csv(OUT / "epsilon_sweep_summary.csv")
-    print(f"\nwrote {RESULTS_DIR / 'epsilon_sweep_runs.csv'} and epsilon_sweep_summary.csv")
+    OUT = output_dir(dataset.name)
+    for path in save(OUT, "epsilon_sweep", {"runs": results, "summary": summary},
+                     params=dict(seeds=args.seeds, eps=args.eps), force=args.force):
+        print(f"wrote {path}")
 
 
 if __name__ == "__main__":

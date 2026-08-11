@@ -7,8 +7,8 @@ Before any mitigation, establish what is being mitigated. Both base classifiers,
 
 | model | Accuracy | DP diff | EO diff | Disparate impact |
 |---|---|---|---|---|
-| decision_tree | 0.8518 ± 0.0036 | 0.1556 ± 0.0125 | 0.0799 ± 0.0323 | 0.3061 ± 0.0320 |
-| logistic_regression | 0.8465 ± 0.0028 | 0.1897 ± 0.0068 | 0.1057 ± 0.0349 | 0.2896 ± 0.0320 |
+| decision_tree | 0.8517 ± 0.0030 | 0.1613 ± 0.0125 | 0.0831 ± 0.0234 | 0.3086 ± 0.0315 |
+| logistic_regression | 0.8469 ± 0.0033 | 0.1861 ± 0.0083 | 0.0949 ± 0.0295 | 0.2996 ± 0.0296 |
 
 *(fair at 0 for the two differences, at 1 for disparate impact)*
 

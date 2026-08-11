@@ -44,24 +44,10 @@ from ..explain import (
     source_feature_map,
 )
 from ..preprocessing import prepare
+from ..results_io import output_dir
 from .methods import METHOD_ORDER, MethodParams, fit_all
 
 RESULTS_DIR = Path(__file__).resolve().parents[2] / "results"
-
-def output_dir(dataset) -> Path:
-    """Per-dataset results directory.
-
-    Results are namespaced by dataset name. A shared filename means running a second
-    dataset overwrites the first one's committed numbers with no error and no warning
-    -- which is exactly what happened the first time ACS was run, clobbering the Adult
-    results that the report and deck read from. Adult keeps the flat ``results/`` paths
-    so existing references stay valid; every other dataset gets its own subdirectory.
-    """
-    if dataset.name == "adult":
-        return RESULTS_DIR
-    path = RESULTS_DIR / dataset.name
-    path.mkdir(parents=True, exist_ok=True)
-    return path
 
 
 # Rows explained with exact linear SHAP, and how to pull the linear score out of each.
@@ -169,8 +155,8 @@ def main() -> None:
 
     if args.aggregate_only:
         # Resolve the dataset only for its output directory -- no data is loaded.
-        target = (RESULTS_DIR if args.dataset.partition(":")[0] == "adult"
-                  else RESULTS_DIR / build_dataset(args.dataset).name)
+        target = output_dir("adult" if args.dataset.partition(":")[0] == "adult"
+                            else build_dataset(args.dataset).name)
         if aggregate(target) is None:
             raise SystemExit(f"no per-seed SHAP results found in {target}")
         return
@@ -236,8 +222,7 @@ def main() -> None:
     # Written per seed. A single shared filename would let concurrent or sequential
     # seeds overwrite each other, and anything reading the result -- the docs, the
     # deck -- would silently quote whichever seed happened to finish last.
-    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    OUT = output_dir(dataset)
+    OUT = output_dir(dataset.name)
     table.to_csv(OUT / f"shap_feature_shares_seed{args.seed}.csv")
     proxies.to_csv(OUT / f"shap_proxy_reliance_seed{args.seed}.csv")
     print(f"\nwrote per-seed results for seed {args.seed}")

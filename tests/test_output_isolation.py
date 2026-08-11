@@ -19,6 +19,8 @@ from __future__ import annotations
 
 import ast
 import re
+
+import pandas as pd
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -65,14 +67,10 @@ def test_every_experiment_exposes_a_dataset_flag() -> None:
 
 def test_output_dir_separates_datasets() -> None:
     """Adult keeps the flat paths; anything else gets its own subdirectory."""
-    from src.experiments.run_who_pays import output_dir
+    from src.results_io import output_dir
 
-    class Fake:
-        def __init__(self, name):
-            self.name = name
-
-    adult = output_dir(Fake("adult"))
-    other = output_dir(Fake("acs_income_wy_2018"))
+    adult = output_dir("adult")
+    other = output_dir("acs_income_wy_2018")
     print(f"  adult -> {adult.name}/   other -> {other.relative_to(RESULTS)}/")
     assert adult == RESULTS, "adult must keep the flat results/ paths"
     assert other != RESULTS and other.parent == RESULTS
@@ -132,6 +130,44 @@ def test_no_dataset_specific_column_names_in_experiments() -> None:
     )
 
 
+def test_canonical_results_are_guarded_against_a_different_run() -> None:
+    """Replacing a five-seed table with a one-seed table must raise, not succeed.
+
+    This is the third overwrite bug: same experiment, same dataset, different
+    parameters, one canonical filename. It is the one that silently turned the
+    committed baseline into a single-seed table with NaN standard deviations.
+    """
+    import tempfile
+
+    from src.results_io import check_overwrite, run_signature, save
+
+    with tempfile.TemporaryDirectory() as tmp:
+        directory = Path(tmp)
+        frame = pd.DataFrame({"a": [1, 2]})
+        five = {"seeds": [0, 1, 2, 3, 4]}
+        one = {"seeds": [0]}
+
+        save(directory, "demo", {"summary": frame}, params=five)
+        print(f"  wrote canonical for {run_signature(five)}")
+
+        try:
+            check_overwrite(directory, "demo", one)
+        except SystemExit:
+            print(f"  refused to overwrite it with {run_signature(one)}")
+        else:
+            raise AssertionError("a differently-parameterised run was allowed to overwrite")
+
+        # Same parameters must still overwrite freely -- that is how results regenerate.
+        check_overwrite(directory, "demo", five)
+        # And --force must win.
+        check_overwrite(directory, "demo", one, force=True)
+        print("  same-params re-run allowed; --force allowed")
+
+        archived = sorted(p.name for p in directory.glob("demo_*__*.csv"))
+        assert archived, "the archived per-signature copy was not written"
+        print(f"  archived: {archived}")
+
+
 def main() -> None:
     tests = [
         test_no_experiment_writes_to_the_shared_root,
@@ -139,6 +175,7 @@ def main() -> None:
         test_output_dir_separates_datasets,
         test_shap_writes_one_file_per_seed,
         test_no_dataset_specific_column_names_in_experiments,
+        test_canonical_results_are_guarded_against_a_different_run,
     ]
     failures = 0
     for test in tests:
@@ -149,6 +186,9 @@ def main() -> None:
         except AssertionError as exc:
             failures += 1
             print(f"  FAIL: {exc}")
+        except Exception as exc:                      # a crash is a failure, not an abort
+            failures += 1
+            print(f"  ERROR: {type(exc).__name__}: {exc}")
 
     print(f"\n{len(tests) - failures}/{len(tests)} passed")
     raise SystemExit(1 if failures else 0)
