@@ -18,10 +18,12 @@ repository, and anything added later is included by default rather than forgotte
   the rest in would credit the team for work it did not do. See ``research/README.md``.
 * development scaffolding -- ``.git``, caches, the virtualenv.
 
-``src/datasets/acs.py`` and the two cross-population analyses are *not* excluded even
-though they are individual work, because they live inside the package and removing them
-would ship a bundle that does not import. That is stated in ``research/README.md``
-rather than papered over by shipping something broken.
+``src/datasets/acs.py`` and the two cross-population analyses are individual work that
+cannot be *moved* into ``research/`` -- they are inside the package -- but they can be
+excluded from the bundle, and are. ``datasets.build`` imports the ACS loader lazily,
+inside the branch that requests it, so the course code neither imports nor needs it.
+Checked by unpacking the bundle without them and running the course suites, rather than
+reasoned about: the first version of this file asserted the opposite and was wrong.
 
 Usage:
     python -m scripts.build_submission
@@ -39,6 +41,17 @@ ROOT = Path(__file__).resolve().parents[1]
 
 # Directories whose entire contents stay out of the bundle.
 EXCLUDED_TREES = ("research/",)
+
+# Individual research work that has to live inside the package for imports to resolve,
+# and so cannot be moved into research/. It can still be excluded from the bundle:
+# `datasets.build` imports the ACS loader lazily, inside the branch that asks for it, so
+# its absence costs the course code nothing and `build("acs:WY")` simply raises. Verified
+# by unpacking the bundle without these three and running the course suites.
+EXCLUDED_FILES = (
+    "src/datasets/acs.py",
+    "src/experiments/analyse_sweep.py",
+    "src/experiments/analyse_arms.py",
+)
 
 # Untracked by git (``data/`` is gitignored as a re-downloadable cache) but present in
 # the previously submitted bundle, so it is included by default. Dropping it would change
@@ -69,7 +82,9 @@ def tracked_files() -> list[str]:
 
 
 def is_excluded(path: str) -> bool:
-    return any(path.startswith(tree) for tree in EXCLUDED_TREES)
+    return path in EXCLUDED_FILES or any(
+        path.startswith(tree) for tree in EXCLUDED_TREES
+    )
 
 
 def stale_against_head() -> list[str]:

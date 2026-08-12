@@ -31,6 +31,10 @@ RESULTS = ROOT / "results"
 EXEMPT = {"__init__.py", "methods.py"}
 
 
+class Skipped(Exception):
+    """Raised by a test whose subject is absent from this copy of the project."""
+
+
 def test_no_experiment_writes_a_file_to_the_shared_root() -> None:
     """No module may write a *file* directly into ``results/``.
 
@@ -165,7 +169,15 @@ def test_dataset_name_distinguishes_the_protected_attribute() -> None:
     and the guard in ``results_io`` cannot catch it: that compares CLI parameters, and
     these two runs differ in neither.
     """
-    from src.datasets.acs import ACSIncomeLoader
+    try:
+        from src.datasets.acs import ACSIncomeLoader
+    except ModuleNotFoundError:
+        # The ACS loader is individual research work and is excluded from the course
+        # submission bundle, so this invariant has nothing to check there. Skipping is
+        # reported as a skip rather than a pass: a suite that prints PASS for a test it
+        # did not run is worse than one that fails.
+        raise Skipped("src/datasets/acs.py is not part of this bundle")
+
     from src.results_io import output_dir
 
     sex = ACSIncomeLoader(states=["MS"])
@@ -288,12 +300,15 @@ def main() -> None:
         test_no_dataset_specific_column_names_in_experiments,
         test_canonical_results_are_guarded_against_a_different_run,
     ]
-    failures = 0
+    failures = skipped = 0
     for test in tests:
         print(f"\n{test.__name__}")
         try:
             test()
             print("  PASS")
+        except Skipped as exc:
+            skipped += 1
+            print(f"  SKIP: {exc}")
         except AssertionError as exc:
             failures += 1
             print(f"  FAIL: {exc}")
@@ -301,7 +316,9 @@ def main() -> None:
             failures += 1
             print(f"  ERROR: {type(exc).__name__}: {exc}")
 
-    print(f"\n{len(tests) - failures}/{len(tests)} passed")
+    ran = len(tests) - skipped
+    tail = f" ({skipped} skipped)" if skipped else ""
+    print(f"\n{ran - failures}/{ran} passed{tail}")
     raise SystemExit(1 if failures else 0)
 
 
