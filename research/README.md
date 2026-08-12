@@ -37,6 +37,13 @@ package and moving them would break imports:
 | `src/datasets/acs.py` | ACS Income loader, both protected-attribute arms |
 | `src/experiments/analyse_sweep.py` | P1/P2/P3 across populations |
 | `src/experiments/analyse_arms.py` | the pre-registered two-arm analysis |
+| `src/experiments/analyse_conflict.py` | the pre-registered DP/EO conflict analysis |
+
+They cannot be **moved** here, but they are **excluded from the submission bundle**:
+`datasets.build` imports the ACS loader lazily, inside the branch that requests it, so
+the course code neither imports nor needs any of them. `scripts/build_submission.py`
+drops all four, and the resulting bundle was unpacked and its suites run to confirm it
+stands alone.
 
 Three shared files were also extended for this work — `src/results_io.py`,
 `src/datasets/base.py`, `src/datasets/__init__.py` — and those changes improved the
@@ -49,6 +56,7 @@ course-side code as a side effect. They are not claimed as exclusively individua
 | 11 | [Replication across populations](docs/11-replication-across-populations.md) | Which findings are about the method, and which about Adult? |
 | 12 | [Intersectional across populations](docs/12-intersectional-across-populations.md) | Gerrymandering replicates, and is worse than Adult showed |
 | 13 | [Separating ratio from size](docs/13-separating-ratio-from-size.md) | A second protected attribute breaks a confound, and retracts document 11's correction |
+| 14 | [Why the conflict is unpredictable](docs/14-why-the-conflict-is-unpredictable.md) | P2's magnitude resisted prediction because the endpoint is independent of the starting point |
 
 ## The short version
 
