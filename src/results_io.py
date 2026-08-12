@@ -14,12 +14,15 @@ Three separate overwrite bugs have occurred in this project, all silent:
 None raised an error. All produced plausible numbers. So the layout is now enforced
 rather than followed by convention:
 
-    results/
+    results/                                        the course submission's results
     ├── <experiment>_<kind>.csv                     Adult, canonical (what builders read)
     ├── <experiment>_<kind>__<signature>.csv        Adult, one per distinct parameter set
-    ├── <experiment>.json                           provenance for the canonical copy
-    └── <dataset>/                                  every non-Adult dataset
-        └── ... the same three, isolated
+    └── <experiment>.json                           provenance for the canonical copy
+
+    research/results/                               individual work beyond the course
+    ├── <dataset>/                                  every non-Adult dataset
+    │   └── ... the same three, isolated
+    └── sweep/                                      cross-population analyses
 
 **Dataset separates by directory. Parameters separate by filename.** The signature is
 derived from the run's own arguments, so two runs that differ in any way that changes
@@ -41,16 +44,52 @@ from typing import Any
 
 import pandas as pd
 
-RESULTS_DIR = Path(__file__).resolve().parents[1] / "results"
+_ROOT = Path(__file__).resolve().parents[1]
+
+RESULTS_DIR = _ROOT / "results"
+
+# Results of individual work done after the course deliverables were finalised. The
+# split is by *authorship*, not by dataset: `research/` is submitted to nobody and its
+# contents are excluded from the submission bundle wholesale, which is only safe if
+# nothing the course needs can ever land there. See `research/README.md`.
+RESEARCH_RESULTS_DIR = _ROOT / "research" / "results"
 
 # Adult keeps the flat paths so every existing reference in the docs, deck and report
-# stays valid. It was the only dataset when those were written.
+# stays valid. It was the only dataset when those were written -- and it is also the
+# only dataset the course submission covers, which is why one constant governs both.
 FLAT_DATASET = "adult"
 
 
+def is_course_dataset(dataset_name: str) -> bool:
+    """Whether this dataset's results belong to the course submission."""
+    return dataset_name == FLAT_DATASET
+
+
 def output_dir(dataset_name: str) -> Path:
-    """Directory for one dataset's results, created if needed."""
-    path = RESULTS_DIR if dataset_name == FLAT_DATASET else RESULTS_DIR / dataset_name
+    """Directory for one dataset's results, created if needed.
+
+    Adult writes flat into ``results/``; everything else writes under
+    ``research/results/<dataset>/``. The two roots are disjoint by construction rather
+    than by convention -- a course result cannot land in ``research/`` and a research
+    result cannot land in ``results/`` -- because the submission bundle is built by
+    excluding one whole directory, and a stray file on the wrong side would either be
+    submitted as team work or dropped from the submission entirely.
+
+    This is the fourth iteration of this routing rule and the previous three each
+    shipped a silent overwrite, so the invariant is asserted in
+    ``tests/test_output_isolation.py`` rather than trusted.
+    """
+    if is_course_dataset(dataset_name):
+        path = RESULTS_DIR
+    else:
+        path = RESEARCH_RESULTS_DIR / dataset_name
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+def research_dir(name: str) -> Path:
+    """Directory for a cross-population analysis, which belongs to no single dataset."""
+    path = RESEARCH_RESULTS_DIR / name
     path.mkdir(parents=True, exist_ok=True)
     return path
 

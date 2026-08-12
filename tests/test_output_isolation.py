@@ -77,15 +77,81 @@ def test_every_experiment_can_be_pointed_at_its_populations() -> None:
 
 
 def test_output_dir_separates_datasets() -> None:
-    """Adult keeps the flat paths; anything else gets its own subdirectory."""
+    """Adult keeps the flat paths; every other dataset gets its own subdirectory.
+
+    This is the original per-dataset guarantee, which is unchanged by the course/research
+    split -- two datasets still must not share a directory. Where they now *live* is a
+    separate invariant, checked below.
+    """
     from src.results_io import output_dir
 
     adult = output_dir("adult")
-    other = output_dir("acs_income_wy_2018")
-    print(f"  adult -> {adult.name}/   other -> {other.relative_to(RESULTS)}/")
+    one = output_dir("acs_income_wy_2018")
+    two = output_dir("acs_income_wy_2018_rac1p")
+    print(f"  adult -> {adult.relative_to(ROOT)}/")
+    print(f"  others -> {one.relative_to(ROOT)}/, {two.relative_to(ROOT)}/")
     assert adult == RESULTS, "adult must keep the flat results/ paths"
-    assert other != RESULTS and other.parent == RESULTS
-    assert adult != other, "two datasets must not share an output directory"
+    assert len({adult, one, two}) == 3, "datasets must not share an output directory"
+    assert one.parent == two.parent, "non-Adult datasets belong under one common root"
+
+
+def test_course_and_research_results_cannot_reach_each_other() -> None:
+    """The two roots must be disjoint, in both directions.
+
+    The submission bundle is built by excluding ``research/`` wholesale, so the split is
+    load-bearing in a way the earlier dataset split was not. A course result that landed
+    under ``research/`` would be dropped from the submission; a research result that
+    landed in ``results/`` would be submitted as team work. Neither fails loudly -- the
+    first shows up as a missing file in a zip nobody re-opens, the second as an extra
+    file nobody notices -- so the invariant is asserted rather than trusted.
+
+    This is the fourth iteration of this routing rule. The previous three each shipped a
+    silent overwrite.
+    """
+    from src.results_io import (
+        RESEARCH_RESULTS_DIR,
+        RESULTS_DIR,
+        is_course_dataset,
+        output_dir,
+        research_dir,
+    )
+
+    course = output_dir("adult")
+    print(f"  adult -> {course.relative_to(ROOT)}")
+    assert course == RESULTS_DIR
+    assert RESEARCH_RESULTS_DIR not in course.parents and course != RESEARCH_RESULTS_DIR, (
+        "a course dataset was routed into research/, where the bundle would drop it"
+    )
+
+    for name in ["acs_income_ms_2018", "acs_income_ms_2018_rac1p", "acs_income_ca_2018"]:
+        path = output_dir(name)
+        assert not is_course_dataset(name)
+        assert RESEARCH_RESULTS_DIR in path.parents, f"{name} escaped research/"
+        assert path != RESULTS_DIR and RESULTS_DIR not in [path, *path.parents][:2], (
+            f"{name} was routed into the submitted results root"
+        )
+
+    sweep = research_dir("sweep")
+    assert RESEARCH_RESULTS_DIR in sweep.parents, "cross-population output escaped research/"
+    print(f"  acs/sweep -> {sweep.relative_to(ROOT)}")
+
+    # And the two roots must not nest, or "exclude research/" would also exclude results/.
+    assert RESULTS_DIR not in RESEARCH_RESULTS_DIR.parents
+    assert RESEARCH_RESULTS_DIR not in RESULTS_DIR.parents
+
+
+def test_no_research_artefacts_are_left_in_the_submitted_results_root() -> None:
+    """Nothing under ``results/`` may belong to a non-Adult population.
+
+    Guards the migration itself, not the routing rule: the files were moved by hand, and
+    one left behind would be shipped in the submission as though the team produced it.
+    """
+    strays = sorted(
+        p.name for p in RESULTS.iterdir()
+        if p.name.startswith("acs") or (p.is_dir() and p.name == "sweep")
+    )
+    print(f"  {len(list(RESULTS.iterdir()))} entries under results/")
+    assert not strays, f"research artefacts still in the submitted results root: {strays}"
 
 
 def test_dataset_name_distinguishes_the_protected_attribute() -> None:
@@ -215,6 +281,8 @@ def main() -> None:
         test_no_experiment_writes_a_file_to_the_shared_root,
         test_every_experiment_can_be_pointed_at_its_populations,
         test_output_dir_separates_datasets,
+        test_course_and_research_results_cannot_reach_each_other,
+        test_no_research_artefacts_are_left_in_the_submitted_results_root,
         test_dataset_name_distinguishes_the_protected_attribute,
         test_shap_writes_one_file_per_seed,
         test_no_dataset_specific_column_names_in_experiments,

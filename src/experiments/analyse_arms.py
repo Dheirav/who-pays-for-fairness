@@ -59,7 +59,7 @@ import argparse
 import numpy as np
 import pandas as pd
 
-from ..results_io import RESULTS_DIR
+from ..results_io import research_dir
 from .analyse_sweep import DEFAULT_STATES, SEX_ARM, correlate, load_population, test_p1
 
 RACE_ARM = "RAC1P"
@@ -206,8 +206,7 @@ def main() -> None:
                    f"and the group-size reading was right")
     print(f"  -> {verdict}")
 
-    out = RESULTS_DIR / "sweep"
-    out.mkdir(parents=True, exist_ok=True)
+    out = research_dir("sweep")
     pooled.to_csv(out / "arms_p1_pooled.csv", index=False)
     print(f"\nwrote {out}/arms_p1_pooled.csv")
 

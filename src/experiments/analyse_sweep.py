@@ -47,13 +47,12 @@ Usage:
 from __future__ import annotations
 
 import argparse
-from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
 from ..datasets import build as build_dataset
-from ..results_io import RESULTS_DIR, output_dir
+from ..results_io import output_dir, research_dir
 
 DEFAULT_STATES = ["VT", "NM", "MS", "WV", "WY", "ND", "UT", "AL", "OR"]
 
@@ -258,8 +257,10 @@ def main() -> None:
     # The arm has to reach the filename for the same reason it has to reach the dataset
     # name: both arms analyse the same states in the same year, so without it a race
     # sweep overwrites the committed sex sweep and nothing reports an error.
-    out = RESULTS_DIR / "sweep"
-    out.mkdir(parents=True, exist_ok=True)
+    #
+    # This spans every population, so it belongs to no dataset and cannot use
+    # output_dir; it is individual work, so it goes under research/ regardless.
+    out = research_dir("sweep")
     stem = "sweep" if arm == SEX_ARM else f"sweep_{arm.lower()}"
     runs.to_csv(out / f"{stem}_runs.csv", index=False)
     p1.to_csv(out / f"{stem}_p1_formula_fit.csv")
