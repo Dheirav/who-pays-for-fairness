@@ -89,6 +89,13 @@ the outcome well within each group — which is exactly what a cost-sensitive re
 scheme should do — and the sex-determining character of that feature is **incidental
 rather than sought**.
 
+> **This replacement explanation was itself tested and refuted — see
+> [document 17](17-neither-explanation-survives.md).** Planting a column carrying
+> independent outcome signal does *not* make the constrained model favour it either: the
+> excess falls along the outcome dimension too. Both candidate mechanisms are now
+> rejected by intervention, and the Adult attribution shift is unexplained. The negative
+> finding below stands and was replicated.
+
 ## What is retracted, and what survives
 
 | claim | status |
@@ -97,7 +104,7 @@ rather than sought**.
 | Document 06's *mechanism* — "selecting the best available reconstruction of the attribute it was forbidden to read" | **RETRACTED.** A planted reconstruction is used *less*, not more |
 | Document 11's P3 *measurement* — Adult leaks 0.936, ACS 0.76–0.84, no overlap | **Stands.** Nine populations, unchanged |
 | Document 11's reading of P3 as confirming the mechanism | **Withdrawn.** It confirmed a correlation the mechanism predicts, and so would several other explanations |
-| Document 09's finding that deleting proxies is strictly dominated | **Stands**, and is now better explained: the deleted features carried outcome signal, which is why removing them cost accuracy without buying fairness |
+| Document 09's finding that deleting proxies is strictly dominated | **Stands.** An earlier version of this row explained it by the deleted features carrying outcome signal; that explanation is itself refuted in [document 17](17-neither-explanation-survives.md), so the finding stands unexplained rather than newly explained |
 
 The course submission is unaffected: document 06 is a measurement document, and its
 numbers are unchanged. The sentence quoted at the top is an interpretation, and the
