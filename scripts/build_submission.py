@@ -56,6 +56,7 @@ EXCLUDED_FILES = (
     "src/experiments/run_collinear.py",
     "src/experiments/run_levelling_up.py",
     "src/levelling_up.py",
+    "tests/test_documented_claims.py",
 )
 
 # Untracked by git (``data/`` is gitignored as a re-downloadable cache) but present in
