@@ -125,6 +125,23 @@ with the error is interpretable on this data alone. Separating them requires
 populations where the two do *not* move together, which is what the race arm described
 below was built to supply.
 
+> **RETRACTED — see [document 13](13-separating-ratio-from-size.md).** Calling group
+> ratio "a confound" and "standing in for size" was wrong, and the paragraph above is
+> left in place only so the correction has something to point at. Nineteen populations
+> with the confound broken show group ratio predicting the error **independently of
+> sample size** (partial r = +0.548), and the sign of the raw relationship returns to
+> **positive** (+0.522) — the direction the original nine-state reading suggested before
+> Adult inverted it.
+>
+> What survives is the mechanism, and it survives more strongly: controlling for
+> cross-flow, group ratio's effect on the error collapses to **−0.038**, while its effect
+> *on cross-flow* is +0.787 independently of size. Group ratio is a **cause acting
+> through cross-flow**, not a spurious correlate. Conflating those two was the error.
+>
+> The instructive part is that the tentative first reading was directionally right and
+> the confident correction was wrong. Ten populations were not enough to tell them
+> apart, and stating the correction firmly did not make it better evidenced.
+
 **The claim, restated to what the evidence supports:**
 
 > The rate-to-people conversion is exact arithmetic **when the mitigation performs a
@@ -214,12 +231,12 @@ ACS replication as the next step, which this is.
   carries the whole high-ratio end of P1 by itself. Ratio and sample size correlate at
   r = +0.794 here, so this design cannot say which of them drives the error.
 
-  **This is being addressed.** Protecting `RAC1P` instead of `SEX` on the same nine
-  states (`--dataset acs:AL:RAC1P`) spans a group ratio of 1.94 to 24.98 and *inverts*
-  the confound — r(ratio, n) = **−0.567** there, against +0.794 on sex. AL (n = 22,268,
-  ratio 3.20) and OR (n = 21,919, ratio 6.35) supply the high-ratio-at-large-sample cell
-  this study has never had. If ratio were the real driver the two arms would disagree in
-  sign; if size is, they will agree. Results pending.
+  **This has been addressed — see [document 13](13-separating-ratio-from-size.md).**
+  Protecting `RAC1P` instead of `SEX` on the same nine states (`--dataset acs:AL:RAC1P`)
+  spans a group ratio of 1.94 to 24.98 and *inverts* the confound — r(ratio, n) =
+  **−0.567** there, against +0.794 on sex. Pooling the arms drops it to −0.180 over 19
+  populations, at which point both quantities turn out to matter and each acts by
+  raising cross-flow.
 
   That arm splits White against everyone else. It is **not** evidence about racial
   fairness and is not offered as any: it exists to vary two counts in a formula whose

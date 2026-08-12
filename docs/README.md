@@ -17,6 +17,7 @@ base paper. Written to be read in order, but each file stands alone.
 | 10 | [Epsilon sweep](10-epsilon-sweep.md) | Is levelling down just an artifact of a tight constraint? |
 | 11 | [Replication across populations](11-replication-across-populations.md) | Which findings are about the method, and which about Adult? *(beyond the course submission)* |
 | 12 | [Intersectional across populations](12-intersectional-across-populations.md) | Gerrymandering replicates and is worse than Adult — where there is a minority to hide in *(beyond the course submission)* |
+| 13 | [Separating ratio from size](13-separating-ratio-from-size.md) | A second protected attribute breaks the confound, and retracts document 11's correction *(beyond the course submission)* |
 
 ## The short version
 
@@ -54,6 +55,13 @@ Adult showed at 9.0× reaches 13.2× elsewhere. It gains one condition — it ne
 substantial minority to hide in, and where a population is 95% one race a constraint on
 sex fixes the intersection by default. That relationship is the first in the project
 whose two candidate explanations are not confounded with each other.
+
+[Document 13](13-separating-ratio-from-size.md) builds a second protected attribute for
+the sole purpose of breaking the confound that document 11 could not escape, and the
+result is a retraction: the tentative first reading was right, the confident correction
+was wrong, and group ratio is a genuine cause acting through cross-flow rather than a
+spurious correlate. Its analysis was written and committed before the data existed, for
+exactly that reason.
 
 ## Scope: purely in-processing
 
