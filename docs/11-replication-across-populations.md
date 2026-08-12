@@ -85,31 +85,45 @@ size makes the pattern unmistakable:
 
 | population | n | cross-flow | formula error |
 |---|---|---|---|
-| WY | 3,064 | 0.321 | 0.096 |
-| VT | 3,767 | 0.277 | 0.063 |
-| ND | 4,455 | 0.312 | 0.093 |
-| WV | 8,103 | 0.252 | 0.044 |
-| NM | 8,711 | 0.385 | 0.104 |
-| MS | 13,189 | 0.266 | 0.054 |
-| UT | 16,337 | 0.271 | 0.070 |
-| OR | 21,919 | 0.297 | 0.078 |
-| AL | 22,268 | 0.272 | 0.044 |
+| WY | 3,064 | 0.330 | 0.096 |
+| VT | 3,767 | 0.292 | 0.063 |
+| ND | 4,455 | 0.316 | 0.093 |
+| WV | 8,103 | 0.255 | 0.044 |
+| NM | 8,711 | 0.398 | 0.104 |
+| MS | 13,189 | 0.268 | 0.054 |
+| UT | 16,337 | 0.272 | 0.070 |
+| OR | 21,919 | 0.299 | 0.078 |
+| AL | 22,268 | 0.273 | 0.044 |
 | **Adult** | **45,222** | **0.045** | **0.014** |
 
 ```
-error vs cross-flow share   r = +0.881
+error vs cross-flow share   r = +0.885
 error vs population size    r = −0.719
-cross-flow vs population n  r = −0.820
 error vs group ratio        r = −0.587   ← confounded, see below
+group ratio vs population n r = +0.794   ← the confound itself
 ```
+
+These are now produced by `python -m src.experiments.analyse_sweep`, which prints them
+and writes `results/sweep/sweep_p1_formula_fit.csv`. An earlier draft of this document
+quoted `r = +0.881` and slightly different per-population cross-flow values, because
+that version was computed by hand over *all* runs while the pipeline restricts to the
+runs the formula is defined on (share within [0, 1]). The difference changes nothing in
+the argument, but the hand-computed version was not reproducible from anything in the
+repository, which for the number the whole restatement rests on is not acceptable.
 
 **A correction worth recording.** On the nine states alone, error appeared to *rise*
 with the group ratio (r = +0.366), which would have suggested the formula degrades as
 groups become more unequal — the opposite of its premise. Adding Adult reversed the
 sign to −0.587. Adult happens to be both the largest population *and* the one with the
 most unequal groups, so group ratio was standing in for size. Cross-flow is the actual
-driver at r = 0.881, and group ratio is a confound. Reading nine points without the
+driver at r = 0.885, and group ratio is a confound. Reading nine points without the
 tenth would have produced a confident and wrong mechanism.
+
+The confound is now quantified rather than asserted: across these ten populations
+**group ratio and sample size correlate at r = +0.794**, so neither one's relationship
+with the error is interpretable on this data alone. Separating them requires
+populations where the two do *not* move together, which is what the race arm described
+below was built to supply.
 
 **The claim, restated to what the evidence supports:**
 
@@ -195,10 +209,23 @@ ACS replication as the next step, which this is.
 ## Limits of the replication itself
 
 * **One survey year (2018), one task (ACSIncome), one protected attribute (sex).**
-* **Group ratio is poorly spanned by the states.** ACS populations sit between 1.02
-  and 1.24; Adult at 2.08 is a lone outlier, and it carries the whole high-ratio end
-  of P1. A population with a genuinely unequal group split and a large sample would
-  test P1 far better than this design does.
+* **Group ratio is poorly spanned by the states, and confounded with size.** ACS
+  populations sit between 1.02 and 1.24 on sex; Adult at 2.08 is a lone outlier and
+  carries the whole high-ratio end of P1 by itself. Ratio and sample size correlate at
+  r = +0.794 here, so this design cannot say which of them drives the error.
+
+  **This is being addressed.** Protecting `RAC1P` instead of `SEX` on the same nine
+  states (`--dataset acs:AL:RAC1P`) spans a group ratio of 1.94 to 24.98 and *inverts*
+  the confound — r(ratio, n) = **−0.567** there, against +0.794 on sex. AL (n = 22,268,
+  ratio 3.20) and OR (n = 21,919, ratio 6.35) supply the high-ratio-at-large-sample cell
+  this study has never had. If ratio were the real driver the two arms would disagree in
+  sign; if size is, they will agree. Results pending.
+
+  That arm splits White against everyone else. It is **not** evidence about racial
+  fairness and is not offered as any: it exists to vary two counts in a formula whose
+  only inputs are counts. The alternative split, White against Black, is self-defeating
+  for this purpose — the states with a large Black population are the ones nearest 1:1,
+  and the high-ratio states would have an unprivileged group of a few dozen people.
 * **Three seeds per state against five for Adult**, so the state estimates are noisier
   — which is part of what the cross-flow result is measuring.
 * **P2's failure is a failure to find a relationship, not evidence that none exists.**

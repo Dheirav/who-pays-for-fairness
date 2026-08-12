@@ -46,6 +46,11 @@ from ..results_io import RESULTS_DIR, output_dir
 
 DEFAULT_STATES = ["VT", "NM", "MS", "WV", "WY", "ND", "UT", "AL", "OR"]
 
+# The arm whose outputs keep the unsuffixed filenames, matching the convention in
+# `ACSIncomeLoader.name` and `results_io.FLAT_DATASET`: the configuration that was
+# there first keeps its paths so committed results are not orphaned.
+SEX_ARM = "SEX"
+
 # Runs where the unprivileged group also lost ground leave the share outside [0, 1];
 # the arithmetic in P1 assumes a transfer between the groups, so those are reported
 # separately rather than silently averaged in.
@@ -57,6 +62,24 @@ def predicted_people_share(s: float, n_priv: float, n_unpriv: float) -> float:
     numerator = s * n_priv
     denominator = numerator + (1.0 - s) * n_unpriv
     return numerator / denominator if denominator else np.nan
+
+
+def cross_flow_share(runs: pd.DataFrame) -> pd.Series:
+    """Fraction of individual movement running *against* the intended transfer.
+
+    P1's arithmetic assumes the mitigation takes favourable decisions from the
+    privileged group and hands them to the unprivileged one. Real fits also move people
+    the other way -- privileged individuals who gain, unprivileged who lose -- and those
+    movements are invisible to a formula written in terms of two group rates.
+
+    This quantifies how far each run departs from that assumption, and it is the
+    diagnostic P1's restated form depends on, so it is computed here rather than by
+    hand. Every input is already recorded per run by ``run_who_pays``; no refit is
+    needed to obtain it for results already on disk.
+    """
+    intended = runs["priv_lost"] + runs["unpriv_gained"]
+    against = runs["priv_gained"] + runs["unpriv_lost"]
+    return (against / intended).replace([np.inf, -np.inf], np.nan)
 
 
 def load_population(key: str, label: str) -> pd.DataFrame | None:
@@ -87,6 +110,7 @@ def test_p1(runs: pd.DataFrame) -> pd.DataFrame:
         for row in usable.itertuples()
     ]
     usable["error"] = (usable["predicted"] - usable["people_share_levelling_down"]).abs()
+    usable["cross_flow"] = cross_flow_share(usable)
 
     dropped = len(runs) - len(usable)
     if dropped:
@@ -94,8 +118,10 @@ def test_p1(runs: pd.DataFrame) -> pd.DataFrame:
 
     return (
         usable.groupby("population")
-        .agg(group_ratio=("group_ratio", "first"),
+        .agg(n=("n_total", "first"),
+             group_ratio=("group_ratio", "first"),
              n_runs=("error", "size"),
+             cross_flow=("cross_flow", "mean"),
              mean_abs_error=("error", "mean"),
              max_abs_error=("error", "max"))
         .sort_values("group_ratio")
@@ -135,9 +161,16 @@ def correlate(frame: pd.DataFrame, x: str, y: str) -> tuple[float, float]:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--states", nargs="+", default=DEFAULT_STATES)
+    parser.add_argument("--protected", default=SEX_ARM,
+                        help="attribute the sweep was run on (SEX | RAC1P)")
     args = parser.parse_args()
+    arm = args.protected.strip().upper()
 
-    populations = [("adult", "Adult")] + [(f"acs:{s}", s) for s in args.states]
+    # Adult belongs to the sex arm only: its loader protects sex, so including it in a
+    # race sweep would silently mix two different constraints into one correlation.
+    populations = [("adult", "Adult")] if arm == SEX_ARM else []
+    suffix = "" if arm == SEX_ARM else f":{arm}"
+    populations += [(f"acs:{s}{suffix}", s) for s in args.states]
     frames = []
     for key, label in populations:
         frame = load_population(key, label)
@@ -154,10 +187,19 @@ def main() -> None:
     p1 = test_p1(runs)
     print(p1.round(4).to_string())
     r, _ = correlate(p1.reset_index(), "group_ratio", "mean_abs_error")
+    flat = p1.reset_index()
+    r_flow, _ = correlate(flat, "cross_flow", "mean_abs_error")
+    r_n, _ = correlate(flat, "n", "mean_abs_error")
+    r_ratio_n, _ = correlate(flat, "group_ratio", "n")
     print(f"\n  mean absolute error overall : {p1['mean_abs_error'].mean():.4f}")
     print(f"  worst single population     : {p1['mean_abs_error'].max():.4f}")
-    print(f"  error vs group ratio, r     : {r:+.3f}  (near 0 = the formula does not")
-    print( "                                 degrade as the ratio grows)")
+    print(f"  error vs cross-flow share, r: {r_flow:+.3f}  <- the proposed mechanism")
+    print(f"  error vs population size, r : {r_n:+.3f}")
+    print(f"  error vs group ratio, r     : {r:+.3f}")
+    print(f"  group ratio vs size, r      : {r_ratio_n:+.3f}  <- read the line above")
+    print( "                                 only against this one; where ratio and")
+    print( "                                 size covary, either can stand in for the")
+    print( "                                 other and the sign is not interpretable.")
 
     print()
     print("=" * 78)
@@ -190,13 +232,17 @@ def main() -> None:
           f"every ACS population leaks less than Adult"
           if acs.max() < adult else "  -> NOT CONFIRMED")
 
+    # The arm has to reach the filename for the same reason it has to reach the dataset
+    # name: both arms analyse the same states in the same year, so without it a race
+    # sweep overwrites the committed sex sweep and nothing reports an error.
     out = RESULTS_DIR / "sweep"
     out.mkdir(parents=True, exist_ok=True)
-    runs.to_csv(out / "sweep_runs.csv", index=False)
-    p1.to_csv(out / "sweep_p1_formula_fit.csv")
-    p2.to_csv(out / "sweep_p2_metric_conflict.csv")
-    leakage.to_csv(out / "sweep_p3_leakage.csv")
-    print(f"\nwrote {out}/sweep_*.csv")
+    stem = "sweep" if arm == SEX_ARM else f"sweep_{arm.lower()}"
+    runs.to_csv(out / f"{stem}_runs.csv", index=False)
+    p1.to_csv(out / f"{stem}_p1_formula_fit.csv")
+    p2.to_csv(out / f"{stem}_p2_metric_conflict.csv")
+    leakage.to_csv(out / f"{stem}_p3_leakage.csv")
+    print(f"\nwrote {out}/{stem}_*.csv")
 
 
 if __name__ == "__main__":
