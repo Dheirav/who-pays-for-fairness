@@ -1,0 +1,4 @@
+arm,accuracy,sex_dp_gap,intersectional_gap_all,intersectional_gap_reliable,gap_inflation,worst_subgroup_rate,worst_subgroup_mode
+baseline,0.7943,0.1115,0.5185,0.116,0.4026,0.1621,Female x White
+expgrad_dp_sex,0.7827,0.0131,0.6343,0.0124,0.6219,0.203,Female x White
+expgrad_dp_intersectional,0.7712,0.022,0.5079,0.0201,0.4878,0.2107,Female x White

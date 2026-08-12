@@ -1,0 +1,18 @@
+{
+  "experiment": "intersectional",
+  "signature": "eps0.01_seeds0-2",
+  "params": {
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "eps": 0.01
+  },
+  "files": [
+    "intersectional_runs__eps0.01_seeds0-2.csv",
+    "intersectional_runs.csv",
+    "intersectional_summary__eps0.01_seeds0-2.csv",
+    "intersectional_summary.csv"
+  ]
+}

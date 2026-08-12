@@ -16,6 +16,7 @@ base paper. Written to be read in order, but each file stands alone.
 | 09 | [Proxy removal](09-proxy-removal.md) | If the model leans on a leaky feature, does deleting it help? *(negative control — deliberately not in-processing)* |
 | 10 | [Epsilon sweep](10-epsilon-sweep.md) | Is levelling down just an artifact of a tight constraint? |
 | 11 | [Replication across populations](11-replication-across-populations.md) | Which findings are about the method, and which about Adult? *(beyond the course submission)* |
+| 12 | [Intersectional across populations](12-intersectional-across-populations.md) | Gerrymandering replicates and is worse than Adult — where there is a minority to hide in *(beyond the course submission)* |
 
 ## The short version
 
@@ -46,6 +47,13 @@ to be discovered, and one did not hold. Two failures out of three is the informa
 outcome: a clean sweep would suggest the predictions had been fitted to the data they
 came from. Nothing in documents 01–10 is retracted, and the course deliverables are
 unaffected — the claim that failed appears in neither of them.
+
+[Document 12](12-intersectional-across-populations.md) does the same for the
+intersectional result, and it survives better than any other: the gerrymandering
+Adult showed at 9.0× reaches 13.2× elsewhere. It gains one condition — it needs a
+substantial minority to hide in, and where a population is 95% one race a constraint on
+sex fixes the intersection by default. That relationship is the first in the project
+whose two candidate explanations are not confounded with each other.
 
 ## Scope: purely in-processing
 
