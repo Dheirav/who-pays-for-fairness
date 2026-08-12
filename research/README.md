@@ -62,6 +62,7 @@ course-side code as a side effect. They are not claimed as exclusively individua
 | 16 | [Planting a proxy](docs/16-planting-a-proxy.md) | The intervention refutes document 06's mechanism: a planted proxy is used *less*, not more |
 | 17 | [Neither explanation survives](docs/17-neither-explanation-survives.md) | The replacement fails too; the constraint barely changes which features are used |
 | 18 | [The collinearity test is confounded](docs/18-the-collinearity-test-is-confounded.md) | The third candidate resisted a clean test; why the design cannot work |
+| 19 | [Levelling up is expressible](docs/19-levelling-up-is-expressible.md) | Put "don't shrink the pie" in the objective and you get it, for 0.37 accuracy points |
 
 ## The short version
 
@@ -105,11 +106,22 @@ features the model leans on.** And on small populations the method's own randomn
 exceeds the entire effect of the constraint — in 5 of 38 randomized runs, all of them
 below 2,500 test subjects (document 15).
 
+**What could be fixed.** Document 05 ended by claiming that levelling up would have to be
+part of the objective or it would not happen. It was never tested; it is now, and it holds
+(document 19). Adding one linear constraint — a floor on the overall selection rate —
+satisfies parity to the same tolerance while the pie loss falls from **−20.5% to −0.6%**,
+and the exchange rate goes from **2.68 favourable decisions destroyed per one created to
+1.03**. It costs 0.37 accuracy points. This is not a new method; a selection-rate floor is
+a linear constraint on a conditional moment and sits inside the base paper's own
+framework. The finding is about objectives, not algorithms.
+
 **The through-line.** A fairness metric describes an outcome state, not a mechanism. Every
 headline number in documents 02–04 is correct and every finding above is invisible in it.
-When this project tried to identify the mechanism behind one of those findings, three
-candidate explanations were proposed and none survived — which is itself the most honest
-thing here.
+When this project tried to identify the *mechanism* behind one of those findings, three
+candidate explanations were proposed and none survived. When it instead tried to *fix* one
+of them by stating the missing objective outright, that worked immediately. The reduction
+is agnostic about how it satisfies a constraint because the constraint is all it is told —
+which is a limitation of what we ask for, not of the method.
 
 ## What this does not change
 

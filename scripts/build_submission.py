@@ -54,6 +54,8 @@ EXCLUDED_FILES = (
     "src/experiments/analyse_conflict.py",
     "src/experiments/run_injection.py",
     "src/experiments/run_collinear.py",
+    "src/experiments/run_levelling_up.py",
+    "src/levelling_up.py",
 )
 
 # Untracked by git (``data/`` is gitignored as a re-downloadable cache) but present in
