@@ -1,0 +1,24 @@
+{
+  "experiment": "injection",
+  "signature": "seeds0-2_strengths0.5,0.7,0.85,1.0",
+  "params": {
+    "dataset": "acs:AL",
+    "strengths": [
+      0.5,
+      0.7,
+      0.85,
+      1.0
+    ],
+    "seeds": [
+      0,
+      1,
+      2
+    ]
+  },
+  "files": [
+    "injection_runs__seeds0-2_strengths0.5,0.7,0.85,1.0.csv",
+    "injection_runs.csv",
+    "injection_summary__seeds0-2_strengths0.5,0.7,0.85,1.0.csv",
+    "injection_summary.csv"
+  ]
+}

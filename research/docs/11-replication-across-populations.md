@@ -52,10 +52,16 @@ probe predicting sex from the remaining features:
 
 **The distributions do not overlap.** Adult is the only population containing a
 sex-determining feature and the only one above 0.85; every ACS population sits between
-0.76 and 0.84. The mechanism proposed in document 06 survived nine independent tests
-on populations it was not derived from.
+0.76 and 0.84.
 
-This is the project's strongest finding, and it is now the best-supported one.
+> **The measurement stands; the reading of it is withdrawn — see
+> [document 16](16-planting-a-proxy.md).** This section originally concluded that
+> "the mechanism proposed in document 06 survived nine independent tests". It did not.
+> Nine populations confirm a *correlation* — populations without a strong proxy leak
+> less — which the mechanism predicts and which several other explanations predict
+> equally well. Planting a proxy directly shows the constrained model using it **less**
+> as it sharpens, which is the opposite of the mechanism. The leakage figures above are
+> unchanged and re-verified.
 
 ---
 
