@@ -88,6 +88,37 @@ def test_output_dir_separates_datasets() -> None:
     assert adult != other, "two datasets must not share an output directory"
 
 
+def test_dataset_name_distinguishes_the_protected_attribute() -> None:
+    """Two configurations of one state must not share an output directory.
+
+    ``output_dir`` namespaces by ``dataset.name``, so anything the name omits is
+    invisible to it. Protecting race instead of sex changes the features, the groups
+    and every metric downstream -- but it samples the same rows, so a name built from
+    states and year alone is identical for both, and the second run silently overwrites
+    the first. This is the same failure as the ACS-over-Adult clobber, one level down,
+    and the guard in ``results_io`` cannot catch it: that compares CLI parameters, and
+    these two runs differ in neither.
+    """
+    from src.datasets.acs import ACSIncomeLoader
+    from src.results_io import output_dir
+
+    sex = ACSIncomeLoader(states=["MS"])
+    race = ACSIncomeLoader(states=["MS"], protected="RAC1P")
+    print(f"  sex -> {sex.name}\n  race -> {race.name}")
+    assert sex.name != race.name, "protected attribute is missing from the dataset name"
+    assert output_dir(sex.name) != output_dir(race.name)
+
+    # The default must stay unsuffixed, or every committed ACS result is orphaned.
+    assert sex.name == "acs_income_ms_2018", f"committed paths would move: {sex.name}"
+
+    try:
+        ACSIncomeLoader(states=["MS"], protected="AGEP")
+    except KeyError:
+        print("  unsupported attribute rejected")
+    else:
+        raise AssertionError("an unsupported protected attribute was accepted")
+
+
 def test_shap_writes_one_file_per_seed() -> None:
     """The per-seed filename must interpolate the seed, or seeds overwrite each other.
 
@@ -184,6 +215,7 @@ def main() -> None:
         test_no_experiment_writes_a_file_to_the_shared_root,
         test_every_experiment_can_be_pointed_at_its_populations,
         test_output_dir_separates_datasets,
+        test_dataset_name_distinguishes_the_protected_attribute,
         test_shap_writes_one_file_per_seed,
         test_no_dataset_specific_column_names_in_experiments,
         test_canonical_results_are_guarded_against_a_different_run,

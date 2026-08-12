@@ -74,6 +74,41 @@ RACE_LABELS = {
     8: "Other", 9: "Two-or-more",
 }
 
+# ``RAC1P`` is selectable as the protected attribute for one narrow purpose: the group
+# ratio N_priv/N_unpriv on sex is confined to 1.02-1.24 across every ACS state, while
+# Adult sits alone at 2.08 and therefore carries the entire high-ratio end of P1 (see
+# docs/11, "Limits of the replication itself"). Splitting on race instead spans roughly
+# 1.5 to 15 *at large sample sizes*, which is the region the design is missing.
+#
+# The split is White vs everyone else. That aggregate is not defensible as a claim
+# about racial fairness and is not used as one: this arm exists to vary two numbers --
+# the group ratio and the sample size -- in a formula whose inputs are only ever counts.
+# Binarising as White vs Black instead would defeat the purpose, because the states with
+# a large Black population are precisely the ones nearest 1:1 (MS ~1.5) while the states
+# with a high ratio would have an unprivileged group of a few dozen people.
+RACE_PRIVILEGED, RACE_UNPRIVILEGED = "White", "Non-White"
+
+# Which attributes may be protected, and what each implies for the rest of the dataset.
+# Keyed by column; the values that are not the protected one stay in the features.
+PROTECTED_SCHEMES = {
+    "SEX": {
+        "privileged": PRIVILEGED,
+        "unprivileged": UNPRIVILEGED,
+        "secondary": "RAC1P",
+        # Same semantic ordering as Adult, but note RELP is NOT sex-determining here --
+        # husband/wife is one code. That contrast is the point of the dataset.
+        "proxies": ["RELP", "MAR", "OCCP", "WKHP"],
+    },
+    "RAC1P": {
+        "privileged": RACE_PRIVILEGED,
+        "unprivileged": RACE_UNPRIVILEGED,
+        "secondary": "SEX",
+        # Place of birth is to race what `relationship` is to sex on Adult: the
+        # single most direct reconstruction available in the feature set.
+        "proxies": ["POBP", "OCCP", "COW", "SCHL"],
+    },
+}
+
 # Levels below this share of the data are pooled into "Other". Without it, OCCP and
 # POBP contribute several hundred one-hot columns, most of them near-empty, which
 # inflates the feature count far past Adult's 85 and makes the two datasets'
@@ -88,6 +123,7 @@ class ACSIncomeLoader:
     Args:
         states: Two-letter state codes. A single state keeps runtime near Adult's;
             several states pooled gives a larger and more heterogeneous population.
+        protected: Which column to constrain on -- see :data:`PROTECTED_SCHEMES`.
         year: ACS survey year.
         horizon: ``"1-Year"`` or ``"5-Year"``.
     """
@@ -96,16 +132,33 @@ class ACSIncomeLoader:
         self,
         states: list[str] | None = None,
         *,
+        protected: str = PROTECTED,
         year: str = "2018",
         horizon: str = "1-Year",
     ) -> None:
+        if protected not in PROTECTED_SCHEMES:
+            raise KeyError(
+                f"cannot protect '{protected}'; available: {sorted(PROTECTED_SCHEMES)}"
+            )
         self.states = states or ["CA"]
+        self.protected = protected
         self.year = year
         self.horizon = horizon
 
     @property
     def name(self) -> str:
-        return f"acs_income_{'_'.join(self.states).lower()}_{self.year}"
+        """Identity of the population *as configured*, not just as sampled.
+
+        The protected attribute belongs in the name because it changes the features,
+        the groups and every metric downstream -- two runs differing only in it are
+        different datasets. Omitting it would give a race-protected Mississippi run the
+        same output directory as the sex-protected one already committed there, which
+        is exactly the silent-overwrite failure ``results_io`` and
+        ``tests/test_output_isolation.py`` exist to prevent. The default is left
+        unsuffixed so the committed sex results keep their paths.
+        """
+        stem = f"acs_income_{'_'.join(self.states).lower()}_{self.year}"
+        return stem if self.protected == PROTECTED else f"{stem}_{self.protected.lower()}"
 
     def _pool_rare_levels(self, column: pd.Series) -> pd.Series:
         """Collapse levels rarer than the threshold into a single readable bucket.
@@ -133,13 +186,30 @@ class ACSIncomeLoader:
         X = X.reset_index(drop=True)
         y = pd.Series(np.asarray(y).astype(int).ravel(), name="income", index=X.index)
 
-        a = X[PROTECTED].map(SEX_LABELS).astype(object)
-        a.name = PROTECTED
-        if a.isna().any():
-            raise ValueError("unexpected SEX code outside {1, 2}")
+        scheme = PROTECTED_SCHEMES[self.protected]
 
-        features = X.drop(columns=[PROTECTED])
-        features["RAC1P"] = features["RAC1P"].map(RACE_LABELS).fillna("Unknown")
+        sex = X[PROTECTED].map(SEX_LABELS).astype(object)
+        if sex.isna().any():
+            raise ValueError("unexpected SEX code outside {1, 2}")
+        race = X["RAC1P"].map(RACE_LABELS).fillna("Unknown")
+
+        if self.protected == PROTECTED:
+            a = sex
+        else:
+            # Everything that is not White, including "Unknown", falls in the
+            # unprivileged group; see the note on RACE_PRIVILEGED for why the split is
+            # this coarse and what it is and is not evidence of.
+            a = race.where(race == RACE_PRIVILEGED, other=RACE_UNPRIVILEGED).astype(object)
+        a.name = self.protected
+
+        # Only the protected column leaves the feature set. The other one stays, which
+        # is what makes it available as `secondary_attribute` for the intersectional
+        # analysis -- and, for the race arm, keeps sex present as a candidate proxy.
+        features = X.drop(columns=[self.protected])
+        if "RAC1P" in features.columns:
+            features["RAC1P"] = race
+        if PROTECTED in features.columns:
+            features[PROTECTED] = sex
 
         pooled = {}
         for column in ("OCCP", "POBP"):
@@ -148,12 +218,14 @@ class ACSIncomeLoader:
             pooled[column] = {"levels_before": int(before),
                               "levels_after": int(features[column].nunique())}
 
-        categorical = [c for c in CATEGORICAL if c in features.columns]
+        # SEX joins the candidates because it is a genuine feature whenever it is not
+        # the protected attribute; the presence filter then drops whichever one is.
+        categorical = [c for c in [*CATEGORICAL, PROTECTED] if c in features.columns]
         numeric = [c for c in NUMERIC if c in features.columns]
 
         if include_protected_in_features:
-            features[PROTECTED] = a.to_numpy()
-            categorical = [*categorical, PROTECTED]
+            features[self.protected] = a.to_numpy()
+            categorical = [*categorical, self.protected]
 
         # Categoricals must be strings for the one-hot encoder to treat ACS integer
         # codes as unordered labels rather than as magnitudes.
@@ -165,20 +237,18 @@ class ACSIncomeLoader:
             X=features[[*categorical, *numeric]],
             y=y,
             a=a,
-            protected_attribute=PROTECTED,
-            privileged_value=PRIVILEGED,
-            unprivileged_value=UNPRIVILEGED,
+            protected_attribute=self.protected,
+            privileged_value=scheme["privileged"],
+            unprivileged_value=scheme["unprivileged"],
             categorical_features=categorical,
             numeric_features=numeric,
-            secondary_attribute="RAC1P",
-            # Same semantic ordering as Adult, but note RELP is NOT sex-determining
-            # here -- husband/wife is one code. That contrast is the point of the
-            # dataset for this project.
-            proxy_features=["RELP", "MAR", "OCCP", "WKHP"],
+            secondary_attribute=scheme["secondary"],
+            proxy_features=scheme["proxies"],
             notes={
                 "source": "folktables ACSIncome",
                 "reference": "Ding et al. (2021), Retiring Adult, NeurIPS",
                 "states": self.states,
+                "protected_attribute": self.protected,
                 "year": self.year,
                 "horizon": self.horizon,
                 "rare_level_threshold": RARE_LEVEL_THRESHOLD,

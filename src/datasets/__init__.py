@@ -12,13 +12,14 @@ Dataset names accept a suffix for loaders that take arguments, so a single
     acs                ACS Income, California, 2018
     acs:WY             ACS Income, one state
     acs:CA,TX,NY       ACS Income, several states pooled
+    acs:MS:RAC1P       ...protected on race instead of the default sex
 """
 
 from .base import DatasetLoader, FairnessDataset
 
 __all__ = ["DatasetLoader", "FairnessDataset", "build", "AVAILABLE"]
 
-AVAILABLE = ("adult", "acs[:STATE[,STATE...]]")
+AVAILABLE = ("adult", "acs[:STATE[,STATE...]][:ATTRIBUTE]")
 
 
 def build(name: str) -> DatasetLoader:
@@ -26,7 +27,8 @@ def build(name: str) -> DatasetLoader:
 
     Args:
         name: ``"adult"``, or ``"acs"`` optionally suffixed with ``:`` and a
-            comma-separated list of two-letter state codes.
+            comma-separated list of two-letter state codes, optionally followed by
+            a second ``:`` and the column to protect (default ``SEX``).
     """
     key, _, argument = name.partition(":")
     key = key.strip().lower()
@@ -37,9 +39,13 @@ def build(name: str) -> DatasetLoader:
         return AdultLoader()
 
     if key == "acs":
-        from .acs import ACSIncomeLoader
+        from .acs import PROTECTED, ACSIncomeLoader
 
-        states = [s.strip().upper() for s in argument.split(",") if s.strip()]
-        return ACSIncomeLoader(states=states or None)
+        state_part, _, attribute = argument.partition(":")
+        states = [s.strip().upper() for s in state_part.split(",") if s.strip()]
+        return ACSIncomeLoader(
+            states=states or None,
+            protected=attribute.strip().upper() or PROTECTED,
+        )
 
     raise KeyError(f"unknown dataset '{name}'; available: {AVAILABLE}")
