@@ -10,19 +10,20 @@ their own terms. Nothing here is needed to read or assess them.
 
 ## The boundary, and how to verify it
 
-The deliverables were finalised at commit `28bc8d1` (11 Aug, 23:49). **Every commit after
-that point is this folder's work**, and each states what it did and why:
+The deliverables were finalised at commit `28bc8d1` (11 Aug, 23:49). **Every commit
+after that point is this folder's work.** To list them:
 
-| commit | |
-|---|---|
-| `d182ef3` | ACS Income loader; every experiment made dataset-parameterised |
-| `f8dda3a`, `227583c` | result-overwrite guards and `results_io` |
-| `339a4ff`, `19ed0c8` | replication across ten populations |
-| `8eff189` | protected attribute made selectable and part of the dataset identity |
-| `34a4638` | cross-flow made reproducible; the confound quantified |
-| `2c7f312` | intersectional replication |
-| `6df9d45`, `2168d09` | pre-registered two-arm analysis |
-| `55368f5` | the retraction |
+```
+git log --oneline 28bc8d1..HEAD
+```
+
+That command is given instead of a table of hashes because a table goes stale — and this
+one did. It was written out by hand, then the history was rewritten to strip co-author
+trailers, and six of the twelve hashes it named stopped existing. The rule survives
+rewrites; individual hashes do not.
+
+Each of those commits states what it did and why, and the messages are the substantive
+record: what was predicted, what failed, and what was retracted.
 
 Git history is the authoritative record of authorship here, not directory layout —
 which matters because one part of this work **cannot** be moved into this folder.
