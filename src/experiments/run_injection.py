@@ -102,35 +102,150 @@ DEFAULT_STRENGTHS = [0.5, 0.7, 0.85, 1.0]
 MIN_RELOCATION = 0.02
 
 
-def inject(dataset, strength: float, random_state: int):
-    """Return a copy of `dataset` carrying a planted proxy of the given strength."""
+def inject(dataset, strength: float, random_state: int, outcome: float = 0.5):
+    """Return a copy of `dataset` carrying a planted column with two tunable properties.
+
+    ``strength`` controls how well the column determines the protected attribute;
+    ``outcome`` controls how well it predicts the label *independently* of that. They are
+    separate bits of the same level label, so a level is one of four combinations, and
+    the two properties can be varied one at a time.
+
+    At ``outcome = 0.5`` the label bit is noise and the column is a pure protected-
+    attribute proxy -- the configuration document 16 used. At ``strength = 0.5`` the sex
+    bit is noise and the column is a pure outcome predictor. Adult's ``relationship`` sits
+    at neither extreme: it determines sex for 46% of rows *and* spans 0.44-0.47 in P(y=1)
+    within a single sex, which is what motivated separating the two.
+
+    Building a feature from ``y`` is label leakage by construction. That is deliberate --
+    the point is a feature that genuinely predicts the outcome, which is what
+    ``relationship`` is -- and it is why ``outcome`` is held well below 1.
+    """
     rng = np.random.default_rng(random_state)
     n = len(dataset.X)
     is_privileged = (dataset.a.to_numpy() == dataset.privileged_value)
+    is_positive = (dataset.y.to_numpy() == 1)
 
     determined = rng.random(n) < DETERMINED_SHARE
-    # Correct with probability `strength`, so P(privileged | SYN-A) ~= strength.
-    correct = rng.random(n) < strength
-    indicates_privileged = np.where(correct, is_privileged, ~is_privileged)
+    sex_bit = np.where(rng.random(n) < strength, is_privileged, ~is_privileged)
+    outcome_bit = np.where(rng.random(n) < outcome, is_positive, ~is_positive)
 
     column = np.full(n, LEVEL_OTHER, dtype=object)
-    column[determined & indicates_privileged] = LEVEL_MALE
-    column[determined & ~indicates_privileged] = LEVEL_FEMALE
+    for sex_value in (True, False):
+        for outcome_value in (True, False):
+            mask = determined & (sex_bit == sex_value) & (outcome_bit == outcome_value)
+            column[mask] = f"SYN-{'P' if sex_value else 'U'}{'H' if outcome_value else 'L'}"
 
     X = dataset.X.copy()
     X[SYNTH] = pd.Series(column, index=X.index).astype(str)
 
     return replace(
         dataset,
-        name=f"{dataset.name}_synth{strength:g}",
+        name=f"{dataset.name}_synth{strength:g}_out{outcome:g}",
         X=X,
         categorical_features=[*dataset.categorical_features, SYNTH],
         # The planted column is the only proxy of interest; the real ones are measured
         # separately by run_shap and are not what this experiment is about.
         proxy_features=[SYNTH],
         notes={**dataset.notes, "injected_proxy": {"strength": strength,
+                                                   "outcome": outcome,
                                                    "determined_share": DETERMINED_SHARE}},
     )
+
+
+def within_group_outcome_spread(planted) -> float:
+    """Range of P(y=1) across the planted levels, inside one protected group.
+
+    The manipulation check for the outcome dimension, and the same quantity measured on
+    Adult's ``relationship`` in document 16 (0.438 within males, 0.473 within females). A
+    column that encoded only the protected attribute would score near zero here.
+    """
+    column = planted.X[SYNTH].to_numpy()
+    y = planted.y.to_numpy()
+    spreads = []
+    for group in (planted.privileged_value, planted.unprivileged_value):
+        mask = planted.a.to_numpy() == group
+        frame = pd.DataFrame({"level": column[mask], "y": y[mask]})
+        rates = frame.groupby("level")["y"].agg(["mean", "size"])
+        rates = rates[rates["size"] >= 100]
+        if len(rates) > 1:
+            spreads.append(rates["mean"].max() - rates["mean"].min())
+    return float(np.mean(spreads)) if spreads else float("nan")
+
+
+def report_two_factor(summary: pd.DataFrame, args) -> None:
+    """Verdict for the 2-factor design. Thresholds are MIN_RELOCATION, fixed above.
+
+    Document 16 refuted the claim that the constraint seeks reconstructions of the
+    protected attribute: a planted *pure* proxy was used less as it sharpened. The
+    replacement offered there was that Adult's ``relationship`` attracts the constrained
+    model because it predicts the outcome well within each group, and its sex-determining
+    character is incidental. That was consistent with the evidence and untested, because
+    document 16 varied only one of the two properties.
+
+    Varying both separates them:
+
+    **R0 -- manipulation check.** Leakage must rise with the sex bit and the within-group
+    outcome spread must rise with the outcome bit, each roughly independently of the
+    other. If the two knobs are not separable, nothing below identifies anything.
+
+    **R1 -- the replacement explanation.** Excess attribution under the constraint rises
+    with the *outcome* dimension by more than MIN_RELOCATION, at both extremes of the sex
+    dimension. This is the prediction document 16 could not test.
+
+    **R2 -- document 16 replicates.** At fixed outcome strength, excess does not rise with
+    the sex dimension.
+
+    If R1 fails, the replacement explanation is wrong too, and the honest position is that
+    the Adult attribution shift has no mechanism this project can identify.
+    """
+    print("\n=== mean over seeds: rows are (outcome strength, sex strength) ===")
+    print(summary.to_string())
+
+    outcomes = sorted(args.outcomes)
+    strengths = sorted(args.strengths)
+    lo_o, hi_o = outcomes[0], outcomes[-1]
+    lo_s, hi_s = strengths[0], strengths[-1]
+
+    print("\n" + "=" * 74)
+    leak_rise = (summary.xs(hi_s, level="strength")["leakage_auc"].mean()
+                 - summary.xs(lo_s, level="strength")["leakage_auc"].mean())
+    spread_rise = (summary.xs(hi_o, level="outcome")["outcome_spread"].mean()
+                   - summary.xs(lo_o, level="outcome")["outcome_spread"].mean())
+    r0 = leak_rise > 0.02 and spread_rise > 0.05
+    print(f"R0  the two knobs move different things       -> {'HOLDS' if r0 else 'FAILS'}")
+    print(f"      sex knob raises leakage by      {leak_rise:+.4f}")
+    print(f"      outcome knob raises spread by   {spread_rise:+.4f}")
+    if not r0:
+        print("      the design does not separate the properties; nothing below identifies")
+
+    print()
+    gains = {s: summary.loc[(hi_o, s), "excess"] - summary.loc[(lo_o, s), "excess"]
+             for s in strengths}
+    r1 = all(g > MIN_RELOCATION for g in gains.values())
+    print(f"R1  outcome signal attracts the constraint    -> {'HOLDS' if r1 else 'FAILS'}")
+    for s, gain in gains.items():
+        print(f"      at sex strength {s:<5}: excess rises {gain:+.4f} "
+              f"({summary.loc[(lo_o, s), 'excess']:+.4f} -> "
+              f"{summary.loc[(hi_o, s), 'excess']:+.4f})   bar {MIN_RELOCATION}")
+
+    print()
+    sex_gains = {o: summary.loc[(o, hi_s), "excess"] - summary.loc[(o, lo_s), "excess"]
+                 for o in outcomes}
+    r2 = all(g <= MIN_RELOCATION for g in sex_gains.values())
+    print(f"R2  sex signal does not                       -> {'HOLDS' if r2 else 'FAILS'}")
+    for o, gain in sex_gains.items():
+        print(f"      at outcome strength {o:<5}: excess moves {gain:+.4f}")
+
+    print("=" * 74)
+    if r0 and r1 and r2:
+        print("The replacement explanation holds: the constrained model relocates onto a")
+        print("feature for its OUTCOME signal, not for its ability to reconstruct sex.")
+        print("Document 06's attribution shift is a cost-sensitive reweighting finding")
+        print("a good within-group predictor, and the proxy character is incidental.")
+    elif r0 and not r1:
+        print("The replacement explanation FAILS too. Outcome signal does not attract the")
+        print("constraint either, and the Adult attribution shift has no mechanism this")
+        print("project has been able to identify. That is to be reported as it stands.")
 
 
 def feature_mapping(split, dataset) -> dict[str, list[int]]:
@@ -139,8 +254,8 @@ def feature_mapping(split, dataset) -> dict[str, list[int]]:
     )
 
 
-def run_one(dataset, strength: float, seed: int) -> dict:
-    planted = inject(dataset, strength, random_state=seed)
+def run_one(dataset, strength: float, seed: int, outcome: float = 0.5) -> dict:
+    planted = inject(dataset, strength, random_state=seed, outcome=outcome)
     split = prepare(planted, random_state=seed)
     mapping = feature_mapping(split, planted)
     X_train = np.asarray(split.X_train, dtype=float)
@@ -195,7 +310,9 @@ def run_one(dataset, strength: float, seed: int) -> dict:
 
     return {
         "strength": strength,
+        "outcome": outcome,
         "seed": seed,
+        "outcome_spread": within_group_outcome_spread(planted),
         "leakage_auc": planted.attribute_leakage(random_state=seed)["leakage_auc"],
         "synth_baseline": float(base_shares.get(SYNTH, 0.0)),
         "synth_baseline_exact": float(base_shares_exact.get(SYNTH, 0.0)),
@@ -214,6 +331,8 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dataset", default="acs:AL")
     parser.add_argument("--strengths", type=float, nargs="+", default=DEFAULT_STRENGTHS)
+    parser.add_argument("--outcomes", type=float, nargs="+", default=[0.5],
+                        help="how well the planted column predicts y, independently of sex")
     parser.add_argument("--seeds", type=int, nargs="+", default=[0, 1, 2])
     parser.add_argument("--force", action="store_true")
     args = parser.parse_args()
@@ -224,23 +343,36 @@ def main() -> None:
           f"{dataset.attribute_leakage()['leakage_auc']:.4f}\n")
 
     rows = []
-    for strength in args.strengths:
-        for seed in args.seeds:
-            row = run_one(dataset, strength, seed)
-            rows.append(row)
-            print(f"  strength {strength:<5} seed {seed}  leakage {row['leakage_auc']:.4f}  "
-                  f"baseline {row['synth_baseline']:.4f}  mitigated {row['synth_mitigated']:.4f}"
-                  f"  excess {row['excess']:+.4f}", flush=True)
+    for outcome in args.outcomes:
+        for strength in args.strengths:
+            for seed in args.seeds:
+                row = run_one(dataset, strength, seed, outcome=outcome)
+                rows.append(row)
+                print(f"  sex {strength:<5} outcome {outcome:<5} seed {seed}  "
+                      f"leakage {row['leakage_auc']:.4f}  spread {row['outcome_spread']:.3f}  "
+                      f"base {row['synth_baseline']:.4f}  mit {row['synth_mitigated']:.4f}"
+                      f"  excess {row['excess']:+.4f}", flush=True)
 
     runs = pd.DataFrame(rows)
-    summary = runs.groupby("strength")[
-        ["leakage_auc", "synth_baseline", "synth_baseline_exact", "synth_mitigated",
-         "excess", "excess_mismatched",
+    two_factor = len(args.outcomes) > 1
+    summary = runs.groupby(["outcome", "strength"] if two_factor else "strength")[
+        ["leakage_auc", "outcome_spread", "synth_baseline", "synth_baseline_exact",
+         "synth_mitigated", "excess", "excess_mismatched",
          "baseline_accuracy", "mitigated_accuracy", "mitigated_dp"]
     ].mean().round(4)
 
     print("\n=== mean over seeds ===")
     print(summary.to_string())
+
+    if two_factor:
+        report_two_factor(summary, args)
+        OUT = output_dir(dataset.name + "_injection2")
+        for path in save(OUT, "injection2", {"runs": runs, "summary": summary},
+                         params=dict(dataset=args.dataset, strengths=args.strengths,
+                                     outcomes=args.outcomes, seeds=args.seeds),
+                         force=args.force):
+            print(f"wrote {path}")
+        return
 
     low, high = min(args.strengths), max(args.strengths)
     print("\n" + "=" * 74)
