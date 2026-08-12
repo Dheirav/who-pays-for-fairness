@@ -1,0 +1,23 @@
+{
+  "experiment": "collinear",
+  "signature": "redundancies0.0,0.5,1.0_seeds0-2",
+  "params": {
+    "dataset": "acs:AL",
+    "redundancies": [
+      0.0,
+      0.5,
+      1.0
+    ],
+    "seeds": [
+      0,
+      1,
+      2
+    ]
+  },
+  "files": [
+    "collinear_runs__redundancies0.0,0.5,1.0_seeds0-2.csv",
+    "collinear_runs.csv",
+    "collinear_summary__redundancies0.0,0.5,1.0_seeds0-2.csv",
+    "collinear_summary.csv"
+  ]
+}

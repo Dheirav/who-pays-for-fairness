@@ -61,31 +61,55 @@ course-side code as a side effect. They are not claimed as exclusively individua
 | 15 | [Arbitrariness at small scale](docs/15-arbitrariness-at-small-scale.md) | On small populations the method's own randomness exceeds the entire effect of the constraint |
 | 16 | [Planting a proxy](docs/16-planting-a-proxy.md) | The intervention refutes document 06's mechanism: a planted proxy is used *less*, not more |
 | 17 | [Neither explanation survives](docs/17-neither-explanation-survives.md) | The replacement fails too; the constraint barely changes which features are used |
+| 18 | [The collinearity test is confounded](docs/18-the-collinearity-test-is-confounded.md) | The third candidate resisted a clean test; why the design cannot work |
 
 ## The short version
 
 Documents 01–10 are all measurements on one dataset. Ding et al. (2021), *Retiring
-Adult*, argues the field should stop drawing conclusions from exactly that dataset.
-Until a finding survives a population it was not derived from, "the constraint causes X"
-and "Adult has property X" are indistinguishable.
+Adult*, argues the field should stop drawing conclusions from exactly that dataset. Until
+a finding survives a population it was not derived from, "the constraint causes X" and
+"Adult has property X" are indistinguishable. These eight documents test that, on 19
+populations across two protected attributes.
 
-**Document 11** stated three predictions in advance and tested them on nine US states.
-One held cleanly (proxy relocation needs a proxy worth relocating onto — Adult leaks sex
-at 0.9364 against 0.76–0.84 everywhere else, no overlap). One held only under a condition
-that had to be discovered. One did not hold at all.
+**What replicated.** The intersectional result is the strongest thing here: fairness
+gerrymandering appears in every sufficiently diverse population and is *worse* than Adult
+showed — 9.0× there against 13.2× in Mississippi (document 12). It gains one condition,
+that the effect needs a substantial minority to hide in, and that condition is the first
+relationship in the project whose two candidate explanations are not confounded with each
+other. In five of ten populations the worst-off subgroup after a sex constraint is a
+minority man, and in three it is Black men specifically — document 07's Adult finding,
+reproduced without being looked for.
 
-**Document 12** replicates the intersectional result and finds it *stronger* elsewhere:
-the fairness gerrymandering Adult showed at 9.0× reaches 13.2× in Mississippi. It gains
-one condition — the effect needs a substantial minority to hide in. Below 12% minority a
-sex constraint removes 85% of the intersectional gap; at or above it, 22%. That is the
-first relationship in the project whose two candidate explanations are not confounded
-with each other.
+**What needed conditions attached.** The rate-versus-people divergence holds when the
+mitigation performs a clean transfer, and degrades in proportion to cross-flow, which
+rises both with group inequality and with small samples (documents 11 and 13). The
+DP/EO conflict is near-universal in direction across populations but **reverses** across
+protected attributes, because the post-constraint EO violation is independent of the
+pre-constraint one — the endpoint belongs to the constrained problem rather than to the
+model it replaced, confirmed by two independently-derived solvers landing within 0.02 of
+each other (document 14).
 
-**Document 13** builds a second protected attribute for the sole purpose of breaking a
-confound document 11 could not escape, with the analysis written and committed *before
-the data existed*. It returned a result its author predicted wrongly, and the outcome is
-a retraction: document 11's tentative first reading was right and its confident
-correction was wrong.
+**What was refuted, including my own claims.** Document 11's confident correction of
+itself was wrong and is retracted (document 13): the tentative first reading was right,
+and group ratio is a genuine cause acting through cross-flow rather than a spurious
+correlate. Document 06's proposed mechanism — that the constraint seeks reconstructions of
+the protected attribute — is refuted by intervention: a planted proxy is used *less* as it
+sharpens (document 16). Its replacement is refuted too (document 17). The third candidate
+resisted a clean test for a structural reason (document 18). The +151% attribution shift
+on Adult is real, reproducible and unexplained.
+
+**What that produced instead.** Across six cells the constrained model's attribution
+tracked the unconstrained model's to within 0.03 share while the share itself moved
+ninefold: **the demographic parity constraint does not systematically change which
+features the model leans on.** And on small populations the method's own randomness
+exceeds the entire effect of the constraint — in 5 of 38 randomized runs, all of them
+below 2,500 test subjects (document 15).
+
+**The through-line.** A fairness metric describes an outcome state, not a mechanism. Every
+headline number in documents 02–04 is correct and every finding above is invisible in it.
+When this project tried to identify the mechanism behind one of those findings, three
+candidate explanations were proposed and none survived — which is itself the most honest
+thing here.
 
 ## What this does not change
 
