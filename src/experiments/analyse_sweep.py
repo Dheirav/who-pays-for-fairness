@@ -28,9 +28,20 @@ for 46% of rows. ACS records the same relation as one husband/wife code that is 
 male, so there is no comparable target. Sex should be correspondingly harder to
 recover. Measured by :meth:`FairnessDataset.attribute_leakage`.
 
+``--protected RAC1P`` re-runs the same analysis over the race-protected arm. That arm
+exists for P1 alone: on sex the group ratio spans only 1.02-1.24 across every state and
+is confounded with population size at r = +0.794, so neither can be read on its own. On
+race it spans 1.94-24.98 with the confound *inverted* (r = -0.567), and the two arms
+agreeing or disagreeing is what identifies which quantity is doing the work.
+
+P3 is not evaluated there -- it is a contrast between Adult and ACS, and Adult protects
+sex -- and P2's meaning changes with the groups, so it is descriptive rather than a test
+of the original prediction.
+
 Usage:
     python -m src.experiments.analyse_sweep
     python -m src.experiments.analyse_sweep --states VT NM MS WV WY ND UT AL OR
+    python -m src.experiments.analyse_sweep --protected RAC1P
 """
 
 from __future__ import annotations
@@ -215,7 +226,7 @@ def main() -> None:
 
     print()
     print("=" * 78)
-    print("P3  sex is harder to recover where no feature determines it")
+    print(f"P3  {arm} is harder to recover where no feature determines it")
     print("=" * 78)
     leakage = (
         runs.groupby("population")
@@ -223,14 +234,26 @@ def main() -> None:
         .sort_values("leakage_auc", ascending=False)
     )
     print(leakage.round(4).to_string())
-    adult = leakage.loc["Adult", "leakage_auc"]
-    acs = leakage.drop(index="Adult")["leakage_auc"]
-    print(f"\n  Adult (relationship fixes sex for 46% of rows) : {adult:.4f}")
-    print(f"  ACS   (husband/wife is one code, 50.2% male)   : "
-          f"{acs.mean():.4f} mean, {acs.min():.4f}-{acs.max():.4f}")
-    print(f"  -> {'CONFIRMED' if acs.max() < adult else 'NOT CONFIRMED'}: "
-          f"every ACS population leaks less than Adult"
-          if acs.max() < adult else "  -> NOT CONFIRMED")
+
+    # P3 is a contrast between Adult and everything else, so it is only defined on the
+    # arm Adult belongs to. On any other arm the ACS populations are all that exist and
+    # there is no comparison to draw; the leakage figures are still worth printing as a
+    # description of the populations, but calling the prediction from them would be
+    # inventing a test the design does not support.
+    if "Adult" in leakage.index:
+        adult = leakage.loc["Adult", "leakage_auc"]
+        acs = leakage.drop(index="Adult")["leakage_auc"]
+        print(f"\n  Adult (relationship fixes sex for 46% of rows) : {adult:.4f}")
+        print(f"  ACS   (husband/wife is one code, 50.2% male)   : "
+              f"{acs.mean():.4f} mean, {acs.min():.4f}-{acs.max():.4f}")
+        verdict = "CONFIRMED" if acs.max() < adult else "NOT CONFIRMED"
+        print(f"  -> {verdict}: every ACS population leaks less than Adult"
+              if acs.max() < adult
+              else f"  -> {verdict}: {(acs >= adult).sum()} ACS populations leak at "
+                   f"least as much as Adult")
+    else:
+        print(f"\n  P3 not evaluated: it contrasts Adult against ACS, and Adult is not"
+              f"\n  in the {arm} arm. Leakage above describes these populations only.")
 
     # The arm has to reach the filename for the same reason it has to reach the dataset
     # name: both arms analyse the same states in the same year, so without it a race
