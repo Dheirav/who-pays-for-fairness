@@ -1,7 +1,7 @@
 # 12 — Intersectional fairness across ten populations
 
 **Not in the initiation document, and beyond the course submission.** This is to
-[document 07](07-intersectional.md) what [document 11](11-replication-across-populations.md)
+[document 07](../../docs/07-intersectional.md) what [document 11](11-replication-across-populations.md)
 is to documents 05 and 06: a test of whether the finding is about the method or about
 Adult.
 

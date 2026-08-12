@@ -15,9 +15,6 @@ base paper. Written to be read in order, but each file stands alone.
 | 08 | [Comparison with the base paper](08-vs-base-paper.md) | Consolidated: confirmed, extended, contradicted |
 | 09 | [Proxy removal](09-proxy-removal.md) | If the model leans on a leaky feature, does deleting it help? *(negative control — deliberately not in-processing)* |
 | 10 | [Epsilon sweep](10-epsilon-sweep.md) | Is levelling down just an artifact of a tight constraint? |
-| 11 | [Replication across populations](11-replication-across-populations.md) | Which findings are about the method, and which about Adult? *(beyond the course submission)* |
-| 12 | [Intersectional across populations](12-intersectional-across-populations.md) | Gerrymandering replicates and is worse than Adult — where there is a minority to hide in *(beyond the course submission)* |
-| 13 | [Separating ratio from size](13-separating-ratio-from-size.md) | A second protected attribute breaks the confound, and retracts document 11's correction *(beyond the course submission)* |
 
 ## The short version
 
@@ -41,27 +38,6 @@ The same algorithm that scores best on the fairness metric also:
 
 None of that makes the method wrong. It makes the headline metric an incomplete
 description of what the method did, which is a different and more useful claim.
-
-[Document 11](11-replication-across-populations.md) then tests three of these findings
-on nine other populations. One held cleanly, one held only under a condition that had
-to be discovered, and one did not hold. Two failures out of three is the informative
-outcome: a clean sweep would suggest the predictions had been fitted to the data they
-came from. Nothing in documents 01–10 is retracted, and the course deliverables are
-unaffected — the claim that failed appears in neither of them.
-
-[Document 12](12-intersectional-across-populations.md) does the same for the
-intersectional result, and it survives better than any other: the gerrymandering
-Adult showed at 9.0× reaches 13.2× elsewhere. It gains one condition — it needs a
-substantial minority to hide in, and where a population is 95% one race a constraint on
-sex fixes the intersection by default. That relationship is the first in the project
-whose two candidate explanations are not confounded with each other.
-
-[Document 13](13-separating-ratio-from-size.md) builds a second protected attribute for
-the sole purpose of breaking the confound that document 11 could not escape, and the
-result is a retraction: the tentative first reading was right, the confident correction
-was wrong, and group ratio is a genuine cause acting through cross-flow rather than a
-spurious correlate. Its analysis was written and committed before the data existed, for
-exactly that reason.
 
 ## Scope: purely in-processing
 
