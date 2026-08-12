@@ -48,8 +48,9 @@ was wrong.
 
 ## What the data turned out to say
 
-**This section is exploratory.** It was found by looking at the results of a failed
-prediction, not by testing a stated one, and it is reported at that lower standard.
+**This section was found exploratorily** — by looking at the results of a failed
+prediction rather than by testing a stated one. It was reported at that lower
+standard until the confirmation below, which was pre-registered and which it passed.
 
 The race arm reverses the direction of the effect entirely:
 
@@ -113,15 +114,38 @@ at best and is arrived at by dropping the inconvenient point, so it is not claim
 | 11 (P2) | The failure to predict the magnitude now has an explanation. Its statement that the conflict is "near-universal in direction" needs qualifying: that held across populations, but **not across protected attributes** — the direction reverses in the race arm |
 | 04 (ablation) | Unaffected on Adult, where the cost is real and large (+0.185) |
 
-## What would confirm it
+## The confirmation — and it survived
 
-The claim is exploratory and the honest next step is a test it could fail: **the endpoint
-should be predictable from the constrained problem alone.** If post-constraint EO is a
-property of the solution rather than the starting point, then two different mitigations
-that satisfy the same DP bound on the same population should land at similar EO — while
-their baselines are identical by construction, so the *costs* would be identical too and
-tell you nothing new. Comparing `expgrad_dp` against `gridsearch_dp`, which already exist
-in every run, would test it without a single refit.
+The test above was written into this document and **committed before it was run**
+(`528da3e`), with its thresholds fixed in the code rather than chosen afterwards. If
+post-constraint EO belongs to the constrained *solution*, two different mitigations
+satisfying the same DP bound on one population should land at similar EO.
+`expgrad_dp` and `gridsearch_dp` both target DP ≤ 0.01 and both already existed in all
+nineteen populations, so it cost no refits.
 
-That is left stated rather than done, because writing the test after seeing the result it
-should produce is exactly the failure mode this project has already recorded twice.
+| | result | bar | |
+|---|---|---|---|
+| **D0** precondition — do both actually reach comparable DP? | mean \|ΔDP\| = **0.0113** | < 0.02 | HOLDS |
+| **D1** do the methods agree across populations? | r = **+0.922** | > 0.7 | HOLDS |
+| **D2** do they agree more than populations differ? | \|ΔEO\| = **0.0205** vs sd **0.0622** | < | HOLDS |
+
+Two independently-derived algorithms — one playing a Lagrangian game to equilibrium, the
+other sweeping a fixed grid of multipliers — land within 0.02 EO of each other, while EO
+varies three times as much *between populations*. And that endpoint remains uncorrelated
+with where each population started (r = −0.106).
+
+**The endpoint is a property of the constrained problem, not of the method that solves it
+and not of the model it replaced.** This is the strongest form the claim can take on this
+evidence, and it came from a test that could have failed: had the two methods disagreed,
+the explanation would have been refuted.
+
+The claim is therefore no longer exploratory. It was *found* exploratorily — that history
+is left standing above rather than tidied away — and then confirmed by a prediction made
+in advance.
+
+## What is still not claimed
+
+That the constrained model converges to a *fixed* EO level, and that any of this extends
+past one constraint (demographic parity at ε = 0.01) and one task. D1 and D2 establish
+that two solvers of the same constrained problem agree; they say nothing about a
+different constraint.
