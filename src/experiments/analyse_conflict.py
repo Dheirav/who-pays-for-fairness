@@ -51,6 +51,33 @@ If all three fail, the honest report is that the magnitude of the DP/EO conflict
 predicted by any quantity this project has tested, and that stays written down rather
 than being retried until something correlates.
 
+The confirmation, added after C1-C3 failed
+------------------------------------------
+They did fail, and the explanation that emerged instead -- that post-constraint EO is
+independent of pre-constraint EO, so the cost is dominated by the baseline -- was found by
+looking at those failures rather than by testing a stated prediction. document 14 reports
+it as exploratory and names the test that could refute it:
+
+    if post-constraint EO is a property of the constrained *solution* rather than of the
+    model it replaced, two different mitigations satisfying the same DP bound on the same
+    population should land at similar EO.
+
+``expgrad_dp`` and ``gridsearch_dp`` both target DP <= 0.01 and both already exist in
+every run, so this costs no refits. The test was written into document 14 and committed
+before being run, which is what separates it from fitting a test to a known answer.
+
+**D0 -- precondition.** Both methods must actually satisfy comparable DP, or they are not
+two solutions to the same problem and nothing below means anything. Mean |DP difference
+between the methods| must be under 0.02.
+
+**D1 -- the two methods agree across populations.** r(EO after expgrad, EO after
+gridsearch) > 0.7.
+
+**D2 -- they agree more than populations differ.** Mean |EO difference between methods|
+is smaller than the standard deviation of EO across populations. If the choice of
+mitigation matters as much as the choice of population, the endpoint is not a property of
+the constraint and document 14's explanation is wrong.
+
 Usage:
     python -m src.experiments.analyse_conflict
     python -m src.experiments.analyse_conflict --seeds 0 1 2
@@ -81,6 +108,10 @@ MIN_USEFUL_CORRELATION = 0.5
 # module then printed "C3 FAILS" from three. A module that answers before the data can
 # support an answer is worse than one that stays silent, because it looks like an answer.
 MIN_POPULATIONS_PER_ARM = 8
+
+# D0/D1/D2, fixed here before the confirmation was run. See the docstring.
+MAX_DP_DISAGREEMENT = 0.02
+MIN_METHOD_AGREEMENT = 0.7
 
 
 def within_group_separability(dataset, seeds: list[int]) -> dict[str, float]:
@@ -123,6 +154,7 @@ def population_row(key: str, label: str, arm: str, seeds: list[int]) -> dict | N
     dp = runs[runs["method"] == "expgrad_dp"]
     if dp.empty:
         return None
+    grid = runs[runs["method"] == "gridsearch_dp"]
 
     rates = dataset.base_rates().set_index("group")
     gap = rates.loc["privileged", "P(y=1)"] - rates.loc["unprivileged", "P(y=1)"]
@@ -133,6 +165,11 @@ def population_row(key: str, label: str, arm: str, seeds: list[int]) -> dict | N
         "arm": arm,
         "n": dataset.n_samples,
         "base_rate_gap": gap,
+        "baseline_eo": float(dp["baseline_eo_diff"].mean()),
+        "eo_expgrad": float(dp["eo_diff"].mean()),
+        "dp_expgrad": float(dp["dp_diff"].mean()),
+        "eo_gridsearch": float(grid["eo_diff"].mean()) if not grid.empty else np.nan,
+        "dp_gridsearch": float(grid["dp_diff"].mean()) if not grid.empty else np.nan,
         "eo_cost": float((dp["eo_diff"] - dp["baseline_eo_diff"]).mean()),
         **separability,
         # The proposed composite: pressure to move, weighted by the cost of moving.
@@ -223,6 +260,43 @@ def main() -> None:
         print("\n  NOTE: neither C1 nor C2 held. The honest conclusion is that the")
         print("  magnitude of the DP/EO conflict is not predicted by any quantity this")
         print("  project has tested. That is a result and is to be reported as one.")
+
+    print("\n" + "=" * 78)
+    print("D   does the endpoint belong to the constrained solution?")
+    print("=" * 78)
+    both = frame.dropna(subset=["eo_gridsearch"])
+    dp_disagreement = (both["dp_expgrad"] - both["dp_gridsearch"]).abs().mean()
+    eo_disagreement = (both["eo_expgrad"] - both["eo_gridsearch"]).abs().mean()
+    spread = both["eo_expgrad"].std()
+    r_methods, _ = correlate(both, "eo_expgrad", "eo_gridsearch")
+    r_base, _ = correlate(both, "baseline_eo", "eo_expgrad")
+
+    print(both[["population", "arm", "baseline_eo", "eo_expgrad", "eo_gridsearch"]]
+          .round(4).to_string(index=False))
+    print(f"\n  mean |DP difference between methods| = {dp_disagreement:.4f} "
+          f"(D0 bar: < {MAX_DP_DISAGREEMENT})")
+    d0 = dp_disagreement < MAX_DP_DISAGREEMENT
+    print(f"  -> D0 {'HOLDS' if d0 else 'FAILS'}"
+          f"{'' if d0 else ': the two are not solving the same problem, so D1/D2 are void'}")
+
+    print(f"\n  r(EO expgrad, EO gridsearch)         = {r_methods:+.3f} "
+          f"(D1 bar: > {MIN_METHOD_AGREEMENT})")
+    d1 = r_methods > MIN_METHOD_AGREEMENT
+    print(f"  -> D1 {'HOLDS' if d1 else 'FAILS'}")
+
+    print(f"\n  mean |EO difference between methods| = {eo_disagreement:.4f}")
+    print(f"  sd of EO across populations          = {spread:.4f}")
+    d2 = eo_disagreement < spread
+    print(f"  -> D2 {'HOLDS' if d2 else 'FAILS'}: the choice of mitigation matters "
+          f"{'less' if d2 else 'as much as or more'} than the choice of population")
+
+    print(f"\n  for reference, r(baseline EO, EO after) = {r_base:+.3f} -- the exploratory")
+    print( "  finding this section exists to confirm or refute")
+    if d0 and d1 and d2:
+        print("\n  -> document 14's explanation survives a test it could have failed.")
+    else:
+        print("\n  -> document 14's explanation does NOT survive. It is exploratory and")
+        print("     must be reported as refuted, not quietly rewritten.")
 
     out = research_dir("conflict")
     frame.to_csv(out / "conflict_predictors.csv", index=False)
