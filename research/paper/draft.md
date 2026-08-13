@@ -271,7 +271,26 @@ The sweep places both datasets it was not fitted to: Adult at 0.205 shrinks, HMD
 grows. It does not fit them tightly — Alabama loses 2.34% at 0.252 where Adult loses 20.5%
 at 0.205 — so the selection rate sets the direction but not the magnitude.
 
-### 4.5 The residual is not group ratio `[SETTLED]`
+### 4.5 An identity that clarifies, and a mechanism we do not have `[SETTLED]`
+
+Demographic parity puts both groups on one common rate *s*, so the constrained total *is*
+*s*, while the unconstrained total is the size-weighted average of the two group rates.
+Writing λ for where *s* falls between them, the pie is preserved **exactly when λ = p**,
+with *p* the privileged group's share. Levelling down is λ < p and nothing else — the
+optimiser choosing a compromise below the size-weighted one. This holds to 0.076 percentage
+points across fourteen held-out populations and requires no assumptions.
+
+It localises the question without answering it. We attempted a mechanism — under group-wise
+thresholding, calibration and a location shift, levelling down is a curvature effect and the
+crossover sits at the mode of the score density — pre-registered it, and tested it on
+fourteen populations run afterwards. It passes its stated bars (sign predicted in 12 of 14)
+and is nonetheless **beaten by the constant rule "levelling up iff the selection rate exceeds
+0.5" (13 of 14)**. The measured mode moves inversely with the selection rate
+(r = −0.802), so it carries almost no independent information; controlling for the selection
+rate, curvature's partial correlation with λ − p is −0.182. We report the attempt as
+unsuccessful rather than omitting it, and the flip as an empirical regularity.
+
+### 4.6 The residual is not group ratio `[SETTLED]`
 
 The obvious candidate for the leftover magnitude was the group ratio, which prior work in
 this project found to be a genuine cause of the rate-versus-people divergence. We

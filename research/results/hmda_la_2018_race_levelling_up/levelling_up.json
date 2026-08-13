@@ -1,0 +1,21 @@
+{
+  "experiment": "levelling_up",
+  "signature": "eps0.01_seeds0-4",
+  "params": {
+    "dataset": "hmda:LA:derived_race",
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "eps": 0.01
+  },
+  "files": [
+    "levelling_up_runs__eps0.01_seeds0-4.csv",
+    "levelling_up_runs.csv",
+    "levelling_up_summary__eps0.01_seeds0-4.csv",
+    "levelling_up_summary.csv"
+  ]
+}
