@@ -252,10 +252,18 @@ are unchanged across arms and only the label moves.
 | $10,000 | 0.890 | +0.08% | 0.89 |
 
 The direction flips, with the crossover between 0.25 and 0.60. Oregon replicates it more
-sharply (r = +0.964 against Alabama's +0.801) despite starting nearer the crossover. The
-base-rate gap is genuinely confounded with the selection rate in this design — it must
-vanish at both extremes — and partialling it out *strengthens* the relationship, to
-r = +0.980 and +0.994.
+sharply (r = +0.964 against Alabama's +0.801) despite starting nearer the crossover.
+
+**The moderator is the selection-rate *level*, not the between-group base-rate *gap*, and
+the distinction carries the contribution.** That unequal base rates across groups force
+trade-offs is long established (Kleinberg et al., 2016; Chouldechova, 2017) and is
+standard textbook material. Our claim is about a different quantity: the overall proportion
+of the population receiving a favourable decision, irrespective of any gap. The two are
+confounded in this design by construction — the gap must vanish as the level approaches 0
+or 1 — so we partial the gap out, and the relationship *strengthens*, from r = +0.801 to
++0.980 in Alabama and +0.964 to +0.994 in Oregon. That control is not a robustness check
+appended to the result; it is the identification strategy, and it is what separates this
+claim from the one the field already has.
 
 The sweep places both datasets it was not fitted to: Adult at 0.205 shrinks, HMDA at 0.808
 grows. It does not fit them tightly — Alabama loses 2.34% at 0.252 where Adult loses 20.5%

@@ -156,6 +156,39 @@ explicitly.
 
 ---
 
+## 9. Novelty checks that came back clean
+
+Two further sweeps, run to probe the flanks that had not been checked at all.
+
+**Does anyone already report that fairness constraints change feature attributions?** (§6.)
+Nothing directly on point surfaced: the adjacent literature is about the *fairness of
+explanations* rather than about what a constraint does to them. One adjacent observation is
+worth citing if the search can be repeated — that SHAP distributes credit among correlated
+features in ways that are "technically correct ... but socially misleading" — which is
+independent support for [document 20](../docs/20-what-a-share-can-carry.md)'s compositional
+argument.
+
+**Is the selection-rate moderator known?** (§4.4.) No collision, but the sweep surfaced a
+**phrasing risk that has been fixed in the draft**, and it is the most useful thing this
+round produced.
+
+The literature discusses base-rate **differences between groups** at length — unequal
+prevalence forcing trade-offs is Kleinberg et al. and Chouldechova, and appears in every
+tutorial on demographic parity. Our claim is about a different quantity: the **overall
+level** of the selection rate, irrespective of any gap. A reviewer skimming §4.4 could
+easily conflate the two and dismiss the finding as textbook.
+
+The defence already exists in the experiment and simply was not being presented as one.
+Document 23's T2 partials the between-group gap out, and the relationship strengthens rather
+than weakens. **That control is the identification strategy, not a robustness check**, and
+§4.4 now says so explicitly.
+
+**Search availability.** Two further queries — on proxy-reliance measurement before and
+after mitigation, and on Zietlow et al.'s levelling-down demonstration in computer vision —
+could not be run; the search backend returned errors. Both remain open and neither is
+load-bearing: the first is a novelty check on a *negative* result, and the second is a
+vision paper cited by Mittelstadt et al. for a claim we already accept.
+
 ## Still unverified
 
 | paper | why the risk is low |
