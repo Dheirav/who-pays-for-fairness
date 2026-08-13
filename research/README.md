@@ -39,12 +39,16 @@ package and moving them would break imports:
 | `src/experiments/analyse_sweep.py` | P1/P2/P3 across populations |
 | `src/experiments/analyse_arms.py` | the pre-registered two-arm analysis |
 | `src/experiments/analyse_conflict.py` | the pre-registered DP/EO conflict analysis |
+| `src/experiments/analyse_attribution.py` | the post-hoc decomposition of document 06's share |
+| `src/experiments/analyse_levelling_up.py` | the pre-registered replication of document 19 |
+| `src/datasets/hmda.py` | HMDA mortgage loader, both protected-attribute arms |
+| `src/experiments/analyse_threshold.py` | the pre-registered income-threshold sweep |
 
 They cannot be **moved** here, but they are **excluded from the submission bundle**:
 `datasets.build` imports the ACS loader lazily, inside the branch that requests it, so
-the course code neither imports nor needs any of them. `scripts/build_submission.py`
-drops all four, and the resulting bundle was unpacked and its suites run to confirm it
-stands alone.
+the course code neither imports nor needs any of them, and the HMDA loader is imported the
+same way. `scripts/build_submission.py` drops every file in that table, and the resulting
+bundle was unpacked and its suites run to confirm it stands alone.
 
 Three shared files were also extended for this work — `src/results_io.py`,
 `src/datasets/base.py`, `src/datasets/__init__.py` — and those changes improved the
@@ -63,14 +67,29 @@ course-side code as a side effect. They are not claimed as exclusively individua
 | 17 | [Neither explanation survives](docs/17-neither-explanation-survives.md) | The replacement fails too; the constraint barely changes which features are used |
 | 18 | [The collinearity test is confounded](docs/18-the-collinearity-test-is-confounded.md) | The third candidate resisted a clean test; why the design cannot work |
 | 19 | [Levelling up is expressible](docs/19-levelling-up-is-expressible.md) | Put "don't shrink the pie" in the objective and you get it, for 0.37 accuracy points |
+| 20 | [What a share can carry](docs/20-what-a-share-can-carry.md) | Most of the +151% is credit moving inside one collinear pair; document 17's claim is narrowed |
+| 21 | [The floor replicates](docs/21-the-floor-replicates.md) | The selection-rate floor holds across 19 populations; Adult was the extreme case, and one prediction failed |
+| 22 | [Levelling down is not universal](docs/22-levelling-down-is-not-universal.md) | A second *domain*: on mortgage decisions the constraint levels up unprompted, and document 05 gains a scope condition |
+| 23 | [What decides the direction](docs/23-the-selection-rate-sets-the-direction.md) | Move one number and the direction flips: levelling down happens below a selection rate of ~0.3 |
 
 ## The short version
 
 Documents 01–10 are all measurements on one dataset. Ding et al. (2021), *Retiring
 Adult*, argues the field should stop drawing conclusions from exactly that dataset. Until
 a finding survives a population it was not derived from, "the constraint causes X" and
-"Adult has property X" are indistinguishable. These eight documents test that, on 19
-populations across two protected attributes.
+"Adult has property X" are indistinguishable. These documents test that, on 19 survey
+populations across two protected attributes — and then, in document 22, on a domain that is
+not a survey at all.
+
+**What did not survive a second domain.** Every population above is a household survey. On
+**HMDA mortgage decisions** — an administrative record of real lending outcomes rather than
+a survey — the demographic parity constraint **levels up unprompted**, growing favourable
+decisions by 4.3% at an exchange rate of 0.50 while removing 94% of the parity violation
+(document 22). Twenty populations point one way and the twenty-first and twenty-second point
+the other. Nothing in documents 05 or 21 is retracted; what changes is their reach.
+Levelling down is a property of the fairness-constrained problems this project had been
+looking at, not of demographic parity constraints in general. The parity metric reports the
+same success either way, which is the project's through-line stated as sharply as it gets.
 
 **What replicated.** The intersectional result is the strongest thing here: fairness
 gerrymandering appears in every sufficiently diverse population and is *worse* than Adult
@@ -95,16 +114,24 @@ itself was wrong and is retracted (document 13): the tentative first reading was
 and group ratio is a genuine cause acting through cross-flow rather than a spurious
 correlate. Document 06's proposed mechanism — that the constraint seeks reconstructions of
 the protected attribute — is refuted by intervention: a planted proxy is used *less* as it
-sharpens (document 16). Its replacement is refuted too (document 17). The third candidate
-resisted a clean test for a structural reason (document 18). The +151% attribution shift
-on Adult is real, reproducible and unexplained.
+sharpens (document 16). Its replacement is refuted too (document 17). The third candidate,
+collinear reallocation, resisted the intervention designed for it (document 18) but is
+**partially supported** by re-aggregating the existing result: scoring Adult's two most
+redundant features as one coalition takes the +151% down to +11.6% (document 20). Most of
+the headline is credit moving between near-substitutes. The remaining +11.6% is
+seed-consistent and still unexplained.
 
 **What that produced instead.** Across six cells the constrained model's attribution
 tracked the unconstrained model's to within 0.03 share while the share itself moved
-ninefold: **the demographic parity constraint does not systematically change which
-features the model leans on.** And on small populations the method's own randomness
-exceeds the entire effect of the constraint — in 5 of 38 randomized runs, all of them
-below 2,500 test subjects (document 15).
+ninefold. That was originally stated as *the demographic parity constraint does not
+systematically change which features the model leans on*; document 20 narrows it to the
+planted column it was measured on, because attribution *shares* are compositional and
+cannot identify which features a model leans on — and because Adult contradicts the
+general form. What survives is constraint-specific and interesting on its own: holding the
+algorithm fixed, demographic parity raises the collinear pair's combined share while
+equalized odds lowers it. And on small populations the method's own randomness exceeds the
+entire effect of the constraint — in 5 of 38 randomized runs, all of them below 2,500 test
+subjects (document 15).
 
 **What could be fixed.** Document 05 ended by claiming that levelling up would have to be
 part of the objective or it would not happen. It was never tested; it is now, and it holds
@@ -114,6 +141,14 @@ and the exchange rate goes from **2.68 favourable decisions destroyed per one cr
 1.03**. It costs 0.37 accuracy points. This is not a new method; a selection-rate floor is
 a linear constraint on a conditional moment and sits inside the base paper's own
 framework. The finding is about objectives, not algorithms.
+
+That claim has since been through the same replication as everything else here, and it
+holds: across **19 populations and both protected-attribute arms, the exchange rate fell in
+every one**, from 1.47 to 0.88 in the sex arm and 1.59 to 0.79 in the race arm (document
+21). Two things needed correcting. Adult is the **extreme** case rather than the typical
+one — its −20.5% pie loss sits against a −6.1% mean elsewhere — and the floor does not
+merely protect the pie, it *grows* it, in 18 of 19 populations. One of that document's five
+pre-registered predictions failed, and the failure is recorded rather than repaired.
 
 **The through-line.** A fairness metric describes an outcome state, not a mechanism. Every
 headline number in documents 02–04 is correct and every finding above is invisible in it.

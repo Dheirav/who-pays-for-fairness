@@ -348,6 +348,211 @@ def test_course_documents_still_match_their_results() -> None:
           f"report quotes them too")
 
 
+def test_doc20_share_decomposition() -> None:
+    """docs/20: the coalition figure, its seed consistency, and the donor split.
+
+    Recomputed through the analysis module's own functions rather than reimplemented
+    here, so that a change to how the decomposition is defined fails this test instead
+    of silently leaving the document describing an older definition.
+    """
+    from src.experiments.analyse_attribution import (
+        donors, load_seed_shares, pair_across_methods, pair_by_seed,
+    )
+
+    # The pair is an argument to the module, so the document's subject is named here
+    # rather than inherited from a constant that could change underneath it.
+    pair = ["relationship", "marital-status"]
+    text = _doc(20)
+    per_seed = pair_by_seed(load_seed_shares(COURSE, list(range(5))), "expgrad_dp", pair)
+    mean_shares = pd.read_csv(COURSE / "shap_feature_shares.csv", index_col=0)
+    across = pair_across_methods(mean_shares, pair)
+    given_up = donors(mean_shares, "expgrad_dp")
+
+    documented = {
+        "relationship, mean over seeds": (per_seed["first_pct"].mean(), "+155.0%"),
+        "the pair, mean over seeds": (per_seed["pair_pct"].mean(), "+11.6%"),
+        "expgrad_dp pair, from mean shares": (across.loc["expgrad_dp", "pair_pct"], "+11.7%"),
+        "expgrad_eo pair, from mean shares": (across.loc["expgrad_eo", "pair_pct"], "−26.4%"),
+        "marital-status share of losses": (
+            given_up.loc["marital-status", "pct_of_all_given_up"], "44.9%"),
+    }
+    for label, (value, quoted) in documented.items():
+        assert quoted in text, f"docs/20 no longer states {label} = {quoted}"
+        assert abs(value - float(quoted.replace("−", "-").strip("+%"))) < 0.05, (
+            f"docs/20 says {label} = {quoted}, data gives {value:+.1f}%"
+        )
+
+    # The document's argument rests on the residual being present in every split, not on
+    # its size, so that is asserted rather than the mean alone.
+    positive = int((per_seed["pair_pct"] > 0).sum())
+    assert positive == len(per_seed), (
+        f"docs/20 claims the coalition residual is positive in every seed; "
+        f"it is positive in {positive}/{len(per_seed)}"
+    )
+    assert "5 of 5 seeds" in text, "docs/20 no longer states the 5-of-5 seed consistency"
+
+    # The constraint-specific reading in docs/18's amendment needs the signs to differ.
+    assert across.loc["expgrad_dp", "pair_pct"] > 0 > across.loc["expgrad_eo", "pair_pct"], (
+        "docs/18's amendment claims DP raises the pair while EO lowers it; the signs no "
+        "longer differ"
+    )
+    print(f"  coalition {per_seed['pair_pct'].mean():+.1f}% against "
+          f"{per_seed['first_pct'].mean():+.1f}% for the single feature, "
+          f"positive in {positive}/{len(per_seed)} seeds")
+
+
+def test_doc21_floor_replication() -> None:
+    """docs/21: the replication verdict, including the prediction that failed.
+
+    The failed prediction is asserted *as failing*. A later change that quietly made L2
+    pass would leave the document describing a failure that no longer exists, which is
+    the same staleness this suite exists to catch.
+    """
+    from src.experiments.analyse_levelling_up import DEFAULT_STATES, RACE_ARM, SEX_ARM, load_arm
+
+    text = _doc(21)
+    arms = {SEX_ARM: load_arm(DEFAULT_STATES, SEX_ARM), RACE_ARM: load_arm(DEFAULT_STATES, RACE_ARM)}
+    assert len(arms[SEX_ARM]) == 10, f"docs/21 claims 10 sex-arm populations, got {len(arms[SEX_ARM])}"
+    assert len(arms[RACE_ARM]) == 9, f"docs/21 claims 9 race-arm populations, got {len(arms[RACE_ARM])}"
+
+    # `_quotes` folds the document's U+2212 minus to ASCII, so these must be ASCII too.
+    _quotes(text, "0.0020", "0.0037", "-6.4%", "+2.1%", "-7.4%", "+3.1%",
+            "1.47", "0.88", "1.59", "0.79", "+0.12", "+0.15", "-0.708", "-0.567",
+            "6.88%", "2.65%", "-20.5%", "-6.1%", "2.68", "1.46")
+
+    for arm, expected in ((SEX_ARM, {"parity": 0.0020, "pie_plain": -6.4, "pie_floor": 2.1,
+                                     "ex_plain": 1.47, "ex_floor": 0.88, "cost": 0.12}),
+                          (RACE_ARM, {"parity": 0.0037, "pie_plain": -7.4, "pie_floor": 3.1,
+                                      "ex_plain": 1.59, "ex_floor": 0.79, "cost": 0.15})):
+        frame = arms[arm]
+        got = {
+            "parity": (frame["dp_floor"] - frame["dp_plain"]).abs().mean(),
+            "pie_plain": frame["pie_plain"].mean(),
+            "pie_floor": frame["pie_floor"].mean(),
+            "ex_plain": frame["exchange_plain"].mean(),
+            "ex_floor": frame["exchange_floor"].mean(),
+            "cost": frame["extra_cost_pts"].mean(),
+        }
+        for key, value in expected.items():
+            assert abs(got[key] - value) < 0.05, (
+                f"docs/21 says {arm} {key} = {value}, data gives {got[key]:.4f}"
+            )
+        # L3 held unanimously; that is what carries the finding after L2 failed.
+        assert (frame["exchange_floor"] < frame["exchange_plain"]).all(), (
+            f"docs/21 claims the exchange rate fell in every {arm} population; it did not"
+        )
+        # L2 failed. If this ever passes, the document is stale.
+        improved = frame["pie_floor"].abs() < frame["pie_plain"].abs()
+        assert not improved.all(), (
+            f"docs/21 records L2 as FAILING in the {arm} arm; it now passes, so the "
+            "document must be rewritten rather than left describing a failure"
+        )
+
+    combined = pd.concat(arms.values())
+    assert len(combined) == 19, f"docs/21 claims 19 populations, got {len(combined)}"
+    assert int((combined["exchange_floor"] < 1).sum()) == 16, "docs/21 states 16 of 19 under 1.0"
+    assert int((combined["exchange_plain"] < 1).sum()) == 1, "docs/21 states 1 of 19 under 1.0 plain"
+    assert int((combined["pie_floor"] < 0).sum()) == 1, "docs/21 states only Adult still shrinks"
+    assert combined.loc["Adult", "pie_plain"].mean() < combined[
+        combined.index != "Adult"]["pie_plain"].mean(), "docs/21 claims Adult is the extreme case"
+    print(f"  19 populations; L3 unanimous, L2 failed as documented; "
+          f"exchange under 1.0 in {int((combined['exchange_floor'] < 1).sum())}/19")
+
+
+def test_doc22_hmda_levels_up() -> None:
+    """docs/22: the second domain reverses the levelling-down direction.
+
+    The sign is asserted, not just the magnitude. The document's whole claim is that the
+    pie *grows* here, so a change that flipped it back would make the document wrong in a
+    way a tolerance check on the number alone would not catch.
+    """
+    text = _doc(22)
+    _quotes(text, "0.1774", "0.0103", "+4.26%", "0.496", "0.0747", "0.0280",
+            "+1.05%", "0.779", "0.808", "0.758", "+0.510", "-0.493")
+
+    for arm, expected in (("race", {"dp_base": 0.1774, "dp_plain": 0.0103,
+                                    "pie": 4.26, "exchange": 0.496}),
+                          ("sex", {"dp_base": 0.0747, "dp_plain": 0.0280,
+                                   "pie": 1.05, "exchange": 0.779})):
+        runs = pd.read_csv(RESEARCH / f"hmda_ms_2018_{arm}_levelling_up"
+                           / "levelling_up_runs.csv")
+        mean = runs.groupby("arm").mean(numeric_only=True)
+        got = {
+            "dp_base": mean.loc["baseline", "dp_diff"],
+            "dp_plain": mean.loc["expgrad_dp", "dp_diff"],
+            "pie": mean.loc["expgrad_dp", "positives_pct_change"],
+            "exchange": mean.loc["expgrad_dp", "lost_per_gained"],
+        }
+        for key, value in expected.items():
+            assert abs(got[key] - value) < 0.01, (
+                f"docs/22 says {arm} {key} = {value}, data gives {got[key]:.4f}"
+            )
+        # The direction is the finding. Both must hold, in both arms.
+        assert got["pie"] > 0, (
+            f"docs/22 claims the {arm} arm GROWS the pie; it now shrinks it ({got['pie']:+.2f}%)"
+        )
+        assert got["exchange"] < 1, (
+            f"docs/22 claims the {arm} arm creates more than it destroys; "
+            f"exchange is now {got['exchange']:.3f}"
+        )
+        # Not noise: the effect must clear the across-seed spread.
+        spread = runs.groupby("arm")["positives_pct_change"].std()["expgrad_dp"]
+        assert abs(got["pie"]) > 2 * spread, (
+            f"docs/22 rests on the {arm} effect ({got['pie']:+.2f}%) clearing its "
+            f"across-seed spread ({spread:.2f}); it no longer does"
+        )
+    print("  both HMDA arms level up, effects clear 2x their seed spread")
+
+
+def test_doc23_threshold_sweep() -> None:
+    """docs/23: the single-factor sweep, recomputed through the analysis module."""
+    from src.experiments.analyse_threshold import (
+        MIN_BASELINE_GAP, attach_selection_rate, load, partial_corr,
+    )
+
+    text = _doc(23)
+    _quotes(text, "+0.801", "+0.980", "-0.874", "-0.408", "-29.71%", "+0.08%",
+            "22.03", "0.75", "-0.994", "+30.93", "0.890", "0.030")
+
+    frame = attach_selection_rate(load(["AL"], [10_000, 20_000, 30_000, 50_000,
+                                               70_000, 100_000]), ["AL"])
+    assert len(frame) == 6, f"docs/23 reports six arms, found {len(frame)}"
+    kept = frame[frame["dp_base"] >= MIN_BASELINE_GAP]
+    assert len(kept) == 4, f"docs/23 reports four non-degenerate arms, found {len(kept)}"
+
+    checks = {
+        "T1 r(rate, pie)": (np.corrcoef(kept["selection_rate"], kept["pie_plain"])[0, 1], 0.801),
+        "T2 partial r": (partial_corr(kept["selection_rate"], kept["pie_plain"],
+                                      kept["dp_base"]), 0.980),
+        "T3 r(rate, exchange)": (np.corrcoef(kept["selection_rate"],
+                                             kept["exchange_plain"])[0, 1], -0.874),
+        "confound r(rate, gap)": (np.corrcoef(kept["selection_rate"],
+                                              kept["dp_base"])[0, 1], -0.408),
+        "floor tracks the damage": (np.corrcoef(frame["pie_plain"],
+                                                frame["pie_floor"] - frame["pie_plain"])[0, 1],
+                                    -0.994),
+    }
+    for name, (got, documented) in checks.items():
+        assert abs(got - documented) < 0.005, (
+            f"docs/23 says {name} = {documented:+.3f}, data gives {got:+.3f}"
+        )
+
+    # The sign change is the finding; a correlation without it is a much weaker claim.
+    low = frame.loc[kept["selection_rate"].idxmin()]
+    high = frame.loc[kept["selection_rate"].idxmax()]
+    assert low["pie_plain"] < 0 < high["pie_plain"], (
+        "docs/23 rests on the direction flipping across the selection-rate range; "
+        f"it no longer does ({low['pie_plain']:+.2f} to {high['pie_plain']:+.2f})"
+    )
+    # Every arm must be the same population -- that is what makes it single-factor.
+    assert frame["n_test"].nunique() == 1, (
+        "docs/23 claims the arms differ only in the label; the test sizes now differ"
+    )
+    print(f"  6 arms, selection rate {frame['selection_rate'].min():.3f}-"
+          f"{frame['selection_rate'].max():.3f}, sign flips, partial r "
+          f"{checks['T2 partial r'][0]:+.3f}")
+
+
 def main() -> None:
     tests = [
         test_doc11_cross_flow_correlations,
@@ -357,6 +562,10 @@ def main() -> None:
         test_doc15_arbitrariness,
         test_doc16_and_17_injection_tables,
         test_doc19_levelling_up,
+        test_doc20_share_decomposition,
+        test_doc21_floor_replication,
+        test_doc22_hmda_levels_up,
+        test_doc23_threshold_sweep,
         test_course_documents_still_match_their_results,
     ]
     failures = 0

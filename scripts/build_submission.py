@@ -49,14 +49,19 @@ EXCLUDED_TREES = ("research/",)
 # by unpacking the bundle without these three and running the course suites.
 EXCLUDED_FILES = (
     "src/datasets/acs.py",
+    "src/datasets/hmda.py",
     "src/experiments/analyse_sweep.py",
     "src/experiments/analyse_arms.py",
     "src/experiments/analyse_conflict.py",
+    "src/experiments/analyse_attribution.py",
+    "src/experiments/analyse_levelling_up.py",
+    "src/experiments/analyse_threshold.py",
     "src/experiments/run_injection.py",
     "src/experiments/run_collinear.py",
     "src/experiments/run_levelling_up.py",
     "src/levelling_up.py",
     "tests/test_documented_claims.py",
+    "tests/test_acs_threshold.py",
 )
 
 # Untracked by git (``data/`` is gitignored as a re-downloadable cache) but present in
