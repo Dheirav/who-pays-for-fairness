@@ -43,6 +43,7 @@ package and moving them would break imports:
 | `src/experiments/analyse_levelling_up.py` | the pre-registered replication of document 19 |
 | `src/datasets/hmda.py` | HMDA mortgage loader, both protected-attribute arms |
 | `src/experiments/analyse_threshold.py` | the pre-registered income-threshold sweep |
+| `src/experiments/analyse_ratio.py` | the pre-registered ratio x threshold design |
 
 They cannot be **moved** here, but they are **excluded from the submission bundle**:
 `datasets.build` imports the ACS loader lazily, inside the branch that requests it, so
