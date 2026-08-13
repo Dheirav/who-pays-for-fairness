@@ -1,0 +1,23 @@
+{
+  "experiment": "who_pays",
+  "signature": "alpha1_epochs30_eps0.01_eta5_seeds0-4",
+  "params": {
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "eps": 0.01,
+    "eta": 5.0,
+    "alpha": 1.0,
+    "epochs": 30
+  },
+  "files": [
+    "who_pays_runs__alpha1_epochs30_eps0.01_eta5_seeds0-4.csv",
+    "who_pays_runs.csv",
+    "who_pays_summary__alpha1_epochs30_eps0.01_eta5_seeds0-4.csv",
+    "who_pays_summary.csv"
+  ]
+}

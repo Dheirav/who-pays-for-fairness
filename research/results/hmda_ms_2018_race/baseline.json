@@ -1,0 +1,24 @@
+{
+  "experiment": "baseline",
+  "signature": "modelsdecision_tree,logistic_regression_protectedFalse_seeds0-4",
+  "params": {
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "models": [
+      "decision_tree",
+      "logistic_regression"
+    ],
+    "protected": false
+  },
+  "files": [
+    "baseline_runs__modelsdecision_tree,logistic_regression_protectedFalse_seeds0-4.csv",
+    "baseline_runs.csv",
+    "baseline_summary__modelsdecision_tree,logistic_regression_protectedFalse_seeds0-4.csv",
+    "baseline_summary.csv"
+  ]
+}

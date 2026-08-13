@@ -1,0 +1,5 @@
+,accuracy,accuracy,demographic_parity_diff,demographic_parity_diff,equalized_odds_diff,equalized_odds_diff,disparate_impact,disparate_impact
+,mean,std,mean,std,mean,std,mean,std
+method,,,,,,,,
+decision_tree,0.8468,,0.1499,,0.0839,,0.8235,
+logistic_regression,0.8414,,0.1816,,0.1178,,0.7881,
