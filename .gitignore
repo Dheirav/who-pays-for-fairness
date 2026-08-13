@@ -17,3 +17,7 @@ data/
 
 # Meeting-folder PDFs of third-party papers: freely available, not ours to redistribute
 research/prof-meet/papers/*.pdf
+
+# LaTeX build leftovers
+*.aux
+*.synctex.gz

@@ -5,15 +5,18 @@ on the rest of the repository, though it points at it.
 
 ## Read in this order
 
+**Everything is a PDF.** The `.md` files beside them are the editable sources; rebuild all
+PDFs with `python make_pdfs.py`.
+
 | # | file | what it is | time |
 |---|---|---|---|
-| 1 | **`findings.pdf`** | The findings, 4 pages | 10 min |
-| 2 | `THE-ASK.md` | The one decision I need | 2 min |
-| 3 | `papers/01-mittelstadt-2023-*.pdf`, **§6 only** | The closest prior work | 15 min |
-| 4 | `../paper/draft.md` | The full paper draft | 40 min |
-| 5 | `../paper/reading-notes.md` | What each cited paper was checked for | 10 min |
+| 1 | **`01-findings.pdf`** | The findings, 4 pages | 10 min |
+| 2 | `02-the-ask.pdf` | The one decision I need | 2 min |
+| 3 | `papers/01-mittelstadt-2023-*.pdf`, section 6 only | The closest prior work | 15 min |
+| 4 | `03-paper-draft.pdf` | The full paper draft, 10 pages | 40 min |
+| 5 | `04-reading-notes.pdf` | What each cited paper was checked for | 10 min |
 
-`findings.tex` is the source for (1); rebuild with `pdflatex findings.tex`.
+`00-start-here.pdf` is this document.
 
 ## The one-sentence version
 
