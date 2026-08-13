@@ -90,7 +90,7 @@ reproducible, and **unexplained**.
 |---|---|
 | reconstruction-seeking (document 06) | **Refuted** by intervention (document 16) |
 | outcome-signal-seeking (document 16) | **Refuted** by intervention (document 17) |
-| collinear reallocation (document 17) | **Untested.** The design was confounded; weak evidence against, no verdict |
+| collinear reallocation (document 17) | **Partially supported**, in [document 20](20-what-a-share-can-carry.md), by re-aggregation rather than by the intervention attempted here. Scoring the pair as one coalition takes Adult's +151% down to +11.6%, so it accounts for most of the headline and not for the seed-consistent residual. This document's own design remains confounded |
 
 Two refuted, one that resisted a clean test. The honest tally is that this project can say
 what does *not* explain the shift, and cannot say what does.
@@ -103,3 +103,12 @@ within 0.03 share while the share itself moved ninefold. **The demographic parit
 constraint does not systematically change which features the model leans on.** The
 question of why Adult's particular pair swapped is a question about SHAP on one dataset;
 that finding is about the method.
+
+> **Amended by [document 20](20-what-a-share-can-carry.md).** The claim in bold is narrowed
+> there to the planted column it was measured on, and the sentence after it does not hold as
+> written. Setting Adult aside as "a question about SHAP on one dataset" was a hypothesis,
+> not a finding, and the coalition view now argues against it: holding the algorithm fixed,
+> demographic parity raises the pair's combined share (+11.7%, +14.2%) while equalized odds
+> lowers it (−26.4%). A pure artifact of Shapley credit allocation between two collinear
+> features should be indifferent to which constraint was imposed, because their collinearity
+> is a property of the dataset. It is not indifferent.

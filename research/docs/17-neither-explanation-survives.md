@@ -55,6 +55,16 @@ model leans on.** It reweights training examples, and the resulting model's attr
 profile follows the unconstrained one closely, whether the feature in question determines
 sex, predicts the outcome, both, or neither.
 
+> **Narrowed by [document 20](20-what-a-share-can-carry.md).** As stated, that sentence is
+> broader than what was measured here. This experiment observed *one planted column* on one
+> population — not a profile — and Adult is a counterexample under the same constraint:
+> `relationship` moves +0.114 of share, nearly four times the 0.03 treated as "tracking
+> almost exactly" below. The estimand cannot carry the general form either, because
+> attribution *shares* are compositional and do not identify which features a model leans
+> on. What this experiment does support: **on a planted column, under demographic parity at
+> ε = 0.01, on one population, the constrained model's share tracks the unconstrained
+> model's to within 0.03 across six cells spanning an order of magnitude in that share.**
+
 That is a cleaner statement than either explanation it replaces, and it is a **negative
 result**: two specific mechanisms were proposed and both were refuted by intervention.
 
@@ -103,7 +113,7 @@ run, the Adult attribution shift is unexplained and should be described that way
 | Document 06's mechanism (reconstruction-seeking) | Retracted in document 16 |
 | Document 16's replacement (outcome-signal-seeking) | **Retracted here** |
 | Document 16's core negative finding — a sharper sex proxy is used *less* | **Replicated** (R2) |
-| The new statement — the constraint barely changes *which* features are used | Established here, on one population and one constraint |
+| The new statement — the constraint barely changes *which* features are used | **Narrowed in [document 20](20-what-a-share-can-carry.md)** to the planted column it was measured on. The general form is not supported by a share-based estimand, and Adult contradicts it |
 
 The course submission is untouched. Document 06 reports attribution measurements, and
 those are unchanged; what has been withdrawn twice is interpretation, and both retractions
