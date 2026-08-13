@@ -1,72 +1,71 @@
 # Meeting folder
 
-Everything needed to discuss this work, in one place. Self-contained — nothing here depends
-on the rest of the repository, though it points at it.
+Everything needed to discuss this work, in one place.
 
 ## Read in this order
 
-**Everything is a PDF.** The `.md` files beside them are the editable sources; rebuild all
-PDFs with `python make_pdfs.py`.
+Everything is a PDF. The `.md` files beside them are the editable sources; run
+`python make_pdfs.py` to rebuild.
 
 | # | file | what it is | time |
 |---|---|---|---|
-| 0 | **`00-plain-english.pdf`** | The whole thing with no jargon, and a glossary | 6 min |
-| 1 | **`02-findings.pdf`** | The findings, technical | 10 min |
-| 2 | `03-the-ask.pdf` | The one decision I need | 2 min |
-| 3 | `papers/01-mittelstadt-2023-*.pdf`, section 6 only | The closest prior work | 15 min |
-| 4 | `04-paper-draft.pdf` | The full paper draft | 40 min |
-| 5 | `05-reading-notes.pdf` | What each cited paper was checked for | 10 min |
+| 0 | **`00-plain-english.pdf`** | The whole thing with no jargon, plus a glossary | 6 min |
+| 1 | **`02-findings.pdf`** | The findings, with the numbers | 12 min |
+| 2 | `03-the-ask.pdf` | The one decision I need from you | 2 min |
+| 3 | `papers/01-mittelstadt-2023-*.pdf`, section 6 only | The closest competing work | 15 min |
+| 4 | `04-paper-draft.pdf` | The full paper draft, in academic style | 40 min |
+| 5 | `05-reading-notes.pdf` | What I checked in each cited paper, and what changed | 10 min |
 
-`01-start-here.pdf` is this document. **Start at 00 if any of the terminology is
-unfamiliar** — it defines everything the other documents assume.
+`01-start-here.pdf` is this document. **If any wording is unfamiliar, start at 00** — it
+defines every term the others use.
 
-## The one-sentence version
+## In one sentence
 
-> Levelling down is not what fairness constraints do — it is what they do below a selection
-> rate of about 0.3. Above it, the same constraint hands decisions out instead of taking
-> them away. And nearly every real deployment sits below it.
+> These fairness fixes are supposed to make two groups equal. They can do that either by
+> approving more people from the group being turned down, or by rejecting more from the
+> group getting through — and the score that certifies the fix cannot tell which happened.
+> I found that which one you get depends on how generous the system already is, and almost
+> every real system is the kind where you get the bad one.
 
 ## The papers, and why each is here
 
-| file | why it matters to this work |
+| file | why it matters |
 |---|---|
-| **01 Mittelstadt et al. (2023)** | **The closest prior work.** Established levelling down *and* proposed the remedy (§6, "minimum rate constraints"). Read §6. |
-| 02 Corbett-Davies et al. (2017) | The optimal fair classifier is group-specific thresholds — makes our comparison arm a *bound*, not a rival. |
-| 03 Diana et al. (2021) | Minimax group fairness: the established levelling-down remedy we benchmark against. |
-| 04 Kearns et al. (2018) | Fairness gerrymandering — our subgroup finding is an empirical replication. |
-| **05 Goethals et al. (2024)** | **The nearest miss.** Studies the selection-rate axis, calls it "overlooked" — and two of its four authors also wrote 01. They fix the pool as a budget, so direction cannot move. |
-| 06 Menon & Williamson (2018) | Thresholding characterisation; supporting cite for 02. |
-| 07 Ustun et al. (2019) | Decoupled classifiers with preference guarantees. |
-| 08 Black et al. (2022) | Model multiplicity — supports our arbitrariness caution. |
-| 09 Agarwal et al. (2018) | The base paper. Everything is built on this reduction. |
-| 10 Ding et al. (2021) | Retiring Adult — the ACS datasets, and the argument for not trusting Adult alone. |
+| **01 Mittelstadt et al. (2023)** | **The closest competing work.** Showed these fixes mostly harm rather than help, *and* proposed the remedy I thought was mine. Read section 6. |
+| 02 Corbett-Davies et al. (2017) | Proves what the mathematically best possible fair program looks like — which makes one of my comparisons a ceiling rather than a rival. |
+| 03 Diana et al. (2021) | The alternative method the field recommends for this problem. I test it and it performs badly. |
+| 04 Kearns et al. (2018) | Showed fixes can look fine per group while failing for combinations of groups. I reproduce this. |
+| **05 Goethals et al. (2024)** | **The near miss.** Studies the same dimension I do, calls it "overlooked" — and two of its four authors also wrote paper 01. Their setup fixes the number of approvals in advance, so my effect cannot appear in it. |
+| 06 Menon & Williamson (2018) | Supporting theory for paper 02. |
+| 07 Ustun et al. (2019) | Another "avoid harm" method from the literature. |
+| 08 Black et al. (2022) | On models that score equally well but disagree about individuals. Supports one of my cautions. |
+| 09 Agarwal et al. (2018) | The method everything here is built on. |
+| 10 Ding et al. (2021) | Argues the field over-relies on one old dataset, and supplies replacements. I use them. |
 
-## Where the work lives
+## Where the underlying work is
 
-- `../docs/11`–`26` — 16 research documents, one per finding, each with its limits stated
-- `../../docs/01`–`10` — the course-side work (Adult only)
-- `../results/` — every number, as CSV
-- `../../tests/test_documented_claims.py` — re-derives every headline figure and fails if a
-  document and its data disagree
-- `git log --oneline 28bc8d1..HEAD` — the full record, including pre-registrations committed
-  before their experiments ran
+- `../docs/11`–`26` — 16 documents, one per finding, each stating its own limits
+- `../../docs/01`–`10` — the coursework this grew out of
+- `../results/` — every number as a spreadsheet
+- `../../tests/test_documented_claims.py` — regenerates every headline figure and fails if a
+  document disagrees with its data
+- `git log` — the full record, including predictions committed before the experiments that
+  tested them
 
-## Two things to raise before they are asked
+## Two things I would rather say than be asked
 
-**1. The remedy is not novel.** I originally believed the selection-rate floor was new. It
-is a variant of Mittelstadt et al.'s minimum rate constraints (paper 01, §6). I found this
-myself by reading the paper, corrected the write-up in place, and demoted it to a supporting
-result. What survives: ours is in-processing rather than post-processing, so it needs no
-protected attribute at prediction time; it stacks with parity rather than replacing it; and
-it is evaluated on held-out data across 26 populations where they report Adult's training
-set.
+**1. My remedy is not new.** I believed the fix I proposed was original. It is a variation
+on one already published (paper 01, section 6). I found this myself by reading their paper,
+corrected my write-up, and demoted it to a supporting result. What survives: mine works
+without the program ever seeing which group someone belongs to, and it is tested far more
+widely.
 
-**2. The mechanism failed.** I derived a candidate explanation for the crossover,
-pre-registered it with numerical thresholds, and tested it on fourteen populations run
-afterwards. It cleared its bars and was beaten by a trivial constant rule. It is reported as
-a failure. I can say *when* the direction flips, not *why*.
+**2. My explanation failed.** I tried to derive *why* the flip happens, wrote the prediction
+down in advance, and tested it on new data. It passed my own test and was then beaten by a
+much cruder rule, so it explains nothing. It is written up as a failure. I can say when the
+flip happens, not why.
 
-## Scale, for reference
+## Scale
 
-26 populations · 61 experimental arms · 3 source datasets · 2 domains · 2 protected
-attributes · 5 seeds throughout
+26 datasets · 61 experimental runs · 3 data sources · 2 kinds of decision · 5 repeats of
+everything

@@ -2,93 +2,110 @@
 \usepackage[margin=2.4cm]{geometry}
 \usepackage{amsmath}
 \usepackage{booktabs}
+\usepackage{tabularx}
 \usepackage[hidelinks]{hyperref}
 \usepackage{parskip}
 \usepackage[T1]{fontenc}
-\usepackage{tabularx}
 \sloppy
 
 \title{\textbf{Satisfied, Not Solved}\\[2mm]
-\large What a Demographic Parity Constraint Actually Does}
+\large What a fairness fix actually does to real decisions}
 \author{Dheirav}
 \date{Findings summary --- \today}
 
-\newcommand{\claim}[1]{\medskip\noindent\textbf{#1}\quad}
+\newcommand{\jargon}[1]{\emph{#1}}
 
 \begin{document}
 \maketitle
 
-\begin{abstract}
-\noindent Fairness constraints of the reduction family (Agarwal et al., 2018) do what they
-promise: on UCI Adult they drive the demographic parity violation from $0.186$ to $0.018$
-for under two accuracy points. This work audits what they do to \emph{get} there, across
-\textbf{26 populations and 61 experimental arms} spanning a household survey, its modern
-replacement, and an administrative record of real mortgage decisions.
+\begin{quote}
+\small \textbf{Terminology.} Technical names are given in italics the first time they
+appear, immediately after the plain description. A full glossary is in
+\texttt{00-plain-english.pdf}.
+\end{quote}
 
-The central finding: \textbf{levelling down is not what parity constraints do --- it is what
-they do below a selection rate of roughly $0.3$}. Above it, the same constraint hands
-decisions out instead of taking them away. This is established by a single-factor design in
-which only the label's cutoff moves, and replicates across two protected attributes, five
-states, a second domain, and fourteen populations held out from a later prediction
-($r = +0.901$).
-\end{abstract}
+\section{The problem}
 
-\section{The problem in one paragraph}
+A program decides who gets a mortgage. It approves \textbf{79\%} of one group of applicants
+and \textbf{57\%} of another. That gap is what people mean by algorithmic bias.
 
-A constraint that equalises two groups' selection rates can be satisfied two ways: by
-extending favourable decisions to the disadvantaged group, or by withdrawing them from the
-advantaged one. Every real mitigation does a mixture of both. \textbf{The certifying metric
-is identical either way.} It reports that the violation fell; it says nothing about which
-mixture produced that, or whether the total pool of favourable decisions grew or shrank.
+The standard fix is to instruct the program: \emph{approve both groups at the same rate}
+(\jargon{demographic parity}). It works --- on the standard benchmark dataset the gap
+between the two rates falls from $0.186$ to $0.018$, for less than two percentage points of
+accuracy.
 
-\section{What is already known, and what is not}
+\textbf{But there are two completely different ways for a program to obey that
+instruction:}
 
-\claim{Known.} Mittelstadt, Wachter and Russell (2023) established that fairness
-interventions frequently equalise by degrading the better-off group, and argue it is a
-default rather than an accident. Their \S6 also proposes the remedy --- ``minimum rate
-constraints'', requiring that every group has at least a minimal selection rate ---
-demonstrated on Adult, and reporting that ``levelling down does not occur''.
+\begin{enumerate}
+\item Approve \emph{more} people from the group being turned down.
+\item Turn down \emph{more} people from the group getting through.
+\end{enumerate}
 
-\claim{Therefore not claimed here.} Neither the observation nor the remedy is novel, and
-this document says so before a reviewer does. An earlier version of this project claimed
-the remedy as new; that was wrong about the literature and has been corrected in place.
+Option 2 makes the numbers equal without helping anybody. It has a name in the ethics
+literature: \jargon{levelling down}.
 
-\claim{Not known.} \emph{When} it happens. Mittelstadt et al.\ treat levelling down as a
-default; their paper contains no discussion of base rates. Their only remark touching
-prevalence is that Adult is ``more than 75\% negatively labelled'', offered as a note on
-accuracy cost and never connected to direction. They were operating at a selection rate of
-roughly $0.24$ --- inside the levelling-down regime identified here --- and did not ask
-whether it would reverse elsewhere.
+\textbf{The score that certifies the fix cannot tell these apart.} It measures only whether
+the two rates match --- not how they came to match, and not whether the total number of
+approvals went up or down.
 
-\claim{The nearest miss.} Goethals, Delaney, Mittelstadt and Russell (2024),
-\emph{Resource-constrained Fairness}, study the \emph{cost} of fairness as a function of the
-available budget and note the selection rate is ``a factor overlooked in previous
-evaluations''. Two of the four authors are also authors of the levelling-down paper. But in
-their setting positive decisions are a \emph{fixed} resource, so the total cannot move and
-the directional effect reported here is unobservable by construction. The group best placed
-to find this result studied the same axis and did not connect it to direction.
+\section{What was already known, and what was not}
 
-\section{The central result}
+\textbf{Known.} A 2023 paper by Mittelstadt, Wachter and Russell showed that these fixes
+mostly do option 2, and argued it is the normal case rather than bad luck. It is in their
+title: levelling down ``by default''.
 
-\subsection{The design}
+\textbf{Also known, and I got this wrong at first.} That same paper \emph{also} proposes the
+remedy --- their \S6 requires that every group receives at least some minimum approval rate.
+I originally believed my version of this was new. It is not. I found that by reading their
+paper properly, and corrected my write-up. What is different about mine is narrower: it
+works without the program ever being told which group an applicant belongs to, and it is
+tested on data the programs had never seen, across 26 datasets --- where they report one
+dataset, scored on the same data they trained on.
 
-ACS Income's label is ``earns more than \$50{,}000'' --- a cutoff chosen by the benchmark,
-not a fact about the world. Moving it on a \emph{fixed} population varies the overall
-selection rate while holding the population, the survey instrument, the feature set, the
-group ratio and the proxy structure exactly fixed. Test code asserts that rows, features and
-protected groups are identical across arms and only the label changes.
+\textbf{Not known: \emph{when} it happens.} Their paper never discusses how generous the
+system is overall. Their only remark near it is that the benchmark dataset is ``more than
+75\% negatively labelled'' --- said in passing about accuracy cost, never connected to which
+of the two options you get. They were working in exactly the regime where their conclusion
+holds, and did not ask whether it would reverse elsewhere.
 
-\textbf{The cutoff is the instrument, not the cause.} The moderator is the selection rate
-itself. This is confirmed in a domain where no cutoff exists: HMDA mortgage decisions, where
-the label is a real lender's approve/deny, sits naturally at a selection rate of $0.808$ and
-lands exactly where the sweep predicts.
+\textbf{The nearest miss.} A 2024 paper by Goethals, Delaney, Mittelstadt and Russell studies
+how the cost of fairness changes with the available budget, and calls this ``a factor
+overlooked in previous evaluations''. Two of those four authors also wrote the 2023 paper.
+But in their setup the number of approvals is \emph{fixed in advance} as a budget, so the
+total cannot move and the effect reported here is invisible by construction. The group best
+placed to find this looked at the same dimension and did not make the connection.
 
-\subsection{Alabama, six cutoffs, five seeds}
+\section{The main finding}
+
+\textbf{Levelling down is not what these fixes do. It is what they do when the system is
+stingy.}
+
+Count what fraction of \emph{everyone} gets approved --- both groups together. Call it the
+\textbf{approval rate} (\jargon{selection rate}).
+
+\begin{itemize}
+\item Approval rate below roughly \textbf{0.3}: the fix takes approvals away.
+\item Approval rate above roughly \textbf{0.6}: the fix hands approvals out.
+\item In between, it flips.
+\end{itemize}
+
+\subsection{How this was shown}
+
+Two datasets always differ in dozens of ways, so comparing them proves nothing. Instead,
+\textbf{one dataset was used and exactly one thing was changed.}
+
+The dataset predicts whether someone earns more than \$50{,}000. That figure is an arbitrary
+choice by whoever built the benchmark. Raise it and fewer people qualify; lower it and most
+do. \textbf{Same people, same information about them, same groups --- only the finish line
+moves.} Automated test code verifies that the people, the features and the groups really are
+identical between runs.
 
 \begin{center}
+\small
 \begin{tabular}{lrrr}
 \toprule
-Cutoff & Selection rate & Change in favourable decisions & Destroyed per created \\
+Income cutoff & Approval rate & Change in total approvals & Lost per one gained \\
 \midrule
 \$100{,}000 & 0.030 & $-29.71\%$ & 22.03 \\
 \$70{,}000  & 0.099 & $-22.05\%$ & 2.18 \\
@@ -100,131 +117,139 @@ Cutoff & Selection rate & Change in favourable decisions & Destroyed per created
 \end{tabular}
 \end{center}
 
-Same people. Same features. Same groups. Only the finish line moved --- and the direction
-flipped, with the crossover between $0.25$ and $0.60$.
+The last column is how many people lost an approval for each person who gained one. At the
+top of the table, 22 people lose out for every one who benefits. At the bottom, more people
+gain than lose.
 
-\subsection{Replication}
+\subsection{It holds up everywhere it was checked}
 
 \begin{center}
-\begin{tabular}{lll}
+\small
+\begin{tabularx}{\linewidth}{lX}
 \toprule
-Evidence & Scope & Result \\
+\textbf{Check} & \textbf{Result} \\
 \midrule
-Original sweep & Alabama, Oregon (sex) & $r = +0.801$, $+0.964$ \\
-Second protected attribute & 4 states (race) & $r = +0.874$ to $+0.991$ \\
-Held-out populations & 14, run after prediction & $r = +0.901$ \\
-Second domain & HMDA, 2 states, 2 arms & correct side of crossover \\
-Datasets never fitted to & Adult ($0.205$), HMDA ($0.808$) & both placed correctly \\
+A second population & Same pattern, more strongly \\
+A different way of grouping people & Four populations, all agree \\
+\textbf{Fourteen populations run \emph{after} the prediction was written down} &
+  All consistent; correlation $+0.901$ \\
+Real mortgage decisions, where no arbitrary cutoff exists & Lands exactly where predicted \\
+Two datasets it was never tuned on & Both placed on the correct side \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{center}
 
-\subsection{The obvious objection, pre-empted}
+\subsection{The obvious objection, answered in advance}
 
-That unequal base rates \emph{between groups} force trade-offs is textbook (Kleinberg et
-al., 2016; Chouldechova, 2017). \textbf{This claim is about a different quantity}: the
-overall \emph{level} of the selection rate, irrespective of any gap.
+Someone will say: this is just the well-known fact that the two \emph{groups} have different
+underlying rates.
 
-The two are confounded by construction --- the between-group gap must vanish as the level
-approaches $0$ or $1$. So the gap is partialled out, and the relationship
-\emph{strengthens}: from $r = +0.801$ to $+0.980$ in Alabama, and $+0.964$ to $+0.994$ in
-Oregon. That control is the identification strategy, not a robustness check.
+It is not, and the difference matters. That objection is about a gap \emph{between two
+groups}. This finding is about the \emph{overall level} for everybody together --- a
+different quantity.
 
-\section{An identity that says precisely what levelling down is}
+The two do move together, unavoidably: if almost nobody or almost everybody is approved,
+there is no room for a gap between groups. So the analysis \textbf{holds the between-group
+gap fixed and re-checks}, and the relationship gets \emph{stronger}, not weaker
+($+0.801 \rightarrow +0.980$ in one population, $+0.964 \rightarrow +0.994$ in another).
+That check is the core of the argument, not a footnote to it.
 
-Let the privileged group be share $p$ with unconstrained selection rate $r_A$, and the
-unprivileged group $1-p$ at $r_B$. The unconstrained total is the size-weighted average
-$\bar{r} = p\,r_A + (1-p)\,r_B$. Demographic parity puts \emph{both} groups on one common
-rate $s$, so the constrained total \emph{is} $s$, and
-\[
-\text{change in favourable decisions} \;=\; s - \bar{r}.
-\]
-Writing $\lambda = (s - r_B)/(r_A - r_B)$ for where the common rate falls between the two
-original rates,
-\[
-\boxed{\;\text{the pool is preserved exactly when } \lambda = p.\;}
-\]
-Levelling down is $\lambda < p$ and nothing else: the optimiser choosing a compromise
-\emph{below} the size-weighted one. This requires no assumptions, holds to $0.076$
-percentage points across fourteen held-out populations, and does not appear to be stated
-anywhere in the literature reviewed.
+\section{Exactly what levelling down is}
 
-\section{What could not be established}
+There is a small piece of arithmetic that makes the whole thing precise, and it appears not
+to be written down anywhere.
 
-\claim{The mechanism.} A derivation was attempted: under group-wise thresholding,
-calibration and a location shift, levelling down is a \emph{curvature} effect and the
-crossover should sit at the mode of the score density. It was pre-registered with numerical
-thresholds and tested on fourteen populations run afterwards. It cleared its bars
-(predicting the sign in 12 of 14) and was \textbf{beaten by the constant rule ``levelling up
-iff the selection rate exceeds $0.5$'' (13 of 14)}. The measured mode moves inversely with
-the selection rate ($r = -0.802$), so it carries almost no independent information.
+The fix puts both groups on one shared approval rate. Before the fix, the overall rate was
+just the average of the two groups' rates, weighted by how many people are in each. So:
 
-The methodological lesson is recorded with it: a \emph{threshold} was fixed in advance, but
-a \emph{baseline to beat} was not, so clearing the threshold did not mean what it appeared
-to mean.
+\begin{center}
+\fbox{\parbox{0.9\linewidth}{\centering
+The total number of approvals is unchanged \textbf{exactly when} the shared rate lands at
+that size-weighted average.}}
+\end{center}
 
-\claim{The magnitude.} The selection rate sets the direction, not the size. Alabama loses
-$2.34\%$ at a rate of $0.252$ where Adult loses $20.5\%$ at $0.205$. A pre-registered
-candidate --- the group ratio --- was refuted, with the opposite sign to the prediction.
+Levelling down is nothing more mysterious than the program picking a shared rate
+\emph{below} that point. This needs no assumptions and held to within $0.076$ percentage
+points across all fourteen datasets that were run only after this was written down.
+
+\section{What I could not work out}
+
+\textbf{Why the flip happens.} I derived a candidate explanation from theory, wrote the
+prediction and its pass mark down in advance, and tested it on fourteen datasets run
+afterwards. It passed the test I set --- and was then beaten by a far cruder rule
+(``approval rate above one half? then it's the good kind''). So the derivation added nothing
+and is reported as a failure.
+
+The lesson is recorded with it: \textbf{I set a pass mark but never set a rival to beat}, so
+passing did not mean what it looked like it meant.
+
+\textbf{How big the effect is.} The approval rate tells you the direction, not the size. One
+population loses $2.34\%$ where another loses $20.5\%$ at almost the same approval rate. A
+candidate explanation for that was tested and refuted.
 
 \section{Supporting findings}
 
-\claim{Subgroups.} A constraint on one attribute leaves Sex\,$\times$\,Race subgroups worse
-off than any group it was told about, in every sufficiently diverse population, and more
-severely than Adult suggests ($9.0\times$ against $13.2\times$). In five of ten populations
-the worst-off subgroup after a sex constraint is a minority man.
+\textbf{Combinations of groups get missed.} A fix applied to one characteristic leaves
+people at the \emph{intersection} of two (say, Black women) worse off than any group the fix
+was told about --- and worse than the benchmark dataset suggests ($9.0\times$ against
+$13.2\times$).
 
-\claim{Attribution audits do not reveal the mechanism.} A parity constraint moves SHAP
-attribution \emph{onto} a sex proxy by $+151\%$. Three explanations were proposed; two were
-refuted by intervention and the third bounded by re-aggregation --- scoring the two most
-redundant features as one coalition takes the effect from $+155\%$ to $+11.6\%$. The
-transferable lesson: \textbf{an attribution audit can move by an order of magnitude without
-the model's behaviour changing correspondingly.}
+\textbf{The standard explainability tool does not reveal what happened.} A widely used method
+for showing which information a program relied on reports a $+151\%$ shift after the fix.
+Three explanations were proposed and none survived; most of the apparent shift turns out to
+be an accounting artifact between two near-identical pieces of information. \textbf{The
+transferable lesson: this tool can move enormously without the program's behaviour changing
+much.}
 
-\claim{Arbitrariness.} Below roughly $2{,}500$ test subjects, the method's own randomness
-exceeds the entire effect of the constraint.
+\textbf{On small datasets the fix is drowned by chance.} Below roughly 2{,}500 test cases,
+re-running with a different random split moves the numbers more than the fix itself does.
 
-\claim{Against existing remedies.} Group-wise thresholding --- the \emph{optimal}
-DP-constrained classifier --- destroys $18.8\%$ of favourable decisions on Adult against the
-reduction's $20.5\%$, so levelling down is not a solver artifact. Minimax group fairness,
-proposed in the literature as \emph{the} remedy for levelling down, destroys $10.0\%$ of
-favourable decisions on HMDA at an exchange rate of $46.7$ --- on the same data where the
-parity constraint \emph{creates} $4.3\%$. Its objective minimises the worst group's
-\emph{error}, and worst-off-by-error is not worst-off-by-outcome: on Adult the higher-error
-group is Male.
+\textbf{The recommended alternative is worse.} \emph{Minimax group fairness} is proposed in
+the literature as the answer to levelling down. On mortgage data it destroyed $10\%$ of all
+approvals, at 46.7 lost per one gained --- on the very data where the ordinary fix
+\emph{created} approvals. Its objective minimises the worst group's \emph{error rate}, and
+the group with the most errors is not the group being treated worst.
 
-\section{Why it matters}
+\section{Why any of this matters}
 
-Lending, hiring and admissions --- the domains where these methods are actually proposed ---
-are nearly all low-selection-rate settings. \textbf{The default regime for deployed fairness
-constraints is therefore the one in which they take favourable decisions away, and the
-fairness score never says so.}
+Loans. Hiring. University admissions.
 
-\section{Method, and what it caught}
+These are where such fixes are actually deployed, and they are nearly all stingy systems ---
+few applicants are approved.
 
-Five seeds throughout; splits stratified on the (attribute, label) interaction; the
-protected attribute removed from the feature matrix; metrics implemented from their
-definitions and cross-checked against \texttt{fairlearn} on every run; undefined rates
-returned as undefined rather than zero.
+\begin{center}
+\fbox{\parbox{0.92\linewidth}{\centering
+\textbf{So the normal case in real deployments is the harmful one, \\
+and the fairness score never says so.}}}
+\end{center}
 
-Where a result could have gone either way, predictions and their numerical thresholds were
-written and committed \emph{before} the experiment ran, verifiable in the commit history.
-That discipline is why the following can be reported: \textbf{three pre-registered
-predictions of my own failed}; two proposed mechanisms were refuted by my own interventions;
-and three claims were corrected or retracted in place, including the novelty claim for the
-remedy, which the literature had anticipated.
+\section{How carefully this was done}
 
-\section{The open question}
+Every result is the average of five runs with different random splits. The program is never
+allowed to see the protected characteristic. All measures are written from their definitions
+and checked against a standard library on every run.
 
-Is the scope condition sufficient on its own for a venue such as FAccT or AIES, or should
-the mechanism be established first? The derivation attempted here failed, and is reported as
-a failure. The finding is \emph{when} the direction flips, not \emph{why}.
+Where a result could have gone either way, the prediction and its pass mark were written and
+committed \emph{before} the experiment ran, and the order is provable from the version
+history.
+
+That discipline is why the following can be reported honestly: \textbf{three of my own
+predictions failed}; two of my own proposed explanations were disproved by my own
+experiments; and three claims were corrected after the fact --- including my claim that the
+remedy was new, which the literature had got to first.
+
+\section{The question I need answered}
+
+Is ``we found when this happens'' enough on its own for a venue like FAccT or AIES, or does
+the paper need ``and here is why'' first?
+
+I can say when the direction flips. I cannot say why --- and the attempt is written up as a
+failure rather than left out.
 
 \vfill
 \noindent\rule{\textwidth}{0.4pt}\\
-{\small All figures are reproduced from stored results by
-\texttt{tests/test\_documented\_claims.py}, which re-derives every headline number and fails
-if a document and its data disagree. Supporting papers are in \texttt{papers/}; the full
-research record is in \texttt{research/docs/}.}
+{\small Every number here is regenerated from stored results by an automated check that
+fails if a document and its data disagree. The cited papers are in \texttt{papers/}; the
+full research record is 16 documents in \texttt{research/docs/}.}
 
 \end{document}
