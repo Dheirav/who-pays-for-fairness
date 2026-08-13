@@ -514,11 +514,33 @@ def test_doc23_threshold_sweep() -> None:
     _quotes(text, "+0.801", "+0.980", "-0.874", "-0.408", "-29.71%", "+0.08%",
             "22.03", "0.75", "-0.994", "+30.93", "0.890", "0.030")
 
-    frame = attach_selection_rate(load(["AL"], [10_000, 20_000, 30_000, 50_000,
-                                               70_000, 100_000]), ["AL"])
-    assert len(frame) == 6, f"docs/23 reports six arms, found {len(frame)}"
+    cutoffs = [10_000, 20_000, 30_000, 50_000, 70_000, 100_000]
+    frame = attach_selection_rate(load(["AL"], cutoffs), ["AL"])
+    assert len(frame) == 6, f"docs/23 reports six arms per state, found {len(frame)}"
     kept = frame[frame["dp_base"] >= MIN_BASELINE_GAP]
     assert len(kept) == 4, f"docs/23 reports four non-degenerate arms, found {len(kept)}"
+
+    # Oregon replicates it, and is the stronger of the two despite starting nearer the
+    # crossover. Asserted separately so a regression in either state is attributable.
+    oregon = attach_selection_rate(load(["OR"], cutoffs), ["OR"])
+    or_kept = oregon[oregon["dp_base"] >= MIN_BASELINE_GAP]
+    assert len(or_kept) == 4, f"docs/23 reports four Oregon arms, found {len(or_kept)}"
+    _quotes(text, "+0.964", "+0.994", "-0.993", "-0.995")
+    for name, got, documented in (
+        ("OR T1", np.corrcoef(or_kept["selection_rate"], or_kept["pie_plain"])[0, 1], 0.964),
+        ("OR T2", partial_corr(or_kept["selection_rate"], or_kept["pie_plain"],
+                               or_kept["dp_base"]), 0.994),
+        ("OR T3", np.corrcoef(or_kept["selection_rate"],
+                              or_kept["exchange_plain"])[0, 1], -0.993),
+        ("OR floor", np.corrcoef(oregon["pie_plain"],
+                                 oregon["pie_floor"] - oregon["pie_plain"])[0, 1], -0.995),
+    ):
+        assert abs(got - documented) < 0.005, (
+            f"docs/23 says {name} = {documented:+.3f}, data gives {got:+.3f}")
+    or_low = oregon.loc[or_kept["selection_rate"].idxmin()]
+    or_high = oregon.loc[or_kept["selection_rate"].idxmax()]
+    assert or_low["pie_plain"] < 0 < or_high["pie_plain"], (
+        "docs/23 claims the direction flips in Oregon too; it no longer does")
 
     checks = {
         "T1 r(rate, pie)": (np.corrcoef(kept["selection_rate"], kept["pie_plain"])[0, 1], 0.801),

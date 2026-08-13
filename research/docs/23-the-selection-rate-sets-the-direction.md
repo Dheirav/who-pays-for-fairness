@@ -24,10 +24,14 @@ That the arms are otherwise identical is asserted rather than assumed:
 the feature values are unchanged across cutoffs, and that the rebuilt problem reproduces
 `ACSIncome` exactly at $50,000.
 
-Alabama, six cutoffs, five seeds each, ε = 0.01. The $50,000 arm is the one already
-committed for [document 21](21-the-floor-replicates.md), reused unchanged.
+Alabama and Oregon, six cutoffs each, five seeds, ε = 0.01. Each state's $50,000 arm is
+the one already committed for [document 21](21-the-floor-replicates.md), reused unchanged.
 
-## The result
+Oregon is the harder test of the two. At the default cutoff it has the **highest selection
+rate of all nineteen survey populations** (0.354) and loses only 3.1% of its pie, so it
+starts much nearer the crossover than Alabama does.
+
+## The result — Alabama
 
 | cutoff | selection rate | baseline DP | change in favourable decisions | destroyed per created |
 |---|---|---|---|---|
@@ -39,6 +43,8 @@ committed for [document 21](21-the-floor-replicates.md), reused unchanged.
 | $10,000 | 0.890 | 0.039 | **+0.08%** | 0.89 |
 
 Same people. Same features. Same groups. Only the finish line moved.
+
+Reading Alabama first; Oregon follows below.
 
 **T0 — the knob works.** HOLDS. Selection rate spans 0.029 to 0.890, monotone in the
 cutoff.
@@ -56,6 +62,30 @@ destroyed per one created at the lowest rate to 0.75 at the highest.
 
 **The crossover sits between 0.25 and 0.60.** Below it the constraint takes decisions away;
 above it, it hands them out.
+
+## Oregon replicates it, more sharply
+
+The same six cutoffs on Oregon, whose selection rate spans 0.043 to 0.908:
+
+| | Alabama | **Oregon** | pooled, 8 arms |
+|---|---|---|---|
+| T1 r(selection rate, pie change) | +0.801 | **+0.964** | +0.775 |
+| T2 partial r, base-rate gap held fixed | +0.980 | **+0.994** | +0.828 |
+| T3 r(selection rate, exchange rate) | −0.874 | **−0.993** | −0.923 |
+| last shrinking arm / first growing arm | 0.252 / 0.597 | **0.353 / 0.637** | — |
+
+All four predictions hold in both states, and the crossover brackets agree: the last arm
+that shrinks the pie sits at 0.25–0.35 and the first that grows it at 0.60–0.64 in both.
+Oregon's own numbers are the stronger of the two despite starting nearer the crossover.
+
+The pooled correlations are *weaker* than either state alone (+0.775 against +0.801 and
++0.964), which is what pooling two populations with different residual levels should do
+and is reported rather than hidden. The per-state results are the evidence; the pooled
+figure is a summary.
+
+The manipulation check is evaluated per state rather than pooled, because monotonicity is
+a within-population property — interleaving two states' selection rates would report a
+failure that is an artifact of ordering. It holds in both.
 
 ## It places both datasets it was not fitted to
 
@@ -85,9 +115,9 @@ plain constraint destroys, across the entire range:
 | 0.890 | +0.08% | +0.14% | +0.07 pts |
 
 **r = −0.994** between how much the plain constraint destroys and how much the floor
-recovers. Where there is nothing to fix it does nothing, to within a tenth of a percentage
-point; where the plain constraint destroys 30% of all favourable decisions it turns that
-into a small gain.
+recovers, and **−0.995 on Oregon**, and −0.992 pooled. Where there is nothing to fix it does
+nothing, to within a tenth of a percentage point; where the plain constraint destroys 30% of
+all favourable decisions it turns that into a small gain.
 
 A remedy that scales with the severity of the problem and is inert where the problem is
 absent is a much stronger recommendation than document 19's single-population result, and
@@ -101,13 +131,15 @@ diagnosing a problem.
 | Document 22's conjecture | **Supported** on its own pre-registered single-factor test, including the confound check it was most likely to fail |
 | "Levelling down is what parity constraints do" | **Wrong as stated.** It is what they do below a selection rate of roughly 0.3 |
 | Selection rate as the *whole* explanation | **Not supported.** Adult and Alabama differ tenfold at a similar rate |
+| Replication in a second population | **Holds.** Oregon reproduces all four predictions, more sharply than Alabama |
 | The selection-rate floor | **Strengthened.** Its benefit tracks the damage at r = −0.994 across a 30-point range |
 
 ## Limits
 
-* **One state.** Alabama. The sweep should be repeated on a second population before the
-  crossover point is quoted as a number rather than a range.
-* **Four arms carry the correlation.** Two were excluded by the pre-registered T4 rule for
+* **Two states**, Alabama and Oregon, both ACS and both sex-arm. The crossover is quoted
+  as a range because the two states bracket it differently (0.25–0.60 and 0.35–0.64), and
+  a number would need more populations than this.
+* **Four arms carry each state's correlation.** Two per state were excluded by the pre-registered T4 rule for
   having almost no baseline gap to close. The exclusions do not drive the result — across
   all six arms r = +0.838 for the pie and −0.596 for the exchange rate — but a correlation
   over four points is weak evidence on its own, and the monotone pattern across all six is

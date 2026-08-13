@@ -188,13 +188,22 @@ def verdict(frame: pd.DataFrame) -> None:
         print(f"      ${row['threshold']:,} on {row['state']}: dp_base {row['dp_base']:.4f}, "
               f"selection rate {row['selection_rate']:.3f}")
 
-    ordered = frame.sort_values("threshold", ascending=False)
+    # Monotonicity is a within-population property: pooling two states interleaves their
+    # selection rates, so a pooled check reports a failure that is an artifact of the
+    # ordering rather than of the knob. T0 is therefore required *in every state*.
     span = frame["selection_rate"].max() - frame["selection_rate"].min()
-    monotone = ordered["selection_rate"].is_monotonic_increasing
+    per_state = {
+        state: rows.sort_values("threshold", ascending=False)["selection_rate"]
+                   .is_monotonic_increasing
+        for state, rows in frame.groupby("state")
+    }
+    monotone = all(per_state.values())
     t0 = monotone and span >= MIN_SPAN
     print(f"\nT0  the knob moves the selection rate      -> {'HOLDS' if t0 else 'FAILS'}")
     print(f"      {frame['selection_rate'].min():.3f} to {frame['selection_rate'].max():.3f} "
-          f"(span {span:.3f}, bar {MIN_SPAN}); monotone in the cutoff: {monotone}")
+          f"(span {span:.3f}, bar {MIN_SPAN})")
+    print(f"      monotone in the cutoff within every state: {monotone} "
+          f"({', '.join(f'{s}={v}' for s, v in per_state.items())})")
     if not t0:
         print("      the design does not vary what the conjecture is about; nothing below holds")
 
@@ -240,6 +249,9 @@ def verdict(frame: pd.DataFrame) -> None:
         print("The selection rate does NOT set the direction. Document 22's reversal belongs")
         print("to something else about HMDA, and the conjecture is refuted on its own")
         print("chosen test. That is to be reported as it stands.")
+    else:
+        print("T0 failed, so nothing above identifies anything. Fix the manipulation before")
+        print("reading any of the correlations.")
     print("=" * 78)
 
 
