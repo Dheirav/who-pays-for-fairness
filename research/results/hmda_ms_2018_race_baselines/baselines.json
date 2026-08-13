@@ -1,0 +1,21 @@
+{
+  "experiment": "baselines",
+  "signature": "eps0.01_seeds0-4",
+  "params": {
+    "dataset": "hmda:MS:derived_race",
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "eps": 0.01
+  },
+  "files": [
+    "baselines_runs__eps0.01_seeds0-4.csv",
+    "baselines_runs.csv",
+    "baselines_summary__eps0.01_seeds0-4.csv",
+    "baselines_summary.csv"
+  ]
+}

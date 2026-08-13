@@ -57,6 +57,7 @@ EXCLUDED_FILES = (
     "src/experiments/analyse_levelling_up.py",
     "src/experiments/analyse_threshold.py",
     "src/experiments/analyse_ratio.py",
+    "src/experiments/analyse_mechanism.py",
     "src/experiments/run_baselines.py",
     "src/baselines.py",
     "src/experiments/run_injection.py",

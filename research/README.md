@@ -44,6 +44,7 @@ package and moving them would break imports:
 | `src/datasets/hmda.py` | HMDA mortgage loader, both protected-attribute arms |
 | `src/experiments/analyse_threshold.py` | the pre-registered income-threshold sweep |
 | `src/experiments/analyse_ratio.py` | the pre-registered ratio x threshold design |
+| `src/experiments/analyse_mechanism.py` | the pre-registered derivation of the crossover |
 | `src/baselines.py` | group-wise thresholds and minimax group fairness |
 | `src/experiments/run_baselines.py` | the five-arm comparison against existing remedies |
 
