@@ -44,6 +44,8 @@ package and moving them would break imports:
 | `src/datasets/hmda.py` | HMDA mortgage loader, both protected-attribute arms |
 | `src/experiments/analyse_threshold.py` | the pre-registered income-threshold sweep |
 | `src/experiments/analyse_ratio.py` | the pre-registered ratio x threshold design |
+| `src/baselines.py` | group-wise thresholds and minimax group fairness |
+| `src/experiments/run_baselines.py` | the five-arm comparison against existing remedies |
 
 They cannot be **moved** here, but they are **excluded from the submission bundle**:
 `datasets.build` imports the ACS loader lazily, inside the branch that requests it, so
