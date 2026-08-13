@@ -80,8 +80,18 @@ def inline(text: str) -> str:
         protected.append(rendered)
         return f"\x00{len(protected) - 1}\x00"
 
-    text = re.sub(r"`([^`]+)`",
-                  lambda m: stash(r"\texttt{" + escape(m.group(1)) + "}"), text)
+    def code(match: re.Match) -> str:
+        """Typeset a code span, allowing line breaks at path and name separators.
+
+        `\texttt` has no hyphenation, so a long path like a test filename cannot break
+        and pushes the line off the page. Break opportunities are inserted explicitly.
+        """
+        rendered = escape(match.group(1))
+        for separator in (r"\_", "/", ".", "-"):
+            rendered = rendered.replace(separator, separator + r"\allowbreak{}")
+        return stash(r"\texttt{" + rendered + "}")
+
+    text = re.sub(r"`([^`]+)`", code, text)
     text = re.sub(r"\[([^\]]+)\]\(([^)]+)\)",
                   lambda m: stash(r"\href{" + m.group(2).replace("%", r"\%") + "}{"
                                   + escape(m.group(1)) + "}"), text)
@@ -93,20 +103,34 @@ def inline(text: str) -> str:
     return text
 
 
+# A column whose widest cell is under this many characters is set as a plain `l`; wider
+# ones become wrapping `X` columns. Without this, prose cells simply run off the page --
+# the reading-notes table was 804pt over the text width.
+NARROW_COLUMN = 16
+
+
 def render_table(rows: list[str]) -> list[str]:
     cells = [[c.strip() for c in r.strip().strip("|").split("|")] for r in rows]
     header, body = cells[0], cells[2:]          # cells[1] is the alignment rule
     columns = len(header)
-    # First column left, the rest left as well: these tables are mostly prose, and
-    # right-aligning text columns reads badly.
-    spec = "l" + "l" * (columns - 1)
-    out = [r"\begin{center}", r"\small", r"\begin{tabular}{" + spec + "}", r"\toprule"]
+
+    widths = [max((len(row[i]) for row in cells if i < len(row)), default=0)
+              for i in range(columns)]
+    if all(w < NARROW_COLUMN for w in widths):
+        spec = "l" * columns                    # all short: a plain tabular is tidier
+        env, width = "tabular", ""
+    else:
+        spec = "".join("l" if w < NARROW_COLUMN else ">{\\RaggedRight}X" for w in widths)
+        env, width = "tabularx", r"{\linewidth}"
+
+    out = [r"\begin{center}", r"\small",
+           r"\begin{" + env + "}" + width + "{" + spec + "}", r"\toprule"]
     out.append(" & ".join(r"\textbf{" + inline(c) + "}" for c in header) + r" \\")
     out.append(r"\midrule")
     for row in body:
         row = (row + [""] * columns)[:columns]
         out.append(" & ".join(inline(c) for c in row) + r" \\")
-    out += [r"\bottomrule", r"\end{tabular}", r"\end{center}"]
+    out += [r"\bottomrule", r"\end{" + env + "}", r"\end{center}"]
     return out
 
 
@@ -216,6 +240,10 @@ PREAMBLE = r"""\documentclass[11pt,a4paper]{article}
 \usepackage{parskip}
 \usepackage[T1]{fontenc}
 \usepackage{amsmath}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{ragged2e}
+\sloppy
 \setlength{\emergencystretch}{3em}
 \title{\textbf{TITLE}\\[2mm]\large SUBTITLE}
 \author{Dheirav}
@@ -231,6 +259,7 @@ def build(source: Path, stem: str, title: str, subtitle: str) -> bool:
            + body + "\n\\end{document}\n")
     tex_path = HERE / f"{stem}.tex"
     tex_path.write_text(tex)
+    (HERE / f"{stem}.pdf").unlink(missing_ok=True)      # same reason as above
 
     for _ in range(2):                        # twice, so the table of contents settles
         subprocess.run(["pdflatex", "-interaction=nonstopmode", tex_path.name],
@@ -247,6 +276,9 @@ def main() -> None:
     # 01-findings.tex is hand-written LaTeX rather than converted markdown, so it is
     # built here rather than listed in DOCUMENTS.
     print(f"  {'01-findings':<20} <- 01-findings.tex", end=" ")
+    # Remove any previous output first: the check below is `does the PDF exist`, which a
+    # stale file from an earlier run would satisfy while hiding a failed build.
+    (HERE / "01-findings.pdf").unlink(missing_ok=True)
     for _ in range(2):
         subprocess.run(["pdflatex", "-interaction=nonstopmode", "01-findings.tex"],
                        cwd=HERE, capture_output=True)
