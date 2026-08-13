@@ -96,7 +96,7 @@ condition that the existing literature does not have.
 
 ---
 
-## 2. Related work `[NEEDS READING]`
+## 2. Related work `[PARTLY VERIFIED]`
 
 > **Verification note.** This section is drafted from background knowledge of the
 > literature. Every citation below is to a paper I am confident exists and have
@@ -105,14 +105,34 @@ condition that the existing literature does not have.
 > checked against the actual text.** Positioning errors here are the fastest way to lose a
 > reviewer, and this is the one section of the paper not backed by the repository.
 
-**Levelling down.** Mittelstadt, Wachter and Russell (2023) argue that fairness
-interventions frequently equalise by degrading the better-off group, and that this is a
-default rather than an accident of particular methods. Our claim (i) is an empirical
-counterpart to that argument, and we are careful not to present the observation as novel.
-What we add is (a) 22 populations rather than illustrative cases, (b) a diagnostic that
-predicts when rate-level accounting misleads about people-level impact, and (c) a scope
-condition — the direction reverses above a selection rate we locate experimentally. To our
-knowledge the third has not been reported.
+**Levelling down, and the remedy.** `[VERIFIED against arXiv:2302.02404]`
+Mittelstadt, Wachter and Russell (2023) argue that fairness interventions frequently
+equalise by degrading the better-off group, and that this is a default rather than an
+accident of particular methods. **They also propose the remedy**: §6, "Levelling up by
+design with minimum rate constraints", requires "that every group has, at least, a minimal
+selection rate, precision, or recall", demonstrates it on Adult with demographic parity,
+and reports that "levelling down does not occur" while parity is still reached.
+
+We therefore claim neither the observation nor the remedy as novel, and say so here rather
+than letting a reviewer discover it. Our contribution relative to that paper is four
+things, each narrow and each checkable:
+
+1. **A scope condition they do not have.** They treat levelling down as a default. We show
+   the direction *reverses* above a selection rate located experimentally by a
+   single-factor sweep. They note in passing that Adult is "more than 75% negatively
+   labelled" — as a remark about accuracy cost, not as a condition — and nowhere connect
+   label prevalence to the direction of the effect. This is our principal claim.
+2. **In-processing rather than post-processing.** Their MRC is achieved by post-processing
+   that tunes "a separate offset for each group", which requires the protected attribute at
+   prediction time. Ours is a moment constraint inside the reduction; no model here reads
+   the attribute when predicting. In jurisdictions where per-group thresholds are disparate
+   treatment on their face, that difference is the whole difference.
+3. **A population-level floor stacked with parity**, rather than a per-group floor that
+   replaces it — so parity is still enforced to ε and the pie is preserved simultaneously.
+4. **Held-out replication.** They report Adult, and explicitly on the training set:
+   "Transferring them to the unseen test data introduces noise which would make the results
+   less clear." We report test-set results across 22 populations, two protected attributes,
+   two survey instruments and one administrative record, at five seeds.
 
 **Remedies that avoid harm.** Minimax group fairness (Martinez et al., 2020; Diana et al.,
 2021) minimises the worst group's error rather than equalising anything, and decoupled

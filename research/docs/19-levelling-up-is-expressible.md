@@ -15,6 +15,39 @@ decisions to the disadvantaged group. It ended:
 
 That is a claim about what is *expressible*. It is now tested.
 
+> **Prior art, found after this document was written, and it is close.**
+> Mittelstadt, Wachter & Russell (2023), *The Unfairness of Fair Machine Learning*
+> (arXiv:2302.02404), §6 — "Levelling up by design with minimum rate constraints" —
+> proposes exactly this move. Their **minimum rate constraint (MRC)** requires "that every
+> group has, at least, a minimal selection rate, precision, or recall", they demonstrate it
+> on **Adult** with **demographic parity** as their Example 1, and they report that
+> "unlike enforcing egalitarian group fairness constraints, levelling down does not occur",
+> with parity reached and then held "consistently near zero, as the selection rate increases
+> for all groups".
+>
+> **The claim on this page that levelling up "has to be part of the objective" is therefore
+> not new, and must not be presented as new.** Three differences survive and are worth
+> stating precisely rather than inflating:
+>
+> 1. **Where the constraint sits.** MRC is a floor on *each group's* rate and replaces the
+>    parity constraint; the floor here is on the *whole population's* rate and is stacked
+>    *alongside* `DemographicParity`, which is still enforced to ε = 0.01.
+> 2. **In-processing versus post-processing.** MRC is achieved by post-processing that
+>    "tune[s] a separate offset for each group", which needs the protected attribute at
+>    prediction time — disparate treatment on its face in many jurisdictions. The floor here
+>    is a moment constraint inside Agarwal et al.'s reduction, and no model in this project
+>    can read the attribute when predicting.
+> 3. **What was measured.** They report Adult, and explicitly on the **training set**:
+>    "Transferring them to the unseen test data introduces noise which would make the
+>    results less clear." [Document 21](21-the-floor-replicates.md) reports held-out test
+>    results across 19 populations, two protected-attribute arms and five seeds.
+>
+> What is **not** anticipated by them is
+> [document 23](23-the-selection-rate-sets-the-direction.md): they treat levelling down as
+> a default rather than a conditional phenomenon, note in passing that Adult is "more than
+> 75% negatively labelled" purely as a remark about accuracy cost, and nowhere connect the
+> selection rate to the *direction* of the effect.
+
 ## The construction, and what it is not
 
 A single extra constraint: `P(h(x) = 1) ≥ target`, with the target set to the

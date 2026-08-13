@@ -94,10 +94,16 @@ did. Nothing has to be explained away.
   with 1.47 → 0.88 across 19 populations, which is smaller, unanimous, and defensible. The
   paper is about the audit surface being blind; getting caught overstating an effect on the
   one dataset everyone knows would be the worst possible way to lose that argument.
-* **Levelling down is not a new observation.** Mittelstadt, Wachter & Russell (2023) made
-  it the centre of a well-known critique. The differentiation is scale, the quantitative
-  cross-flow diagnostic, and the cheapness of the fix — lead with those, never with the
-  observation itself.
+* **Neither the observation NOR the remedy is new.** `[VERIFIED, arXiv:2302.02404]`
+  Mittelstadt, Wachter & Russell (2023) made levelling down the centre of a well-known
+  critique — and their §6 proposes **minimum rate constraints**, a per-group selection-rate
+  floor, demonstrated on Adult under demographic parity, reporting that levelling down does
+  not occur. The selection-rate floor is a variant of a published remedy, not a discovery,
+  and the paper must say so before a reviewer does. What survives: it is in-processing
+  rather than post-processing (so no protected attribute at prediction time), it is a
+  population-level floor stacked *with* parity rather than a per-group floor replacing it,
+  and it is replicated on held-out data across 22 populations where they report Adult's
+  training set. **Lead with the scope condition (doc 23), which they do not have.**
 
 ## Known before submission
 
