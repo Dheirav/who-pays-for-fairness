@@ -83,6 +83,16 @@ because it must move more people to reach the same parity without withdrawing de
 population-level documents in this folder exist because single-dataset findings are
 exactly what should not be trusted, and this one has not been through that.
 
+> **Addressed in [document 21](21-the-floor-replicates.md).** It has now been through that:
+> nineteen populations, both protected-attribute arms. The finding **replicates** — the
+> exchange rate fell in 19 of 19 populations — and the measurements above were re-verified
+> exactly. Two corrections follow. **Adult is the extreme case, not the typical one:** its
+> plain constraint destroys −20.5% of favourable decisions against a −6.1% mean elsewhere,
+> and its exchange rate is 2.68 against 1.46, so quoting this page's numbers as
+> representative overstates the typical case by roughly a factor of three. And **the floor
+> does not merely protect the pie, it grows it**, in 18 of 19 populations — which is a
+> larger change to the classifier than "don't shrink the pie" implies.
+
 **The floor target is a choice.** Setting it at the unconstrained model's own selection
 rate is defensible and makes the comparison to the ablation direct, but a regulator might
 set it elsewhere, and nothing here explores that.
