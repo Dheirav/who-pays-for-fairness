@@ -116,6 +116,18 @@ PROTECTED_SCHEMES = {
 RARE_LEVEL_THRESHOLD = 0.005
 POOLED_LABEL = "OTHER-RARE"
 
+# ACSIncome's own cutoff: "does this person earn more than $50,000". It is a choice made
+# by the benchmark, not a fact about the world, and that makes it an experimental knob.
+#
+# Document 22 found the levelling-down direction reversing on mortgage data, where 81% of
+# applicants are approved, against 0.195-0.353 selection rates across every survey
+# population here. Those two datasets differ in seven ways at once, so the reversal cannot
+# be attributed to any one of them. Moving *this number* on a fixed state varies the base
+# rate while holding the population, the instrument, the features, the group ratio and the
+# proxy structure exactly fixed -- which is the single-factor design that comparison
+# cannot supply.
+DEFAULT_THRESHOLD = 50_000
+
 
 class ACSIncomeLoader:
     """Loader for the folktables ACSIncome task, one or more states.
@@ -135,6 +147,7 @@ class ACSIncomeLoader:
         protected: str = PROTECTED,
         year: str = "2018",
         horizon: str = "1-Year",
+        threshold: int = DEFAULT_THRESHOLD,
     ) -> None:
         if protected not in PROTECTED_SCHEMES:
             raise KeyError(
@@ -144,6 +157,7 @@ class ACSIncomeLoader:
         self.protected = protected
         self.year = year
         self.horizon = horizon
+        self.threshold = int(threshold)
 
     @property
     def name(self) -> str:
@@ -158,7 +172,12 @@ class ACSIncomeLoader:
         unsuffixed so the committed sex results keep their paths.
         """
         stem = f"acs_income_{'_'.join(self.states).lower()}_{self.year}"
-        return stem if self.protected == PROTECTED else f"{stem}_{self.protected.lower()}"
+        if self.protected != PROTECTED:
+            stem = f"{stem}_{self.protected.lower()}"
+        # The threshold changes the label, so two runs differing in it are different
+        # datasets by the same argument as the protected attribute above. The default is
+        # left unsuffixed so every committed result keeps its path.
+        return stem if self.threshold == DEFAULT_THRESHOLD else f"{stem}_t{self.threshold}"
 
     def _pool_rare_levels(self, column: pd.Series) -> pd.Series:
         """Collapse levels rarer than the threshold into a single readable bucket.
@@ -181,7 +200,25 @@ class ACSIncomeLoader:
             root_dir=str(DATA_DIR),
         )
         frame = source.get_data(states=self.states, download=True)
-        X, y, _ = ACSIncome.df_to_pandas(frame)
+
+        if self.threshold == DEFAULT_THRESHOLD:
+            X, y, _ = ACSIncome.df_to_pandas(frame)
+        else:
+            # Rebuilt from ACSIncome's own parts with one substitution, so the filtering,
+            # feature list and postprocessing are the benchmark's and only the cutoff is
+            # this project's. `tests/test_acs_threshold.py` asserts the reconstruction
+            # reproduces ACSIncome exactly at the default.
+            from folktables import BasicProblem
+
+            problem = BasicProblem(
+                features=ACSIncome.features,
+                target=ACSIncome.target,
+                target_transform=lambda income: income > self.threshold,
+                group=ACSIncome.group,
+                preprocess=ACSIncome._preprocess,
+                postprocess=ACSIncome._postprocess,
+            )
+            X, y, _ = problem.df_to_pandas(frame)
 
         X = X.reset_index(drop=True)
         y = pd.Series(np.asarray(y).astype(int).ravel(), name="income", index=X.index)
@@ -251,6 +288,7 @@ class ACSIncomeLoader:
                 "protected_attribute": self.protected,
                 "year": self.year,
                 "horizon": self.horizon,
+                "income_threshold": self.threshold,
                 "rare_level_threshold": RARE_LEVEL_THRESHOLD,
                 "pooled_levels": pooled,
                 "difference_from_adult":
