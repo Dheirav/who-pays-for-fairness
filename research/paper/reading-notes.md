@@ -135,9 +135,12 @@ literature rather than as novel, which remains the right framing.
 
 ---
 
-## 8. *Resource-constrained Fairness* (2024) — **new, and worth citing**
+## 8. Goethals, Delaney, Mittelstadt & Russell (2024) — **new, and worth citing**
 
-arXiv:2406.01290. Not in the original draft; surfaced while checking whether the
+*Resource-constrained Fairness*, arXiv:2406.01290. **Two of the four authors also wrote
+entry 1**, which sharpens the novelty claim considerably: the group best placed to connect
+the selection rate to the direction of levelling down studied that axis, called it
+"overlooked in previous evaluations", and did not make the connection. Not in the original draft; surfaced while checking whether the
 selection-rate moderator was already known.
 
 They study the *cost* of fairness as a function of the available budget, across six datasets

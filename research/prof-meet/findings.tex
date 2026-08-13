@@ -1,0 +1,228 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage[hidelinks]{hyperref}
+\usepackage{parskip}
+\usepackage[T1]{fontenc}
+
+\title{\textbf{Satisfied, Not Solved}\\[2mm]
+\large What a Demographic Parity Constraint Actually Does}
+\author{Dheirav}
+\date{Findings summary --- \today}
+
+\newcommand{\claim}[1]{\medskip\noindent\textbf{#1}\quad}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent Fairness constraints of the reduction family (Agarwal et al., 2018) do what they
+promise: on UCI Adult they drive the demographic parity violation from $0.186$ to $0.018$
+for under two accuracy points. This work audits what they do to \emph{get} there, across
+\textbf{26 populations and 61 experimental arms} spanning a household survey, its modern
+replacement, and an administrative record of real mortgage decisions.
+
+The central finding: \textbf{levelling down is not what parity constraints do --- it is what
+they do below a selection rate of roughly $0.3$}. Above it, the same constraint hands
+decisions out instead of taking them away. This is established by a single-factor design in
+which only the label's cutoff moves, and replicates across two protected attributes, five
+states, a second domain, and fourteen populations held out from a later prediction
+($r = +0.901$).
+\end{abstract}
+
+\section{The problem in one paragraph}
+
+A constraint that equalises two groups' selection rates can be satisfied two ways: by
+extending favourable decisions to the disadvantaged group, or by withdrawing them from the
+advantaged one. Every real mitigation does a mixture of both. \textbf{The certifying metric
+is identical either way.} It reports that the violation fell; it says nothing about which
+mixture produced that, or whether the total pool of favourable decisions grew or shrank.
+
+\section{What is already known, and what is not}
+
+\claim{Known.} Mittelstadt, Wachter and Russell (2023) established that fairness
+interventions frequently equalise by degrading the better-off group, and argue it is a
+default rather than an accident. Their \S6 also proposes the remedy --- ``minimum rate
+constraints'', requiring that every group has at least a minimal selection rate ---
+demonstrated on Adult, and reporting that ``levelling down does not occur''.
+
+\claim{Therefore not claimed here.} Neither the observation nor the remedy is novel, and
+this document says so before a reviewer does. An earlier version of this project claimed
+the remedy as new; that was wrong about the literature and has been corrected in place.
+
+\claim{Not known.} \emph{When} it happens. Mittelstadt et al.\ treat levelling down as a
+default; their paper contains no discussion of base rates. Their only remark touching
+prevalence is that Adult is ``more than 75\% negatively labelled'', offered as a note on
+accuracy cost and never connected to direction. They were operating at a selection rate of
+roughly $0.24$ --- inside the levelling-down regime identified here --- and did not ask
+whether it would reverse elsewhere.
+
+\claim{The nearest miss.} Goethals, Delaney, Mittelstadt and Russell (2024),
+\emph{Resource-constrained Fairness}, study the \emph{cost} of fairness as a function of the
+available budget and note the selection rate is ``a factor overlooked in previous
+evaluations''. Two of the four authors are also authors of the levelling-down paper. But in
+their setting positive decisions are a \emph{fixed} resource, so the total cannot move and
+the directional effect reported here is unobservable by construction. The group best placed
+to find this result studied the same axis and did not connect it to direction.
+
+\section{The central result}
+
+\subsection{The design}
+
+ACS Income's label is ``earns more than \$50{,}000'' --- a cutoff chosen by the benchmark,
+not a fact about the world. Moving it on a \emph{fixed} population varies the overall
+selection rate while holding the population, the survey instrument, the feature set, the
+group ratio and the proxy structure exactly fixed. Test code asserts that rows, features and
+protected groups are identical across arms and only the label changes.
+
+\textbf{The cutoff is the instrument, not the cause.} The moderator is the selection rate
+itself. This is confirmed in a domain where no cutoff exists: HMDA mortgage decisions, where
+the label is a real lender's approve/deny, sits naturally at a selection rate of $0.808$ and
+lands exactly where the sweep predicts.
+
+\subsection{Alabama, six cutoffs, five seeds}
+
+\begin{center}
+\begin{tabular}{lrrr}
+\toprule
+Cutoff & Selection rate & Change in favourable decisions & Destroyed per created \\
+\midrule
+\$100{,}000 & 0.030 & $-29.71\%$ & 22.03 \\
+\$70{,}000  & 0.099 & $-22.05\%$ & 2.18 \\
+\$50{,}000  & 0.252 & $-2.34\%$  & 1.14 \\
+\$30{,}000  & 0.598 & $+0.98\%$  & 0.83 \\
+\$20{,}000  & 0.760 & $+0.80\%$  & 0.75 \\
+\$10{,}000  & 0.890 & $+0.08\%$  & 0.89 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Same people. Same features. Same groups. Only the finish line moved --- and the direction
+flipped, with the crossover between $0.25$ and $0.60$.
+
+\subsection{Replication}
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Evidence & Scope & Result \\
+\midrule
+Original sweep & Alabama, Oregon (sex) & $r = +0.801$, $+0.964$ \\
+Second protected attribute & 4 states (race) & $r = +0.874$ to $+0.991$ \\
+Held-out populations & 14, run after prediction & $r = +0.901$ \\
+Second domain & HMDA, 2 states, 2 arms & correct side of crossover \\
+Datasets never fitted to & Adult ($0.205$), HMDA ($0.808$) & both placed correctly \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{The obvious objection, pre-empted}
+
+That unequal base rates \emph{between groups} force trade-offs is textbook (Kleinberg et
+al., 2016; Chouldechova, 2017). \textbf{This claim is about a different quantity}: the
+overall \emph{level} of the selection rate, irrespective of any gap.
+
+The two are confounded by construction --- the between-group gap must vanish as the level
+approaches $0$ or $1$. So the gap is partialled out, and the relationship
+\emph{strengthens}: from $r = +0.801$ to $+0.980$ in Alabama, and $+0.964$ to $+0.994$ in
+Oregon. That control is the identification strategy, not a robustness check.
+
+\section{An identity that says precisely what levelling down is}
+
+Let the privileged group be share $p$ with unconstrained selection rate $r_A$, and the
+unprivileged group $1-p$ at $r_B$. The unconstrained total is the size-weighted average
+$\bar{r} = p\,r_A + (1-p)\,r_B$. Demographic parity puts \emph{both} groups on one common
+rate $s$, so the constrained total \emph{is} $s$, and
+\[
+\text{change in favourable decisions} \;=\; s - \bar{r}.
+\]
+Writing $\lambda = (s - r_B)/(r_A - r_B)$ for where the common rate falls between the two
+original rates,
+\[
+\boxed{\;\text{the pool is preserved exactly when } \lambda = p.\;}
+\]
+Levelling down is $\lambda < p$ and nothing else: the optimiser choosing a compromise
+\emph{below} the size-weighted one. This requires no assumptions, holds to $0.076$
+percentage points across fourteen held-out populations, and does not appear to be stated
+anywhere in the literature reviewed.
+
+\section{What could not be established}
+
+\claim{The mechanism.} A derivation was attempted: under group-wise thresholding,
+calibration and a location shift, levelling down is a \emph{curvature} effect and the
+crossover should sit at the mode of the score density. It was pre-registered with numerical
+thresholds and tested on fourteen populations run afterwards. It cleared its bars
+(predicting the sign in 12 of 14) and was \textbf{beaten by the constant rule ``levelling up
+iff the selection rate exceeds $0.5$'' (13 of 14)}. The measured mode moves inversely with
+the selection rate ($r = -0.802$), so it carries almost no independent information.
+
+The methodological lesson is recorded with it: a \emph{threshold} was fixed in advance, but
+a \emph{baseline to beat} was not, so clearing the threshold did not mean what it appeared
+to mean.
+
+\claim{The magnitude.} The selection rate sets the direction, not the size. Alabama loses
+$2.34\%$ at a rate of $0.252$ where Adult loses $20.5\%$ at $0.205$. A pre-registered
+candidate --- the group ratio --- was refuted, with the opposite sign to the prediction.
+
+\section{Supporting findings}
+
+\claim{Subgroups.} A constraint on one attribute leaves Sex\,$\times$\,Race subgroups worse
+off than any group it was told about, in every sufficiently diverse population, and more
+severely than Adult suggests ($9.0\times$ against $13.2\times$). In five of ten populations
+the worst-off subgroup after a sex constraint is a minority man.
+
+\claim{Attribution audits do not reveal the mechanism.} A parity constraint moves SHAP
+attribution \emph{onto} a sex proxy by $+151\%$. Three explanations were proposed; two were
+refuted by intervention and the third bounded by re-aggregation --- scoring the two most
+redundant features as one coalition takes the effect from $+155\%$ to $+11.6\%$. The
+transferable lesson: \textbf{an attribution audit can move by an order of magnitude without
+the model's behaviour changing correspondingly.}
+
+\claim{Arbitrariness.} Below roughly $2{,}500$ test subjects, the method's own randomness
+exceeds the entire effect of the constraint.
+
+\claim{Against existing remedies.} Group-wise thresholding --- the \emph{optimal}
+DP-constrained classifier --- destroys $18.8\%$ of favourable decisions on Adult against the
+reduction's $20.5\%$, so levelling down is not a solver artifact. Minimax group fairness,
+proposed in the literature as \emph{the} remedy for levelling down, destroys $10.0\%$ of
+favourable decisions on HMDA at an exchange rate of $46.7$ --- on the same data where the
+parity constraint \emph{creates} $4.3\%$. Its objective minimises the worst group's
+\emph{error}, and worst-off-by-error is not worst-off-by-outcome: on Adult the higher-error
+group is Male.
+
+\section{Why it matters}
+
+Lending, hiring and admissions --- the domains where these methods are actually proposed ---
+are nearly all low-selection-rate settings. \textbf{The default regime for deployed fairness
+constraints is therefore the one in which they take favourable decisions away, and the
+fairness score never says so.}
+
+\section{Method, and what it caught}
+
+Five seeds throughout; splits stratified on the (attribute, label) interaction; the
+protected attribute removed from the feature matrix; metrics implemented from their
+definitions and cross-checked against \texttt{fairlearn} on every run; undefined rates
+returned as undefined rather than zero.
+
+Where a result could have gone either way, predictions and their numerical thresholds were
+written and committed \emph{before} the experiment ran, verifiable in the commit history.
+That discipline is why the following can be reported: \textbf{three pre-registered
+predictions of my own failed}; two proposed mechanisms were refuted by my own interventions;
+and three claims were corrected or retracted in place, including the novelty claim for the
+remedy, which the literature had anticipated.
+
+\section{The open question}
+
+Is the scope condition sufficient on its own for a venue such as FAccT or AIES, or should
+the mechanism be established first? The derivation attempted here failed, and is reported as
+a failure. The finding is \emph{when} the direction flips, not \emph{why}.
+
+\vfill
+\noindent\rule{\textwidth}{0.4pt}\\
+{\small All figures are reproduced from stored results by
+\texttt{tests/test\_documented\_claims.py}, which re-derives every headline number and fails
+if a document and its data disagree. Supporting papers are in \texttt{papers/}; the full
+research record is in \texttt{research/docs/}.}
+
+\end{document}

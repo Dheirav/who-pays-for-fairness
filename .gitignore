@@ -14,3 +14,6 @@ data/
 
 # Windows "downloaded from internet" marker files
 *:Zone.Identifier
+
+# Meeting-folder PDFs of third-party papers: freely available, not ours to redistribute
+research/prof-meet/papers/*.pdf

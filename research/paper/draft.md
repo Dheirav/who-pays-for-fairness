@@ -156,14 +156,17 @@ function. This gives us a principled *bound* rather than merely another baseline
 predicts that levelling down should not be attributable to the reduction's search — which §7
 tests directly.
 
-**The selection-rate axis.** The nearest prior work to §4.4 is *Resource-constrained
-Fairness* (2024), which studies the cost of fairness as a function of the available budget
+**The selection-rate axis.** The nearest prior work to §4.4 is Goethals, Delaney,
+Mittelstadt and Russell (2024), *Resource-constrained Fairness* — note that two of its four
+authors also wrote the levelling-down paper above. It studies the cost of fairness as a function of the available budget
 across six datasets and rates from 1% to 100%, and reports that "the level of available
 resources significantly influences this cost, a factor overlooked in previous evaluations".
 The difference is structural: in their setting positive decisions are a fixed resource, so
 the total is constant by construction and the directional effect we measure cannot arise.
 They vary the selection rate and measure how much fairness *costs*; we let the total move and
-find that its *sign* changes.
+find that its *sign* changes. That the same group studied this axis, named it as overlooked,
+and did not connect it to direction is the clearest evidence we can offer that the connection
+is not obvious.
 
 **Fairness gerrymandering.** Kearns et al. (2018) show that constraints imposed on marginal
 groups can be satisfied while structured subgroups are badly treated. Our claim (ii) is an
@@ -485,8 +488,8 @@ the same whether or not the thing beneath it worked.
 - Mittelstadt, Wachter & Russell (2023). *The Unfairness of Fair Machine Learning: Levelling
   down and strict egalitarianism by default.* arXiv:2302.02404 — **read in full**; §6 is our
   closest prior work.
-- *Resource-constrained Fairness* (2024). arXiv:2406.01290 — verified; nearest prior work on
-  the selection-rate axis.
+- Goethals, Delaney, Mittelstadt & Russell (2024). *Resource-constrained Fairness.*
+  arXiv:2406.01290 — verified; nearest prior work on the selection-rate axis.
 - Ustun, Liu & Parkes (2019). *Fairness without Harm: Decoupled Classifiers with Preference
   Guarantees.* ICML, PMLR v97 — verified; **not on arXiv**, cite the proceedings.
 - Zhang, Lemoine & Mitchell (2018). *Mitigating Unwanted Biases with Adversarial Learning.*
