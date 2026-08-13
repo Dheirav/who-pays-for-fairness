@@ -252,8 +252,27 @@ The sweep places both datasets it was not fitted to: Adult at 0.205 shrinks, HMD
 grows. It does not fit them tightly — Alabama loses 2.34% at 0.252 where Adult loses 20.5%
 at 0.205 — so the selection rate sets the direction but not the magnitude.
 
-> `[PENDING]` §4.5: group ratio as the candidate for the residual magnitude. Four states
-> crossed with five cutoffs, pre-registered, running.
+### 4.5 The residual is not group ratio `[SETTLED]`
+
+The obvious candidate for the leftover magnitude was the group ratio, which prior work in
+this project found to be a genuine cause of the rate-versus-people divergence. We
+pre-registered the prediction that a larger ratio means more levelling down, and crossed
+four populations spanning a 4.4× range of ratios with five cutoffs.
+
+**It is refuted, with the opposite sign** — partial r = +0.535 holding the selection rate
+fixed, against a predicted −0.40. We do not claim the reverse: the ratio factor has only
+four distinct levels, which is enough to refute a predicted direction and not enough to
+assert its opposite. The magnitude of levelling down remains unexplained, and we report it
+that way.
+
+The same experiment does strengthen §4.4 substantially. The selection-rate result was
+derived on two states of one protected attribute; it holds in four states of a *second*
+attribute at within-state correlations of +0.874, +0.933, +0.969 and +0.991 — every one
+above the sex arm's weaker state. Six populations, two protected attributes, one direction.
+
+It also extends §7's range: the worst levelling down we measure anywhere is Mississippi at a
+$70,000 cutoff, destroying **62% of all favourable decisions** at 17.6 per one created, and
+the floor returns it to −2.2%.
 
 ---
 
