@@ -78,9 +78,11 @@ invisible to every tool ordinarily used to check.
    roughly 0.3. We establish this by a single-factor sweep in which the population, the
    instrument, the features, the group ratio and the proxy structure are held provably
    fixed and only the label's cutoff moves.
-3. Evidence that the effect is **not an artifact of the solver**: the theoretically optimal
-   DP classifier — group-wise thresholding on the unconstrained score — levels down as
-   well. `[PENDING: full seed run]`
+3. Evidence that the effect is **not an artifact of the solver**: on Adult the
+   theoretically optimal DP classifier — group-wise thresholding on the unconstrained
+   score — destroys 18.8% of favourable decisions against the reduction's 20.5%, with
+   better parity. At moderate selection rates the two diverge in sign, so the solver
+   matters where the effect is mild and not where it is severe.
 4. A remedy that is not a new method: one additional linear moment constraint, inside the
    base paper's own framework, whose benefit scales with the severity of the problem
    (r ≈ −0.99 between damage done and damage recovered) and which is inert where the
@@ -365,10 +367,29 @@ two states. Where the constraint destroys 29.7% of favourable decisions the floo
 that into +1.2%; where nothing is wrong it does nothing, to within a tenth of a percentage
 point. That is what makes it applicable by default rather than after diagnosis.
 
-> `[PENDING]` Comparison against group-wise thresholding (the optimal DP classifier, and
-> therefore a bound — it uses the protected attribute at prediction time, which nothing else
-> here does) and minimax group fairness. A single-seed run already indicates that the
-> optimal DP classifier levels down as well, which would rule out the solver as the cause.
+**Against the existing remedies.** `[SETTLED]` Two comparisons, three populations spanning
+the selection-rate range, five seeds.
+
+*Group-wise thresholding*, the optimal DP-constrained classifier, is carried as a **bound**
+rather than a rival — it uses the protected attribute at prediction time, which nothing else
+here does. On Adult it destroys **18.8%** of favourable decisions against the reduction's
+20.5%, at a comparable exchange rate and with better parity, which closes the objection that
+levelling down is a solver artifact. At Alabama's moderate rate the two disagree in sign,
+so the solver matters where the effect is mild and not where it is severe.
+
+*Minimax group fairness* is proposed in the literature as the answer to levelling down. It
+is not one here. On HMDA it **destroys 10.0% of favourable decisions at an exchange rate of
+46.7** — the worst figure anywhere in our data — while barely moving parity, on the same
+population where the parity constraint *creates* 4.3%. The reason is in its objective:
+minimax minimises the worst group's **error**, and worst-off-by-error is not
+worst-off-by-outcome. On Adult the higher-error group is Male, so the method optimises for
+the privileged group and concludes correctly that there is little to do. This is our own
+thesis appearing inside a baseline — a criterion whose stated aim diverges from what it
+optimises, with nothing in its metric to say so.
+
+**What the floor is, after this comparison:** not the best at parity, and not the cheapest.
+It is the only arm that satisfies parity *and* preserves the pool of favourable decisions
+*without* requiring the protected attribute at prediction time.
 
 ---
 

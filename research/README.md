@@ -76,6 +76,7 @@ course-side code as a side effect. They are not claimed as exclusively individua
 | 22 | [Levelling down is not universal](docs/22-levelling-down-is-not-universal.md) | A second *domain*: on mortgage decisions the constraint levels up unprompted, and document 05 gains a scope condition |
 | 23 | [What decides the direction](docs/23-the-selection-rate-sets-the-direction.md) | Move one number and the direction flips: levelling down happens below a selection rate of ~0.3 |
 | 24 | [Group ratio is not the residual](docs/24-group-ratio-is-not-the-residual.md) | The candidate for the leftover magnitude is refuted, with the opposite sign; document 23 gains a second protected attribute |
+| 25 | [Against the existing remedies](docs/25-against-the-existing-remedies.md) | The optimal DP classifier levels down too; minimax is not the remedy it is taken for |
 
 ## The short version
 
