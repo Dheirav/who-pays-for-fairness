@@ -119,8 +119,9 @@ import pandas as pd
 from ..datasets import build as build_dataset
 from ..models import build as build_model
 from ..preprocessing import prepare
-from ..results_io import research_dir
+from ..results_io import RESEARCH_RESULTS_DIR, research_dir
 from .methods import BASE_MODEL
+from .analyse_threshold import PLAIN
 
 IDENTITY_TOL = 0.5          # percentage points
 MIN_SIGN_ACCURACY = 0.75    # M1
@@ -168,9 +169,11 @@ def quantile_curvature(scores: np.ndarray, rate: float) -> float:
 def measure(dataset_spec: str, seeds: list[int]) -> dict:
     """Per-population quantities the derivation needs, measured from the baseline model."""
     dataset = build_dataset(dataset_spec).load()
-    rates, modes, curvatures = [], [], []
+    rates, modes, curvatures, sizes = [], [], [], []
+    privileged_share = float((dataset.a == dataset.privileged_value).mean())
     for seed in seeds:
         split = prepare(dataset, random_state=seed)
+        sizes.append(len(split.y_test))
         model = build_model(BASE_MODEL, random_state=seed)
         model.fit(split.X_train, split.y_train)
         scores = model.predict_proba(split.X_test)[:, 1]
@@ -181,6 +184,8 @@ def measure(dataset_spec: str, seeds: list[int]) -> dict:
     return {
         "dataset": dataset_spec,
         "name": dataset.name,
+        "p": privileged_share,
+        "n_test": float(np.mean(sizes)),
         "rbar_model": float(np.mean(rates)),
         "mode_rate": float(np.mean(modes)),
         "curvature": float(np.nanmean(curvatures)),
@@ -188,11 +193,88 @@ def measure(dataset_spec: str, seeds: list[int]) -> dict:
     }
 
 
+def evaluate(measurements: list[dict]) -> pd.DataFrame:
+    """Join the measured mode with each population's levelling-up outcome.
+
+    The predictions and their thresholds were fixed in this module before any held-out
+    population existed; this function only evaluates them. `lambda` is recovered from
+    quantities the run already records: the two group rates follow from the overall rate
+    and the baseline parity gap, since rbar = p*rA + (1-p)*rB and dp = rA - rB.
+    """
+    rows = []
+    for entry in measurements:
+        path = RESEARCH_RESULTS_DIR / f"{entry['name']}_levelling_up" / "levelling_up_runs.csv"
+        if not path.exists():
+            continue
+        runs = pd.read_csv(path)
+        mean = runs.groupby("arm").mean(numeric_only=True)
+        if not {"baseline", PLAIN}.issubset(mean.index):
+            continue
+        n = entry["n_test"]
+        p_share = entry["p"]
+        rbar = mean.loc["baseline", "positives"] / n
+        s_star = mean.loc[PLAIN, "positives"] / n
+        dp = mean.loc["baseline", "dp_diff"]
+        r_a, r_b = rbar + (1 - p_share) * dp, rbar - p_share * dp
+        lam = (s_star - r_b) / (r_a - r_b) if r_a != r_b else float("nan")
+        rows.append({
+            **{k: entry[k] for k in ("name", "p", "mode_rate", "curvature")},
+            "rbar": rbar, "s_star": s_star, "dp_base": dp,
+            "lambda": lam, "lambda_minus_p": lam - p_share,
+            "identity_pct": 100 * (s_star - rbar) / rbar,
+            "recorded_pct": mean.loc[PLAIN, "positives_pct_change"],
+            "predicted": "up" if rbar > entry["mode_rate"] else "down",
+            "observed": "up" if lam - p_share > 0 else "down",
+        })
+    return pd.DataFrame(rows)
+
+
+def verdict(frame: pd.DataFrame) -> None:
+    print("\n" + "=" * 78)
+    print(frame.round(4).to_string(index=False))
+
+    identity_error = (frame["identity_pct"] - frame["recorded_pct"]).abs().max()
+    m0 = identity_error < IDENTITY_TOL
+    print(f"\nM0  the identity holds                    -> {'HOLDS' if m0 else 'FAILS'}")
+    print(f"      max |derived - recorded| = {identity_error:.4f} pts  (bar {IDENTITY_TOL})")
+
+    agree = (frame["predicted"] == frame["observed"])
+    accuracy = float(agree.mean())
+    m1 = accuracy >= MIN_SIGN_ACCURACY
+    print(f"\nM1  sign(lambda-p) == sign(rbar-m)        -> {'HOLDS' if m1 else 'FAILS'}")
+    print(f"      {int(agree.sum())}/{len(frame)} held-out populations = {accuracy:.2f}  "
+          f"(bar {MIN_SIGN_ACCURACY})")
+    for _, row in frame[~agree].iterrows():
+        print(f"      missed: {row['name']}  rbar {row['rbar']:.3f} vs mode {row['mode_rate']:.3f}"
+              f"  -> predicted {row['predicted']}, observed {row['observed']}")
+
+    ups, downs = frame[frame.observed == "up"], frame[frame.observed == "down"]
+    if len(ups) and len(downs):
+        observed_crossover = (downs["rbar"].max() + ups["rbar"].min()) / 2
+        gap = abs(observed_crossover - frame["mode_rate"].mean())
+        m2 = gap < CROSSOVER_TOL
+        print(f"\nM2  the crossover locates at the mode     -> {'HOLDS' if m2 else 'FAILS'}")
+        print(f"      observed crossover ~{observed_crossover:.3f}, mean mode "
+              f"{frame['mode_rate'].mean():.3f}, gap {gap:.3f}  (bar {CROSSOVER_TOL})")
+    else:
+        print("\nM2  not evaluable -- held-out set does not straddle the crossover")
+
+    usable = frame.dropna(subset=["curvature"])
+    if len(usable) >= 4:
+        r = float(np.corrcoef(usable["curvature"], usable["lambda_minus_p"])[0, 1])
+        m3 = abs(r) > 0.3
+        print(f"\nM3  curvature predicts the size           -> {'HOLDS' if m3 else 'FAILS'}")
+        print(f"      r(curvature, lambda - p) = {r:+.3f}")
+    print("=" * 78)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dataset", nargs="+", required=True, dest="datasets",
                         help="dataset specs to measure, e.g. adult acs:AL hmda:MS:derived_race")
     parser.add_argument("--seeds", type=int, nargs="+", default=[0, 1, 2])
+    parser.add_argument("--evaluate", action="store_true",
+                        help="join with levelling-up results and evaluate M0-M3")
     args = parser.parse_args()
 
     rows = [measure(spec, args.seeds) for spec in args.datasets]
@@ -205,7 +287,15 @@ def main() -> None:
 
     out = research_dir("mechanism")
     frame.to_csv(out / "mechanism_measurements.csv", index=False)
-    print(f"\nwrote {out}/mechanism_measurements.csv")
+
+    if args.evaluate:
+        joined = evaluate(rows)
+        if joined.empty:
+            print("\n  no levelling-up results found for these populations yet")
+        else:
+            verdict(joined)
+            joined.to_csv(out / "mechanism_heldout.csv", index=False)
+    print(f"\nwrote {out}/mechanism_*.csv")
 
 
 if __name__ == "__main__":
