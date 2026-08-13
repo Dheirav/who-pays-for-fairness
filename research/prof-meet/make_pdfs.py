@@ -27,13 +27,15 @@ HERE = Path(__file__).resolve().parent
 
 # (source, output stem, title, subtitle)
 DOCUMENTS = [
-    (HERE / "README.md", "00-start-here", "Start Here",
+    (HERE / "PLAIN-ENGLISH.md", "00-plain-english", "The Whole Thing, In Plain Words",
+     "No jargon, plus a glossary of every term used elsewhere"),
+    (HERE / "README.md", "01-start-here", "Start Here",
      "What is in this folder, and the order to read it"),
-    (HERE / "THE-ASK.md", "02-the-ask", "The Decision I Need",
+    (HERE / "THE-ASK.md", "03-the-ask", "The Decision I Need",
      "One fork, the argument for it, and the counter-argument expected"),
-    (HERE.parent / "paper" / "draft.md", "03-paper-draft", "Paper Draft",
+    (HERE.parent / "paper" / "draft.md", "04-paper-draft", "Paper Draft",
      "Full working draft"),
-    (HERE.parent / "paper" / "reading-notes.md", "04-reading-notes", "Reading Notes",
+    (HERE.parent / "paper" / "reading-notes.md", "05-reading-notes", "Reading Notes",
      "What each cited paper was checked for, and what it changed"),
 ]
 
@@ -273,18 +275,18 @@ def build(source: Path, stem: str, title: str, subtitle: str) -> bool:
 def main() -> None:
     if not shutil.which("pdflatex"):
         sys.exit("pdflatex not found")
-    # 01-findings.tex is hand-written LaTeX rather than converted markdown, so it is
+    # 02-findings.tex is hand-written LaTeX rather than converted markdown, so it is
     # built here rather than listed in DOCUMENTS.
-    print(f"  {'01-findings':<20} <- 01-findings.tex", end=" ")
+    print(f"  {'02-findings':<20} <- 02-findings.tex", end=" ")
     # Remove any previous output first: the check below is `does the PDF exist`, which a
     # stale file from an earlier run would satisfy while hiding a failed build.
-    (HERE / "01-findings.pdf").unlink(missing_ok=True)
+    (HERE / "02-findings.pdf").unlink(missing_ok=True)
     for _ in range(2):
-        subprocess.run(["pdflatex", "-interaction=nonstopmode", "01-findings.tex"],
+        subprocess.run(["pdflatex", "-interaction=nonstopmode", "02-findings.tex"],
                        cwd=HERE, capture_output=True)
-    print("ok" if (HERE / "01-findings.pdf").exists() else "FAILED")
+    print("ok" if (HERE / "02-findings.pdf").exists() else "FAILED")
     for suffix in (".aux", ".log", ".out"):
-        (HERE / f"01-findings{suffix}").unlink(missing_ok=True)
+        (HERE / f"02-findings{suffix}").unlink(missing_ok=True)
     failures = []
     for source, stem, title, subtitle in DOCUMENTS:
         if not source.exists():
