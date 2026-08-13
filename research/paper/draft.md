@@ -5,9 +5,8 @@
 
 **Status of each section is marked.** `[SETTLED]` means every number is in the repository
 and re-derived by `tests/test_documented_claims.py`. `[PENDING]` means an experiment is
-still running. `[NEEDS READING]` means I have drafted the argument from background
-knowledge and the citations must be checked against the actual papers before submission —
-see the note at the end of §2.
+still running. Related work has now been checked against the sources; the evidence trail is
+in [`reading-notes.md`](reading-notes.md).
 
 ---
 
@@ -96,14 +95,13 @@ condition that the existing literature does not have.
 
 ---
 
-## 2. Related work `[PARTLY VERIFIED]`
+## 2. Related work `[VERIFIED — see reading-notes.md]`
 
-> **Verification note.** This section is drafted from background knowledge of the
-> literature. Every citation below is to a paper I am confident exists and have
-> characterised at the level of its central claim, but **no specific numerical or
-> theorem-level assertion in this section should survive to submission without being
-> checked against the actual text.** Positioning errors here are the fastest way to lose a
-> reviewer, and this is the one section of the paper not backed by the repository.
+> **Verification status.** Every claim in this section has now been checked against the
+> source, and the evidence trail — including the passages quoted — is in
+> [`reading-notes.md`](reading-notes.md). Four references remain unverified and are listed
+> there with the reason each is low-risk. One check changed the paper substantially (§2,
+> first entry); one added a citation that was missing.
 
 **Levelling down, and the remedy.** `[VERIFIED against arXiv:2302.02404]`
 Mittelstadt, Wachter and Russell (2023) argue that fairness interventions frequently
@@ -141,12 +139,23 @@ solutions no group would reject. These are the natural comparison for our select
 floor and we benchmark against them in §7 rather than only against the unconstrained
 reduction. `[PENDING: results]`
 
-**The shape of the optimal fair classifier.** Corbett-Davies et al. (2017) and Menon and
-Williamson (2018) characterise the optimal classifier under group-fairness constraints as
-a group-specific threshold on the unconstrained risk score. This matters twice for us: it
+**The shape of the optimal fair classifier.** Corbett-Davies et al. (2017) show that "for
+several past definitions of fairness, the optimal algorithms that result require detaining
+defendants above **race-specific risk thresholds**"; Menon and Williamson (2018) give the
+corresponding characterisation as an instance-dependent thresholding of the
+class-probability function. This matters twice for us: it
 gives us a principled *bound* rather than merely another baseline, and it predicts that
 levelling down should not be attributable to the reduction's search procedure — which our
 §7 comparison tests directly.
+
+**The selection-rate axis.** The nearest prior work to our §4.4 is *Resource-constrained
+Fairness* (2024), which studies the cost of fairness as a function of the available budget
+across six datasets and rates from 1% to 100%, and reports that "the level of available
+resources significantly influences this cost, a factor overlooked in previous evaluations".
+The difference is structural rather than incremental: in their setting positive decisions
+are a fixed resource, so the total is constant by construction and the directional effect we
+measure cannot arise. They vary the selection rate and measure how much fairness *costs*; we
+let the total move and find that its *sign* changes.
 
 **Fairness gerrymandering.** Kearns et al. (2018) show that constraints imposed on marginal
 groups can be satisfied while structured subgroups are badly treated. Our claim (ii) is an
@@ -392,12 +401,12 @@ often proposed, exactly the regime they operate in.
 
 ---
 
-## References `[NEEDS READING — verify every entry]`
+## References `[VERIFIED except four — see reading-notes.md]`
 
 - Agarwal, Beygelzimer, Dudík, Langford & Wallach (2018). *A Reductions Approach to Fair
   Classification.* ICML. — the base paper; verified in this repository.
 - Black, Raghavan & Barocas (2022). *Model Multiplicity: Opportunities, Concerns, and
-  Solutions.* FAccT.
+  Solutions.* FAccT. — verified.
 - Chouldechova (2017); Kleinberg, Mullainathan & Raghavan (2016). — impossibility results.
 - Corbett-Davies, Pierson, Feller, Goel & Huq (2017). *Algorithmic Decision Making and the
   Cost of Fairness.* KDD.
@@ -413,6 +422,6 @@ often proposed, exactly the regime they operate in.
 - Menon & Williamson (2018). *The Cost of Fairness in Binary Classification.* FAT*.
 - Mittelstadt, Wachter & Russell (2023). *The Unfairness of Fair Machine Learning.*
 - Ustun, Liu & Parkes (2019). *Fairness without Harm: Decoupled Classifiers with Preference
-  Guarantees.* ICML.
+  Guarantees.* ICML, PMLR v97 — verified; **not on arXiv**, cite the proceedings.
 - Zhang, Lemoine & Mitchell (2018). *Mitigating Unwanted Biases with Adversarial Learning.*
   AIES. — implemented from the paper in this repository.
