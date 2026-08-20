@@ -21,7 +21,7 @@ from __future__ import annotations
 
 from typing import Callable
 
-from sklearn.base import BaseEstimator
+from sklearn.base import BaseEstimator, ClassifierMixin, clone
 from sklearn.ensemble import HistGradientBoostingClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
@@ -58,6 +58,45 @@ def hist_gradient_boosting(random_state: int = 42, max_iter: int = 60,
     )
 
 
+class ThresholdedClassifier(BaseEstimator, ClassifierMixin):
+    """A base learner whose decision line can be moved without changing anything else.
+
+    ``analyse_threshold`` reaches a selection rate by moving the *income cutoff*, which
+    changes the label -- and therefore how hard the prediction problem is -- as well as the
+    rate. So a relationship found along that axis cannot distinguish "the selection rate
+    sets the direction" from "the difficulty of the task sets the direction".
+
+    This moves the operating point instead. The rows, features, groups and labels are
+    untouched and the learning problem is identical across arms; only where the fitted model
+    draws its line changes. It is the single-factor version of the same manipulation.
+
+    ``sample_weight`` is forwarded because the reduction mitigates by reweighting and
+    refitting, so an estimator that swallowed the weights would return an unmitigated model
+    rather than an error.
+    """
+
+    def __init__(self, base: str = "logistic_regression", threshold: float = 0.5,
+                 random_state: int = 42):
+        # Stored unmodified so `sklearn.base.clone` round-trips -- ExponentiatedGradient
+        # clones the estimator once per iteration.
+        self.base = base
+        self.threshold = threshold
+        self.random_state = random_state
+
+    def fit(self, X, y, sample_weight=None):
+        self.estimator_ = MODELS[self.base](random_state=self.random_state)
+        self.estimator_.fit(X, y, sample_weight=sample_weight)
+        self.classes_ = self.estimator_.classes_
+        return self
+
+    def predict(self, X):
+        scores = self.estimator_.predict_proba(X)[:, 1]
+        return (scores > self.threshold).astype(int)
+
+    def predict_proba(self, X):
+        return self.estimator_.predict_proba(X)
+
+
 MODELS: dict[str, Callable[..., BaseEstimator]] = {
     "decision_tree": decision_tree,
     "logistic_regression": logistic_regression,
@@ -66,6 +105,16 @@ MODELS: dict[str, Callable[..., BaseEstimator]] = {
 
 
 def build(name: str, random_state: int = 42) -> BaseEstimator:
-    if name not in MODELS:
-        raise KeyError(f"unknown model '{name}'; available: {sorted(MODELS)}")
-    return MODELS[name](random_state=random_state)
+    """Resolve a model name to an estimator.
+
+    ``"logistic_regression@0.30"`` builds the same learner reading its scores at a decision
+    threshold of 0.30. The suffix form matches how dataset specs carry their arguments, so a
+    single ``--model`` string on the command line can select an operating point.
+    """
+    base, _, threshold = name.partition("@")
+    if base not in MODELS:
+        raise KeyError(f"unknown model '{base}'; available: {sorted(MODELS)}")
+    if threshold:
+        return ThresholdedClassifier(base=base, threshold=float(threshold),
+                                     random_state=random_state)
+    return MODELS[base](random_state=random_state)

@@ -75,6 +75,19 @@ CONSTRAINT_CODE = {"demographic_parity": "dp", "equalized_odds": "eo"}
 # existing results, documents and analysers already use.
 MODEL_CODE = {"hist_gradient_boosting": "hgb", "decision_tree": "tree"}
 
+
+def model_code(model: str) -> str:
+    """Short, readable, collision-free path fragment for a non-default learner.
+
+    ``logistic_regression@0.30`` is the same learner read at a different decision
+    threshold, and two operating points are two different results, so the threshold has to
+    survive into the directory name like every other knob here.
+    """
+    base, _, threshold = model.partition("@")
+    if threshold:
+        return f"op{threshold.replace('.', '')}"
+    return MODEL_CODE[base]
+
 DEFAULT_CONSTRAINT = "demographic_parity"
 
 
@@ -96,7 +109,7 @@ def output_stem(dataset_name: str, constraint: str, model: str) -> str:
     if constraint != DEFAULT_CONSTRAINT:
         stem = f"{stem}_{CONSTRAINT_CODE[constraint]}"
     if model != BASE_MODEL:
-        stem = f"{stem}_{MODEL_CODE[model]}"
+        stem = f"{stem}_{model_code(model)}"
     return stem
 
 
