@@ -60,6 +60,11 @@ Three shared files were also extended for this work — `src/results_io.py`,
 `src/datasets/base.py`, `src/datasets/__init__.py` — and those changes improved the
 course-side code as a side effect. They are not claimed as exclusively individual.
 
+## What is planned next
+
+[`NEXT.md`](NEXT.md) is the live handover: each remaining weakness, what closes it, what
+would count as a failure, and which items need pre-registering.
+
 ## The documents
 
 | # | Document | What it answers |
