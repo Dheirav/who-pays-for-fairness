@@ -21,11 +21,13 @@ defines every term the others use.
 
 ## In one sentence
 
-> These fairness fixes are supposed to make two groups equal. They can do that either by
-> approving more people from the group being turned down, or by rejecting more from the
-> group getting through — and the score that certifies the fix cannot tell which happened.
-> I found that which one you get depends on how generous the system already is, and almost
-> every real system is the kind where you get the bad one.
+> These fairness fixes make two groups equal either by approving more from the group being
+> turned down, or by rejecting more from the group getting through — and the certifying
+> score cannot tell which happened. Theory published in March 2026 proves it can go either
+> way. **I measured which way, on 26 datasets: it depends on how generous the system already
+> is, and almost every real system is the kind where you get the bad one.** Their conditions
+> turn out to hold on none of my datasets; my rule needs only a historical approval rate,
+> and the two agree at a correlation of 0.93.
 
 ## The papers, and why each is here
 
@@ -35,6 +37,7 @@ defines every term the others use.
 | 02 Corbett-Davies et al. (2017) | Proves what the mathematically best possible fair program looks like — which makes one of my comparisons a ceiling rather than a rival. |
 | 03 Diana et al. (2021) | The alternative method the field recommends for this problem. I test it and it performs badly. |
 | 04 Kearns et al. (2018) | Showed fixes can look fine per group while failing for combinations of groups. I reproduce this. |
+| **11 Backfire (2026)** | **The closest work to my main claim.** Proves the effect can go either way when the model cannot see the group — my exact setting. No experiments in it at all. Read the abstract and Theorem 3. |
 | **05 Goethals et al. (2024)** | **The near miss.** Studies the same dimension I do, calls it "overlooked" — and two of its four authors also wrote paper 01. Their setup fixes the number of approvals in advance, so my effect cannot appear in it. |
 | 06 Menon & Williamson (2018) | Supporting theory for paper 02. |
 | 07 Ustun et al. (2019) | Another "avoid harm" method from the literature. |
@@ -52,7 +55,7 @@ defines every term the others use.
 - `git log` — the full record, including predictions committed before the experiments that
   tested them
 
-## Two things I would rather say than be asked
+## Three things I would rather say than be asked
 
 **1. My remedy is not new.** I believed the fix I proposed was original. It is a variation
 on one already published (paper 01, section 6). I found this myself by reading their paper,
@@ -64,6 +67,13 @@ widely.
 down in advance, and tested it on new data. It passed my own test and was then beaten by a
 much cruder rule, so it explains nothing. It is written up as a failure. I can say when the
 flip happens, not why.
+
+**3. The conditionality itself was published five months before I got to it.** A March 2026
+theory paper (paper 11) proves the effect can go either way in exactly my setting. I found
+it by running a novelty check, not before starting. What survives is the empirical half:
+they have no experiments, their conditions hold on **none** of my 26 datasets because the
+quantity they use diverges on real data, and my rule needs only an approval rate. The two
+agree at 0.93 — independent theory and independent measurement converging.
 
 ## Scale
 

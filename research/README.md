@@ -90,6 +90,18 @@ a finding survives a population it was not derived from, "the constraint causes 
 populations across two protected attributes — and then, in document 22, on a domain that is
 not a survey at all.
 
+**Where this sits in the literature, after checking.** Two of this folder's claims turned
+out to be anticipated, and both were found by reading rather than assumed. The
+selection-rate floor is a variant of Mittelstadt et al.'s minimum rate constraints
+(document 19's correction). And the *conditionality* of levelling down — that it can go
+either way rather than being a default — is proven in arXiv:2603.06901 (March 2026), five
+months before this project reached it independently. What survives that collision is the
+empirical half, and document 27 makes the case precisely: their conditions are satisfied on
+**0 of 26** populations because the quantity they are stated over diverges on real data,
+their direction is right once relaxed (24–25 of 26), and the overall selection rate proxies
+their structural quantity at **r = +0.927** while requiring nothing but a historical
+approval rate. Independent theory and independent measurement converging.
+
 **What did not survive a second domain.** Every population above is a household survey. On
 **HMDA mortgage decisions** — an administrative record of real lending outcomes rather than
 a survey — the demographic parity constraint **levels up unprompted**, growing favourable

@@ -34,10 +34,17 @@ is a name for it in the ethics literature: *levelling down*.
 A well-known 2023 paper from Oxford showed that these tools mostly do **way two**. They put
 it in their title: levelling down happens "by default".
 
-That paper is the starting point for this work, and it is also the closest competitor —
-because it not only identified the problem, it proposed the fix. This project originally
-believed it had invented that fix independently. It had not. That was found by reading their
-paper properly, and corrected.
+That paper is also the closest competitor — because it not only identified the problem, it
+proposed the fix. This project originally believed it had invented that fix independently.
+It had not. Found by reading their paper properly, and corrected.
+
+**And there is a second one.** A March 2026 paper proves mathematically that when the
+program cannot see which group someone belongs to — which is the situation studied here —
+the effect **can go either way** depending on the data. So the *idea* that it is not always
+harmful was published, in theory, five months before this work reached it independently.
+
+That paper has no experiments in it at all. Not one dataset. It proves the possibility and
+gives conditions written in terms of the shape of the program's internal scores.
 
 ## What this work found
 
@@ -81,6 +88,23 @@ It then held up in:
 - and **fourteen further populations that were run *after* the prediction was written down**,
   so they could not have influenced it.
 
+## How this sits with the theory
+
+Three things came out of checking this work against that 2026 paper:
+
+1. **Their conditions never actually hold.** Applied to all 26 real datasets here, the
+   mathematical conditions in their theorem are satisfied **zero times**. The quantity they
+   are written over blows up on real data. So their result, as stated, cannot be used on
+   anything.
+2. **Their direction is still right.** Loosened into a comparison rather than a strict
+   requirement, it predicts correctly in 24 of 26 cases.
+3. **And it matches the approval-rate rule almost exactly** — the two agree on 25 of 26
+   datasets, and the numbers behind them correlate at **0.93**.
+
+So: their maths explains *why* it happens. This work shows *how you can tell in advance* —
+using a number any organisation already has, rather than one requiring the model's internals.
+Two independent routes to the same place, which is better evidence than either alone.
+
 ## Why it matters
 
 Loans. Job applications. University admissions.
@@ -106,6 +130,9 @@ written into the paper rather than left out.
 
 **About 0.3.** Below roughly a 30% approval rate, these fairness tools take opportunities
 away. Above it, they hand them out.
+
+And you can check which side you are on before building anything, using a number you
+already have.
 
 ---
 

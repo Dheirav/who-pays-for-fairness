@@ -63,7 +63,14 @@ works without the program ever being told which group an applicant belongs to, a
 tested on data the programs had never seen, across 26 datasets --- where they report one
 dataset, scored on the same data they trained on.
 
-\textbf{Not known: \emph{when} it happens.} Their paper never discusses how generous the
+\textbf{Also known, and published five months before I reached it.} A March 2026 paper,
+\emph{Fairness May Backfire: When Leveling-Down Occurs}, proves that when the program cannot
+see group membership --- the setting studied here --- the effect is distribution-dependent
+and can go either way. I found this by running a novelty check after the fact, not before
+starting. \textbf{The conditionality is therefore not my claim.} What that paper does not
+have is any experiment: zero datasets appear in it.
+
+\textbf{Not known: \emph{when} it happens, in practice.} Their paper never discusses how generous the
 system is overall. Their only remark near it is that the benchmark dataset is ``more than
 75\% negatively labelled'' --- said in passing about accuracy cost, never connected to which
 of the two options you get. They were working in exactly the regime where their conclusion
@@ -154,6 +161,28 @@ gap fixed and re-checks}, and the relationship gets \emph{stronger}, not weaker
 ($+0.801 \rightarrow +0.980$ in one population, $+0.964 \rightarrow +0.994$ in another).
 That check is the core of the argument, not a footnote to it.
 
+\section{How this sits against the theory}
+
+Checking my measurements against that 2026 paper produced three results.
+
+\textbf{Their conditions hold on none of my 26 datasets.} Their theorem is written over the
+extrema of a ratio that diverges wherever its denominator approaches zero, and every real
+dataset has such points. The two regions it compares always overlap, by large margins. The
+conditions are sufficient rather than necessary, and as stated the theorem cannot be applied
+to data --- which is consistent with the paper containing no experiments.
+
+\textbf{Their direction is nonetheless right.} Relaxed from a strict separation to a
+comparison of the two regions, it predicts correctly in 24 of 26; a median version gets 25.
+Both misses are the two smallest effects in the set.
+
+\textbf{And the approval rate is a proxy for their structural quantity}, at
+\textbf{r = +0.927}. The two rules agree with each other on 25 of 26 datasets. Theirs
+requires the joint distribution of the model's scores and group membership; mine requires
+last year's approval rate.
+
+So their mathematics says \emph{why}, this work says \emph{how to tell}, and the two agree
+having been arrived at independently --- which is better evidence than either alone.
+
 \section{Exactly what levelling down is}
 
 There is a small piece of arithmetic that makes the whole thing precise, and it appears not
@@ -240,11 +269,12 @@ remedy was new, which the literature had got to first.
 
 \section{The question I need answered}
 
-Is ``we found when this happens'' enough on its own for a venue like FAccT or AIES, or does
-the paper need ``and here is why'' first?
+A theory paper published in March 2026 proves this effect can go either way, and contains no
+experiments. I have the experiments, a rule computable from a historical approval rate, and
+the finding that their conditions are satisfied on none of my 26 datasets.
 
-I can say when the direction flips. I cannot say why --- and the attempt is written up as a
-failure rather than left out.
+Is that an empirical paper worth publishing on its own --- or does it now read as a follow-up
+to someone else's theorem?
 
 \vfill
 \noindent\rule{\textwidth}{0.4pt}\\
