@@ -80,7 +80,7 @@ course-side code as a side effect. They are not claimed as exclusively individua
 | 24 | [Group ratio is not the residual](docs/24-group-ratio-is-not-the-residual.md) | The candidate for the leftover magnitude is refuted, with the opposite sign; document 23 gains a second protected attribute |
 | 25 | [Against the existing remedies](docs/25-against-the-existing-remedies.md) | The optimal DP classifier levels down too; minimax is not the remedy it is taken for |
 | 26 | [The derivation does not earn its keep](docs/26-the-derivation-does-not-earn-its-keep.md) | A mechanism passes its pre-registered bars and is beaten by a constant; the identity survives |
-| 27 | [The theory and the measurement agree](docs/27-the-theory-and-the-measurement-agree.md) | A 2026 theory anticipates the claim; its conditions never hold on data, and our rule proxies it at r = +0.927 |
+| 27 | [The theory and the measurement agree](docs/27-the-theory-and-the-measurement-agree.md) | A 2026 theory anticipates the claim; its conditions never hold on data, and our rule proxies it at r = +0.935 |
 | 28 | [How uncertain the correlations are](docs/28-how-uncertain-are-the-correlations.md) | Cluster-bootstrap intervals; the effect is not carried by the lending populations |
 | 29 | [Where real decisions actually sit](docs/29-where-real-decisions-actually-sit.md) | The punchline was wrong: deployed systems span the crossover, from 0.02 in hiring to 0.84 in mortgages |
 
@@ -102,7 +102,7 @@ months before this project reached it independently. What survives that collisio
 empirical half, and document 27 makes the case precisely: their conditions are satisfied on
 **0 of 26** populations because the quantity they are stated over diverges on real data,
 their direction is right once relaxed (24–25 of 26), and the overall selection rate proxies
-their structural quantity at **r = +0.927** while requiring nothing but a historical
+their structural quantity at **r = +0.935** while requiring nothing but a historical
 approval rate. Independent theory and independent measurement converging.
 
 **What did not survive a second domain.** Every population above is a household survey. On

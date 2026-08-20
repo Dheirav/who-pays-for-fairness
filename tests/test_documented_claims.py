@@ -651,7 +651,7 @@ def test_doc26_derivation_beaten_by_a_constant() -> None:
 def test_doc27_theory_correspondence() -> None:
     """docs/27: their conditions never hold, and the selection rate proxies theirs."""
     text = _doc(27)
-    _quotes(text, "+0.927", "24 / 26", "25 / 26")
+    _quotes(text, "+0.935", "24 / 26", "25 / 26")
     frame = pd.read_csv(RESEARCH / "zeta" / "zeta_correspondence.csv")
     assert len(frame) == 26, f"docs/27 reports 26 populations, found {len(frame)}"
 
@@ -662,7 +662,7 @@ def test_doc27_theory_correspondence() -> None:
     assert int((zeta_rule == rate_rule).sum()) == 25, "docs/27 says the two rules agree 25/26"
 
     r = float(np.corrcoef(frame["rate"], frame["A_max_q"] - frame["B_max_q"])[0, 1])
-    assert abs(r - 0.927) < 0.005, f"docs/27 says r = +0.927, data gives {r:+.3f}"
+    assert abs(r - 0.935) < 0.005, f"docs/27 says r = +0.935, data gives {r:+.3f}"
     print(f"  relaxed rule 24/26, agrees with rate rule 25/26, r = {r:+.3f}")
 
 

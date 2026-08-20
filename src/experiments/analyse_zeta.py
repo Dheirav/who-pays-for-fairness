@@ -27,7 +27,7 @@ What this finds, written up in document 27:
    so the empirical extrema of the two regions always overlap. The conditions are
    sufficient, not necessary, and are never met on real data.
 2. **A relaxed ordering version does predict the direction**, and the overall selection rate
-   proxies it at r = +0.927 -- which is what connects the theory to a quantity a
+   proxies it at r = +0.935 -- which is what connects the theory to a quantity a
    practitioner can compute before building anything.
 
 Run:  python -m src.experiments.analyse_zeta

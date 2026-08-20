@@ -61,7 +61,7 @@ did. Nothing has to be explained away.
 | claim | evidence | status |
 |---|---|---|
 | The method works as advertised | docs 02–04 | Solid. Background, not contribution |
-| (i) Levelling down, and rate-vs-people | docs 05, 11, 13, 22, 23, 27 | Solid on survey data, 19 populations, diagnostic at r = +0.885. Reverses on mortgage data (doc 22), and **doc 23 identifies the moderator by single-factor sweep**: the selection rate, crossing over between 0.25 and 0.60. State the condition, never the bare claim. **The conditionality itself is anticipated by arXiv:2603.06901 (doc 27) — concede it in the first paragraph.** What survives: their conditions hold on 0/26 populations, ours proxies theirs at r = +0.927, and they have no experiments |
+| (i) Levelling down, and rate-vs-people | docs 05, 11, 13, 22, 23, 27 | Solid on survey data, 19 populations, diagnostic at r = +0.885. Reverses on mortgage data (doc 22), and **doc 23 identifies the moderator by single-factor sweep**: the selection rate, crossing over between 0.25 and 0.60. State the condition, never the bare claim. **The conditionality itself is anticipated by arXiv:2603.06901 (doc 27) — concede it in the first paragraph.** What survives: their conditions hold on 0/26 populations, ours proxies theirs at r = +0.935, and they have no experiments |
 | (ii) Intersectional subgroups left behind | docs 07, 12 | **Strongest result in the project.** Replicates everywhere, with one stated condition |
 | (iii) Arbitrariness below ~2,500 subjects | doc 15 | Solid but not novel — position as a caution, cite the multiplicity literature |
 | (iv) Attribution audits do not recover it | docs 06, 16, 17, 18, 20 | Solid as a negative result. Do not oversell |

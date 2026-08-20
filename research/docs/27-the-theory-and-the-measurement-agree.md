@@ -68,7 +68,7 @@ both are reported because choosing between them after the fact would be selectio
 This is the one that matters.
 
 ```
-r(selection rate, A_max_q - B_max_q) = +0.927
+r(selection rate, A_max_q - B_max_q) = +0.935
 ```
 
 The two rules agree with each other on **25 of 26** populations.
@@ -85,7 +85,7 @@ thing**.
 | Is the conditionality claim ours? | **No.** Established theoretically and independently, five months earlier |
 | Does their theorem predict our data? | **Not as stated** — its conditions hold on 0 of 26 populations |
 | Is its *direction structure* right? | **Yes**, once relaxed to an ordering: 24–25 of 26 |
-| Is our rule a different phenomenon? | **No** — it proxies their quantity at r = +0.927 |
+| Is our rule a different phenomenon? | **No** — it proxies their quantity at r = +0.935 |
 | Is our rule usable where theirs is not? | **Yes.** Theirs needs the joint score-and-group distribution; ours needs a historical approval rate |
 
 The honest position: **their theory explains why, ours says how to tell, and they agree.**
@@ -105,7 +105,10 @@ distribution — aimed at the wrong quantity.
 ## Limits
 
 * **Post-hoc throughout.** Nothing here could have failed in a way that surprised us.
-* **One seed per population**, where everything else in this project is five.
+* **Five seeds per population**, matching the rest of the project. An earlier version of
+  this document ran a single seed and reported r = +0.927; averaging over five moves it to
+  +0.935 and leaves every rule's score unchanged (24/26, 25/26, 25/26), so the single-seed
+  figure was not a fluke.
 * **`nu` is estimated** by a logistic probe rather than known. A better probe would change
   the numbers, though the probe is the same one used for leakage elsewhere.
 * **The relaxation is ours, not theirs.** They make no claim about quantiles; showing their

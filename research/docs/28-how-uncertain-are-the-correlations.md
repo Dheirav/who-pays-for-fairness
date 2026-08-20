@@ -19,7 +19,7 @@ its cutoffs or not at all. 5,000 draws, percentile interval.
 
 | claim | r | 95% CI | independent populations | measurements |
 |---|---|---|---|---|
-| docs/27 — selection rate vs the theory's structural quantity | **+0.927** | [+0.848, +0.975] | 15 | 26 |
+| docs/27 — selection rate vs the theory's structural quantity | **+0.935** | [+0.858, +0.984] | 15 | 26 |
 | docs/23 — selection rate vs change in favourable decisions | **+0.727** | [+0.588, +0.821] | 15 | 26 |
 | docs/26 — held-out selection rate vs λ − p | **+0.901** | [+0.752, +0.974] | **4** | 14 |
 | docs/11 — cross-flow vs conversion error | **+0.885** | [+0.808, +0.975] | 10 | 10 |
@@ -48,7 +48,7 @@ produced by the income-cutoff sweeps rather than by domain:
 
 | claim | all populations | survey only |
 |---|---|---|
-| docs/27 selection rate vs structural quantity | +0.927 | **+0.957** |
+| docs/27 selection rate vs structural quantity | +0.935 | **+0.957** |
 | docs/23 selection rate vs pie change | +0.727 | **+0.686** |
 
 The relationship is **not** carried by the lending populations. Dropping them entirely
