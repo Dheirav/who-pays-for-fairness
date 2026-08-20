@@ -97,11 +97,52 @@ def test_threshold_reaches_the_output_path() -> None:
     print("  paths separate by threshold; the default path is unchanged")
 
 
+def test_constraint_and_learner_reach_the_output_path() -> None:
+    """The same population under a different constraint or learner is a different result.
+
+    The signature in the filename separates the *archived* copy, but both runs would still
+    write the same canonical ``levelling_up_summary.csv`` and the second would win. That is
+    bug three from ``src/results_io`` wearing new clothes, so the isolation is asserted at
+    the directory level and the defaults are pinned so no existing arm moves.
+    """
+    from src.experiments.run_levelling_up import DEFAULT_CONSTRAINT, arms_for, output_stem
+    from src.experiments.methods import BASE_MODEL
+
+    base = "acs_income_al_2018_t20000"
+    default = output_stem(base, DEFAULT_CONSTRAINT, BASE_MODEL)
+    assert default == f"{base}_levelling_up", \
+        f"the default output path moved to {default}; every committed arm is now orphaned"
+
+    variants = {
+        default,
+        output_stem(base, "equalized_odds", BASE_MODEL),
+        output_stem(base, DEFAULT_CONSTRAINT, "hist_gradient_boosting"),
+        output_stem(base, "equalized_odds", "hist_gradient_boosting"),
+    }
+    assert len(variants) == 4, f"configurations share a directory: {sorted(variants)}"
+
+    # The floor is a demographic-parity object and must not silently appear elsewhere,
+    # where it would be scored against a criterion it does not implement.
+    assert "expgrad_dp_floor" in arms_for(DEFAULT_CONSTRAINT)
+    assert "expgrad_dp_floor" not in arms_for("equalized_odds")
+    assert arms_for("equalized_odds") == ["baseline", "expgrad_eo"]
+
+    # The sweep analyser must look where the runner writes, or it silently reads zero arms
+    # and reports "no threshold arms found" as though the run had never happened.
+    from src.experiments.analyse_threshold import arm_name
+    assert arm_name("AL", 20_000, "_hgb") == output_stem(base, DEFAULT_CONSTRAINT,
+                                                         "hist_gradient_boosting")
+    from src.experiments.analyse_eo import eo_arm_name
+    assert eo_arm_name("AL", 20_000) == output_stem(base, "equalized_odds", BASE_MODEL)
+    print("  constraint and learner separate on disk; runner and analysers agree")
+
+
 def main() -> None:
     tests = [
         test_reconstruction_matches_the_benchmark_at_the_default,
         test_threshold_moves_the_base_rate_and_only_that,
         test_threshold_reaches_the_output_path,
+        test_constraint_and_learner_reach_the_output_path,
     ]
     failures = 0
     for test in tests:

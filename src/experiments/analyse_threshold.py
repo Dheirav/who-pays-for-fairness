@@ -108,11 +108,17 @@ MIN_PARTIAL_R = 0.40
 MIN_BASELINE_GAP = 0.05
 
 
-def arm_name(state: str, threshold: int) -> str:
+def arm_name(state: str, threshold: int, suffix: str = "") -> str:
+    """Directory for one arm.
+
+    ``suffix`` selects a variant of the same sweep -- ``"_hgb"`` for the boosted-tree
+    learner -- and must match what ``run_levelling_up.output_stem`` produced. The default
+    is empty, so every existing arm and every document quoting one keeps its path.
+    """
     stem = f"acs_income_{state.lower()}_2018"
     if threshold != DEFAULT_THRESHOLD:
         stem = f"{stem}_t{threshold}"
-    return f"{stem}_levelling_up"
+    return f"{stem}_levelling_up{suffix}"
 
 
 def partial_corr(x, y, control) -> float:
@@ -126,11 +132,12 @@ def partial_corr(x, y, control) -> float:
     return (r_xy - r_xc * r_yc) / np.sqrt((1 - r_xc**2) * (1 - r_yc**2))
 
 
-def load(states: list[str], thresholds: list[int]) -> pd.DataFrame:
+def load(states: list[str], thresholds: list[int], suffix: str = "") -> pd.DataFrame:
     rows = []
     for state in states:
         for threshold in thresholds:
-            path = RESEARCH_RESULTS_DIR / arm_name(state, threshold) / "levelling_up_runs.csv"
+            path = (RESEARCH_RESULTS_DIR / arm_name(state, threshold, suffix)
+                    / "levelling_up_runs.csv")
             if not path.exists():
                 continue
             runs = pd.read_csv(path)
@@ -149,6 +156,9 @@ def load(states: list[str], thresholds: list[int]) -> pd.DataFrame:
                 "exchange_plain": mean.loc[PLAIN, "lost_per_gained"],
                 "acc_base": mean.loc[BASE, "accuracy"],
                 "acc_plain": mean.loc[PLAIN, "accuracy"],
+                # Recorded by later runs; absent from the arms that predate the column, which
+                # is why `attach_selection_rate` still has a fallback.
+                "n_test": mean.loc[BASE, "n_test"] if "n_test" in mean.columns else np.nan,
             })
     return pd.DataFrame(rows)
 
@@ -172,7 +182,12 @@ def attach_selection_rate(frame: pd.DataFrame, states: list[str]) -> pd.DataFram
     # in tests/test_output_isolation.py checks for and cannot distinguish from a write.
     sizes = {state: test_size(arm_name(state, DEFAULT_THRESHOLD)) for state in states}
     frame = frame.copy()
-    frame["n_test"] = frame["state"].map(sizes)
+    # Prefer the size the run recorded for itself. The lookup below reaches the *default*
+    # learner's who-pays run, which is the right denominator only because the split
+    # protocol is identical across learners -- true, but worth not relying on when the
+    # number is available directly.
+    looked_up = frame["state"].map(sizes)
+    frame["n_test"] = frame["n_test"].fillna(looked_up) if "n_test" in frame else looked_up
     frame["selection_rate"] = frame["positives_base"] / frame["n_test"]
     return frame
 
@@ -259,9 +274,13 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--states", nargs="+", default=["AL"])
     parser.add_argument("--thresholds", type=int, nargs="+", default=THRESHOLDS)
+    parser.add_argument("--suffix", default="",
+                        help='variant of the sweep to read, e.g. "_hgb" for the boosted '
+                             "trees; the output file carries it too, so variants cannot "
+                             "overwrite each other")
     args = parser.parse_args()
 
-    frame = load(args.states, args.thresholds)
+    frame = load(args.states, args.thresholds, args.suffix)
     if frame.empty:
         print("no threshold arms found; run run_levelling_up with --dataset acs:<ST>:SEX:<cutoff>")
         return
@@ -269,8 +288,9 @@ def main() -> None:
     verdict(frame)
 
     out = research_dir("threshold_sweep")
-    frame.to_csv(out / "threshold_sweep.csv", index=False)
-    print(f"\nwrote {out}/threshold_sweep.csv")
+    path = out / f"threshold_sweep{args.suffix}.csv"
+    frame.to_csv(path, index=False)
+    print(f"\nwrote {path}")
 
 
 if __name__ == "__main__":
