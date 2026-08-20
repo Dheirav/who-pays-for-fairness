@@ -18,10 +18,28 @@ looking, and an ad-hoc search is not evidence of absence.
    acceptance rate, base rate, prevalence, budget, capacity — because the field does not use
    one term for this quantity.
 
-**What this does not cover.** Semantic Scholar's citation index lags, particularly for very
-recent work; *Backfire* itself has zero recorded citations and is five months old. Anything
-published in the last few months that does not yet cite these three papers would be missed.
-The audit is a serious sweep, not a guarantee.
+5. **arXiv listing scan**, added because citation-graph traversal cannot see work too new
+   to have been cited — which is exactly the blind spot that matters here, since the
+   assistant's training data ends in May 2026 and *Backfire* has zero recorded citations at
+   five months old. Two passes over the arXiv API:
+   * **seven keyword queries** across the vocabularies the field uses for this quantity
+     (selection rate, acceptance rate, base rate, prevalence, budget, capacity, "under what
+     conditions") — 170 unique papers;
+   * **a broad listing sweep** of every `cs.CY` and `cs.LG` paper whose abstract mentions
+     fairness, newest first — **563 papers spanning 2025-10-29 to 2026-08-19**, which is the
+     day before this audit.
+
+   **730 distinct arXiv papers screened.** Filtering for papers whose abstract contains both
+   direction-change language (levelling up/down, reverse, flip, increase/decrease the total)
+   **and** a rate quantity (selection, acceptance, base, positive or approval rate) returns
+   **zero results**. The filter is not broken: the two conditions match 13 and 15 papers
+   respectively on their own, and the intersection is empty. The only on-topic 2026 paper in
+   the entire sweep is *Backfire* itself.
+
+**What this still does not cover.** Venue-only publications not posted to arXiv; non-English
+work; anything under vocabulary none of the seven queries reached. The audit is a serious
+sweep, not a guarantee — but the ten months to yesterday are covered directly rather than
+through citations.
 
 ## The verdict, claim by claim
 
@@ -56,7 +74,9 @@ The audit is a serious sweep, not a guarantee.
 * Goethals et al., who study the same axis, call it "a factor overlooked in previous
   evaluations", and cannot observe the direction because their setup fixes the pool as a
   budget;
-* about a dozen searches across six different vocabularies for the same quantity.
+* about a dozen searches across six different vocabularies for the same quantity;
+* **730 arXiv papers**, including every `cs.CY` and `cs.LG` fairness abstract from the last
+  ten months, screened for direction-change plus a rate quantity — zero hits.
 
 The nearest thing found in a different direction is Bello et al.'s subgroup-separability
 work, which identifies a *different* property of the data as predictive of bias — the same

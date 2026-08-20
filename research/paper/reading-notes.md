@@ -368,3 +368,23 @@ as the predictor of direction, locates a crossover, or tests *Backfire*'s condit
 work — *Backfire* itself has zero recorded citations at five months old — so anything from
 the last few months that does not yet cite these three papers would be missed. This is a
 serious sweep, not a proof of absence.
+
+---
+
+## 13. arXiv listing scan — the blind spot citations cannot cover
+
+Citation-graph traversal misses work too new to have been cited, which is the case that
+matters most here: the assistant's training data ends May 2026, and *Backfire* has zero
+recorded citations at five months old. So the listings were scanned directly.
+
+* Seven keyword queries across the field's vocabularies for this quantity — 170 papers.
+* A broad sweep of every `cs.CY` and `cs.LG` abstract mentioning fairness, newest first —
+  **563 papers, 2025-10-29 to 2026-08-19**, the day before the audit.
+
+**730 distinct papers screened. Zero** contain both direction-change language and a rate
+quantity in the abstract. The filter matches 13 and 15 papers on those conditions
+separately, so it is discriminating rather than broken, and the intersection is genuinely
+empty. The only on-topic 2026 paper in the whole sweep is *Backfire*, already read.
+
+This covers the post-cutoff window directly rather than by inference, which is the specific
+reassurance that was missing.
