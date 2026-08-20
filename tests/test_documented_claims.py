@@ -575,6 +575,97 @@ def test_doc23_threshold_sweep() -> None:
           f"{checks['T2 partial r'][0]:+.3f}")
 
 
+def test_doc24_group_ratio_refuted() -> None:
+    """docs/24: G2 failed, with the opposite sign, and G1/G4 held."""
+    from src.experiments.analyse_ratio import (
+        MIN_BASELINE_GAP, DEFAULT_STATES, THRESHOLDS, load, partial_corr)
+
+    text = _doc(24)
+    _quotes(text, "+0.535", "+0.484", "-0.990", "+0.969", "+0.933", "+0.874", "+0.991")
+    frame = load(DEFAULT_STATES, THRESHOLDS)
+    assert len(frame) == 20, f"docs/24 reports 20 arms, found {len(frame)}"
+    kept = frame[frame["dp_base"] >= MIN_BASELINE_GAP]
+    assert len(kept) == 14, f"docs/24 reports 14 non-degenerate arms, found {len(kept)}"
+
+    g2 = partial_corr(kept["log_ratio"], kept["pie_plain"], kept["selection_rate"])
+    assert abs(g2 - 0.535) < 0.005, f"docs/24 says G2 partial r = +0.535, data gives {g2:+.3f}"
+    # The finding is that it failed *with the wrong sign*. If it ever comes out negative the
+    # document is describing a refutation that no longer happened.
+    assert g2 > 0, f"docs/24 records G2 failing with the opposite sign; it is now {g2:+.3f}"
+
+    rescued = frame["pie_floor"] - frame["pie_plain"]
+    g4 = float(np.corrcoef(frame["pie_plain"], rescued)[0, 1])
+    assert abs(g4 - (-0.990)) < 0.005, f"docs/24 says G4 r = -0.990, data gives {g4:+.3f}"
+    print(f"  G2 {g2:+.3f} (failed, wrong sign as documented); G4 {g4:+.3f}")
+
+
+def test_doc25_baseline_comparison() -> None:
+    """docs/25: the optimal DP classifier levels down too, and minimax is worse."""
+    text = _doc(25)
+    _quotes(text, "-18.83%", "2.48", "0.0050", "-10.01%", "46.71", "+33.66%", "+4.26%")
+    expected = {
+        "adult_baselines": {"group_thresholds": (-18.83, 2.48), "minimax": (1.45, 0.49)},
+        "hmda_ms_2018_race_baselines": {"group_thresholds": (0.84, 0.82),
+                                        "minimax": (-10.01, 46.71)},
+        "acs_income_al_2018_baselines": {"minimax": (33.66, 0.03)},
+    }
+    for name, arms in expected.items():
+        runs = pd.read_csv(RESEARCH / name / "baselines_runs.csv")
+        mean = runs.groupby("arm").mean(numeric_only=True)
+        for arm, (pie, exchange) in arms.items():
+            got_pie = mean.loc[arm, "positives_pct_change"]
+            got_ex = mean.loc[arm, "lost_per_gained"]
+            assert abs(got_pie - pie) < 0.05, (
+                f"docs/25 says {name}/{arm} pie = {pie}, data gives {got_pie:.2f}")
+            assert abs(got_ex - exchange) < 0.05, (
+                f"docs/25 says {name}/{arm} exchange = {exchange}, data gives {got_ex:.2f}")
+    # The load-bearing claim: on Adult the *optimal* classifier levels down too.
+    adult = pd.read_csv(RESEARCH / "adult_baselines" / "baselines_runs.csv") \
+        .groupby("arm").mean(numeric_only=True)
+    assert adult.loc["group_thresholds", "positives_pct_change"] < -10, (
+        "docs/25 rests on the optimal DP classifier also levelling down substantially")
+    print("  optimal classifier levels down; minimax destroys 10% on HMDA at 46.7")
+
+
+def test_doc26_derivation_beaten_by_a_constant() -> None:
+    """docs/26: M1 passes its bar and is beaten by a constant. Both must stay true."""
+    text = _doc(26)
+    _quotes(text, "12/14", "13/14", "-0.802", "-0.182", "+0.901")
+    frame = pd.read_csv(RESEARCH / "mechanism" / "mechanism_heldout.csv")
+    assert len(frame) == 14, f"docs/26 reports 14 held-out populations, found {len(frame)}"
+
+    derived = (frame["rbar"] > frame["mode_rate"]) == (frame["lambda_minus_p"] > 0)
+    naive = (frame["rbar"] > 0.5) == (frame["lambda_minus_p"] > 0)
+    assert int(derived.sum()) == 12, f"docs/26 says the derived rule gets 12/14, got {int(derived.sum())}"
+    assert int(naive.sum()) == 13, f"docs/26 says the constant gets 13/14, got {int(naive.sum())}"
+    # The whole point is that the constant WINS. If that ever flips, the document is wrong.
+    assert naive.sum() > derived.sum(), (
+        "docs/26 records the derivation being beaten by a constant rule; it no longer is")
+
+    r_mode = float(np.corrcoef(frame["rbar"], frame["mode_rate"])[0, 1])
+    assert abs(r_mode - (-0.802)) < 0.005, (
+        f"docs/26 says r(rbar, mode) = -0.802, data gives {r_mode:+.3f}")
+    print(f"  derived {int(derived.sum())}/14 beaten by constant {int(naive.sum())}/14")
+
+
+def test_doc27_theory_correspondence() -> None:
+    """docs/27: their conditions never hold, and the selection rate proxies theirs."""
+    text = _doc(27)
+    _quotes(text, "+0.927", "24 / 26", "25 / 26")
+    frame = pd.read_csv(RESEARCH / "zeta" / "zeta_correspondence.csv")
+    assert len(frame) == 26, f"docs/27 reports 26 populations, found {len(frame)}"
+
+    obs = frame["pie"] > 0
+    zeta_rule = frame["A_max_q"] > frame["B_max_q"]
+    rate_rule = frame["rate"] > 0.5
+    assert int((zeta_rule == obs).sum()) == 24, "docs/27 says the relaxed rule gets 24/26"
+    assert int((zeta_rule == rate_rule).sum()) == 25, "docs/27 says the two rules agree 25/26"
+
+    r = float(np.corrcoef(frame["rate"], frame["A_max_q"] - frame["B_max_q"])[0, 1])
+    assert abs(r - 0.927) < 0.005, f"docs/27 says r = +0.927, data gives {r:+.3f}"
+    print(f"  relaxed rule 24/26, agrees with rate rule 25/26, r = {r:+.3f}")
+
+
 def main() -> None:
     tests = [
         test_doc11_cross_flow_correlations,
@@ -588,6 +679,10 @@ def main() -> None:
         test_doc21_floor_replication,
         test_doc22_hmda_levels_up,
         test_doc23_threshold_sweep,
+        test_doc24_group_ratio_refuted,
+        test_doc25_baseline_comparison,
+        test_doc26_derivation_beaten_by_a_constant,
+        test_doc27_theory_correspondence,
         test_course_documents_still_match_their_results,
     ]
     failures = 0

@@ -91,4 +91,7 @@ print(f"\n    zeta_rule agrees with rate_rule: {(f.zeta_rule==f.rate_rule).sum()
 sep = f.A_max_q - f.B_max_q
 print(f"    r(selection rate, A_max_q - B_max_q) = {np.corrcoef(f.rate, sep)[0,1]:+.3f}")
 print(f"    r(pie change,     A_max_q - B_max_q) = {np.corrcoef(f.pie,  sep)[0,1]:+.3f}")
-f.to_csv("/tmp/claude-1000/-home-dheirav-Code-Res-Ai/94a99659-b464-4040-9321-e5866a650eec/scratchpad/zeta2.csv", index=False)
+from src.results_io import research_dir
+out = research_dir("zeta")
+f.to_csv(out / "zeta_correspondence.csv", index=False)
+print(f"\nwrote {out}/zeta_correspondence.csv")

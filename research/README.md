@@ -46,6 +46,7 @@ package and moving them would break imports:
 | `src/experiments/analyse_ratio.py` | the pre-registered ratio x threshold design |
 | `src/experiments/analyse_mechanism.py` | the pre-registered derivation of the crossover |
 | `src/experiments/analyse_zeta.py` | the correspondence check against arXiv:2603.06901 |
+| `src/experiments/analyse_uncertainty.py` | cluster-bootstrap intervals for the headline correlations |
 | `src/baselines.py` | group-wise thresholds and minimax group fairness |
 | `src/experiments/run_baselines.py` | the five-arm comparison against existing remedies |
 
@@ -80,6 +81,7 @@ course-side code as a side effect. They are not claimed as exclusively individua
 | 25 | [Against the existing remedies](docs/25-against-the-existing-remedies.md) | The optimal DP classifier levels down too; minimax is not the remedy it is taken for |
 | 26 | [The derivation does not earn its keep](docs/26-the-derivation-does-not-earn-its-keep.md) | A mechanism passes its pre-registered bars and is beaten by a constant; the identity survives |
 | 27 | [The theory and the measurement agree](docs/27-the-theory-and-the-measurement-agree.md) | A 2026 theory anticipates the claim; its conditions never hold on data, and our rule proxies it at r = +0.927 |
+| 28 | [How uncertain the correlations are](docs/28-how-uncertain-are-the-correlations.md) | Cluster-bootstrap intervals; the effect is not carried by the lending populations |
 
 ## The short version
 

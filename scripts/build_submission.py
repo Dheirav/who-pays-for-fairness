@@ -59,6 +59,7 @@ EXCLUDED_FILES = (
     "src/experiments/analyse_ratio.py",
     "src/experiments/analyse_mechanism.py",
     "src/experiments/analyse_zeta.py",
+    "src/experiments/analyse_uncertainty.py",
     "src/experiments/run_baselines.py",
     "src/baselines.py",
     "src/experiments/run_injection.py",
