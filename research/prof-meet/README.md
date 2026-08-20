@@ -25,9 +25,11 @@ defines every term the others use.
 > turned down, or by rejecting more from the group getting through — and the certifying
 > score cannot tell which happened. Theory published in March 2026 proves it can go either
 > way. **I measured which way, on 26 datasets: it depends on how generous the system already
-> is, and almost every real system is the kind where you get the bad one.** Their conditions
-> turn out to hold on none of my datasets; my rule needs only a historical approval rate,
-> and the two agree at a correlation of 0.93.
+> is.** And the domains these tools are deployed in sit at opposite ends of that scale — CV
+> screening approves 2–3%, mortgage lending approves 84% — so two organisations can apply
+> the identical tool in good faith and get opposite effects, with identical fairness reports.
+> Their conditions hold on none of my datasets; my rule needs only a historical approval
+> rate, and the two agree at 0.93.
 
 ## The papers, and why each is here
 

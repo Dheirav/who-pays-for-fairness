@@ -474,9 +474,11 @@ why.
 The practical reading is narrow and, we think, actionable. If a deployment cares whether the
 pool of favourable decisions shrinks, that has to be written into the objective, where it
 costs a fraction of an accuracy point. If it cares about subgroups, marginal parity will not
-deliver them. And if the task's selection rate is low, the constraint's default behaviour is
-to take decisions away — which is, in lending, hiring and admissions, exactly the regime these
-methods are proposed for.
+deliver them. And the direction depends on the task's selection rate, which across the
+domains these methods are proposed for **spans the entire range**: résumé screening operates
+near 0.02, US mortgage lending near 0.84. Two organisations can deploy the identical
+constraint in good faith and get opposite effects on the total number of opportunities
+granted, with nothing in the fairness report distinguishing the two.
 
 We close on what we could not do. We can say *when* the direction flips and not *why*. Our
 own derivation of the crossover cleared the bars we set for it and was beaten by a constant,

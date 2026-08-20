@@ -241,16 +241,37 @@ the group with the most errors is not the group being treated worst.
 
 \section{Why any of this matters}
 
-Loans. Hiring. University admissions.
+Published figures for the domains where these fixes are deployed:
 
-These are where such fixes are actually deployed, and they are nearly all stingy systems ---
-few applicants are approved.
+\begin{center}
+\small
+\begin{tabular}{lrl}
+\toprule
+Decision & Approval rate & Direction \\
+\midrule
+R\'esum\'e screening (applicant to interview, 2024) & 0.02--0.03 & takes opportunities away \\
+Elite university admission & 0.04--0.10 & takes opportunities away \\
+University admission, all four-year US institutions & 0.66--0.73 & hands them out \\
+US mortgage lending (HMDA 2023 aggregate) & $\sim$0.84 & hands them out \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{They span the entire range and sit on opposite sides of the crossover.} My earlier
+claim --- that these domains are nearly all stingy, so the harmful case is the default ---
+was asserted and never checked, and it is wrong. The corrected version is stronger:
 
 \begin{center}
 \fbox{\parbox{0.92\linewidth}{\centering
-\textbf{So the normal case in real deployments is the harmful one, \\
-and the fairness score never says so.}}}
+\textbf{Two organisations can deploy the identical constraint, in good faith, and get
+opposite effects on the number of opportunities granted --- with identical fairness
+reports.}}}
 \end{center}
+
+That is why the direction cannot be assumed in either direction, and why a rule computable
+in advance is worth having. It also validates the data used here: the HMDA populations sit
+at 0.758 and 0.808 against a national aggregate of $\sim$0.84, so they are representative of
+the domain rather than an unusually permissive slice.
 
 \section{How carefully this was done}
 

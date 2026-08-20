@@ -107,13 +107,25 @@ Two independent routes to the same place, which is better evidence than either a
 
 ## Why it matters
 
-Loans. Job applications. University admissions.
+Loans. Job applications. University admissions. These are the places these tools actually
+get used — and I checked where each one sits.
 
-These are the places these fairness tools actually get used — and they are almost all the
-**stingy** kind. Few applicants get approved.
+| what is being decided | share who get a "yes" | which way the fix goes |
+|---|---|---|
+| Sifting job applications | **2–3%** | takes opportunities away |
+| Getting into a top university | 4–10% | takes opportunities away |
+| Getting into university generally | 66–73% | hands opportunities out |
+| Getting a mortgage | **~84%** | hands opportunities out |
 
-**So the normal case, in real deployments, is the harmful one. And the fairness score never
-says so.**
+They are at **opposite ends**. So:
+
+**Two organisations can use exactly the same fairness tool, in good faith, and get opposite
+effects on how many people get helped — and the fairness report looks identical either way.**
+
+A bank fixing its mortgage model will end up approving more people. A company fixing its
+CV-screening will end up interviewing fewer. Same tool. Same score. Opposite result.
+
+That is why knowing which side you are on matters, and why it is worth being able to check.
 
 ## What could not be worked out
 

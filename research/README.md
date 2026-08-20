@@ -82,6 +82,7 @@ course-side code as a side effect. They are not claimed as exclusively individua
 | 26 | [The derivation does not earn its keep](docs/26-the-derivation-does-not-earn-its-keep.md) | A mechanism passes its pre-registered bars and is beaten by a constant; the identity survives |
 | 27 | [The theory and the measurement agree](docs/27-the-theory-and-the-measurement-agree.md) | A 2026 theory anticipates the claim; its conditions never hold on data, and our rule proxies it at r = +0.927 |
 | 28 | [How uncertain the correlations are](docs/28-how-uncertain-are-the-correlations.md) | Cluster-bootstrap intervals; the effect is not carried by the lending populations |
+| 29 | [Where real decisions actually sit](docs/29-where-real-decisions-actually-sit.md) | The punchline was wrong: deployed systems span the crossover, from 0.02 in hiring to 0.84 in mortgages |
 
 ## The short version
 

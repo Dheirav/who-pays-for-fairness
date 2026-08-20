@@ -43,6 +43,24 @@ from src.experiments.methods import BASE_MODEL
 from sklearn.linear_model import LogisticRegression
 R = Path("/home/dheirav/Code/Res_Ai/research/results")
 
+def measure_seeds(spec, seeds, c=0.5, q=0.05):
+    """Average the zeta extrema over seeds, as everything else in this project does.
+
+    The first version of this ran a single seed while every other analysis here uses five,
+    which made it the least robust number in the project and the one carrying the most
+    weight.
+    """
+    got = [r for s in seeds if (r := measure(spec, seed=s, c=c, q=q))]
+    if not got:
+        return None
+    out = {"pop": got[0]["pop"]}
+    for k in got[0]:
+        if k != "pop":
+            out[k] = float(np.mean([g[k] for g in got]))
+    out["n_seeds"] = len(got)
+    return out
+
+
 def measure(spec, seed=0, c=0.5, q=0.05):
     d = build(spec).load(); s = prepare(d, random_state=seed)
     m = build_model(BASE_MODEL, random_state=seed); m.fit(s.X_train, s.y_train)
@@ -70,10 +88,16 @@ SPECS = ["adult"] + \
     [f"acs:OR:SEX:{t}" for t in (20000,30000,70000)] + \
     [f"acs:KY:SEX:{t}" for t in (20000,70000)] + \
     ["hmda:MS:derived_race","hmda:MS:derived_sex","hmda:LA:derived_race","hmda:LA:derived_sex"]
+import argparse
+_ap = argparse.ArgumentParser()
+_ap.add_argument("--dataset", nargs="+", default=None)
+_ap.add_argument("--seeds", type=int, nargs="+", default=[0, 1, 2, 3, 4])
+_args = _ap.parse_args()
+if _args.dataset: SPECS = _args.dataset
 rows=[]
 for sp in SPECS:
     try:
-        r = measure(sp)
+        r = measure_seeds(sp, _args.seeds)
         if r: rows.append(r); print(".", end="", flush=True)
     except Exception: print("x", end="", flush=True)
 print()

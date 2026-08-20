@@ -277,3 +277,60 @@ object.
 to "it is conditional — proven in theory contemporaneously — and here is what actually
 predicts it, measured across 26 populations." Theory paired with independent empirics is a
 normal and defensible pairing, but the framing has to change and the citation is mandatory.
+
+---
+
+## 10. The remaining citations, now checked
+
+**Martinez, Bertran & Sapiro (2020), *Minimax Pareto Fairness*.** ICML, PMLR v119.
+Confirmed: group fairness as multi-objective optimisation, a classifier that "achieves
+minimax risk and is Pareto-efficient with respect to all groups, avoiding unnecessary harm".
+Two details that matter for our §7. Their framing is explicitly harm-avoidance, so
+describing minimax as a proposed remedy for levelling down is fair. And their method "does
+not require test-time access to sensitive attributes", which makes it directly comparable to
+our in-processing setup — unlike group-wise thresholding, which does. The baseline
+comparison is like-for-like in a way the bound arm is not.
+
+**Dwork, Immorlica, Kalai & Leiserson (2018).** The full title is *Decoupled Classifiers for
+**Group-Fair** and Efficient Machine Learning*, PMLR 81:119–133 — our reference dropped
+"Group-Fair" and should be corrected. Confirmed: a decoupling technique atop any black-box
+learner producing a separate classifier per group, with transfer learning for small groups.
+
+**Zietlow et al. (2022), *Leveling Down in Computer Vision*.** CVPR, pp. 10410–10421 — one
+of the two searches that had errored, now retried. Confirmed: existing fairness approaches
+in vision "improve fairness by degrading the performance of classifiers across all groups,
+with increased degradation on the best performing groups", with a bias–variance argument for
+why methods designed for low-capacity models should not be used with high-capacity ones.
+**Chris Russell is a co-author here as well as on entries 1 and 8** — three of our most
+relevant references share an author, which is worth knowing before writing the related work.
+
+**Ding et al. (2021) and Kleinberg / Chouldechova** remain formally unread and are the last
+two. Both are low-risk for the reason recorded earlier: the ACS loader is built directly on
+the first, and the second is cited only for an impossibility result the paper never
+contests.
+
+---
+
+## 11. The punchline was asserted, never measured — and it was wrong
+
+Checked at last, and it does not hold. See
+[document 29](../docs/29-where-real-decisions-actually-sit.md).
+
+Every draft claimed lending, hiring and admissions are low-selection-rate settings, so the
+harmful regime is the deployed regime. Published figures:
+
+| domain | selection rate |
+|---|---|
+| résumé screening, applicant to interview (2024) | **0.02–0.03** |
+| elite university admission | 0.04–0.10 |
+| university admission, all four-year US institutions | 0.66–0.73 |
+| US mortgage lending, HMDA 2023 aggregate | **~0.84** |
+
+They **span the range and straddle the crossover**. The corrected argument is stronger: two
+organisations can deploy the identical constraint in good faith and get opposite effects,
+with identical fairness reports. It also validates the data — our HMDA populations sit at
+0.758 and 0.808 against a national aggregate of ~0.84, so they are representative rather
+than an unusually permissive slice.
+
+This is the third claim in this project that felt too obvious to check and was wrong. The
+other two were the novelty of the remedy and the novelty of the conditionality.
