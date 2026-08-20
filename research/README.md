@@ -89,6 +89,7 @@ would count as a failure, and which items need pre-registering.
 | 28 | [How uncertain the correlations are](docs/28-how-uncertain-are-the-correlations.md) | Cluster-bootstrap intervals; the effect is not carried by the lending populations |
 | 29 | [Where real decisions actually sit](docs/29-where-real-decisions-actually-sit.md) | The punchline was wrong: deployed systems span the crossover, from 0.02 in hiring to 0.84 in mortgages |
 | 30 | [Novelty audit](docs/30-novelty-audit.md) | Every claim checked against 72 citing papers and five full texts: what is new, what is not |
+| 31 | [The crossover on natural data](docs/31-the-crossover-on-natural-data.md) | A real lending product at 0.555 levels down while refinancing levels up — the transition observed, not manufactured |
 
 ## The short version
 

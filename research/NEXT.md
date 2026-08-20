@@ -44,6 +44,12 @@ band, in real lending decisions with no manipulation:
 
 **Time.** ~40 minutes compute, plus loader work. **Highest value item on this list.**
 
+**DONE** — see [document 31](docs/31-the-crossover-on-natural-data.md). All four predictions
+held; home improvement at a selection rate of 0.555 levels **down** while refinancing at
+0.871 levels up, in the same market. One complication surfaced and is recorded there: the
+natural crossover sits at 0.64–0.77, which does **not** overlap document 23's 0.25–0.60. The
+direction relationship replicates; the crossover *location* does not transfer.
+
 ---
 
 ## 2. Does the flip hold for a second fairness criterion?

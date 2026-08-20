@@ -666,6 +666,42 @@ def test_doc27_theory_correspondence() -> None:
     print(f"  relaxed rule 24/26, agrees with rate rule 25/26, r = {r:+.3f}")
 
 
+def test_doc31_natural_split() -> None:
+    """docs/31: the crossover on a natural split, and the discrepancy it exposes."""
+    from src.experiments.analyse_purpose import PURPOSES, load
+    from scipy import stats
+
+    text = _doc(31)
+    _quotes(text, "+0.803", "+0.900", "-1.57%", "+2.95%", "0.555", "0.871")
+    frame = load(PURPOSES)
+    assert len(frame) == 5, f"docs/31 reports five purpose arms, found {len(frame)}"
+    frame["rate"] = frame["positives_base"] / frame["n_test"]
+
+    r = float(np.corrcoef(frame["rate"], frame["pie_plain"])[0, 1])
+    rho = float(stats.spearmanr(frame["rate"], frame["pie_plain"]).statistic)
+    assert abs(r - 0.803) < 0.005, f"docs/31 says r = +0.803, data gives {r:+.3f}"
+    assert abs(rho - 0.900) < 0.005, f"docs/31 says rho = +0.900, data gives {rho:+.3f}"
+
+    # The load-bearing observation: a natural population that levels DOWN, which is what
+    # makes the crossover observed rather than manufactured. If it ever turns positive the
+    # document is describing something that did not happen.
+    low = frame.loc[frame["rate"].idxmin()]
+    high = frame.loc[frame["rate"].idxmax()]
+    assert low["pie_plain"] < 0, (
+        f"docs/31 rests on the lowest-rate natural arm levelling DOWN; "
+        f"it is now {low['pie_plain']:+.2f}%")
+    assert high["pie_plain"] > 0, "docs/31 rests on the highest-rate arm levelling up"
+
+    # The discrepancy docs/31 reports: this crossover does NOT fall inside docs/23's band.
+    negative = frame[frame["pie_plain"] < 0]["rate"].max()
+    positive = frame[frame["pie_plain"] > 0]["rate"].min()
+    assert negative > 0.60, (
+        "docs/31 reports its crossover sitting ABOVE docs/23's 0.25-0.60 band; it no longer "
+        f"does (last negative arm at {negative:.3f})")
+    print(f"  natural crossover between {negative:.3f} and {positive:.3f}; "
+          f"r={r:+.3f} rho={rho:+.3f}; lowest arm {low['pie_plain']:+.2f}%")
+
+
 def main() -> None:
     tests = [
         test_doc11_cross_flow_correlations,
@@ -683,6 +719,7 @@ def main() -> None:
         test_doc25_baseline_comparison,
         test_doc26_derivation_beaten_by_a_constant,
         test_doc27_theory_correspondence,
+        test_doc31_natural_split,
         test_course_documents_still_match_their_results,
     ]
     failures = 0
