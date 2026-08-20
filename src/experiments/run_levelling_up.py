@@ -93,6 +93,9 @@ def run_seed(dataset, seed: int, eps: float) -> list[dict]:
         y = predictions[arm]
         scores = evaluate(split.y_test, y, split.a_test, label=arm, **group_kw)
         row = {"seed": seed, "arm": arm, "floor_target": target,
+               # Recorded because analyses downstream need a denominator for the selection
+               # rate, and previously had to borrow one from the who-pays run.
+               "n_test": len(split.y_test),
                "accuracy": scores["accuracy"],
                "dp_diff": scores["demographic_parity_diff"],
                "eo_diff": scores["equalized_odds_diff"],

@@ -137,6 +137,13 @@ EXCLUDED: dict[str, str] = {
     "state_code": "constant within a download",
 }
 
+# HMDA records why the loan was sought, and approval rates differ sharply by purpose --
+# from 0.52 for home improvement to 0.78 for refinancing, pooled over MS and LA. That is a
+# **natural** split of real lending decisions across the selection-rate range, which is what
+# document 23's crossover had previously only been observed across by moving an artificial
+# income cutoff. See research/NEXT.md item 1.
+LOAN_PURPOSE = {1: "purchase", 2: "improvement", 31: "refinance", 32: "cashout", 4: "other"}
+
 SEX, RACE = "derived_sex", "derived_race"
 
 PROTECTED_SCHEMES = {
@@ -182,14 +189,21 @@ class HMDALoader:
     """
 
     def __init__(self, state: str = "MS", *, protected: str = RACE,
-                 year: str = "2018") -> None:
+                 year: str = "2018", purpose: str | None = None) -> None:
         if protected not in PROTECTED_SCHEMES:
             raise KeyError(
                 f"cannot protect '{protected}'; available: {sorted(PROTECTED_SCHEMES)}"
             )
-        self.state = state.upper()
+        if purpose is not None and purpose not in set(LOAN_PURPOSE.values()):
+            raise KeyError(
+                f"unknown loan purpose '{purpose}'; available: {sorted(set(LOAN_PURPOSE.values()))}"
+            )
+        # Several states may be pooled, because a single state leaves the mid-range purposes
+        # below document 15's 2,500-test-subject floor.
+        self.states = [s.strip().upper() for s in state.split(",") if s.strip()]
         self.protected = protected
         self.year = year
+        self.purpose = purpose
 
     @property
     def name(self) -> str:
@@ -199,15 +213,20 @@ class HMDALoader:
         features, different metrics -- and sharing an output directory between them is the
         silent-overwrite failure ``results_io`` exists to prevent.
         """
-        return f"hmda_{self.state.lower()}_{self.year}_{self.protected.replace('derived_', '')}"
+        stem = (f"hmda_{'_'.join(s.lower() for s in self.states)}_{self.year}"
+                f"_{self.protected.replace('derived_', '')}")
+        # The purpose changes which applications are in the population, so it must reach the
+        # name for the same reason the protected attribute does -- two arms sharing an output
+        # directory is the silent-overwrite failure `results_io` exists to prevent.
+        return stem if self.purpose is None else f"{stem}_{self.purpose}"
 
-    def _download(self) -> Path:
-        path = DATA_DIR / f"hmda_{self.year}_{self.state}.csv"
+    def _download(self, state: str) -> Path:
+        path = DATA_DIR / f"hmda_{self.year}_{state}.csv"
         if not path.exists():
             import urllib.request
 
             DATA_DIR.mkdir(parents=True, exist_ok=True)
-            url = CSV_URL.format(year=self.year, state=self.state)
+            url = CSV_URL.format(year=self.year, state=state)
             urllib.request.urlretrieve(url, path)     # noqa: S310 - fixed CFPB host
         return path
 
@@ -218,10 +237,16 @@ class HMDALoader:
 
     def load(self, *, include_protected_in_features: bool = False) -> FairnessDataset:
         scheme = PROTECTED_SCHEMES[self.protected]
-        wanted = [*CATEGORICAL, *NUMERIC, SEX, RACE, "action_taken"]
-        frame = pd.read_csv(self._download(), low_memory=False, usecols=wanted)
+        wanted = [*CATEGORICAL, *NUMERIC, SEX, RACE, "action_taken", "loan_purpose"]
+        frame = pd.concat(
+            [pd.read_csv(self._download(state), low_memory=False, usecols=wanted)
+             for state in self.states],
+            ignore_index=True)
 
         n_downloaded = len(frame)
+        if self.purpose is not None:
+            codes = [c for c, name in LOAN_PURPOSE.items() if name == self.purpose]
+            frame = frame[frame["loan_purpose"].isin(codes)]
         frame = frame[frame["action_taken"].isin([*APPROVED_CODES, DENIED_CODE])]
         # 1 is the favourable outcome throughout this project: here, the lender approved.
         y = frame["action_taken"].isin(APPROVED_CODES).astype(int)
@@ -297,7 +322,8 @@ class HMDALoader:
             notes={
                 "source": "CFPB HMDA Data Browser",
                 "reference": "Home Mortgage Disclosure Act, 2018 reporting year",
-                "state": self.state,
+                "states": self.states,
+                "loan_purpose": self.purpose,
                 "year": self.year,
                 "protected_attribute": self.protected,
                 "task": "did the lender approve the mortgage application",

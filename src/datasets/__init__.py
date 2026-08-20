@@ -59,10 +59,12 @@ def build(name: str) -> DatasetLoader:
         # course code must neither import nor need it.
         from .hmda import RACE, HMDALoader
 
-        state_part, _, attribute = argument.partition(":")
+        state_part, _, rest = argument.partition(":")
+        attribute, _, purpose = rest.partition(":")
         return HMDALoader(
             state=state_part.strip().upper() or "MS",
             protected=attribute.strip() or RACE,
+            purpose=purpose.strip() or None,
         )
 
     raise KeyError(f"unknown dataset '{name}'; available: {AVAILABLE}")
