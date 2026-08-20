@@ -334,3 +334,37 @@ than an unusually permissive slice.
 
 This is the third claim in this project that felt too obvious to check and was wrong. The
 other two were the novelty of the remedy and the novelty of the conditionality.
+
+---
+
+## 12. Systematic novelty audit — 72 citing papers screened
+
+Recorded in full as [document 30](../docs/30-novelty-audit.md). Method: the citation graph of
+the three closest works (72 unique citing papers), all screened by abstract, five read in
+full, plus about a dozen searches across six vocabularies for the same quantity.
+
+**Two further collisions found, neither on the headline:**
+
+**FRAME — Ferry et al. (2023), *When Mitigating Bias is Unfair*, arXiv:2302.07185, SaTML.**
+Its first three dimensions are **Impact Size** ("how many people were affected"),
+**Change Direction** ("positive versus negative changes") and **Decision Rates** ("impact on
+models' acceptance rates"). That is document 05's who-pays decomposition, published February
+2023. It must be cited there. What FRAME does *not* do is use the acceptance rate as a
+*predictor* of direction — it reports the rate a debiased model ends up at, one of five
+descriptive dimensions. Zero occurrences of "selection rate" or "base rate" in the full text.
+
+**Maheshwari, Bellet, Denis & Keller (2023), *Fair Without Leveling Down*, EMNLP.** Reports
+that "popular fairness-promoting approaches tend to level down more in intersectional
+fairness" and that "this often goes unnoticed in the overall performance of the model". That
+is adjacent both to our claim (ii) and to the paper's organising thesis, and it means **the
+thesis sentence is not itself novel** and should be framed as the organising idea rather
+than a finding. Zero occurrences of "selection rate" or "base rate".
+
+**The headline survived.** Across all 72 citing papers, four full texts searched directly,
+and a dozen re-phrased queries, nothing was found that identifies the overall selection rate
+as the predictor of direction, locates a crossover, or tests *Backfire*'s conditions on data.
+
+**Coverage limit, stated rather than glossed.** Semantic Scholar's index lags for recent
+work — *Backfire* itself has zero recorded citations at five months old — so anything from
+the last few months that does not yet cite these three papers would be missed. This is a
+serious sweep, not a proof of absence.
