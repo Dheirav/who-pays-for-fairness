@@ -76,12 +76,14 @@ invisible to every tool ordinarily used to check.
 1. **A four-part audit** of what a demographic parity constraint does beyond its own metric,
    run identically across 26 populations and 61 experimental arms, spanning two survey
    instruments and one administrative record of real lending decisions.
-2. **A moderator for the most-discussed of those effects.** Levelling down is not what parity
-   constraints do; it is what they do below a selection rate of roughly 0.3, and above it the
-   direction reverses. We establish this by a single-factor sweep holding population,
-   instrument, features, group ratio and proxy structure provably fixed while only the
-   label's cutoff moves, and replicate it across two protected attributes, five states and a
-   second lending domain. **This is our principal claim.**
+2. **The first empirical characterisation of a conditionality that theory predicts.**
+   Contemporaneous theory establishes that in the attribute-blind regime the direction of
+   levelling down is distribution-dependent; we show *which* property predicts it in practice.
+   Levelling down is what parity constraints do below a selection rate of roughly 0.3, and
+   above it the direction reverses. Established by a single-factor sweep holding population,
+   instrument, features, group ratio and proxy structure provably fixed while only the label's
+   cutoff moves, and replicated across two protected attributes, five states and a second
+   lending domain. **This is our principal claim.**
 3. **Evidence that it is not an artifact of the solver.** On Adult the theoretically optimal
    DP classifier — group-wise thresholding on the unconstrained score — destroys 18.8% of
    favourable decisions against the reduction's 20.5%, with better parity. At moderate
@@ -113,6 +115,25 @@ not earn its keep.
 > Every claim here has been checked against the source, with quoted passages recorded in
 > [`reading-notes.md`](reading-notes.md). Four references remain unverified and are listed
 > there with the reason each is low-risk.
+
+**Whether levelling down is universal.** `[VERIFIED against arXiv:2603.06901]` A 2026
+theory paper, *Fairness May Backfire: When Leveling-Down Occurs*, proves in a population-level
+Bayes framework that the answer depends on the deployment regime. Where the protected
+attribute is available at decision time, fairness "necessarily (weakly) improves outcomes for
+the disadvantaged group and (weakly) worsens outcomes for the advantaged group". Where it is
+not — the **attribute-blind** regime, which is ours throughout — "the impact of fairness is
+distribution-dependent: fairness can benefit or harm either group ... leading to either
+leveling up or leveling down."
+
+**We therefore do not claim the conditionality itself.** It is established, contemporaneously
+and independently, in theory. What that paper does not have is any empirical component: it
+contains zero experiments and names no dataset, and its conditions are ordering relations on
+score regions rather than a quantity a practitioner can measure. Our contribution against it
+is (a) the first empirical characterisation, across 26 populations and two domains; (b) the
+identification of the *operating selection rate* as the practical predictor, computable
+before a model is built; and (c) the crossover located experimentally by a single-factor
+design. It also explains our own failed derivation (§4.5): the governing condition is an
+ordering condition on score regions, not the scalar threshold we predicted.
 
 **Levelling down, and the remedy.** Mittelstadt, Wachter and Russell (2023) argue that
 fairness interventions frequently equalise by degrading the better-off group, and that this
@@ -469,6 +490,8 @@ the same whether or not the thing beneath it worked.
 
 - Agarwal, Beygelzimer, Dudík, Langford & Wallach (2018). *A Reductions Approach to Fair
   Classification.* ICML. — the base paper; reproduced in this work.
+- *Fairness May Backfire: When Leveling-Down Occurs in Fair Machine Learning* (2026).
+  arXiv:2603.06901 — **read in full**; proves the conditionality we characterise empirically.
 - Black, Raghavan & Barocas (2022). *Model Multiplicity: Opportunities, Concerns, and
   Solutions.* FAccT. — verified.
 - Chouldechova (2017); Kleinberg, Mullainathan & Raghavan (2016). — impossibility results.

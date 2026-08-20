@@ -212,3 +212,68 @@ vision paper cited by Mittelstadt et al. for a claim we already accept.
    *Resource-constrained Fairness* (fixed budget, so direction is unobservable).
 3. **§7's "bound, not rival" argument is safe**, on Corbett-Davies.
 4. **One citation added**, one demoted to supporting, one warning removed.
+
+---
+
+## 9. "Fairness May Backfire: When Leveling-Down Occurs" (2026) — **changes the headline**
+
+arXiv:2603.06901, March 2026. **Read in full (15pp, text extracted).** Found by running a
+novelty check on the seven findings that had never had one. It is the closest work to this
+project's principal claim and post-dates the assistant's training data, so it could only
+have been found by searching.
+
+**What it establishes.** A population-level (Bayes) framework, "distribution-free and
+algorithm-agnostic", for two regimes:
+
+* **Attribute-aware** (the protected attribute is available at decision time): fairness
+  "necessarily (weakly) improves outcomes for the disadvantaged group and (weakly) worsens
+  outcomes for the advantaged group."
+* **Attribute-blind** (it is not): "the impact of fairness is **distribution-dependent**:
+  fairness can benefit or harm either group and may shift both groups' outcomes in the same
+  direction, **leading to either leveling up or leveling down**."
+
+**Every population in this project is attribute-blind** — the protected attribute is dropped
+from the feature matrix throughout (docs/01). So this project lives entirely inside the
+regime they prove is two-sided.
+
+**Consequence: our claim that levelling down is conditional rather than universal is
+anticipated, theoretically, and by five months.** It must be cited and it must stop being
+presented as the discovery.
+
+**What is not in their paper.** Checked by term count over the full text:
+
+| term | occurrences |
+|---|---|
+| "experiment" | **0** |
+| "dataset" | **0** |
+| "Adult", "COMPAS" | **0** |
+| "base rate", "prevalence" | **0** |
+
+It is pure theory with no empirical component. Their conditions are **ordering conditions on
+score regions** — whether fairness deletes from the "advantaged-like side" (both groups'
+rates weakly decrease) or adds on the "disadvantaged-like side" (both weakly increase),
+governed by comparisons like `B_max ≤ A_min`. That is a statement about the geometry of the
+score distribution, not about a scalar operating point a practitioner can read off.
+
+**What therefore survives here:**
+
+1. **The first empirical characterisation.** 26 populations, 61 arms, two domains. They
+   have none.
+2. **A predictor that can actually be computed.** Their condition needs the joint score
+   geometry; ours is "what fraction of applicants do you currently approve", which is
+   available before any model is built.
+3. **The crossover located** (0.25–0.60), and a single-factor design that moves one variable
+   and verifies the rest are fixed.
+4. **The domains.** Real mortgage decisions, where the effect is observed rather than derived.
+
+**It also explains our own failure.** [Document 26](../docs/26-the-derivation-does-not-earn-its-keep.md)
+derived a curvature account, predicted the crossover would sit at the mode of the score
+density, and was beaten by a constant. This paper shows the true condition is an *ordering*
+condition on score regions rather than a scalar threshold — which is precisely why a
+single-number rule underperformed. The failed derivation was the right shape and the wrong
+object.
+
+**Net.** The headline narrows from "levelling down is conditional, and nobody has said so"
+to "it is conditional — proven in theory contemporaneously — and here is what actually
+predicts it, measured across 26 populations." Theory paired with independent empirics is a
+normal and defensible pairing, but the framing has to change and the citation is mandatory.
