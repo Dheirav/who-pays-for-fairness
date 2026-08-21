@@ -33,10 +33,17 @@ already knows this number; it costs nothing to look up.
 
 ### Step 2 — Where is *your* crossover?
 
-**Do not use 0.25–0.60.** That is Alabama's. Oregon's is 0.35–0.65. Mortgage lending's is
-0.64–0.77 ([document 31](31-the-crossover-on-natural-data.md)). The crossover is
-population-specific, and quoting one population's as a constant is the mistake
-[document 32](32-the-rate-not-the-task.md) rules out by evidence.
+**Start from about 0.54, then check it.** Measured with twelve points, four populations across
+three domains, two countries and four instruments — US income prediction, US criminal justice
+and a Dutch occupational census — put the crossover between **0.511 and 0.576**, standard
+deviation 0.029 ([document 44](44-how-much-and-where-two-concessions-tested.md)). The one
+mortgage market measured here sits higher, at 0.66–0.76.
+
+So the crossover is **not** the free parameter an earlier version of this document described.
+Expect roughly 0.54, verify it on your own data, and treat a wildly different answer as a
+reason to inspect your sweep before believing it. **No formula predicts the residual**: the two
+population properties that appeared to explain it are collinear with each other at r = +0.947
+and neither survives four populations.
 
 **Measure it on the model you already have:**
 
@@ -120,8 +127,15 @@ the direction and the crossover while changing the magnitude by three- to eight-
 | criterion, parity → equalized odds ([doc 33](33-the-rule-does-not-survive-equalized-odds.md)) | weaker | 8× |
 
 So this procedure will tell you whether you are about to withdraw opportunities. It will not
-tell you how many. Forecasting the size requires running your own constraint, which step 2
-has you doing anyway.
+tell you how many.
+
+**What it will tell you about size** ([document 44](44-how-much-and-where-two-concessions-tested.md)):
+within one population, the distance from its crossover **orders** the effect — Spearman ρ of
++0.96, +0.95 and +0.78 in three of four populations tested. So you can say which of your
+products or segments will be hit hardest. You cannot convert that into a number of decisions,
+because no single slope transfers between populations (r = +0.487 pooled, against a bar of
++0.70). Forecasting the size still requires running your own constraint, which step 2 has you
+doing anyway.
 
 ## Two ways to get this wrong
 

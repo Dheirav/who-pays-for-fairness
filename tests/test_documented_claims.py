@@ -1217,6 +1217,64 @@ def test_doc42_and_43_dense_and_regime() -> None:
           f"{max(mids) - min(mids):.3f}; attribute-aware {both}/{total}")
 
 
+def test_doc44_magnitude_and_crossover_prior() -> None:
+    """docs/44: the magnitude model must keep failing across populations, and C2 keep meaning nothing."""
+    from scipy import stats
+
+    from src.experiments.analyse_magnitude import MAX_SD, MIN_NAIVE, collect
+    from src.experiments.analyse_threshold import MIN_R
+
+    text = _doc(44)
+    _quotes(text, "+0.487", "+0.964", "0.029", "0.544", "+0.947", "0.277")
+
+    arms = collect()
+    located = arms.dropna(subset=["crossover"]).copy()
+    located["distance"] = located["selection_rate"] - located["crossover"]
+
+    # M1 holds within populations, M2 fails across them. Both halves are load-bearing: the
+    # document's whole point is that the concession is now partial rather than total.
+    per_population = {
+        str(name): float(stats.spearmanr(rows["distance"], rows["pie"]).statistic)
+        for name, rows in located.groupby("population") if len(rows) >= 4}
+    passing = sum(1 for rho in per_population.values() if rho >= 0.70)
+    assert passing > len(per_population) / 2, (
+        f"docs/44 reports the distance ordering the effect within most populations; "
+        f"it is now {passing}/{len(per_population)}: {per_population}")
+
+    pooled = float(np.corrcoef(located["distance"], located["pie"])[0, 1])
+    assert pooled < MIN_R, (
+        f"docs/44 reports M2 FAILING at {MIN_R} -- no single slope across populations. "
+        f"It is now {pooled:+.3f}, and the limitation the paper states no longer holds")
+    assert pooled >= MIN_NAIVE, "docs/44 reports the naive 'unpredictable' alternative beaten"
+
+    # C1: the cluster that licenses "expect about 0.54".
+    crossovers = (located.groupby("population")["crossover"].first())
+    non_lending = crossovers[~crossovers.index.str.startswith("hmda")]
+    assert float(non_lending.std()) < MAX_SD, (
+        f"docs/44 rests on the non-lending crossovers clustering; sd is now "
+        f"{float(non_lending.std()):.4f}")
+
+    # C2 must stay uninterpretable. If it ever becomes a formula, that needs many more
+    # populations -- not a re-reading of these four.
+    from src.datasets import build as _build
+    specs = {"acs_income_sc_2018": "acs:SC", "acs_income_or_2018": "acs:OR",
+             "dutch_2001_sex": "dutch", "compas_2016_race": "compas"}
+    gaps, sizes = [], []
+    for name in non_lending.index:
+        dataset = _build(specs[str(name)]).load()
+        rates = dataset.base_rates().set_index("group")["P(y=1)"]
+        gaps.append(float(rates["privileged"] - rates["unprivileged"]))
+        sizes.append(dataset.n_samples)
+    collinear = float(np.corrcoef(gaps, sizes)[0, 1])
+    assert collinear > 0.9, (
+        f"docs/44 reports C2's two predictors collinear at +0.947, which is why neither can "
+        f"be modelled; it is now {collinear:+.3f}")
+    _, p_gap = stats.pearsonr(gaps, non_lending.to_numpy())
+    assert p_gap > 0.05, "docs/44 reports C2 indistinguishable from chance at four populations"
+    print(f"  M1 {passing}/{len(per_population)}; M2 fails at {pooled:+.3f}; crossover sd "
+          f"{float(non_lending.std()):.4f}; C2 predictors collinear {collinear:+.3f}")
+
+
 def main() -> None:
     tests = [
         test_doc11_cross_flow_correlations,
@@ -1244,6 +1302,7 @@ def main() -> None:
         test_doc40_accuracy_rule_and_its_withdrawals,
         test_doc41_postprocessing_arm_is_void,
         test_doc42_and_43_dense_and_regime,
+        test_doc44_magnitude_and_crossover_prior,
         test_paper_draft_population_count_is_recomputed,
         test_course_documents_still_match_their_results,
     ]

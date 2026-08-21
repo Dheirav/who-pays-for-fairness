@@ -52,10 +52,12 @@ on criminal-justice data (r = +0.870) and on a non-US census whose between-group
 Adult's (r = +0.915), which is the population where the standard competing explanation — that
 the *group gap* drives the direction — should have shown itself and did not.
 
-We state three boundaries as sharply as the result. The **magnitude** is not predictable:
-four independent manipulations preserve the direction while changing the size of the effect
-three- to eight-fold. The **crossover is population-specific**, not a constant, though it is
-route-invariant within a population and therefore measurable. And the relationship is far
+We state three boundaries as sharply as the result. The **magnitude** is ordered within a
+population by the distance from its crossover (ρ up to +0.96) but does not transfer between
+them (pooled r = +0.487, failing a pre-registered +0.70 bar). The **crossover is close to
+stable**: measured densely, four populations across three domains, two countries and four
+instruments sit between **0.511 and 0.576**, standard deviation 0.029 — so "expect about 0.54
+and check" replaces the free parameter an earlier version of this work described. And the relationship is far
 weaker under **equalized odds** on survey data, though not on every domain — the criterion's
 effect is itself population-dependent.
 
@@ -411,8 +413,12 @@ The Dutch census has one: men hold a high-status occupation at 0.626, women at 0
 | criterion, parity → equalized odds | **weaker, unevenly** | — | **differs 8×** |
 | optimiser, reduction → post-processing | **disappears (r = −0.024)** | — | — |
 
-**The selection rate predicts which way. It does not predict how much.** This is the project's
-most heavily replicated claim and its clearest limit, and the two belong in the same sentence.
+**The selection rate predicts which way. It orders how much within a population, and does not
+transfer it between them.** Tested rather than assumed: the signed distance from a population's
+own crossover gives Spearman ρ of +0.96, +0.95 and +0.78 in three of four populations, but a
+single pooled slope reaches only **r = +0.487** against a +0.70 bar and fails. A team can say
+which of its segments will be hit hardest; it cannot convert that into a number of decisions
+without running the constraint.
 
 The last row is not a fragility. Post-processing is **attribute-aware**, and the theory of §2
 holds that in that regime the direction is determined rather than distributional — so there is
@@ -564,10 +570,16 @@ Counts are now recomputed from source files by a test.
 
 ## 9. Limitations
 
-**Magnitude is not predictable.** Four manipulations preserve direction and change size three-
-to eight-fold. We tell you the sign.
+**Magnitude transfers within a population and not between.** The distance from a population's
+own crossover orders the effect (ρ = +0.96, +0.95, +0.78 in three of four), but the pooled
+slope fails its pre-registered bar at r = +0.487. We can rank your segments; we cannot forecast
+your losses.
 
-**The crossover must be measured.** It varies by population across every domain we have.
+**The crossover is nearly stable, and the residual is unexplained.** Four populations cluster
+at 0.511–0.576. Two population properties appeared to explain the remaining variation, at
+r = +0.724 and +0.865 — but they are collinear with each other at +0.947 and neither is
+distinguishable from chance at four populations (p = 0.277, p = 0.135). We report them as a
+hypothesis for a study with fifteen populations, not as a formula.
 
 **Coverage.** Four instruments, two countries, two decades — but still no non-Western data, and
 three of five domains are US and 2016–2018.

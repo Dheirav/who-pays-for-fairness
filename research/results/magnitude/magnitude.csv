@@ -1,0 +1,9 @@
+m1,True
+m1_passing,3
+m1_total,4
+r_distance,0.4866888702595558
+m2,False
+r_with_gap,0.5914323926980399
+gain,0.10474352243848412
+naive_beaten,True
+n_arms,42
