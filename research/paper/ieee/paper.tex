@@ -167,9 +167,72 @@ always predicting the more common label. The second rule matters more than it so
 
 \section{Parity Is Bought by Withdrawal --- Where It Is}
 
-On UCI Adult, every method in a six-method in-processing ablation reduces the total number of
-favourable decisions, by 7.9\% to 22.1\%. Not one closes the gap primarily by extending
-decisions to the disadvantaged group. Eighteen of nineteen survey arms do the same.
+\begin{table}[t]
+\caption{Six in-processing methods on UCI Adult, five seeds. Every one reaches parity, and
+every one shrinks the pool.}
+\label{tab:ablation}
+\centering
+\small
+\begin{tabular}{@{}lccccr@{}}
+\toprule
+\textbf{Method} & \textbf{Acc.} & \textbf{DP} & \textbf{EO} & \textbf{DI} &
+\textbf{$\Delta$pool} \\
+\midrule
+Unconstrained & 0.847 & 0.186 & 0.095 & 0.300 & --- \\
+\midrule
+ExpGrad (DP) & 0.828 & \textbf{0.018} & 0.280 & 0.895 & $-20.5\%$ \\
+GridSearch (DP) & 0.827 & \textbf{0.015} & 0.304 & 0.986 & $-22.1\%$ \\
+Adversarial deb. & 0.826 & 0.020 & 0.250 & 0.889 & $-14.8\%$ \\
+Prejudice remover & 0.837 & 0.065 & 0.188 & 0.686 & $-10.2\%$ \\
+ExpGrad (EO) & 0.836 & 0.107 & \textbf{0.032} & 0.521 & $-7.9\%$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:ablation} gives the ablation. Every method reaches its target: demographic
+parity falls from 0.186 to as little as 0.015 for under two accuracy points, on a linear model
+and on an adversarial one alike. This is the part that works, and it is background rather than
+contribution.
+
+\textbf{Every one of them shrinks the pool}, by 7.9\% to 22.1\%. Not one closes the gap
+primarily by extending decisions to the disadvantaged group. Eighteen of nineteen survey arms
+do the same.
+
+\subsection{Rates understate what is happening to people}
+
+\begin{table}[t]
+\caption{Who pays, UCI Adult. The rate-level view and the people-level view of the same
+intervention disagree systematically.}
+\label{tab:whopays}
+\centering
+\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Method} & \textbf{Share (rates)} & \textbf{Share (people)} & \textbf{Exchange} \\
+\midrule
+ExpGrad (DP) & 0.575 & \textbf{0.742} & 2.68 \\
+GridSearch (DP) & 0.575 & \textbf{0.743} & 2.69 \\
+Adversarial deb. & 0.508 & \textbf{0.700} & 1.96 \\
+Prejudice remover & 0.498 & \textbf{0.673} & 2.04 \\
+ExpGrad (EO) & 0.531 & \textbf{0.660} & 1.92 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The decomposition of \cite{ferry2023} splits the closed gap into the part paid by the
+advantaged group losing ground and the part gained by the disadvantaged group. Measured in
+\emph{rates}, that split is close to even --- 0.50 to 0.58 of the closure comes from
+withdrawal (Table~\ref{tab:whopays}).
+
+Measured in \emph{people} it is not. Between 0.66 and 0.74 of the individuals whose decision
+changed are members of the advantaged group losing a favourable one. Equal-looking rate
+changes fall on groups of unequal size, so the rate-level view --- which is the view a fairness
+dashboard reports --- understates the burden counted in individuals in every method tested. The
+divergence between the two views is itself predictable, from a cross-flow diagnostic, at
+$r = +0.885$ across populations.
+
+The \textbf{exchange rate} makes the same point without a share: ExpGrad under demographic
+parity destroys 2.68 favourable decisions for every one it creates.
 
 \textbf{And then it reverses.} On HMDA mortgage data the identical constraint \emph{grows} the
 pool by 4.3\%, at an exchange rate of 0.50 --- two favourable decisions created for every one
@@ -290,6 +353,48 @@ Table~\ref{tab:robust} summarises. \textbf{The selection rate predicts which way
 much within a population and does not transfer it between them}: the signed distance from a
 population's own crossover gives $\rho$ of $+0.96$, $+0.95$ and $+0.78$ in three of four
 populations, but a pooled slope reaches only $r = +0.487$ against a pre-registered $+0.70$ bar.
+
+\section{A Constraint on One Attribute Leaves Subgroups Behind}
+\label{sec:intersectional}
+
+\begin{table}[t]
+\caption{UCI Adult. Constraining sex to 0.020 leaves the worst \emph{Sex}$\times$\emph{Race}
+subgroup gap at 0.178 --- nine times larger --- and moves which subgroup is worst off.}
+\label{tab:intersectional}
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lccl@{}}
+\toprule
+\textbf{Arm} & \textbf{Sex} & \textbf{Subgroup} & \textbf{Worst off} \\
+\midrule
+Unconstrained & 0.190 & 0.315 & F$\times$Black \\
+Constrained on sex & \textbf{0.020} & \textbf{0.178} & M$\times$Black \\
+Constrained on both & 0.016 & 0.048 & F$\times$White \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+A constraint is imposed on the attribute someone chose to name. Kearns \emph{et al.}
+\cite{kearns2018} showed that marginal constraints can be satisfied while structured subgroups
+are badly treated. Table~\ref{tab:intersectional} is that failure mode measured on Adult.
+
+Constraining sex drives its gap from 0.190 to 0.020 --- a success by the certifying metric.
+The worst \emph{Sex}$\times$\emph{Race} subgroup gap falls only from 0.315 to 0.178, which is
+\textbf{nine times} the gap that was constrained. The subgroup carrying the residual also
+\emph{changes}, from Female~$\times$~Black to Male~$\times$~Black, so an auditor tracking the
+originally worst-off cell would see improvement while a different cell absorbed the cost.
+
+This replicates across populations and is more severe than Adult suggests: 13.2$\times$ in
+Mississippi. It is bounded, however, by how large the minority is --- the effect scales with
+minority share at $r = -0.671$, and does not appear at all below a threshold. We present this
+as an empirical replication of \cite{kearns2018} and \cite{maheshwari2023} with a boundary
+attached, not as a new observation.
+
+\textbf{A measurement hazard worth naming.} Roughly five subgroups per population are too small
+to support any estimate. A rate with an empty denominator must return undefined rather than
+zero, or an unmeasurable subgroup masquerades as a perfectly fair one --- which is the failure
+this analysis is most likely to produce and hardest to notice.
 
 \section{The Regime Boundary}
 \label{sec:regime}
