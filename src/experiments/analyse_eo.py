@@ -125,19 +125,37 @@ def eo_arm_name(state: str, threshold: int) -> str:
     return f"{arm_name(state, threshold)}_eo"
 
 
+# The signature of the runs this document's verdict was computed from. `results_io` keeps
+# one archived copy per parameter set, so naming it here pins the pre-registered result to
+# the data it was decided on -- a later re-run at a different seed count replaces the
+# canonical copy but cannot silently restate the verdict.
+PREREGISTERED = "constraintequalized_odds_eps0.01_modellogistic_regression_seeds0-4"
+
+
+def _runs_file(signature: str | None) -> str:
+    return "levelling_up_runs.csv" if signature is None \
+        else f"levelling_up_runs__{signature}.csv"
+
+
 def _mean_by_arm(path):
     if not path.exists():
         return None
     return pd.read_csv(path).groupby("arm").mean(numeric_only=True)
 
 
-def load(states: list[str], thresholds: list[int]) -> pd.DataFrame:
-    """One row per arm, carrying both constraints' outcomes on the same population."""
+def load(states: list[str], thresholds: list[int],
+         signature: str | None = PREREGISTERED) -> pd.DataFrame:
+    """One row per arm, carrying both constraints' outcomes on the same population.
+
+    ``signature`` selects which archived run to read; ``None`` reads whatever is canonical.
+    It defaults to the pre-registered five-seed set so the verdict does not move under a
+    later re-run.
+    """
     rows = []
     for state in states:
         for threshold in thresholds:
             eo = _mean_by_arm(
-                RESEARCH_RESULTS_DIR / eo_arm_name(state, threshold) / "levelling_up_runs.csv")
+                RESEARCH_RESULTS_DIR / eo_arm_name(state, threshold) / _runs_file(signature))
             if eo is None or not {PLAIN_EO, BASE}.issubset(eo.index):
                 continue
 
@@ -247,9 +265,12 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--states", nargs="+", default=["AL", "OR"])
     parser.add_argument("--thresholds", type=int, nargs="+", default=THRESHOLDS)
+    parser.add_argument("--signature", default=PREREGISTERED,
+                        help="archived run to read; 'canonical' reads the latest instead")
     args = parser.parse_args()
 
-    frame = load(args.states, args.thresholds)
+    signature = None if args.signature == "canonical" else args.signature
+    frame = load(args.states, args.thresholds, signature)
     if frame.empty:
         raise SystemExit(
             "no equalized-odds arms found; run\n"

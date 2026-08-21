@@ -346,8 +346,49 @@ def verdict(ops: pd.DataFrame, cuts: pd.DataFrame) -> dict:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--states", nargs="+", default=["AL"])
+    parser.add_argument("--dataset", default=None,
+                        help="a non-ACS dataset spec, e.g. hmda:MS,LA:derived_race; its "
+                             "crossover is compared against document 31's natural band "
+                             "instead of against an income-cutoff sweep (H1)")
     parser.add_argument("--points", type=float, nargs="+", default=OPERATING_POINTS)
     args = parser.parse_args()
+
+    if args.dataset:
+        from ..datasets import build as build_dataset
+        name = build_dataset(args.dataset).name
+        ops = load_points_for(name, HMDA_POINTS)
+        if ops.empty:
+            raise SystemExit(f"no operating-point arms for {name}")
+        ops["selection_rate"] = ops["positives_base"] / ops["n_test"]
+        print(f"=== H1: operating point on {name} against document 31's natural band ===\n")
+        print(ops.round(4).to_string(index=False))
+
+        kept = ops[ops["dp_base"] >= MIN_BASELINE_GAP]
+        dropped = len(ops) - len(kept)
+        print(f"\n  {dropped} arms excluded by document 23's rule "
+              f"(baseline parity gap < {MIN_BASELINE_GAP})")
+        if len(kept) < 4:
+            raise SystemExit(f"VOID: only {len(kept)} arms retained")
+
+        r = float(np.corrcoef(kept["selection_rate"], kept["pie"])[0, 1])
+        band = crossover_bracket(kept)
+        print(f"\n  O1  r = {r:+.3f} over {len(kept)} arms (bar {MIN_R})  "
+              f"{'HOLDS' if r >= MIN_R else 'FAILS'}")
+        print(f"  operating-point crossover : {band}")
+        print(f"  document 31 natural band  : {NATURAL_HMDA_BAND}")
+        if band is None:
+            print("\n  H1 UNDECIDABLE: the arms do not bracket a sign change")
+        else:
+            h1 = band[0] <= NATURAL_HMDA_BAND[1] and NATURAL_HMDA_BAND[0] <= band[1]
+            print(f"\n  H1 {'HOLDS' if h1 else 'FAILS'}: "
+                  f"{'the two methods agree on the lending crossover' if h1 else 'they disagree'}")
+            naive = band[1] < 0.60
+            print(f"  naive alternative ('it just finds the ACS band, 0.25-0.60'): "
+                  f"{'WINS' if naive else 'beaten'}")
+        OUT = research_dir("operating_point")
+        ops.round(6).to_csv(OUT / f"operating_point_{name}.csv", index=False)
+        print(f"\nwrote {OUT}/operating_point_{name}.csv")
+        return
 
     # Per state, never pooled. O3 asks where the crossover sits, and that is a property of
     # a population -- Alabama's and Oregon's differ. Pooling would interleave two brackets
@@ -361,6 +402,13 @@ def main() -> None:
                   f"--model logistic_regression@0.49")
             continue
         cuts = load_cutoffs(state)
+        # The cutoff arms of CT, KY and SC predate the recorded denominator and have no
+        # who_pays run to borrow from, so `load_cutoffs` leaves n_test NaN -- and O3 then
+        # reports "undecidable" for a bracket it never computed. The operating-point arms of
+        # the same state DID record it, and the split protocol is identical across arms of
+        # one population, so this is exact. Third time this class of bug has surfaced.
+        if not cuts.empty and cuts["n_test"].isna().any() and ops["n_test"].notna().any():
+            cuts["n_test"] = cuts["n_test"].fillna(ops["n_test"].dropna().iloc[0])
         for frame in (ops, cuts):
             if not frame.empty:
                 frame["selection_rate"] = frame["positives_base"] / frame["n_test"]

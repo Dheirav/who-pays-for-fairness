@@ -103,13 +103,25 @@ def arms_for(constraint: str) -> list[str]:
     )
 
 
-def output_stem(dataset_name: str, constraint: str, model: str) -> str:
-    """Where this configuration's results live, isolated from every other one."""
+DEFAULT_EPS = 0.01
+
+
+def output_stem(dataset_name: str, constraint: str, model: str,
+                eps: float = DEFAULT_EPS) -> str:
+    """Where this configuration's results live, isolated from every other one.
+
+    ``eps`` joins the path because loosening the constraint is a different experiment, not
+    a re-run of the same one -- and without it the two would race for the canonical copy
+    while `check_overwrite` merely refused the second, turning a naming bug into a failed
+    run rather than a wrong number.
+    """
     stem = f"{dataset_name}_levelling_up"
     if constraint != DEFAULT_CONSTRAINT:
         stem = f"{stem}_{CONSTRAINT_CODE[constraint]}"
     if model != BASE_MODEL:
         stem = f"{stem}_{model_code(model)}"
+    if eps != DEFAULT_EPS:
+        stem = f"{stem}_eps{eps:g}".replace(".", "")
     return stem
 
 
@@ -190,7 +202,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dataset", default="adult")
     parser.add_argument("--seeds", type=int, nargs="+", default=[0, 1, 2, 3, 4])
-    parser.add_argument("--eps", type=float, default=0.01)
+    parser.add_argument("--eps", type=float, default=DEFAULT_EPS)
     parser.add_argument("--constraint", default=DEFAULT_CONSTRAINT,
                         choices=sorted(CONSTRAINT_CODE))
     parser.add_argument("--model", default=BASE_MODEL,
@@ -251,7 +263,7 @@ def main() -> None:
               f"{plain['lost_per_gained']:.2f}")
     print("=" * 74)
 
-    OUT = output_dir(output_stem(dataset.name, args.constraint, args.model))
+    OUT = output_dir(output_stem(dataset.name, args.constraint, args.model, args.eps))
     for path in save(OUT, "levelling_up", {"runs": runs, "summary": summary},
                      params=dict(dataset=args.dataset, seeds=args.seeds, eps=args.eps,
                                  constraint=args.constraint, model=args.model),

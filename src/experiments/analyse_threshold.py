@@ -188,6 +188,17 @@ def attach_selection_rate(frame: pd.DataFrame, states: list[str]) -> pd.DataFram
     # number is available directly.
     looked_up = frame["state"].map(sizes)
     frame["n_test"] = frame["n_test"].fillna(looked_up) if "n_test" in frame else looked_up
+
+    # Last resort: a sibling arm of the same state that *did* record its size. The split
+    # protocol is identical across arms of one population -- only the label moves -- so this
+    # is exact. Without it a state with no who_pays run silently produces NaN selection
+    # rates, and T0 then reports "the knob does not move the rate" for a state where the
+    # knob works fine. That failure mode has now cost two analyses.
+    if frame["n_test"].isna().any():
+        for state, rows in frame.groupby("state"):
+            known = rows["n_test"].dropna()
+            if not known.empty:
+                frame.loc[rows.index, "n_test"] = rows["n_test"].fillna(known.iloc[0])
     frame["selection_rate"] = frame["positives_base"] / frame["n_test"]
     return frame
 
