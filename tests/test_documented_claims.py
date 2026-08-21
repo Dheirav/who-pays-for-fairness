@@ -630,9 +630,14 @@ def test_doc25_baseline_comparison() -> None:
 def test_doc26_derivation_beaten_by_a_constant() -> None:
     """docs/26: M1 passes its bar and is beaten by a constant. Both must stay true."""
     text = _doc(26)
-    _quotes(text, "12/14", "13/14", "-0.802", "-0.182", "+0.901")
+    _quotes(text, "12/14", "13/14", "-0.802", "-0.182", "+0.901",
+            "fourteen arms from four populations")
     frame = pd.read_csv(RESEARCH / "mechanism" / "mechanism_heldout.csv")
-    assert len(frame) == 14, f"docs/26 reports 14 held-out populations, found {len(frame)}"
+    assert len(frame) == 14, f"docs/26 reports 14 held-out arms, found {len(frame)}"
+    populations = frame["name"].str.extract(r"^((?:acs_income|hmda)_[a-z]{2})")[0].nunique()
+    assert populations == 4, (
+        f"docs/26's 14 arms come from 4 populations, found {populations}; the document's "
+        "wording about independence depends on that")
 
     derived = (frame["rbar"] > frame["mode_rate"]) == (frame["lambda_minus_p"] > 0)
     naive = (frame["rbar"] > 0.5) == (frame["lambda_minus_p"] > 0)
@@ -702,6 +707,246 @@ def test_doc31_natural_split() -> None:
           f"r={r:+.3f} rho={rho:+.3f}; lowest arm {low['pie_plain']:+.2f}%")
 
 
+def test_doc32_rate_not_task() -> None:
+    """docs/32: moving only the decision rule reproduces direction AND crossover location."""
+    from src.experiments.analyse_operating_point import (
+        OPERATING_POINTS, crossover_bracket, load_cutoffs, load_operating_points)
+    from src.experiments.analyse_threshold import MIN_BASELINE_GAP, MIN_R
+
+    text = _doc(32)
+    _quotes(text, "+0.979", "+0.996", "-6.63%", "+2.98%", "-22.05%")
+
+    ops = load_operating_points("AL", OPERATING_POINTS)
+    cuts = load_cutoffs("AL")
+    assert len(ops) == 6, f"docs/32 reports six operating-point arms, found {len(ops)}"
+    for frame in (ops, cuts):
+        frame["selection_rate"] = frame["positives_base"] / frame["n_test"]
+
+    # The denominator bug this document records: if the cutoff rates come back NaN the
+    # crossover comparison silently reports "disjoint" for a bracket it never computed.
+    assert cuts["selection_rate"].notna().all(), (
+        "docs/32's O3 needs selection rates for the income-cutoff arms; they are NaN again, "
+        "which is the exact failure the document's methods note describes")
+
+    kept = ops[ops["dp_base"] >= MIN_BASELINE_GAP]
+    assert len(kept) == 4, f"docs/32 retains four arms under docs/23's rule, found {len(kept)}"
+
+    r = float(np.corrcoef(kept["selection_rate"], kept["pie"])[0, 1])
+    assert abs(r - 0.979) < 0.005, f"docs/32 says r = +0.979, data gives {r:+.3f}"
+
+    # O3, the load-bearing claim: the two routes must still bracket the crossover together.
+    op_band = crossover_bracket(kept)
+    cut_band = crossover_bracket(cuts[cuts["dp_base"] >= MIN_BASELINE_GAP])
+    assert op_band is not None and cut_band is not None, "a route stopped bracketing a flip"
+    assert op_band[0] <= cut_band[1] and cut_band[0] <= op_band[1], (
+        f"docs/32 rests on the two routes AGREEING on where the crossover sits; "
+        f"operating point {op_band} no longer overlaps income cutoff {cut_band}")
+
+    # And the honest half: direction transfers, magnitude does not.
+    low_op = kept.loc[kept["selection_rate"].idxmin(), "pie"]
+    low_cut = cuts.loc[cuts["selection_rate"].sub(0.099).abs().idxmin(), "pie"]
+    assert low_op < 0 and low_cut < 0, "docs/32's lowest retained arms both level down"
+    assert abs(low_cut) > 2 * abs(low_op), (
+        "docs/32 reports the cutoff route producing a far larger effect at the low end "
+        f"({low_cut:+.2f}% against {low_op:+.2f}%); that gap has closed")
+    # Oregon replicates it, and the two states do NOT share a crossover -- which is the
+    # claim that stops "0.25 to 0.60" being quoted as a constant.
+    or_ops = load_operating_points("OR", OPERATING_POINTS)
+    or_cuts = load_cutoffs("OR")
+    for f in (or_ops, or_cuts):
+        f["selection_rate"] = f["positives_base"] / f["n_test"]
+    or_kept = or_ops[or_ops["dp_base"] >= MIN_BASELINE_GAP]
+    r_or = float(np.corrcoef(or_kept["selection_rate"], or_kept["pie"])[0, 1])
+    assert abs(r_or - 0.855) < 0.005, f"docs/32 says Oregon r = +0.855, got {r_or:+.3f}"
+
+    or_op_band = crossover_bracket(or_kept)
+    or_cut_band = crossover_bracket(or_cuts[or_cuts["dp_base"] >= MIN_BASELINE_GAP])
+    assert or_op_band is not None and or_cut_band is not None
+    assert or_op_band[0] <= or_cut_band[1] and or_cut_band[0] <= or_op_band[1], (
+        f"docs/32 rests on the routes agreeing within Oregon too; "
+        f"{or_op_band} no longer overlaps {or_cut_band}")
+
+    # Route-invariant but population-specific: Oregon's crossover must sit ABOVE Alabama's.
+    assert or_op_band[0] > op_band[0], (
+        f"docs/32 reports Oregon's crossover sitting higher than Alabama's "
+        f"({or_op_band} against {op_band}); that difference is why the band is not a constant")
+    # Five populations, and the document now claims 4/5 on direction and 3/5 on location.
+    # The exceptions are pinned: if Kentucky starts agreeing or Connecticut starts flipping,
+    # the document is describing outcomes that no longer happened.
+    outcomes = {}
+    for state in ["AL", "OR", "CT", "KY", "SC"]:
+        o = load_operating_points(state, OPERATING_POINTS)
+        c = load_cutoffs(state)
+        if c["n_test"].isna().any() and o["n_test"].notna().any():
+            c["n_test"] = c["n_test"].fillna(o["n_test"].dropna().iloc[0])
+        for f in (o, c):
+            f["selection_rate"] = f["positives_base"] / f["n_test"]
+        ok = o[o["dp_base"] >= MIN_BASELINE_GAP]
+        ck = c[c["dp_base"] >= MIN_BASELINE_GAP]
+        ob, cb = crossover_bracket(ok), crossover_bracket(ck)
+        agree = None if ob is None or cb is None else (ob[0] <= cb[1] and cb[0] <= ob[1])
+        outcomes[state] = (float(np.corrcoef(ok["selection_rate"], ok["pie"])[0, 1]), agree)
+
+    assert outcomes["CT"][1] is None, (
+        "docs/32 reports Connecticut having no sign change to bracket; it now has one")
+    assert outcomes["KY"][1] is False, (
+        f"docs/32 reports Kentucky's two routes DISAGREEING; they now agree. The document "
+        f"claims 3/5, and turning a recorded failure into a pass is what the "
+        f"pre-registration exists to prevent")
+    assert sum(1 for r, a in outcomes.values() if a is True) == 3, (
+        f"docs/32 claims the routes agree in three populations of five: {outcomes}")
+    assert outcomes["CT"][0] < MIN_R, "docs/32 reports O1 failing on Connecticut"
+    _quotes(text, "three of five", "DISJOINT", "+0.633")
+    print(f"  AL {r:+.3f}, OR {r_or:+.3f}; agree 3/5, KY disjoint, CT no flip")
+
+
+def test_doc33_eo_scope_condition() -> None:
+    """docs/33: the rule FAILS its primary bar under equalized odds, and must keep failing."""
+    from src.experiments.analyse_eo import MIN_BINDING, MIN_SPAN_PIE, load
+    from src.experiments.analyse_threshold import MIN_BASELINE_GAP, MIN_R, THRESHOLDS
+
+    text = _doc(33)
+    _quotes(text, "+0.644", "+0.775", "-0.748", "+0.160", "+0.822", "+0.03%")
+
+    frame = load(["AL", "OR"], THRESHOLDS)          # pinned to the pre-registered archive
+    assert len(frame) == 12, f"docs/33 reports twelve arms, found {len(frame)}"
+    kept = frame[frame["dp_base"] >= MIN_BASELINE_GAP]
+    assert len(kept) == 8, f"docs/33 retains eight arms, found {len(kept)}"
+
+    r_eo = float(np.corrcoef(kept["selection_rate"], kept["pie_eo"])[0, 1])
+    assert abs(r_eo - 0.644) < 0.005, f"docs/33 says r = +0.644, data gives {r_eo:+.3f}"
+
+    # The load-bearing claim is a FAILURE. If a later re-run pushes this over the bar, the
+    # document is describing an outcome that no longer happened -- and quietly turning a
+    # reported failure into a pass is exactly what the pre-registration exists to prevent.
+    assert r_eo < MIN_R, (
+        f"docs/33 reports E1 FAILING at a bar of {MIN_R}; r is now {r_eo:+.3f}. The "
+        "document must be rewritten rather than left claiming a failure that has gone away")
+
+    binding = float(kept["eo_reduction"].median())
+    assert binding < MIN_BINDING, (
+        f"docs/33 reports E0's binding half failing; median reduction is now {binding:+.3f}")
+    assert float(kept["pie_eo"].max() - kept["pie_eo"].min()) >= MIN_SPAN_PIE, \
+        "docs/33 reports the spread half of E0 HOLDING"
+
+    # And the comparison that gives the failure its meaning: present but weaker than parity.
+    paired = kept.dropna(subset=["pie_dp"])
+    r_dp = float(np.corrcoef(paired["selection_rate"], paired["pie_dp"])[0, 1])
+    assert r_dp > r_eo, (
+        f"docs/33 rests on parity predicting BETTER than equalized odds on the same arms; "
+        f"parity {r_dp:+.3f} against {r_eo:+.3f}")
+    assert r_eo > 0.30, (
+        "docs/33 says the naive 'predicts nothing' alternative is still beaten at 0.30")
+    print(f"  E1 fails at {r_eo:+.3f} (bar {MIN_R}); parity {r_dp:+.3f} on the same "
+          f"{len(paired)} arms; binding {binding:+.3f}")
+
+
+def test_doc34_epsilon_robustness() -> None:
+    """docs/34: the crossover bracket must stay put across a 25x range of epsilon."""
+    from src.experiments.analyse_threshold import (
+        MIN_BASELINE_GAP, MIN_R, THRESHOLDS, attach_selection_rate, load)
+
+    text = _doc(34)
+    _quotes(text, "+0.944", "+0.801", "+0.784", "-4.97%", "-22.16%", "0.252")
+
+    brackets = {}
+    for suffix, label in [("_eps005", 0.05), ("", 0.01), ("_eps0002", 0.002)]:
+        frame = attach_selection_rate(load(["AL"], THRESHOLDS, suffix), ["AL"])
+        assert len(frame) == 6, f"docs/34 needs six arms at eps={label}, found {len(frame)}"
+        kept = frame[frame["dp_base"] >= MIN_BASELINE_GAP]
+        assert len(kept) == 4, f"docs/34 retains four arms at eps={label}, got {len(kept)}"
+        r = float(np.corrcoef(kept["selection_rate"], kept["pie_plain"])[0, 1])
+        assert r >= MIN_R, f"docs/34 reports T1 holding at eps={label}; r is {r:+.3f}"
+        below = kept[kept["pie_plain"] < 0]["selection_rate"].max()
+        above = kept[kept["pie_plain"] > 0]["selection_rate"].min()
+        assert below < above, f"docs/34 needs a sign flip at eps={label}"
+        brackets[label] = (round(below, 4), round(above, 4))
+
+    # The load-bearing claim: the bracket does not move with the tolerance. If it ever does,
+    # the direction result IS partly a property of the hyperparameter and docs/23, 31 and 32
+    # all need the caveat added.
+    assert len(set(brackets.values())) == 1, (
+        f"docs/34 rests on the crossover bracket being identical across epsilon; "
+        f"it now differs: {brackets}")
+
+    # Four of five states hold at every tolerance; Connecticut fails all three on a spread
+    # of 0.34 points. Both halves are pinned.
+    _quotes(text, "Four of five hold at every tolerance", "0.34")
+    verdicts = {}
+    for state in ["OR", "CT", "KY", "SC"]:
+        rs, spread = [], None
+        for suffix in ("_eps005", "", "_eps0002"):
+            f = attach_selection_rate(load([state], THRESHOLDS, suffix), [state])
+            if f["n_test"].isna().any():
+                ref = attach_selection_rate(load([state], THRESHOLDS, "_eps005"), [state])
+                f["n_test"] = f["n_test"].fillna(ref["n_test"].dropna().iloc[0])
+                f["selection_rate"] = f["positives_base"] / f["n_test"]
+            k = f[f["dp_base"] >= MIN_BASELINE_GAP]
+            rs.append(float(np.corrcoef(k["selection_rate"], k["pie_plain"])[0, 1]))
+            spread = float(k["pie_plain"].max() - k["pie_plain"].min())
+        verdicts[state] = (all(x >= MIN_R for x in rs), spread)
+
+    assert verdicts["CT"][0] is False and verdicts["CT"][1] < 2.0, (
+        f"docs/34 reports Connecticut failing on a spread under 2 points: {verdicts['CT']}")
+    holding = [s for s, (ok, _) in verdicts.items() if ok] + ["AL"]
+    assert sorted(holding) == ["AL", "KY", "OR", "SC"], (
+        f"docs/34 claims four of five populations hold at every tolerance; got {verdicts}")
+    print(f"  bracket {brackets[0.01]} identical across eps; AL/OR/KY/SC hold, "
+          f"CT fails on a {verdicts['CT'][1]:.2f}-point spread")
+
+
+def test_doc36_second_learner() -> None:
+    """docs/36: the crossover must not move when the base learner changes."""
+    from src.experiments.analyse_threshold import (
+        MIN_BASELINE_GAP, MIN_R, THRESHOLDS, attach_selection_rate, load)
+
+    text = _doc(36)
+    _quotes(text, "+0.902", "+1.000", "-21.14%", "+0.92%", "-7.00%")
+
+    hgb = attach_selection_rate(load(["AL"], THRESHOLDS, "_hgb"), ["AL"])
+    assert len(hgb) == 4, f"docs/36 reports four boosted-tree arms, found {len(hgb)}"
+    r = float(np.corrcoef(hgb["selection_rate"], hgb["pie_plain"])[0, 1])
+    assert abs(r - 0.902) < 0.005, f"docs/36 says r = +0.902, data gives {r:+.3f}"
+    assert r >= MIN_R, "docs/36 reports T1 holding under the boosted learner"
+
+    def bracket(frame):
+        below = frame[frame["pie_plain"] < 0]["selection_rate"].max()
+        above = frame[frame["pie_plain"] > 0]["selection_rate"].min()
+        assert below < above, "no sign flip"
+        return below, above
+
+    # The load-bearing claim: same crossover as the linear model on the same four arms.
+    lr = attach_selection_rate(load(["AL"], THRESHOLDS), ["AL"])
+    lr = lr[lr["threshold"].isin(hgb["threshold"])]
+    assert lr["dp_base"].min() >= MIN_BASELINE_GAP, "the compared arms should all be retained"
+    b_hgb, b_lr = bracket(hgb), bracket(lr)
+    assert b_hgb[0] <= b_lr[1] and b_lr[0] <= b_hgb[1], (
+        f"docs/36 rests on the crossover NOT moving with the learner; boosted {b_hgb} no "
+        f"longer overlaps linear {b_lr}")
+
+    # And the stated surprise: the stronger learner starts off MORE unfair, not less.
+    assert hgb["dp_base"].mean() > lr["dp_base"].mean(), (
+        "docs/36 reports the boosted learner producing larger baseline parity gaps")
+    # The document's strongest claim: this is the one test that holds in every population.
+    _quotes(text, "Five of five")
+    per_state = {}
+    for state in ["OR", "CT", "KY", "SC"]:
+        f = attach_selection_rate(load([state], THRESHOLDS, "_hgb"), [state])
+        k = f[f["dp_base"] >= MIN_BASELINE_GAP]
+        rr = float(np.corrcoef(k["selection_rate"], k["pie_plain"])[0, 1])
+        flip = k[k["pie_plain"] < 0]["selection_rate"].max() < \
+            k[k["pie_plain"] > 0]["selection_rate"].min()
+        per_state[state] = (rr, bool(flip))
+    assert all(rr >= MIN_R and flip for rr, flip in per_state.values()), (
+        f"docs/36 claims five of five; the boosted learner now fails somewhere: {per_state}")
+    # Connecticut is the point of the section: it flips here where the linear model does not.
+    assert per_state["CT"][1], (
+        "docs/36 rests on Connecticut flipping under boosted trees where it does not "
+        "under logistic regression")
+    print(f"  r = {r:+.3f}; boosted crossover {b_hgb[0]:.3f}-{b_hgb[1]:.3f} vs "
+          f"linear {b_lr[0]:.3f}-{b_lr[1]:.3f}; 5/5 states hold incl. CT")
+
+
 def main() -> None:
     tests = [
         test_doc11_cross_flow_correlations,
@@ -720,6 +965,10 @@ def main() -> None:
         test_doc26_derivation_beaten_by_a_constant,
         test_doc27_theory_correspondence,
         test_doc31_natural_split,
+        test_doc32_rate_not_task,
+        test_doc33_eo_scope_condition,
+        test_doc34_epsilon_robustness,
+        test_doc36_second_learner,
         test_course_documents_still_match_their_results,
     ]
     failures = 0
