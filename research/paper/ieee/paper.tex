@@ -1,0 +1,448 @@
+\documentclass[conference]{IEEEtran}
+
+\usepackage{cite}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\begin{document}
+
+\title{Which Way Does Fairness Go? The Selection Rate Predicts\\
+Whether an Attribute-Blind Constraint Gives or Takes}
+
+\author{\IEEEauthorblockN{Dheirav}
+\IEEEauthorblockA{\textit{Responsible AI} \\
+\textit{Algorithmic Bias Mitigation}\\
+\texttt{dheirav2005@gmail.com}}}
+
+\maketitle
+
+\begin{abstract}
+A group-fairness constraint is a statement about a gap, and says nothing about which of two
+very different worlds should close it: one where the disadvantaged group is lifted, and one
+where the advantaged group is pulled down. Both satisfy the constraint and both score
+identically on the metric that certifies them. We ask which of the two occurs, and show it is
+predictable in advance from a quantity every deploying organisation already has --- the rate at
+which its current model says yes. Across 18 independent populations spanning two household
+surveys, US mortgage records, criminal-justice risk data, US law-school outcomes and the Dutch
+national census, a parity constraint withdraws favourable decisions below a crossover and
+extends them above it. On UCI Adult, six in-processing methods each shrink the pool by
+7.9--22.1\%; on mortgage lending the identical constraint grows it. The certifying metric
+reports the same success in both cases. The relationship is not an artifact of how the
+selection rate is varied: holding the task, features, groups and fitted scores fixed and moving
+only the decision threshold reproduces both the direction and the location of the transition.
+It survives a twenty-five-fold range of constraint tolerance, a boosted-tree learner, and a
+protected attribute swapped from sex to race. Crucially, it is bounded: under
+\emph{post-processing}, which reads the protected attribute at decision time, the effect
+vanishes entirely ($r = -0.024$ against $+0.585$), and contemporaneous theory says why --- in
+that regime the direction is determined, not distributional. We confirm the theory's prediction
+for it in 18 of 18 populations. The practical result is a procedure: locate your own crossover
+by sweeping your deployed model's threshold, needing no new data.
+\end{abstract}
+
+\begin{IEEEkeywords}
+algorithmic fairness, levelling down, demographic parity, in-processing, selection rate,
+disparate impact
+\end{IEEEkeywords}
+
+\section{Introduction}
+
+A fairness constraint says two groups' rates should be close. It says nothing about how. The
+gap can close because the disadvantaged group is lifted, or because the advantaged group is
+pulled down. Both satisfy the constraint; only one is what anybody meant.
+
+That this ambiguity exists is established. Mittelstadt \emph{et al.} \cite{mittelstadt2023}
+made levelling down the centre of a well-known critique; Maheshwari \emph{et al.}
+\cite{maheshwari2023} report that it ``often goes unnoticed in the overall performance of the
+model''; Ferry \emph{et al.} \cite{ferry2023} built an auditing framework because an aggregate
+score reports neither how many people were affected nor in which direction. We take all of that
+as given.
+
+Our question is the one this literature leaves open: \textbf{when?} A deploying team cannot act
+on ``this sometimes happens''. It can act on a rule that says which way its own system will
+move, before it moves.
+
+\subsection{Scope, stated first}
+
+This is a paper about \textbf{attribute-blind in-processing} constraints --- the regime in which
+the protected attribute is unavailable at decision time. That is where almost every deployed
+system sits, because per-group thresholds constitute disparate treatment on their face in most
+jurisdictions. Under post-processing, which does read the attribute, the effect we report
+disappears (Section~\ref{sec:regime}). This is not a weakness of the finding but the boundary
+theory draws, and we verify it from both sides.
+
+\subsection{Contributions}
+
+\begin{enumerate}
+\item \textbf{An empirical characterisation of a conditionality that theory predicts.}
+Contemporaneous theory \cite{backfire2026} establishes that in the attribute-blind regime the
+direction is distribution-dependent. It contains no experiments and its conditions are ordering
+relations on score regions rather than measurable quantities. We supply the measurement across
+18 populations and five domains, and find its stated conditions hold on \textbf{0 of 26} arms.
+
+\item \textbf{Identification of the operative variable by a design that separates it from its
+confound.} Varying the selection rate by moving a label threshold cannot distinguish ``the rate
+sets the direction'' from ``task difficulty does''. Holding the task exactly fixed and moving
+only the decision rule separates them.
+
+\item \textbf{A procedure, not an observation.} The same design lets a practitioner locate
+their own crossover on a deployed model. Four independent estimates of the mortgage crossover
+agree.
+
+\item \textbf{Boundaries stated rather than discovered by a referee}, including a computable
+test for when the procedure cannot be used at all.
+\end{enumerate}
+
+\section{Related Work}
+
+\textbf{Whether levelling down is universal.} A 2026 theory paper \cite{backfire2026} proves in
+a population-level Bayes framework that the answer depends on the deployment regime. Where the
+protected attribute is available at decision time, fairness ``necessarily (weakly) improves
+outcomes for the disadvantaged group and (weakly) worsens outcomes for the advantaged group''.
+Where it is not --- the attribute-blind regime, which is ours --- ``the impact of fairness is
+distribution-dependent: fairness can benefit or harm either group $\ldots$ leading to either
+leveling up or leveling down.'' \textbf{We therefore do not claim the conditionality itself.}
+
+\textbf{Levelling down, and the remedy.} Mittelstadt \emph{et al.} \cite{mittelstadt2023} argue
+that fairness interventions frequently equalise by degrading the better-off group, and
+\emph{also propose the remedy}: minimum rate constraints requiring ``that every group has, at
+least, a minimal selection rate, precision, or recall''. We claim neither the observation nor
+the remedy as novel. Our contribution relative to that work is narrow and checkable: a scope
+condition they do not have; in-processing rather than post-processing, so no model reads the
+attribute when predicting; a population-level floor stacked \emph{with} parity rather than a
+per-group floor replacing it; and held-out replication where they report training-set results.
+
+\textbf{Auditing individual impact.} Ferry \emph{et al.} \cite{ferry2023} propose a framework
+whose first three dimensions are impact size, change direction and decision rates. That is the
+decomposition we use throughout, and we claim no part of it. What we add is what those axes
+report at scale: the change-direction dimension is not a property of the method being audited
+but of the population it is applied to.
+
+\textbf{The selection-rate axis.} The nearest prior work is Goethals \emph{et al.}
+\cite{goethals2024}, which studies the cost of fairness as a function of available budget and
+reports that ``the level of available resources significantly influences this cost, a factor
+overlooked in previous evaluations''. The difference is structural: in their setting positive
+decisions are a fixed resource, so the total is constant by construction and the directional
+effect we measure cannot arise.
+
+\textbf{Fairness gerrymandering and dataset monoculture.} Kearns \emph{et al.}
+\cite{kearns2018} show constraints on marginal groups can be satisfied while subgroups are
+badly treated. Ding \emph{et al.} \cite{ding2021} argue the field should stop drawing
+conclusions from UCI Adult; we replicate across ACS-derived populations and then find that is
+\emph{not sufficient}, because they share one survey instrument.
+
+\section{Setup and Method}
+
+\textbf{Data.} Eighteen independent populations across four instruments: UCI Adult (45{,}222
+rows); ACS Income \cite{ding2021} across twelve US states and two protected attributes; HMDA
+mortgage records for two states, by race and sex and split by loan purpose; COMPAS
+\cite{propublica2016} (5{,}278 rows on the race arm after ProPublica's documented filter); LSAC
+bar passage (20{,}798 rows); and the Dutch national census of 2001 (60{,}420 rows).
+
+The last three were added to leave the instruments the finding was formed in. The Dutch census
+carries a between-group gap of 0.298, roughly twice Adult's, making it the test of the standard
+alternative explanation. LSAC was chosen because bar passage is naturally generous (base rate
+0.890).
+
+\textbf{Convention.} $y = 1$ is always the favourable outcome. This required inverting COMPAS's
+recorded target, which encodes recidivism, and declaring \emph{Female} the advantaged group on
+its sex arm, since women in that cohort reoffend less. Both are enforced by automated checks,
+because either error produces every directional result sign-inverted without raising.
+
+\textbf{Mitigation.} \texttt{ExponentiatedGradient} \cite{agarwal2018} at $\varepsilon = 0.01$
+unless stated. No model reads the protected attribute at prediction time except where
+post-processing is explicitly under test.
+
+\textbf{Exclusion rules.} An arm is discarded if the baseline demographic-parity gap is below
+0.05, or if the baseline classifier's accuracy falls below $\max(p, 1-p)$ --- the accuracy of
+always predicting the more common label. The second rule matters more than it sounds
+(Section~\ref{sec:failures}).
+
+\section{Parity Is Bought by Withdrawal --- Where It Is}
+
+On UCI Adult, every method in a six-method in-processing ablation reduces the total number of
+favourable decisions, by 7.9\% to 22.1\%. Not one closes the gap primarily by extending
+decisions to the disadvantaged group. Eighteen of nineteen survey arms do the same.
+
+\textbf{And then it reverses.} On HMDA mortgage data the identical constraint \emph{grows} the
+pool by 4.3\%, at an exchange rate of 0.50 --- two favourable decisions created for every one
+destroyed. The parity metric reports 0.018 on the population that destroyed a fifth of its
+favourable decisions, and 0.010 on the one that created more than it destroyed.
+
+\section{What Sets the Direction}
+
+\subsection{A single-factor design}
+
+ACS Income's label is ``earns more than \$50{,}000'' --- a benchmark convention, not a fact.
+Moving it on one fixed state varies the selection rate while holding population, instrument,
+feature set, group ratio and proxy structure fixed. The change in the pool rises with the
+baseline selection rate at $r = +0.801$, and $+0.980$ once the confounded between-group gap is
+partialled out. The sign flips: 22 decisions destroyed per one created at a rate of 0.03,
+against 0.75 at 0.89.
+
+\subsection{The transition appears without being manufactured}
+
+Pooling two states across five real loan products --- nothing manipulated --- home improvement
+at a selection rate of 0.555 levels \emph{down} ($-1.57\%$) while refinancing at 0.871 levels
+\emph{up} ($+2.95\%$), with $r = +0.803$ and Spearman $\rho = +0.900$. A bank running one
+constraint across its loan book would take opportunities away in one product and hand them out
+in another, with its fairness report showing success in both.
+
+\subsection{It is the rate, not the difficulty of the task}
+
+The design above moves the \emph{label}. ``Earns over \$100{,}000'' is not a rarer version of
+``earns over \$20{,}000''; it is a harder problem. That design therefore cannot separate two
+explanations which predict everything observed so far.
+
+We separate them by holding the task completely fixed --- same rows, features, groups and
+\emph{fitted scores} --- and moving only where the model draws its line. The relationship
+reproduces, and so does the crossover's location: on Oregon the two routes give 0.362--0.653
+and 0.353--0.637. \textbf{Task difficulty is not doing the work.}
+
+With twelve points chosen from each population's viable band, the relationship holds on the
+Dutch census ($+0.946$), South Carolina ($+0.905$) and COMPAS ($+0.844$). Alabama and Kentucky
+return \emph{negative} values on eleven and ten arms; their viable bands top out at 0.566 and
+0.561, at or below every crossover measured, so both sweeps lie almost entirely on one side of
+the transition. \textbf{We therefore claim the relationship across the crossover and withdraw
+any claim that it holds within the low-rate region alone.}
+
+\subsection{Five domains, and the group-gap alternative}
+
+\begin{table}[t]
+\caption{The relationship across instruments}
+\label{tab:domains}
+\centering
+\begin{tabular}{@{}llc@{}}
+\toprule
+\textbf{Instrument} & \textbf{Domain} & \textbf{$r$} \\
+\midrule
+ACS Income & income prediction & $+0.801$ \\
+HMDA & mortgage lending & $+0.858$ \\
+COMPAS & criminal justice & $+0.870$ \\
+Dutch census & occupational status & $+0.915$ \\
+LSAC & legal education & unsweepable \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:domains} gives the picture. The pre-registered alternative --- ``this is a
+property of income prediction and American mortgage lending'', requiring $|r| < 0.30$ --- loses
+on both new instruments.
+
+The oldest competing account is that the \emph{gap between groups} drives the direction. The
+Dutch census has a gap of 0.298, roughly twice Adult's, making it the population where that
+explanation should win. It gives $r = +0.915$ across all six arms, none excluded.
+
+\subsection{Robustness}
+
+\begin{table}[t]
+\caption{What each manipulation preserves}
+\label{tab:robust}
+\centering
+\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Manipulation} & \textbf{Direction} & \textbf{Magnitude} \\
+\midrule
+Route to the rate & unchanged & differs $3\times$ \\
+Tolerance, $25\times$ range & unchanged & differs $4\times$ \\
+Boosted trees (5/5 pops.) & unchanged & differs $3\times$ \\
+Attribute, sex $\rightarrow$ race & unchanged & --- \\
+Criterion $\rightarrow$ equalized odds & weaker, unevenly & differs $8\times$ \\
+Optimiser $\rightarrow$ post-proc. & \textbf{vanishes} & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:robust} summarises. \textbf{The selection rate predicts which way. It orders how
+much within a population and does not transfer it between them}: the signed distance from a
+population's own crossover gives $\rho$ of $+0.96$, $+0.95$ and $+0.78$ in three of four
+populations, but a pooled slope reaches only $r = +0.487$ against a pre-registered $+0.70$ bar.
+
+\section{The Regime Boundary}
+\label{sec:regime}
+
+The last row of Table~\ref{tab:robust} is not fragility. Post-processing reads the protected
+attribute at prediction time; the reduction does not. That is the distinction on which the
+theory of \cite{backfire2026} is built.
+
+Running post-processing at each population's natural operating point across 17 populations
+gives $r = -0.024$, against $+0.585$ for the reduction on the same populations. The
+pre-registered prediction failed and its naive alternative won outright.
+
+\textbf{In the attribute-aware regime the theory says there is nothing to predict}, because the
+direction is determined. Its prediction for that regime is that the advantaged group loses and
+the disadvantaged gains, always. On our populations that holds in \textbf{18 of 18}, without
+exception. (This check was decided after the failure and is post-hoc.)
+
+Section~\ref{sec:failures} notes that the same theory's \emph{conditions} hold on 0 of 26 arms.
+Its regime distinction holds on 18 of 18. The theory is right about which regime you are in
+mattering, and wrong about which quantity decides it within one --- which is what an empirical
+study can settle and a population-level argument cannot.
+
+\section{Boundaries}
+
+\subsection{The crossover is nearly stable}
+
+\begin{table}[t]
+\caption{Crossover location, twelve-point sweeps}
+\label{tab:crossover}
+\centering
+\begin{tabular}{@{}llc@{}}
+\toprule
+\textbf{Population} & \textbf{Domain} & \textbf{Crossover} \\
+\midrule
+COMPAS & criminal justice & 0.511 \\
+South Carolina & income & 0.530 \\
+Oregon & income & 0.558 \\
+Dutch census & occupational status & 0.576 \\
+\midrule
+HMDA (one market) & lending & 0.659--0.758 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:crossover} shows four populations across three domains, two countries and four
+instruments agreeing within 0.08, with standard deviation 0.029 and mean 0.544. An earlier
+version of this work called the crossover ``population-specific'' from two coarse six-point
+brackets whose difference was largely imprecision. The instruction is \textbf{expect about 0.54
+and check}.
+
+Two population properties appeared to explain the residual, at $r = +0.724$ and $+0.865$. They
+are collinear with each other at $+0.947$ and neither is distinguishable from chance at four
+populations ($p = 0.277$, $p = 0.135$). We report them as a hypothesis for a larger study, not
+a formula.
+
+\subsection{The procedure is unusable on very generous tasks}
+
+Varying the selection rate by moving a threshold works by \emph{degrading} the classifier. On a
+task where most people already qualify, reaching a low selection rate requires a model that
+refuses qualified people, and past a point that model is worse than a constant. Defining the
+\emph{viable band} as the range of selection rates reachable by a classifier still beating
+$\max(p, 1-p)$: Dutch spans 0.895, COMPAS 0.859, typical ACS $\approx 0.51$, and LSAC only
+\textbf{0.056}. On LSAC, where 89\% pass the bar, no choice of thresholds produces a usable
+sweep. This is computable before running anything.
+
+When the viable band forbids a sweep, the crossover can still be located by comparing natural
+sub-populations --- which is how the mortgage crossover was first found.
+
+\subsection{Small populations}
+
+Below roughly 2{,}500 test subjects the method's own randomness exceeds the entire effect of
+the constraint. COMPAS has 1{,}584 and flips sign between seeds on two of four arms; LSAC has
+6{,}240 and flips on none. COMPAS carries direction here and never magnitude.
+
+\section{What to Do About It}
+
+\begin{enumerate}
+\item \textbf{Check the criterion.} The rule is for criteria that constrain selection rates.
+\item \textbf{Look up your current approval rate.}
+\item \textbf{Locate your crossover.} Sweep your deployed model's threshold, fit the constraint
+at each point, and find where the change in the pool turns positive. Discard arms below
+$\max(p,1-p)$, check the viable band first, and use ten to twelve points.
+\item \textbf{Act.} Below the crossover, expect withdrawal and add a floor on the overall
+selection rate: about 0.12 accuracy points, exchange rate $1.47 \rightarrow 0.88$ across
+nineteen arms, below 1.0 in sixteen of them.
+\item \textbf{Do not forecast the size.}
+\end{enumerate}
+
+The floor is \textbf{not a new method}: a selection-rate floor is a linear moment constraint
+inside the framework of \cite{agarwal2018}, and a variant of the minimum rate constraints of
+\cite{mittelstadt2023}.
+
+\section{Method, and What We Got Wrong}
+\label{sec:failures}
+
+Every prediction was registered with its thresholds \emph{and the naive alternative it had to
+beat}, before the data existed. Three episodes matter for reading the results above.
+
+\textbf{A pre-registered test that failed.} The rule does not survive equalized odds at the bar
+we set: $r = +0.644$ on two states, $+0.334$ on five, against a $+0.70$ threshold. Alabama
+alone would have given $+0.822$ with every prediction holding.
+
+\textbf{Two headline results withdrawn.} The operating-point design varies the selection rate by
+degrading the classifier, and nothing bounded how far. Excluding arms beaten by the trivial
+predictor leaves Alabama with two arms and LSAC with one: $r = +0.979$ and $r = +0.968$, both
+previously reported, are void. The same exclusion \emph{rescued} mortgage lending, which had
+failed outright.
+
+\textbf{A plausible result that was arithmetic.} A post-processing comparison appeared to show a
+clean reversal. It was void: the method re-derives its own thresholds and returned an identical
+model at all six operating points, so the measured effect was a constant divided by a shrinking
+baseline. What exposed it was an exchange rate of 0.000.
+
+\section{Limitations}
+
+Magnitude transfers within a population and not between. The crossover is nearly stable and its
+residual is unexplained. Coverage is four instruments, two countries and two decades, with no
+non-Western data. The 18-of-18 confirmation in Section~\ref{sec:regime} is post-hoc. The
+relationship is not monotone below the crossover. The remedy is a variant, not a discovery.
+
+\section{Discussion}
+
+The finding a practitioner can use is small and specific: \textbf{look up the rate at which your
+model currently says yes, and you will know whether a parity constraint is about to give or to
+take.}
+
+What makes that worth saying is not that it is surprising once stated. It is that the certifying
+metric --- the number a deployment team reports, an auditor checks, and a regulator may one day
+require --- is identical in both worlds. A constraint that withdraws a fifth of all favourable
+decisions and one that creates more than it destroys produce the same certificate.
+
+The literature already knew the metric was silent. What was missing was a way to know, in
+advance and from something a team already has, which of the two silences you are standing in.
+
+\section*{Reproducibility}
+
+Every load-bearing figure is re-derived from stored results by an automated check that fails if
+a document and its data disagree; 28 such checks accompany this work. Pre-registrations are
+committed before the runs they govern.
+
+\begin{thebibliography}{00}
+
+\bibitem{agarwal2018} A. Agarwal, A. Beygelzimer, M. Dud\'{i}k, J. Langford, and H. Wallach,
+``A reductions approach to fair classification,'' in \emph{Proc. ICML}, 2018.
+
+\bibitem{mittelstadt2023} B. Mittelstadt, S. Wachter, and C. Russell, ``The unfairness of fair
+machine learning: Levelling down and strict egalitarianism by default,'' \emph{Michigan
+Technology Law Review}, 2023.
+
+\bibitem{ferry2023} J. Ferry, U. A\"{i}vodji, S. Gambs, M.-J. Huguet, and M. Siala, ``When
+mitigating bias is unfair: A comprehensive study on the impact of bias mitigation algorithms,''
+arXiv:2302.07185, 2023.
+
+\bibitem{maheshwari2023} G. Maheshwari, A. Bellet, P. Denis, and M. Keller, ``Fair without
+leveling down: A new intersectional fairness definition,'' in \emph{Proc. EMNLP}, 2023.
+
+\bibitem{backfire2026} ``Fairness may backfire: When leveling-down occurs,'' arXiv:2603.06901,
+2026.
+
+\bibitem{kearns2018} M. Kearns, S. Neel, A. Roth, and Z. S. Wu, ``Preventing fairness
+gerrymandering: Auditing and learning for subgroup fairness,'' in \emph{Proc. ICML}, 2018.
+
+\bibitem{ding2021} F. Ding, M. Hardt, J. Miller, and L. Schmidt, ``Retiring Adult: New datasets
+for fair machine learning,'' in \emph{Proc. NeurIPS}, 2021.
+
+\bibitem{goethals2024} S. Goethals, E. Delaney, B. Mittelstadt, and C. Russell,
+``Resource-constrained fairness,'' arXiv:2406.01290, 2024.
+
+\bibitem{propublica2016} J. Angwin, J. Larson, S. Mattu, and L. Kirchner, ``Machine bias,''
+\emph{ProPublica}, 2016.
+
+\bibitem{corbett2017} S. Corbett-Davies, E. Pierson, A. Feller, S. Goel, and A. Huq,
+``Algorithmic decision making and the cost of fairness,'' in \emph{Proc. KDD}, 2017.
+
+\bibitem{martinez2020} N. Martinez, M. Bertran, and G. Sapiro, ``Minimax Pareto fairness: A
+multi objective perspective,'' in \emph{Proc. ICML}, 2020.
+
+\bibitem{black2022} E. Black, M. Raghavan, and S. Barocas, ``Model multiplicity: Opportunities,
+concerns, and solutions,'' in \emph{Proc. FAccT}, 2022.
+
+\end{thebibliography}
+
+\end{document}
