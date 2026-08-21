@@ -70,6 +70,32 @@ def family(name: str) -> str:
     return "HMDA lending"
 
 
+VIABLE_SPECS = {
+    "acs_income_al_2018": "acs:AL", "acs_income_ky_2018": "acs:KY",
+    "acs_income_sc_2018": "acs:SC", "acs_income_or_2018": "acs:OR",
+    "dutch_2001_sex": "dutch", "compas_2016_race": "compas",
+    "hmda_ms_la_2018_race": "hmda:MS,LA:derived_race",
+    "hmda_la_2018_race": "hmda:LA:derived_race",
+}
+
+
+def viable_bands() -> dict[str, tuple[float, float]]:
+    """Where a classifier worth deploying can put the selection rate, per population.
+
+    Panels otherwise show large empty regions that read as missing data. They are not: no
+    arm can exist there, because reaching that rate needs a model beaten by the trivial
+    predictor. On Alabama the band stops at 0.566, which is *why* its sweep cannot cross the
+    crossover -- so the unreachable region is evidence and belongs on the figure.
+    """
+    from .viable_points import points_for
+
+    bands = {}
+    for name, spec in VIABLE_SPECS.items():
+        info = points_for(spec)
+        bands[name] = (info["low"], info["high"])
+    return bands
+
+
 def gather() -> pd.DataFrame:
     from .analyse_calibration import apply_rules, majority_baseline
     from .analyse_operating_point import HMDA_POINTS, load_points_for
@@ -106,6 +132,7 @@ def figure_one(frame: pd.DataFrame) -> None:
     (Spearman +0.96, +0.95, +0.78 in three of four). Small multiples show exactly that, and
     show the two populations where it reverses instead of averaging them away.
     """
+    bands = viable_bands()
     order = (frame.groupby("population")["selection_rate"].max()
              .sort_values(ascending=False).index.tolist())
     ncols = 4
@@ -117,16 +144,28 @@ def figure_one(frame: pd.DataFrame) -> None:
     for ax, name in zip(axes, order):
         rows = frame[frame["population"] == name].sort_values("selection_rate")
         colour = COLOURS[family(str(name))]
+        low, high = bands.get(str(name), (0.0, 1.0))
+        ax.axvspan(0, low, color="0.86", zorder=0)
+        ax.axvspan(high, 1, color="0.86", zorder=0)
         ax.axhline(0, color="0.3", lw=0.9, zorder=1)
-        ax.axvspan(*CROSSOVER, color="0.55", alpha=0.13, zorder=0)
+        ax.axvspan(*CROSSOVER, color="#C44E52", alpha=0.14, zorder=0)
         ax.plot(rows["selection_rate"], rows["pie"], "o-", color=colour,
                 ms=3.4, lw=1.1, zorder=3)
         reverses = float(np.corrcoef(rows["selection_rate"], rows["pie"])[0, 1]) < 0
         ax.set_title(LABELS.get(str(name), str(name)), fontsize=8,
                      color="#8B3A3E" if reverses else "0.15", loc="left", pad=3)
-        if reverses:
-            ax.text(0.97, 0.06, "reverses", transform=ax.transAxes, ha="right",
-                    fontsize=6.5, style="italic", color="#8B3A3E")
+        # Which side of the crossover this population is structurally unable to explore.
+        # Alabama and Kentucky are cut off above it, the lending arms below it, and in both
+        # cases the cause is the base rate rather than anything about the constraint.
+        note = None
+        if high < CROSSOVER[1]:
+            note = "cannot reach above the crossover"
+        elif low > CROSSOVER[0]:
+            note = "cannot reach below the crossover"
+        if note:
+            ax.text(0.5, 0.055, note, transform=ax.transAxes, ha="center",
+                    fontsize=6.0, style="italic",
+                    color="#8B3A3E" if reverses else "0.4")
         ax.set_yscale("symlog", linthresh=3)
         ax.set_xlim(0, 1)
         ax.tick_params(labelsize=7)
@@ -144,7 +183,9 @@ def figure_one(frame: pd.DataFrame) -> None:
     fig.suptitle(
         f"In {len(order) - reversing} of {len(order)} populations the change in the pool "
         f"rises with the selection rate and crosses zero.\nThe {reversing} that reverse are "
-        f"marked; both are sweeps confined below the crossover. Shaded band: 0.51\u20130.58.",
+        f"marked. Grey = selection rates no deployable classifier can reach on that "
+        f"population, which\ncuts some off above the crossover and others below it. "
+        f"Red band = the 0.51\u20130.58 cluster.",
         fontsize=8, y=1.0, ha="center")
     fig.tight_layout(rect=(0.02, 0.03, 1, 0.98))
     fig.savefig(OUT / "fig-crossover.pdf", bbox_inches="tight")

@@ -42,8 +42,8 @@ It survives a twenty-five-fold range of constraint tolerance, a boosted-tree lea
 protected attribute swapped from sex to race. Crucially, it is bounded: under
 \emph{post-processing}, which reads the protected attribute at decision time, the effect
 vanishes entirely ($r = -0.024$ against $+0.585$), and contemporaneous theory says why --- in
-that regime the direction is determined, not distributional. We confirm the theory's prediction
-for it in 18 of 18 populations. The practical result is a procedure: locate your own crossover
+that regime the direction is determined, not distributional. A \emph{post-hoc} consistency
+check finds the theory's prediction for that regime holding in 18 of 18 populations. The practical result is a procedure: locate your own crossover
 by sweeping your deployed model's threshold, needing no new data.
 \end{abstract}
 
@@ -87,10 +87,11 @@ direction is distribution-dependent. It contains no experiments and its conditio
 relations on score regions rather than measurable quantities. We supply the measurement across
 18 populations and five domains, and find its stated conditions hold on \textbf{0 of 26} arms.
 
-\item \textbf{Identification of the operative variable by a design that separates it from its
-confound.} Varying the selection rate by moving a label threshold cannot distinguish ``the rate
-sets the direction'' from ``task difficulty does''. Holding the task exactly fixed and moving
-only the decision rule separates them.
+\item \textbf{Separation of the predictor from its confound.} Varying the selection rate by moving
+a label threshold cannot distinguish ``the rate predicts the direction'' from ``task difficulty
+does''. Holding the task exactly fixed and moving only the decision rule separates them. We
+claim a \emph{predictive} relationship within a population under the tested regime, not a
+causal mechanism: no pooled slope transfers across populations (Section~\ref{sec:boundaries}).
 
 \item \textbf{A procedure, not an observation.} The same design lets a practitioner locate
 their own crossover on a deployed model. Four independent estimates of the mortgage crossover
@@ -125,6 +126,17 @@ decomposition we use throughout, and we claim no part of it. What we add is what
 report at scale: the change-direction dimension is not a property of the method being audited
 but of the population it is applied to.
 
+\textbf{The shape of the optimal fair classifier.} Corbett-Davies \emph{et al.}
+\cite{corbett2017} show that for several fairness definitions the optimal constrained
+classifier takes the form of group-specific risk thresholds. This gives a \emph{bound} rather
+than another baseline: it predicts that levelling down is not an artifact of the reduction's
+search, because the optimal constrained classifier withdraws in the same way.
+
+\textbf{Remedies that avoid harm.} Minimax group fairness \cite{diana2021} minimises the worst
+group's error rather than equalising anything, and is the natural alternative to a parity
+constraint for a team whose concern is harm rather than equality. We benchmark against it
+rather than only against the unconstrained reduction.
+
 \textbf{The selection-rate axis.} The nearest prior work is Goethals \emph{et al.}
 \cite{goethals2024}, which studies the cost of fairness as a function of available budget and
 reports that ``the level of available resources significantly influences this cost, a factor
@@ -135,8 +147,14 @@ effect we measure cannot arise.
 \textbf{Fairness gerrymandering and dataset monoculture.} Kearns \emph{et al.}
 \cite{kearns2018} show constraints on marginal groups can be satisfied while subgroups are
 badly treated. Ding \emph{et al.} \cite{ding2021} argue the field should stop drawing
-conclusions from UCI Adult; we replicate across ACS-derived populations and then find that is
-\emph{not sufficient}, because they share one survey instrument.
+conclusions from UCI Adult and supply ACS-derived replacements. Notably they also
+\emph{build the knob this paper turns}: the \$50{,}000 threshold ``was chosen so that this
+dataset can serve as a replacement to UCI Adult, but we also offer datasets with other income
+cutoffs''. They do not connect it to the direction of a fairness intervention --- their text
+contains no occurrence of ``selection rate'', ``acceptance rate'' or ``leveling down'' --- so
+the instrument existed and the question was not asked of it. We replicate across their
+populations and then find that is \emph{not sufficient}, because they share one survey
+instrument.
 
 \section{Setup and Method}
 
@@ -239,7 +257,7 @@ pool by 4.3\%, at an exchange rate of 0.50 --- two favourable decisions created 
 destroyed. The parity metric reports 0.018 on the population that destroyed a fifth of its
 favourable decisions, and 0.010 on the one that created more than it destroyed.
 
-\section{What Sets the Direction}
+\section{What Predicts the Direction}
 
 \begin{figure*}[t]
 \centering
@@ -349,8 +367,8 @@ Optimiser $\rightarrow$ post-proc. & \textbf{vanishes} & --- \\
 \end{tabular}
 \end{table}
 
-Table~\ref{tab:robust} summarises. \textbf{The selection rate predicts which way. It orders how
-much within a population and does not transfer it between them}: the signed distance from a
+Table~\ref{tab:robust} summarises. \textbf{Within a population, and in the attribute-blind regime, the selection rate
+predicts which way and orders how much. Neither transfers between populations}: the signed distance from a
 population's own crossover gives $\rho$ of $+0.96$, $+0.95$ and $+0.78$ in three of four
 populations, but a pooled slope reaches only $r = +0.487$ against a pre-registered $+0.70$ bar.
 
@@ -418,32 +436,49 @@ mattering, and wrong about which quantity decides it within one --- which is wha
 study can settle and a population-level argument cannot.
 
 \section{Boundaries}
+\label{sec:boundaries}
 
 \subsection{The crossover is nearly stable}
 
 \begin{table}[t]
-\caption{Crossover location, twelve-point sweeps}
+\caption{Crossover location with bootstrap intervals over seeds (2{,}000 resamples).
+``Located'' is the fraction of resamples in which a sign change could be bracketed at all.}
 \label{tab:crossover}
 \centering
-\begin{tabular}{@{}llc@{}}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}llcc@{}}
 \toprule
-\textbf{Population} & \textbf{Domain} & \textbf{Crossover} \\
+\textbf{Population} & \textbf{Domain} & \textbf{Crossover (95\% CI)} & \textbf{Loc.} \\
 \midrule
-COMPAS & criminal justice & 0.511 \\
-South Carolina & income & 0.530 \\
-Oregon & income & 0.558 \\
-Dutch census & occupational status & 0.576 \\
+\multicolumn{4}{@{}l}{\emph{Non-lending}} \\
+COMPAS & crim. justice & 0.511 \,(0.434--0.524) & 83\% \\
+S. Carolina & income & 0.530 \,(0.526--0.533) & 99\% \\
+Oregon & income & 0.558 \,(0.556--0.560) & \textbf{77\%} \\
+Dutch census & occupation & 0.576 \,(0.572--0.580) & 100\% \\
 \midrule
-HMDA (one market) & lending & 0.659--0.758 \\
+\multicolumn{4}{@{}l}{\emph{Lending --- one market, three overlapping estimates}} \\
+HMDA pooled & mortgages & 0.660 & --- \\
+HMDA Louisiana & mortgages & 0.659 & --- \\
+HMDA refinance & mortgages & 0.758 & --- \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Table~\ref{tab:crossover} shows four populations across three domains, two countries and four
-instruments agreeing within 0.08, with standard deviation 0.029 and mean 0.544. An earlier
-version of this work called the crossover ``population-specific'' from two coarse six-point
-brackets whose difference was largely imprecision. The instruction is \textbf{expect about 0.54
-and check}.
+Table~\ref{tab:crossover} separates the two groups deliberately, because averaging them would
+hide the only disagreement in the data. Four non-lending populations, across three domains and
+two countries, have overlapping intervals. \textbf{Carrying those intervals the cluster spans
+roughly 0.43--0.58}, not the 0.511--0.576 that point estimates alone suggest: COMPAS's interval
+is six times wider than the Dutch census's, and Oregon's bracket fails to exist in 23\% of seed
+resamples.
+
+Every lending estimate sits above every non-lending one. They come from a \emph{single} market
+measured three overlapping ways, so ``lending is different'' is a hypothesis here and not a
+finding.
+
+\textbf{We therefore treat a crossover near 0.54 as an empirical prior for auditing, not a
+theoretically justified constant.} Nothing in this work explains why 0.54 rather than some
+other value, and Section~\ref{sec:failures} records an attempt to derive it that failed.
 
 Two population properties appeared to explain the residual, at $r = +0.724$ and $+0.865$. They
 are collinear with each other at $+0.947$ and neither is distinguishable from chance at four
@@ -466,7 +501,9 @@ sub-populations --- which is how the mortgage crossover was first found.
 \subsection{Small populations}
 
 Below roughly 2{,}500 test subjects the method's own randomness exceeds the entire effect of
-the constraint. COMPAS has 1{,}584 and flips sign between seeds on two of four arms; LSAC has
+the constraint. This is a specific instance of predictive multiplicity \cite{black2022} ---
+models with equivalent aggregate performance disagreeing substantially on individuals --- and
+we position it as a caution supported by that literature rather than as a novel finding. COMPAS has 1{,}584 and flips sign between seeds on two of four arms; LSAC has
 6{,}240 and flips on none. COMPAS carries direction here and never magnitude.
 
 \section{What to Do About It}
@@ -539,6 +576,15 @@ inside the framework of \cite{agarwal2018}, and a variant of the minimum rate co
 Every prediction was registered with its thresholds \emph{and the naive alternative it had to
 beat}, before the data existed. Three episodes matter for reading the results above.
 
+\textbf{A held-out prediction, scored as a failure.} The clearest evidence format available is
+a prediction registered before the data exists. We ran one: after adding the accuracy rule
+below, four HMDA populations the sweep had never touched were swept and scored under it, with
+the prediction that each would show the relationship, clear the spread guard and bracket a
+crossover. \textbf{Two of four did}, so the test is scored a failure. Its named alternative ---
+that lending is a domain where this route does not work --- nonetheless loses on all four, with
+$r \geq +0.80$ throughout and $+0.995$ on refinance. Three independent estimates of the lending
+crossover agree (Table~\ref{tab:crossover}).
+
 \textbf{A pre-registered test that failed.} The rule does not survive equalized odds at the bar
 we set: $r = +0.644$ on two states, $+0.334$ on five, against a $+0.70$ threshold. Alabama
 alone would have given $+0.822$ with every prediction holding.
@@ -548,6 +594,20 @@ degrading the classifier, and nothing bounded how far. Excluding arms beaten by 
 predictor leaves Alabama with two arms and LSAC with one: $r = +0.979$ and $r = +0.968$, both
 previously reported, are void. The same exclusion \emph{rescued} mortgage lending, which had
 failed outright.
+
+\textbf{A derivation that a constant beat.} The most obvious extension of this work is a
+theoretical account of \emph{why} the selection rate should matter. A general theory already
+exists and we cite it: \cite{backfire2026}'s Theorem 3 gives explicit conditions, over the
+extrema of the score-region quantity $\zeta(x) = (\eta(x)-c)/\nu(x)$, under which every group's
+rate weakly falls or weakly rises. Those conditions are ordering relations rather than anything
+a practitioner can compute, and Section~\ref{sec:regime} reports that they hold on \textbf{0 of
+26} of our arms.
+
+We attempted the missing step --- a derivation predicting the sign from the selection rate
+directly --- and pre-registered its bars. \textbf{It cleared them and was then beaten by a
+constant}, 12 correct against 13 out of 14 held-out arms. That failure is why this paper reports
+an empirical regularity rather than a mechanism, and why we do not attempt a fourth derivation
+here.
 
 \textbf{A plausible result that was arithmetic.} A post-processing comparison appeared to show a
 clean reversal. It was void: the method re-derives its own thresholds and returned an identical
@@ -564,8 +624,10 @@ relationship is not monotone below the crossover. The remedy is a variant, not a
 \section{Discussion}
 
 The finding a practitioner can use is small and specific: \textbf{look up the rate at which your
-model currently says yes, and you will know whether a parity constraint is about to give or to
-take.}
+model currently says yes, locate your own crossover, and you can anticipate whether a parity
+constraint is about to give or to take.} We do not claim the selection rate \emph{causes} the
+direction; we claim it predicts it, within a population, in the attribute-blind regime, and
+with the boundaries of Section~\ref{sec:boundaries} attached.
 
 What makes that worth saying is not that it is surprising once stated. It is that the certifying
 metric --- the number a deployment team reports, an auditor checks, and a regulator may one day
@@ -615,8 +677,8 @@ for fair machine learning,'' in \emph{Proc. NeurIPS}, 2021.
 \bibitem{corbett2017} S. Corbett-Davies, E. Pierson, A. Feller, S. Goel, and A. Huq,
 ``Algorithmic decision making and the cost of fairness,'' in \emph{Proc. KDD}, 2017.
 
-\bibitem{martinez2020} N. Martinez, M. Bertran, and G. Sapiro, ``Minimax Pareto fairness: A
-multi objective perspective,'' in \emph{Proc. ICML}, 2020.
+\bibitem{diana2021} E. Diana, W. Gill, M. Kearns, K. Kenthapadi, and A. Roth, ``Minimax group
+fairness: Algorithms and experiments,'' in \emph{Proc. AAAI/ACM AIES}, 2021.
 
 \bibitem{black2022} E. Black, M. Raghavan, and S. Barocas, ``Model multiplicity: Opportunities,
 concerns, and solutions,'' in \emph{Proc. FAccT}, 2022.

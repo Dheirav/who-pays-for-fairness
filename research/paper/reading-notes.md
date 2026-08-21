@@ -198,9 +198,9 @@ vision paper cited by Mittelstadt et al. for a claim we already accept.
 
 | paper | why the risk is low |
 |---|---|
-| Martinez, Bertran & Sapiro (2020), *Minimax Pareto Fairness* | Cited alongside Diana et al. for the same objective, which is confirmed |
+| ~~Martinez, Bertran & Sapiro (2020)~~ | **No longer cited.** It was an uncited entry in the IEEE bibliography and had never been read; the verified Diana et al. (2021) covers the same objective and replaces it |
 | Dwork, Immorlica, Kalai & Leiserson (2018), *Decoupled Classifiers* | Cited alongside Ustun et al. for the same construction, which is confirmed |
-| Ding et al. (2021), *Retiring Adult* | Already used throughout this project; the ACS loader is built on it |
+| ~~Ding et al. (2021), *Retiring Adult*~~ | **Now read — see entry 12 below.** |
 | Kleinberg et al. (2016); Chouldechova (2017) | Cited only for the impossibility result, which is not contested anywhere in the paper |
 
 ---
@@ -391,3 +391,33 @@ empty. The only on-topic 2026 paper in the whole sweep is *Backfire*, already re
 
 This covers the post-cutoff window directly rather than by inference, which is the specific
 reassurance that was missing.
+
+---
+
+## 12. Ding, Hardt, Miller & Schmidt (2021), *Retiring Adult* — read in full, and it helps
+
+58 pages, text extracted. It had been carried as "low-risk because the ACS loader is built on
+it", which is a reason to expect no surprises rather than a reason to have checked.
+
+**What it establishes**, in its own words: UCI Adult is "derived from a 1994 US Census survey"
+and has "a significant idiosyncrasy ... that limits its external validity". The replacements
+are ACS-derived, and the paper reports that "even when a method achieves demographic parity in
+one state, it may no longer satisfy the fairness constraint when naively deployed on another".
+
+**The passage that matters to us**, and the reason this was worth reading rather than assuming:
+
+> "The threshold of \$50,000 was chosen so that this dataset can serve as a replacement to UCI
+> Adult, but we also offer datasets with **other income cutoffs** described in Appendix B."
+
+**They built the knob this project turns, and did not turn it at this question.** A term search
+over the full text returns **zero** occurrences of "leveling down", "levelling down", "selection
+rate", "acceptance rate", "withdraw" or "direction of"; "base rate" and "positive rate" appear
+three times each, in the context of describing the datasets rather than the effect of a
+constraint.
+
+**Consequence for the paper.** The related-work paragraph now says this explicitly. That the
+instrument existed in the paper that supplied our populations, and the question was never asked
+of it, is better evidence that the question is not obvious than any argument we could make.
+
+**Still unverified, and now only two.** Dwork et al. (2018) on decoupled classifiers, and
+Kleinberg / Chouldechova on the impossibility result. Neither is cited in the IEEE version.
