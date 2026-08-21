@@ -33,8 +33,8 @@ DOCUMENTS = [
      "What is in this folder, and the order to read it"),
     (HERE / "THE-ASK.md", "03-the-ask", "The Decision I Need",
      "One fork, the argument for it, and the counter-argument expected"),
-    (HERE.parent / "paper" / "draft.md", "04-paper-draft", "Paper Draft",
-     "Full working draft"),
+    (HERE.parent / "paper" / "draft-v2.md", "04-paper-draft", "Paper Draft",
+     "Full working draft, rewritten"),
     (HERE.parent / "paper" / "reading-notes.md", "05-reading-notes", "Reading Notes",
      "What each cited paper was checked for, and what it changed"),
 ]

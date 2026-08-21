@@ -215,6 +215,56 @@ added that requirement and re-checked all twenty run-sets scored under the old t
 \textbf{Three become ``no answer''; none of them had ever passed on noise}, so no conclusion
 changes --- but the hole was real and it was mine.
 
+\subsection{Where the switch actually sits}
+
+Measured properly --- twelve operating points instead of six, and discarding any arm whose
+model is worse than doing nothing --- the switch point is far more stable than I previously
+reported:
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{Xll}
+\toprule
+\textbf{Population} & \textbf{Field} & \textbf{Switch point} \\
+\midrule
+COMPAS & criminal justice & 0.511 \\
+South Carolina & income & 0.530 \\
+Oregon & income & 0.558 \\
+Dutch census 2001 & occupational status & 0.576 \\
+\midrule
+Mortgages (one market) & lending & 0.66--0.76 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+Four populations, three fields, two countries, four separate data sources --- all between
+\textbf{0.511 and 0.576}. An earlier version of this work called the switch point
+``population-specific'' on the strength of two much coarser measurements. The practical
+instruction is now \textbf{expect about 0.54 and check}, not \emph{measure it from scratch}.
+
+\subsection{The result I did not expect: it belongs to one regime, and the theory names it}
+
+Every result here uses one family of method. So I ran the obvious alternative --- a
+\emph{post-processing} method, which adjusts decisions after training instead of changing what
+is trained --- across seventeen populations.
+
+\textbf{The relationship vanished.} Correlation $-0.024$, against $+0.585$ for my own method on
+the same populations. Taken alone that is the most damaging result in this work.
+
+It is not fragility. The post-processing method \textbf{reads the protected attribute when
+deciding}; mine never does. That distinction is exactly the one the theory paper builds on: it
+says that when the attribute is available the direction is \textbf{determined} --- the
+disadvantaged group gains and the advantaged loses, always --- and only when it is unavailable
+is the direction open.
+
+So there is nothing for a predictor to predict in that regime. And their prediction for it
+holds in \textbf{18 of 18} of my populations, without exception.
+
+\textbf{What this costs and buys.} Every claim I make is now explicitly about the
+attribute-blind case --- which is where nearly every deployed system sits, because setting
+different thresholds per group is direct discrimination on its face in most jurisdictions. The
+claim is smaller, and it is bounded on exactly the side a reviewer would have attacked first.
+
 \subsection{The obvious objection, answered in advance}
 
 Someone will say: this is just the well-known fact that the two \emph{groups} have different

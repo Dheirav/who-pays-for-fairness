@@ -142,6 +142,42 @@ re-checked every earlier result against it. Three go from "failed" to "no answer
 them had ever passed by accident**, so nothing I claimed turns out to be wrong. But the hole
 was mine, and it was found by a population rather than by me.
 
+## Two things I learned since the last version
+
+**Where the switch sits is much more predictable than I thought.** Measuring it properly — more
+points, and throwing away any test where the model had become worse than useless — four
+completely different populations agree:
+
+| population | field | switch point |
+|---|---|---|
+| COMPAS | criminal justice | 0.511 |
+| South Carolina | income | 0.530 |
+| Oregon | income | 0.558 |
+| Dutch census 2001 | jobs | 0.576 |
+
+Three fields, two countries, four separate data sources — all between **0.51 and 0.58**. So the
+advice is now "expect about 0.54 and check", instead of "you'll have to work yours out from
+scratch".
+
+**And the finding belongs to one specific situation — which the theory predicted.** There are
+two ways to make a system fairer. You can change how it is *trained*, which is what I do. Or
+you can leave the training alone and *adjust the decisions afterwards* — but that requires
+knowing each person's race or sex at the moment you decide, which is illegal in most places for
+exactly that reason.
+
+I tried the second way across seventeen populations. **My finding disappeared completely.**
+
+That sounds bad, and it is the opposite. The theory paper says these two situations are
+fundamentally different: when you *can* see the protected attribute, the outcome is
+**guaranteed** — the disadvantaged group always gains and the advantaged always loses. When you
+*cannot*, it could go either way, which is when a rule for telling which is worth having.
+
+So there was nothing for my rule to predict in the second case. And the theory's prediction for
+that case held in **18 out of 18** of my populations, with no exceptions.
+
+My claim is now smaller and firmer: it is about systems that **cannot** see the protected
+attribute when they decide — which is almost all of them.
+
 ## How this sits with the theory
 
 Three things came out of checking this work against that 2026 paper:

@@ -2,18 +2,30 @@
 
 ## The question
 
-**A March 2026 theory paper proves the effect can go either way, with no experiments in it.
-I have the experiments and a rule you can actually apply. Is that an empirical paper worth
-publishing, or does it now read as a follow-up to someone else's result?**
+**A 2026 theory paper proves the effect can go either way, with no experiments in it. I have
+the experiments, a rule you can apply, and — since I last wrote this — a result that says the
+theory is right about one half of its claim and wrong about the other. Is that an empirical
+paper worth publishing, or does it read as a follow-up to someone else's result?**
 
 ## Why it is a genuine fork
 
 **If the empirical half stands on its own**, the paper is close to ready. Their paper proves
-the possibility and contains zero experiments. Mine has 26 measured arms from 15 populations, a controlled design, a
-rule computable from a historical approval rate, and the finding that **their conditions are
-satisfied on none of those 26 arms** — the quantity they are stated over diverges on real
-data. Theory and measurement then agree at a correlation of 0.93, having been arrived at
-independently.
+the possibility and contains zero experiments. Mine has 18 independent populations across five
+domains, two countries and two decades; a controlled design that separates the rate from the
+difficulty of the task; and a rule computable from a historical approval rate.
+
+**The strongest thing I have is a two-sided result about their theory.** They split the world
+into two regimes — whether the protected attribute is available when the decision is made.
+
+* Their **conditions**, the ordering relations their theorem is stated over, hold on **0 of 26**
+  of my arms. The quantity diverges on real data.
+* Their **regime distinction** holds on **18 of 18**. In the attribute-aware regime they predict
+  the direction is determined rather than variable, and it is: the advantaged group loses and
+  the disadvantaged gains in every population, with no exceptions.
+
+So I am not applying their theory and not simply refuting it. I am showing which half survives
+contact with data. That is what an empirical paper can settle and a population-level argument
+cannot.
 
 **If it now reads as derivative**, that is a problem of framing rather than content, but it
 is still a problem. I reached this before knowing their paper existed — provable from dates
@@ -48,16 +60,32 @@ that can. But I would rather be told now if that is too fine a distinction to ca
 ## Other questions, if there is time
 
 1. **Which venue, and when?** The deadline decides the page limit, which decides how much of
-   16 research documents survives into the paper.
-2. **One missing comparison.** The closest competing paper implements its fix a different
-   way, and I have never run that version directly. About an hour of work. Worth doing?
+   **34 research documents** survives into the paper. My default is FAccT or AIES; there is no
+   new algorithm here and the theory content is thin, which is a description of the work rather
+   than a complaint about it.
+2. ~~One missing comparison.~~ **Done, and it failed.** I ran the post-processing version
+   across 17 populations: the rule vanishes, r = −0.024 against +0.585 for my own method. That
+   is the regime boundary above rather than fragility — post-processing reads the protected
+   attribute, which is the regime where the theory says nothing varies. But it means **every
+   claim in the paper is now explicitly about attribute-blind in-processing**, which is where
+   almost every deployed system sits, because per-group thresholds are disparate treatment on
+   their face. Is narrowing it that way a strength or a weakness in your reading?
 3. **AI assistance.** I used an AI assistant substantially — for writing code, running
    analyses and drafting. What does the department expect me to disclose, and how?
 
 ## What is not in question
 
 The measurements. Every headline number is regenerated from stored results by an automated
-check that fails if a document and its data disagree.
+check that fails if a document and its data disagree — 28 such checks at the time of writing.
+
+## What I would want you to press me on
+
+**I withdrew two headline results this week.** My strongest correlations, +0.979 and +0.968,
+came from arms where the model was worse than always predicting the majority label. I found it
+because a dataset where 89% of people pass forced the issue, and the same fix then rescued the
+mortgage result that had been failing. The method that caught it — pre-registering every
+prediction with the naive alternative it has to beat — is the part of this work I would most
+like judged, because it is also the part that keeps producing results I did not want.
 
 Three of my own predictions failed and are written up as failures. Two of my own claims were
 withdrawn. I would rather be told the framing is wrong now than find out in review — which
