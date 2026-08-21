@@ -1,6 +1,6 @@
 {
   "experiment": "levelling_up",
-  "signature": "constraintdemographic_parity_eps0.01_modellogistic_regression@0.87_seeds0-4",
+  "signature": "constraintdemographic_parity_eps0.01_modellogistic_regression@0.87_seeds0-19",
   "params": {
     "dataset": "acs:OR",
     "seeds": [
@@ -8,16 +8,31 @@
       1,
       2,
       3,
-      4
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19
     ],
     "eps": 0.01,
     "constraint": "demographic_parity",
     "model": "logistic_regression@0.87"
   },
   "files": [
-    "levelling_up_runs__constraintdemographic_parity_eps0.01_modellogistic_regression@0.87_seeds0-4.csv",
+    "levelling_up_runs__constraintdemographic_parity_eps0.01_modellogistic_regression@0.87_seeds0-19.csv",
     "levelling_up_runs.csv",
-    "levelling_up_summary__constraintdemographic_parity_eps0.01_modellogistic_regression@0.87_seeds0-4.csv",
+    "levelling_up_summary__constraintdemographic_parity_eps0.01_modellogistic_regression@0.87_seeds0-19.csv",
     "levelling_up_summary.csv"
   ]
 }

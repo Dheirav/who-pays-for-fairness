@@ -498,6 +498,54 @@ sweep. This is computable before running anything.
 When the viable band forbids a sweep, the crossover can still be located by comparing natural
 sub-populations --- which is how the mortgage crossover was first found.
 
+\subsection{The relationship is bounded below as well as above}
+
+\begin{table}[t]
+\caption{Sensitivity to the parity-gap exclusion, and what it conceals. Correlation per
+population as the exclusion threshold is loosened.}
+\label{tab:sensitivity}
+\centering
+\footnotesize
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Population} & \textbf{0.01} & \textbf{0.02} & \textbf{0.05} & \textbf{0.10} \\
+\midrule
+Dutch census & $+0.851$ & $+0.908$ & $+0.946$ & $+0.938$ \\
+COMPAS & $+0.844$ & $+0.844$ & $+0.844$ & $+0.871$ \\
+S. Carolina & $+0.012$ & $+0.012$ & $+0.905$ & $+0.849$ \\
+Oregon & $+0.095$ & $+0.095$ & $+0.664$ & --- \\
+Alabama & $-0.368$ & $-0.368$ & $-0.368$ & $+0.296$ \\
+Kentucky & $-0.590$ & $-0.590$ & $-0.654$ & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+A reviewer is entitled to ask why arms are excluded at a baseline parity gap of 0.05, a
+threshold this work inherited. Table~\ref{tab:sensitivity} gives the sweep, and it looks
+damaging: South Carolina moves from $+0.905$ to $+0.012$ when the bar is loosened to 0.02.
+
+\textbf{The reason is not noise, and it is not an artifact.} The arms admitted at the looser
+bar sit at a selection rate near 0.05 with 331--371 baseline positives. Re-run at twenty seeds
+they do not collapse toward zero: they are consistently \emph{positive}, at $+8.73$, $+6.85$
+and $+9.09$, roughly six standard errors from zero.
+
+Looking for the pattern rather than at the threshold, \textbf{all four ACS populations turn
+positive at their lowest arm and negative immediately above it} --- $+14.85$, $+9.09$, $+8.73$
+and $+6.85$ at a rate of about 0.05, against $-6.17$, $-1.76$, $-4.60$ and $-0.80$ at 0.10. The
+Dutch census and COMPAS do not, and it is not a sample-size effect: COMPAS's arm at a rate of
+0.093 has 147 baseline positives, fewer than any ACS arm, and reaches $-87.12$.
+
+So the relationship is \textbf{bounded on both sides}. It holds between roughly 0.10 and the
+crossover; below 0.10 it turns back up on survey data. A candidate explanation --- that near a
+selection rate of 0.05 the disadvantaged group's rate is already close to zero, so a parity
+constraint has little to take and equalises by adding --- is offered as a conjecture and not
+tested here.
+
+The exclusion at 0.05 therefore retains arms on one side of a second regime boundary rather
+than manufacturing a correlation. We report the sweep so that a reader who runs it finds the
+explanation here rather than concluding the result is an artifact.
+
 \subsection{Small populations}
 
 Below roughly 2{,}500 test subjects the method's own randomness exceeds the entire effect of
