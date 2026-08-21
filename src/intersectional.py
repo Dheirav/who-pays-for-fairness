@@ -5,7 +5,10 @@ Every method in the ablation table is constrained on ``sex`` alone, and every me
 a known blind spot: a model can satisfy a constraint on sex, and separately satisfy one
 on race, while being badly unfair to a subgroup defined by both. Kearns et al. (2018)
 call this *fairness gerrymandering* -- the marginals look fine because the violations
-sit inside cells that no marginal ever inspects.
+sit inside cells that no marginal ever inspects. Maheshwari et al. (2023) add the
+reason this module reports every cell instead of a summary: the intersectional harm
+"often goes unnoticed in the overall performance of the model", so an aggregate is
+exactly the wrong shape of output here.
 
 **The hard part here is not the metric, it is the sample size.** Sex x Race on Adult
 produces ten subgroups whose sizes span three orders of magnitude. In a 30% test split

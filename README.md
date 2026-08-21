@@ -158,7 +158,8 @@ methods depends entirely on which metric you report.
 Per-group rates (seed 0) show *how* DP is achieved: the privileged group's TPR falls
 0.561 → 0.452 while the unprivileged group's rises 0.479 → 0.707. Parity comes partly
 from lifting the disadvantaged group and partly from pulling the advantaged group
-down — the decomposition that the "who pays" analysis in Future Work formalises.
+down — the split that the "who pays" analysis in Future Work measures directly, along
+the audit dimensions Ferry et al. (2023) set out.
 
 ### Pareto frontier
 
@@ -356,7 +357,9 @@ Not implemented — recorded so the design choices above have visible motivation
 - **Who pays for the constraint.** Decompose baseline → mitigated prediction flips
   by `(a, y)` cell. A constraint satisfied by lowering the privileged group's true
   positive rate is indistinguishable, at the aggregate metric, from one satisfied by
-  raising the unprivileged group's — "levelling down" (Mittelstadt et al. 2023).
+  raising the unprivileged group's — "levelling down" (Mittelstadt et al. 2023). The
+  decomposition to use is not a new one: impact size, change direction and decision rates
+  are the first three audit dimensions of Ferry et al. (2023), arXiv:2302.07185.
   `metrics.group_breakdown` is the starting point.
 - **Stochastic-classifier instability.** `ExponentiatedGradient` returns a
   distribution over classifiers, so identical feature vectors can receive different
@@ -365,7 +368,9 @@ Not implemented — recorded so the design choices above have visible motivation
   arbitrariness in fair classification).
 - **Intersectional constraints.** Enforcing parity on `sex` and on `race`
   separately does not imply parity on `sex × race` (fairness gerrymandering, Kearns
-  et al. 2018).
+  et al. 2018), and the harm at the intersection tends not to surface in aggregate
+  performance (Maheshwari et al. 2023) — which is why it has to be measured directly
+  rather than inferred from the marginal scores.
 - **Fairness generalisation gap.** Report φ(h) on train *and* test as ε tightens;
   constraints can be satisfied in-sample and violated out-of-sample.
 

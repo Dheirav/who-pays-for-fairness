@@ -9,7 +9,11 @@ Every method in document 04 is constrained on `sex` alone, and every metric in
 document 01 compares exactly two groups. That is the field's default. Kearns et al.
 (2018) identify its failure mode — **fairness gerrymandering**: a model can satisfy a
 constraint on each marginal while the *cells inside* those marginals stay badly
-unfair, because no marginal ever inspects a cell.
+unfair, because no marginal ever inspects a cell. Maheshwari et al. (2023) add the
+part that makes it hard to catch: these methods level down *more* at the
+intersection, and the damage "often goes unnoticed in the overall performance of the
+model". Kearns says the subgroup can be left unfair; Maheshwari says the dashboard
+will not show it. Both are measured here on Adult; neither observation is ours.
 
 Three arms, identical splits, 3 seeds:
 

@@ -1,7 +1,8 @@
 """Correctness checks for the who-pays decomposition.
 
-The decomposition in :mod:`src.incidence` is the project's own contribution rather
-than something taken from a paper, so it needs evidence it is right. Unlike the
+The decomposition in :mod:`src.incidence` re-implements an audit axis Ferry et al.
+(2023, arXiv:2302.07185) had already published, written here from the definition
+rather than taken from their code, so it still needs evidence it is right. Unlike the
 in-processing tests these use hand-built synthetic cases: the decomposition is exact
 arithmetic, so its behaviour can be specified completely and checked against
 hand-computed answers rather than against a reference implementation.

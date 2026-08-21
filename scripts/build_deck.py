@@ -480,7 +480,8 @@ def slide_questions(prs, n) -> None:
 def slide_who_pays(prs, n) -> None:
     slide = new_slide(prs, "Contribution 1 — Who Pays for the Fairness Fix?",
                       "Not in the plan. A gap can close by lifting one group or lowering the "
-                      "other. The metric is identical either way.")
+                      "other — the metric is identical either way. That is Ferry et al.'s "
+                      "(2023) starting point; the measurement is ours.")
     who = n["who"]
 
     slide.shapes.add_picture(str(RESULTS / "who_pays_incidence.png"),
@@ -567,7 +568,8 @@ def slide_shap(prs, n) -> None:
 def slide_intersectional(prs, n) -> None:
     slide = new_slide(prs, "Contribution 3 — Fixing Sex Leaves Sex × Race Behind",
                       "Every method so far constrains one binary attribute. That is the "
-                      "field's default, and it has a blind spot.")
+                      "field's default, and it has a named blind spot (Kearns et al. 2018) "
+                      "that overall performance figures do not show (Maheshwari et al. 2023).")
     inter = n["inter"]
 
     rows = [["Arm", "Accuracy", "Sex gap", "Sex × Race gap", "Worst-off subgroup"]]

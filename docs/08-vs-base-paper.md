@@ -46,7 +46,9 @@ that frame does not ask.
 
 The paper reports that the violation fell. It does not decompose *how*. A gap can
 close by lifting the disadvantaged group or by lowering the advantaged one, and the
-metric is identical either way.
+metric is identical either way — which is Ferry et al.'s (2023) starting point, not
+ours. What document 05 adds is the decomposition run on these six methods and this
+data; the reason to run it was already in the literature.
 
 **Result:** measured in rates, all five mitigations look even-handed (0.50–0.58 of the
 closure paid by the privileged group). Measured in **people**, they are lopsided
@@ -118,7 +120,10 @@ reductions rows do not.
 
 The paper's formulation admits multiple protected groups, so this is not a gap in the
 method — it is a gap in how the method is used, in the paper's own Adult experiments
-and in nearly all applied work since.
+and in most applied work since. Kearns et al. (2018) named the failure mode and
+Maheshwari et al. (2023) showed that the harm at the intersection is the larger one and
+goes unnoticed in overall performance. Document 07 reproduces both here; neither is
+ours.
 
 **Result:** constraining on `sex` takes the sex gap to 0.020 while leaving a
 **0.178 gap at Sex × Race — 9× larger than the number on the dashboard.** Black men are

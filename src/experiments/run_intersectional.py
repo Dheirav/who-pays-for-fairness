@@ -3,7 +3,10 @@
 Not in the initiation document. Every method in the ablation table is constrained on
 ``sex`` alone, which is the field's default and has a known failure mode: constraints
 on marginals can be satisfied while the cells *inside* those marginals stay unfair
-(Kearns et al., 2018). This experiment tests that directly by comparing three arms on
+(Kearns et al., 2018). Maheshwari et al. (2023) supply the half that decides whether an
+audit would catch it: the harm at the intersection is the larger one, and it "often
+goes unnoticed in the overall performance of the model". This experiment tests both
+directly by comparing three arms on
 the same splits:
 
 1. **baseline**            -- no constraint at all.

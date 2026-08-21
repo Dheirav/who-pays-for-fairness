@@ -3,8 +3,10 @@
 This experiment is **not** in the initiation document. It exists because the ablation
 table there answers "did the gap close?" and cannot answer "how?", and the second
 question is the one that decides whether a mitigation is defensible. See
-:mod:`src.incidence` for the decomposition and the Mittelstadt et al. (2023)
-argument behind it.
+:mod:`src.incidence` for the decomposition, the Mittelstadt et al. (2023) argument
+behind it, and Ferry et al. (2023, arXiv:2302.07185), who published the same audit
+axes first. What is new here is which populations the instrument is pointed at, not
+the instrument.
 
 Three things are measured for each method, all against the *same* baseline on the
 *same* split, so nothing is confounded by resampling:

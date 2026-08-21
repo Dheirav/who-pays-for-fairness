@@ -63,12 +63,27 @@ works without the program ever being told which group an applicant belongs to, a
 tested on data the programs had never seen, across 26 datasets --- where they report one
 dataset, scored on the same data they trained on.
 
+\textbf{Also known: how to measure who paid.} A February 2023 paper by Ferry and
+colleagues, \emph{When Mitigating Bias is Unfair}, sets out a framework for auditing what
+one of these fixes does to individuals --- how many people it moves, in which direction,
+and what it does to the overall approval rate. Those are the three things counted
+throughout this work, so the measurement is theirs and I say so. What is mine is the result
+of running it widely: they audit one model against one baseline, and never ask whether the
+direction is a property of the data rather than of the method. It is.
+
 \textbf{Also known, and published five months before I reached it.} A March 2026 paper,
 \emph{Fairness May Backfire: When Leveling-Down Occurs}, proves that when the program cannot
 see group membership --- the setting studied here --- the effect is distribution-dependent
 and can go either way. I found this by running a novelty check after the fact, not before
 starting. \textbf{The conditionality is therefore not my claim.} What that paper does not
 have is any experiment: zero datasets appear in it.
+
+\textbf{Also known: the silence of the score itself.} That an equalised score does not say
+which of the two options produced it is reported in the literature as well --- a 2023 paper
+on fairness across combinations of groups observes that levelling down ``often goes unnoticed
+in the overall performance of the model'', and a 2023 auditing framework exists because the
+aggregate score reports neither how many people were affected nor in which direction. Section
+1 above is that known problem restated, not a claim of mine.
 
 \textbf{Not known: \emph{when} it happens, in practice.} Their paper never discusses how generous the
 system is overall. Their only remark near it is that the benchmark dataset is ``more than
@@ -138,7 +153,7 @@ gain than lose.
 \midrule
 A second population & Same pattern, more strongly \\
 A different way of grouping people & Four populations, all agree \\
-\textbf{Fourteen populations run \emph{after} the prediction was written down} &
+\textbf{Fourteen runs, on four new populations, made \emph{after} the prediction was written down} &
   All consistent; correlation $+0.901$ \\
 Real mortgage decisions, where no arbitrary cutoff exists & Lands exactly where predicted \\
 Two datasets it was never tuned on & Both placed on the correct side \\
@@ -199,12 +214,14 @@ that size-weighted average.}}
 
 Levelling down is nothing more mysterious than the program picking a shared rate
 \emph{below} that point. This needs no assumptions and held to within $0.076$ percentage
-points across all fourteen datasets that were run only after this was written down.
+points across all fourteen runs --- four fresh populations --- that were done only after
+this was written down.
 
 \section{What I could not work out}
 
 \textbf{Why the flip happens.} I derived a candidate explanation from theory, wrote the
-prediction and its pass mark down in advance, and tested it on fourteen datasets run
+prediction and its pass mark down in advance, and tested it on fourteen runs across four
+fresh populations, all done
 afterwards. It passed the test I set --- and was then beaten by a far cruder rule
 (``approval rate above one half? then it's the good kind''). So the derivation added nothing
 and is reported as a failure.
@@ -221,7 +238,11 @@ candidate explanation for that was tested and refuted.
 \textbf{Combinations of groups get missed.} A fix applied to one characteristic leaves
 people at the \emph{intersection} of two (say, Black women) worse off than any group the fix
 was told about --- and worse than the benchmark dataset suggests ($9.0\times$ against
-$13.2\times$).
+$13.2\times$). \textbf{This is not my observation.} Kearns et al.\ (2018) showed the failure
+mode; Maheshwari et al.\ (2023) showed that the harm at the intersection is the larger one
+and that it does not show up in a model's overall performance figures. What I add is the
+scale --- ten populations --- and the condition that the effect needs a sizeable minority to
+appear at all.
 
 \textbf{The standard explainability tool does not reveal what happened.} A widely used method
 for showing which information a program relied on reports a $+151\%$ shift after the fix.

@@ -39,6 +39,7 @@ defines every term the others use.
 | 02 Corbett-Davies et al. (2017) | Proves what the mathematically best possible fair program looks like — which makes one of my comparisons a ceiling rather than a rival. |
 | 03 Diana et al. (2021) | The alternative method the field recommends for this problem. I test it and it performs badly. |
 | 04 Kearns et al. (2018) | Showed fixes can look fine per group while failing for combinations of groups. I reproduce this. |
+| **13 Maheshwari et al. (2023)** | The other half of paper 04. Showed that these fixes harm combined groups *more*, and that it "often goes unnoticed in the overall performance". My intersectional finding replicates the two of them together; what is mine is ten populations and the condition that it needs a sizeable minority to appear. |
 | **11 Backfire (2026)** | **The closest work to my main claim.** Proves the effect can go either way when the model cannot see the group — my exact setting. No experiments in it at all. Read the abstract and Theorem 3. |
 | **05 Goethals et al. (2024)** | **The near miss.** Studies the same dimension I do, calls it "overlooked" — and two of its four authors also wrote paper 01. Their setup fixes the number of approvals in advance, so my effect cannot appear in it. |
 | 06 Menon & Williamson (2018) | Supporting theory for paper 02. |

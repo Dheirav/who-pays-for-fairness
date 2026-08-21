@@ -162,5 +162,5 @@ code ran, produced plausible numbers, and was wrong.**
 | claim | status |
 |---|---|
 | Every ablation method shrank the pie, 7.9%–22.1% | **Stands.** Re-verified |
-| Levelling down is invisible in the fairness metrics | **Stands** |
+| Levelling down is invisible in the fairness metrics | **Stands**, and is not ours — Maheshwari et al. (2023) and Ferry et al. (2023) report it. Document 05 measures how large it is here; it does not discover it |
 | "If you want levelling up, it has to be part of the objective" | **Confirmed.** Put it in the objective and you get it, for 0.37 accuracy points |

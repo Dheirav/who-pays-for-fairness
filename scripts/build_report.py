@@ -239,14 +239,17 @@ def build(n: dict) -> list:
         "<b>An ablation</b> of six in-processing methods under identical conditions, two "
         "of them implemented from their source papers rather than from a library, and "
         "verified against degenerate cases.",
-        "<b>An incidence analysis</b> (new) decomposing each closed fairness gap into the "
-        "part paid by the advantaged group losing ground and the part gained by the "
-        "disadvantaged group, in rates and in people.",
+        "<b>An incidence analysis</b> (beyond the specification) decomposing each closed "
+        "fairness gap into the part paid by the advantaged group losing ground and the part "
+        "gained by the disadvantaged group, in rates and in people. The audit axes are "
+        "Ferry et al.'s (2023); what is ours is the measurement on these six methods.",
         "<b>A proxy-reliance analysis</b> using SHAP, which refutes this project's own "
         "stated prediction.",
-        "<b>An intersectional analysis</b> (new) at Sex&nbsp;&times;&nbsp;Race, including a "
-        "measurement-reliability treatment showing that half the subgroups on this dataset "
-        "cannot support the estimates commonly published for them.",
+        "<b>An intersectional analysis</b> (beyond the specification) at "
+        "Sex&nbsp;&times;&nbsp;Race, reproducing Kearns et al. (2018) and Maheshwari et al. "
+        "(2023), with a measurement-reliability treatment &mdash; the part that is ours "
+        "&mdash; showing that half the subgroups on this dataset cannot support the "
+        "estimates commonly published for them.",
     ])
 
     # ------------------------------------------------------------------- setup
@@ -573,7 +576,9 @@ def build(n: dict) -> list:
     story += [para(
         "Every method above constrains one binary attribute, which is the field's default "
         "and has a known failure mode: constraints on marginals can hold while the cells "
-        "inside them stay unfair (Kearns et al. 2018). Three arms on identical splits, "
+        "inside them stay unfair (Kearns et al. 2018), and the harm at the intersection "
+        "tends to go unnoticed in a model's overall performance figures (Maheshwari et al. "
+        "2023). Three arms on identical splits, "
         "3 seeds. Fairlearn's reductions accept a multi-valued sensitive feature directly, "
         "so arm 3 is not a new algorithm &mdash; the contribution is the measurement.")]
 
@@ -810,6 +815,8 @@ def build(n: dict) -> list:
         "Zhang, Lemoine &amp; Mitchell (2018). Mitigating Unwanted Biases with Adversarial "
         "Learning. <i>AIES</i>.",
         "Kearns, Neel, Roth &amp; Wu (2018). Preventing Fairness Gerrymandering. <i>ICML</i>.",
+        "Maheshwari, Bellet, Denis &amp; Keller (2023). Fair Without Leveling Down. "
+        "<i>EMNLP</i>.",
         "Mittelstadt, Wachter &amp; Russell (2023). The Unfairness of Fair Machine "
         "Learning. <i>Michigan Technology Law Review</i>.",
         "Kleinberg, Mullainathan &amp; Raghavan (2016); Chouldechova (2017) &mdash; the "

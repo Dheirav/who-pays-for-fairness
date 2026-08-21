@@ -1,6 +1,9 @@
 # 05 — Who pays for the fairness fix?
 
-**Not in the initiation document.** This is the project's first original contribution.
+**Not in the initiation document.** This is the first analysis here that goes beyond the
+specification. Beyond the specification is not the same as new: the decomposition it uses
+was published by Ferry et al. (2023) — see below. What is original here is the measurement
+on this data, not the instrument.
 
 ## The question the ablation table cannot answer
 
@@ -18,6 +21,15 @@ that gap-only reporting conceals it. So this document decomposes the gap instead
 just reporting it.
 
 ## The decomposition
+
+**The instrument is not ours.** Ferry, Aivodji, Gambs, Huguet & Siala (2023), *When
+Mitigating Bias is Unfair* (arXiv:2302.07185), audit fairness interventions along five
+dimensions; the first three are impact size (how many people were affected), change
+direction (who moved which way) and decision rates (what happened to the acceptance rate).
+That is what Findings 1–3 below measure, published before this project began. It is used
+here because it is the right instrument for the question, not because it is this project's.
+What this document contributes is the measurement on Adult under six in-processing methods
+— in particular the rate-versus-people contrast in Finding 2, which FRAME does not draw.
 
 Exact, not a heuristic. Write the signed gap as `gap = r_priv − r_unpriv`. Then
 

@@ -30,9 +30,9 @@ All four are comfortably clear of zero. **Nothing here is overturned.**
 
 **Document 26's held-out set is fourteen measurements from four populations.** Fourteen is
 the number of arms; four is the number of independent things measured, and the interval
-follows the smaller number. That document reports "fourteen held-out populations", which
-overstates the independence available. The phrase should be *fourteen arms across four
-populations* wherever it appears.
+follows the smaller number. That document originally reported "fourteen held-out
+populations", which overstated the independence available; it now says *fourteen arms from
+four populations*, and so does everything downstream of it.
 
 The interval is still clear of zero, so the conclusion stands. The description of the
 evidence does not.

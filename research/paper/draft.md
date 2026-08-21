@@ -25,13 +25,15 @@ modern replacement, and an administrative record of real mortgage decisions.
 **(i)** Parity is reached by withdrawing favourable decisions rather than extending them: on
 Adult every method in a six-method ablation shrinks the total by 7.9–22.1%, and 18 of 19
 survey populations shrink it. On mortgage data the same constraint *grows* the pool by 4.3%.
-**The parity metric reports the same success in both cases** — 0.018 where a fifth of all
-favourable decisions were destroyed, 0.010 where more were created than destroyed. A
+The parity metric reports the same success in both cases — 0.018 where a fifth of all
+favourable decisions were destroyed, 0.010 where more were created than destroyed. That a
+parity score does not separate those two outcomes is established (Maheshwari et al., 2023;
+Ferry et al., 2023) and is the frame for this work, not a result of it. A
 single-factor sweep, moving only the income cutoff on a fixed population so that rows,
 features and groups are provably identical across arms, locates the moderator: **the
 direction tracks the task's selection rate**, crossing over between 0.25 and 0.60. It
-replicates across two protected attributes, five states, and fourteen further populations
-held out from a subsequent prediction (r = +0.901).
+replicates across two protected attributes, five states, and fourteen further arms — four
+populations — held out from a subsequent prediction (r = +0.901).
 
 **(ii)** A constraint on one attribute leaves intersectional subgroups worse off than any
 group it was told about, in every sufficiently diverse population and more severely than
@@ -68,8 +70,10 @@ to 0.018, on a decision tree and on a logistic regression alike, without a singl
 training data being altered. Across six in-processing mitigations the pattern holds. If the
 question is "did the constraint bind", the answer is yes, everywhere we looked.
 
-The question we ask instead is *how* it was satisfied — and the answer turns out to be
-invisible to every tool ordinarily used to check.
+The question we ask instead is *how* it was satisfied. That the certifying metric does not
+answer it is not our observation — Maheshwari et al. (2023) and Ferry et al. (2023) both
+report it, and §2 sets out what each established. We take it as given, and ask what sits
+behind the number.
 
 **Contributions.**
 
@@ -103,8 +107,10 @@ invisible to every tool ordinarily used to check.
    claim for the remedy, which the literature had anticipated. Offered as a reason to believe
    the numbers rather than as process trivia.
 
-**What we are not claiming.** Neither levelling down nor the remedy for it is a new
-observation, and we present neither as one — see §2. We also do not claim a mechanism for
+**What we are not claiming.** Neither levelling down, nor the remedy for it, nor the point
+that the certifying metric reports the same success either way is a new observation, and we
+present none of them as one — see §2. They are the frame; the contribution sits underneath
+them. We also do not claim a mechanism for
 the moderator: we attempted a derivation, pre-registered it, and report in §4.5 that it does
 not earn its keep.
 
@@ -163,6 +169,30 @@ each narrow and each checkable:
    "Transferring them to the unseen test data introduces noise which would make the results
    less clear." We report test-set results across 26 populations at five seeds.
 
+**Auditing the individual impact of a mitigation.** `[VERIFIED against arXiv:2302.07185]`
+Ferry, Aivodji, Gambs, Huguet and Siala (2023), *When Mitigating Bias is Unfair*, propose a
+framework for auditing what a fairness intervention does to the individuals it moves, along
+five dimensions whose first three are impact size ("how many people were affected"), change
+direction ("positive versus negative changes") and decision rates ("impact on models'
+acceptance rates"). Those three are the decomposition we report throughout §4, and we claim
+no part of it: it was published in February 2023 and we adopt it. What we add is what those
+axes report at scale. FRAME audits a given model against a given baseline; we run the same
+measurements across 26 populations and find that the change-direction dimension is not a
+property of the method being audited but of the population it is applied to, reversing at a
+selection rate their framework does not measure — the full text contains no occurrence of
+"selection rate" or "base rate". Their dimensions are what make our claim (i) legible; the
+reversal is ours.
+
+**What the certifying metric does not report.** That a fairness score cannot distinguish a
+gap closed by lifting the disadvantaged group from one closed by withdrawing from the
+advantaged group is established, and is the frame for everything below rather than a finding
+of ours. Maheshwari, Bellet, Denis and Keller (2023) report that levelling down under
+intersectional fairness "often goes unnoticed in the overall performance of the model";
+Ferry et al. (2023) build FRAME around the same gap, auditing impact size, change direction
+and effect on acceptance rates because the aggregate metric reports none of them. What we
+add is not the blindness but what it hides: the size of the effect across 26 populations
+(§4.1–4.3) and the quantity that predicts its direction (§4.4).
+
 **Remedies that avoid harm.** Minimax group fairness (Martinez et al., 2020; Diana et al.,
 2021) minimises the worst group's error rather than equalising anything, and decoupled
 classifiers with preference guarantees (Dwork et al., 2018; Ustun et al., 2019) seek
@@ -189,9 +219,15 @@ find that its *sign* changes. That the same group studied this axis, named it as
 and did not connect it to direction is the clearest evidence we can offer that the connection
 is not obvious.
 
-**Fairness gerrymandering.** Kearns et al. (2018) show that constraints imposed on marginal
-groups can be satisfied while structured subgroups are badly treated. Our claim (ii) is an
-empirical replication of exactly that, across populations, with a size condition attached.
+**Fairness gerrymandering, and why it survives an audit.** Kearns et al. (2018) show that
+constraints imposed on marginal groups can be satisfied while structured subgroups are badly
+treated. Maheshwari et al. (2023) supply the half that Kearns does not: they report that
+fairness-promoting methods "tend to level down more in intersectional fairness", and that the
+damage is concealed by aggregate performance (§2). Kearns is the failure mode; Maheshwari is
+the reason an auditor reading aggregate numbers does not see it. Our
+claim (ii) is an empirical replication of both, across populations, and what it adds is
+scope and a boundary rather than an observation — 9.0× on Adult against 13.2× in
+Mississippi, and a minority-share condition below which the effect does not appear at all.
 
 **Dataset monoculture.** Ding et al. (2021) argue the field should stop drawing conclusions
 from UCI Adult and supply ACS-derived replacements. We take that seriously enough to
@@ -248,7 +284,10 @@ reduction under a parity constraint the figure is −20.5%, at an exchange rate 
 favourable decisions destroyed for every one created**.
 
 This is invisible in the certifying metric, which records only that the violation fell to
-0.018.
+0.018 — the blind spot §2 attributes to Maheshwari et al. and Ferry et al., here in its
+aggregate form. What this section supplies is its size on Adult. The measurements behind it — how many people were moved, in which direction, and
+what happened to the acceptance rate — are FRAME's audit dimensions (§2); what follows is
+what they report once they are run across populations rather than on a single model.
 
 ### 4.2 It replicates across populations, with a diagnostic
 
@@ -264,7 +303,8 @@ while **increasing** approvals by 4.26%, at an exchange rate of 0.50. The sex ar
 (+1.05%, exchange 0.78), and a second state replicates both. Across-seed standard deviations
 are 0.17 and 0.29, so the effects clear their own noise by 25× and 3.6×.
 
-The parity metric reports 0.010 here and 0.018 on Adult. **Same success, opposite outcome.**
+The parity metric reports 0.010 here and 0.018 on Adult: same success, opposite outcome. The
+result is the reversal; that the metric does not distinguish the two is the known frame (§2).
 
 ### 4.4 What sets the direction
 
@@ -286,7 +326,9 @@ unchanged across arms and only the label moves.
 The direction flips, with the crossover between 0.25 and 0.60. Oregon replicates it more
 sharply (r = +0.964 against Alabama's +0.801) despite starting nearer the crossover; four
 states of a *second* protected attribute reproduce it at +0.874 to +0.991; and fourteen
-further populations, run after and held out from the prediction in §4.5, give r = +0.901.
+further arms, drawn from four populations run after and held out from the prediction in
+§4.5, give r = +0.901 — [+0.752, +0.974] when the bootstrap resamples populations rather
+than arms.
 
 **The moderator is the selection-rate *level*, not the between-group base-rate *gap*, and
 the distinction carries the contribution.** That unequal base rates across groups force
@@ -309,13 +351,14 @@ Demographic parity puts both groups on one common rate *s*, so the constrained t
 while the unconstrained total is the size-weighted average of the two group rates. Writing λ
 for where *s* falls between them, the pie is preserved **exactly when λ = p**, with *p* the
 privileged group's share. Levelling down is λ < p and nothing else — the optimiser choosing a
-compromise below the size-weighted one. This holds to 0.076 percentage points across fourteen
-held-out populations and requires no assumptions.
+compromise below the size-weighted one. This holds to 0.076 percentage points across all
+fourteen held-out arms and requires no assumptions.
 
 It localises the question without answering it. We attempted a mechanism — under group-wise
 thresholding, calibration and a location shift, levelling down is a curvature effect and the
 crossover sits at the mode of the score density — pre-registered it with its thresholds, and
-tested it on fourteen populations run afterwards. It passes its stated bars, predicting the
+tested it on fourteen arms from four populations, run afterwards. It passes its stated bars,
+predicting the
 sign in 12 of 14, and is nonetheless **beaten by the constant rule "levelling up iff the
 selection rate exceeds 0.5" (13 of 14)**. The measured mode moves inversely with the
 selection rate (r = −0.802), so it carries almost no independent information; controlling for
@@ -502,11 +545,17 @@ the same whether or not the thing beneath it worked.
 - Diana, Gill, Kearns, Kenthapadi & Roth (2021). *Minimax Group Fairness.* — verified.
 - Ding, Hardt, Miller & Schmidt (2021). *Retiring Adult.* NeurIPS.
 - Dwork, Immorlica, Kalai & Leiserson (2018). *Decoupled Classifiers.* FAT*.
+- Ferry, Aivodji, Gambs, Huguet & Siala (2023). *When Mitigating Bias is Unfair: A
+  Comprehensive Study on the Impact of Bias Mitigation Algorithms.* arXiv:2302.07185, SaTML.
+  — **read in full**; its first three audit dimensions are the decomposition we use in §4.
 - Kamiran & Calders (2012). *Data preprocessing techniques for classification without
   discrimination.* — excluded from our ablation as pre-processing; cited for scope.
 - Kamishima, Akaho, Asoh & Sakuma (2012). *Fairness-Aware Classifier with Prejudice Remover
   Regularizer.* — implemented from the paper in this work.
 - Kearns, Neel, Roth & Wu (2018). *Preventing Fairness Gerrymandering.* ICML. — verified.
+- Maheshwari, Bellet, Denis & Keller (2023). *Fair Without Leveling Down.* EMNLP. —
+  verified; the source for the concealment half of claim (ii), that intersectional levelling
+  down "often goes unnoticed in the overall performance of the model".
 - Martinez, Bertran & Sapiro (2020). *Minimax Pareto Fairness.* ICML.
 - Menon & Williamson (2018). *The Cost of Fairness in Binary Classification.* FAT\*. —
   verified; cite Corbett-Davies for the *group-specific* threshold form.

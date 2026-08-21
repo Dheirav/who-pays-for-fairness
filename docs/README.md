@@ -22,7 +22,9 @@ The base paper's algorithm works. It does what it claims: it drives the fairness
 violation to near zero for a small accuracy cost, on any base classifier, without
 touching the training data. Documents 02–04 confirm that.
 
-Documents 05–07 are this project's own contribution, and they are less comfortable.
+Documents 05–07 go beyond the specification, and they are less comfortable. What is this
+project's in them is the measurement, not always the method: document 05 uses an audit
+decomposition Ferry et al. (2023) had already set out, which it says so in place.
 The same algorithm that scores best on the fairness metric also:
 
 * closed the gap mostly by **taking approvals away from the advantaged group**, not by

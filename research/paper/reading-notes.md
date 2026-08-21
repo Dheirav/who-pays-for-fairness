@@ -113,7 +113,9 @@ claim.
 > constraint on one or more structured subgroups"
 
 Our claim (ii) is an empirical replication of precisely this, across populations, with a
-minority-size condition attached. Cite without qualification.
+minority-size condition attached. Cite without qualification — and never alone: Maheshwari
+et al. (2023), in §12 below, cover what Kearns does not, that the intersectional harm is
+larger under these methods and goes unnoticed in aggregate performance.
 
 ---
 

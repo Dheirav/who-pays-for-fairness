@@ -1,7 +1,8 @@
 # 26 — The derivation passes its tests and fails to earn its keep
 
 **Individual work, beyond the course submission.** Tests the derivation committed in
-`src/experiments/analyse_mechanism.py` at **17:30:14**, against fourteen populations whose
+`src/experiments/analyse_mechanism.py` at **17:30:14**, against fourteen arms from four
+populations whose
 first result was written at **18:15:52** — genuinely held out, and the ordering is
 verifiable in the git log and the file timestamps.
 
@@ -24,7 +25,13 @@ mode.
 ## What happened
 
 Three ACS states never previously used (KY, SC, CT) at four cutoffs each, plus a second
-HMDA state (Louisiana) in both arms. No failed runs.
+HMDA state (Louisiana) in both its protected-attribute arms. No failed runs.
+
+That is **fourteen arms from four populations**, not fourteen populations. Arms of the same
+ACS state share rows, features and groups and differ only in the income cutoff, so they are
+not independent evidence; the count that governs any interval is four, which is why
+[document 28](28-how-uncertain-are-the-correlations.md) resamples populations rather than
+arms. Every `n/14` below is a count of arms.
 
 | | result | bar | verdict |
 |---|---|---|---|
@@ -77,14 +84,14 @@ outperform, not just the threshold it must clear.
 ## What survives
 
 **The identity, and it is worth keeping.** `pie preserved ⟺ λ = p` needs no assumptions,
-held to 0.0758 percentage points across fourteen held-out populations, and reframes
+held to 0.0758 percentage points across all fourteen held-out arms, and reframes
 levelling down as the optimiser choosing a compromise below the size-weighted one. Nothing
 in the reading found it stated anywhere. It is a definition, not a discovery, but it is a
 clarifying one.
 
 **Document 23 is untouched.** The empirical finding — direction tracks the selection rate,
 crossover between 0.25 and 0.60 — is not only unaffected but **replicated on fourteen more
-populations**, including a second lending state. `r(rbar, λ−p) = +0.901` across the held-out
+arms, from four populations it had not seen**, including a second lending state. `r(rbar, λ−p) = +0.901` across the held-out
 set.
 
 **The curvature account is not refuted, only unsupported.** Curvature and selection rate are
@@ -104,8 +111,11 @@ why it places it there remains open.
 
 ## Limits
 
-* **Fourteen populations, twelve of them ACS.** The collinearity between curvature and
-  selection rate may be a property of this data rather than of the phenomenon.
+* **Four populations, not fourteen.** Twelve of the fourteen arms are three ACS states at
+  four cutoffs each; the other two are one lending state under two protected attributes.
+  The collinearity between curvature and selection rate may be a property of these four
+  populations rather than of the phenomenon, and fourteen arms give four chances to catch
+  that, not fourteen.
 * **The mode is estimated by a fixed-bandwidth KDE.** The bandwidth was fixed in advance to
   avoid tuning it to the answer, which was right, but a poor estimator would look exactly
   like a refuted theory. The estimates are not obviously degenerate — they span 0.178 to

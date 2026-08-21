@@ -11,9 +11,14 @@ compatible with two opposite stories:
 
 Mittelstadt, Wachter & Russell (2023), "The Unfairness of Fair Machine Learning",
 argue that levelling down is the common case and that reporting only the gap conceals
-it. This module reports the split, because the two are not equally defensible: a bank
-that closes a lending gap by denying more privileged applicants has satisfied the
-metric while making the world worse.
+it. Ferry, Aivodji, Gambs, Huguet & Siala (2023), "When Mitigating Bias is Unfair"
+(arXiv:2302.07185), turn that argument into an audit, and their first three dimensions
+-- impact size, direction of change, effect on acceptance rates -- are what this module
+computes. It is written here rather than imported because the rest of the pipeline
+needs the split per-rate and per-person, not because the split is new. It is worth
+reporting because the two outcomes are not equally defensible: a bank that closes a
+lending gap by denying more privileged applicants has satisfied the metric while
+making the world worse.
 
 The decomposition is exact, not a heuristic. Write the signed gap as
 

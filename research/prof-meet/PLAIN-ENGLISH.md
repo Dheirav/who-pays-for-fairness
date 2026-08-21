@@ -14,7 +14,7 @@ applicants and only **57%** of another. Same kind of applications, very differen
 That is the thing people call "algorithmic bias", and there are well-known tools for fixing
 it. You tell the program: *approve both groups at the same rate.*
 
-## The catch nobody looks at
+## The catch, and it is a known one
 
 There are two completely different ways for the program to obey that instruction.
 
@@ -34,9 +34,21 @@ is a name for it in the ethics literature: *levelling down*.
 A well-known 2023 paper from Oxford showed that these tools mostly do **way two**. They put
 it in their title: levelling down happens "by default".
 
+**And that the score cannot tell way one from way two was known too.** A 2023 paper on
+fairness across combinations of groups says as much in plain words — this "often goes
+unnoticed in the overall performance of the model" — and a separate 2023 auditing tool
+exists because a fairness score does not say how many people were affected or in which
+direction. So the catch above is where this work starts, not something it found.
+
 That paper is also the closest competitor — because it not only identified the problem, it
 proposed the fix. This project originally believed it had invented that fix independently.
 It had not. Found by reading their paper properly, and corrected.
+
+**The way of measuring it is not mine either.** A 2023 paper set out how to audit what one
+of these fixes does to individuals: how many people it moves, which way it moves them, and
+what happens to the overall approval rate. Those are the three things counted here. What is
+mine is what the counts say once you run them on 26 datasets instead of one — the direction
+turns out to depend on the data, which their framework was never used to ask.
 
 **And there is a second one.** A March 2026 paper proves mathematically that when the
 program cannot see which group someone belongs to — which is the situation studied here —
@@ -85,8 +97,10 @@ It then held up in:
 - a second way of dividing people into groups,
 - **real mortgage data**, where there is no arbitrary cutoff at all — the answer is a real
   lender's real decision,
-- and **fourteen further populations that were run *after* the prediction was written down**,
-  so they could not have influenced it.
+- and **fourteen further runs — four new populations, each measured at several income
+  cutoffs — carried out *after* the prediction was written down**, so they could not have
+  influenced it. Four is the number that matters: runs on the same population share their
+  people and differ only in where the cutoff was put.
 
 ## How this sits with the theory
 
@@ -120,7 +134,10 @@ get used — and I checked where each one sits.
 They are at **opposite ends**. So:
 
 **Two organisations can use exactly the same fairness tool, in good faith, and get opposite
-effects on how many people get helped — and the fairness report looks identical either way.**
+effects on how many people get helped.** That the fairness report looks identical either way
+is not my observation — it is why Maheshwari et al. and Ferry et al. wrote their papers. What
+is new is that the *direction* differs between them, and that you can tell in advance which
+one you are about to get.
 
 A bank fixing its mortgage model will end up approving more people. A company fixing its
 CV-screening will end up interviewing fewer. Same tool. Same score. Opposite result.

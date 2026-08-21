@@ -9,8 +9,11 @@ Adult.
 
 Document 07 reported that constraining demographic parity on `sex` takes the sex gap
 from 0.1897 to 0.0197 while the Sex × Race gap stays at 0.1776 — a model that looks
-**9.0× fairer than it is**. That is fairness gerrymandering (Kearns et al., 2018),
-and on Adult it was measured under bad conditions:
+**9.0× fairer than it is**. That is fairness gerrymandering (Kearns et al., 2018), and the
+reason it gets past an audit is the other half of the same story: Maheshwari et al. (2023)
+report that these methods level down more at the intersection and that the harm "often goes
+unnoticed in the overall performance of the model". Neither observation originates here.
+On Adult it was also measured under bad conditions:
 
 * **5 of 10 subgroups were too small to support a rate estimate**, and Female × Other
   had *no positive labels at all*.

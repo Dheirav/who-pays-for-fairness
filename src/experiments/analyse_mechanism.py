@@ -94,9 +94,9 @@ in favourable decisions to within ``IDENTITY_TOL``. This is arithmetic; if it fa
 measurement pipeline is wrong, not the theory.
 
 **M1 -- the sign prediction.** ``sign(lambda - p) == sign(rbar - m)`` in at least
-``MIN_SIGN_ACCURACY`` of held-out populations. **This is the derivation's actual claim.**
+``MIN_SIGN_ACCURACY`` of held-out arms. **This is the derivation's actual claim.**
 
-**M2 -- the crossover locates.** Across held-out populations the measured ``rbar`` at which
+**M2 -- the crossover locates.** Across held-out arms the measured ``rbar`` at which
 ``lambda - p`` changes sign lies within ``CROSSOVER_TOL`` of the measured ``m``.
 
 **M3 -- linearity is the null.** ``|lambda - p|`` correlates with the measured curvature of
@@ -242,7 +242,7 @@ def verdict(frame: pd.DataFrame) -> None:
     accuracy = float(agree.mean())
     m1 = accuracy >= MIN_SIGN_ACCURACY
     print(f"\nM1  sign(lambda-p) == sign(rbar-m)        -> {'HOLDS' if m1 else 'FAILS'}")
-    print(f"      {int(agree.sum())}/{len(frame)} held-out populations = {accuracy:.2f}  "
+    print(f"      {int(agree.sum())}/{len(frame)} held-out arms = {accuracy:.2f}  "
           f"(bar {MIN_SIGN_ACCURACY})")
     for _, row in frame[~agree].iterrows():
         print(f"      missed: {row['name']}  rbar {row['rbar']:.3f} vs mode {row['mode_rate']:.3f}"
