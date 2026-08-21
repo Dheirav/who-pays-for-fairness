@@ -92,7 +92,36 @@ to be reported as one.
 project's headline needs rewriting. This is the outcome that would hurt most, which is why
 it is written down here first.
 
-Run:  python -m src.experiments.analyse_operating_point --state AL
+Validating the procedure on the domain it is aimed at
+-----------------------------------------------------
+**Written before any HMDA operating-point arm was run.** Document 35 tells a practitioner to
+locate their own crossover by sweeping their deployed model's decision threshold. That advice
+is only worth giving if the route finds the crossover a *different* method already located in
+the same domain.
+
+[Document 31](../../research/docs/31-the-crossover-on-natural-data.md) put the mortgage
+crossover between **0.643 and 0.773**, by comparing five real loan purposes rather than by
+manipulating anything. Pooling Mississippi and Louisiana on the race arm gives a score
+distribution spanning selection rates 0.348 to 0.947, measured before any arm was run, which
+brackets that band comfortably.
+
+**H1 -- the prediction.** The operating-point crossover on pooled HMDA lending **overlaps
+document 31's 0.643-0.773 band**.
+
+**The naive alternative it must beat:** "the operating-point route finds whatever crossover
+the ACS data had (0.25-0.60), because the route rather than the domain sets it." That is the
+live alternative -- it is what O3 rules out *within* a population but not *across* domains --
+and it predicts a bracket sitting well below 0.643.
+
+*If H1 holds*, two unrelated methods agree on the lending domain's crossover, and document
+35's procedure is validated where it matters.
+
+*If H1 fails*, the procedure locates something other than the crossover the natural split
+found, and document 35's central recommendation must be withdrawn or heavily qualified. That
+is the more costly outcome and it is written here first.
+
+Run:  python -m src.experiments.analyse_operating_point --states AL OR
+      python -m src.experiments.analyse_operating_point --dataset hmda:MS,LA:derived_race
 """
 
 from __future__ import annotations
@@ -119,6 +148,13 @@ BASE, PLAIN = "baseline", "expgrad_dp"
 # measured before any arm was run. See the module docstring.
 OPERATING_POINTS = [0.02, 0.06, 0.16, 0.49, 0.72, 0.87]
 
+# Chosen the same way for the lending data, whose scores sit far higher: these span
+# selection rates 0.348 to 0.826 and bracket document 31's natural band of 0.643-0.773.
+HMDA_POINTS = [0.92, 0.85, 0.75, 0.65, 0.55, 0.45]
+
+# The band document 31 located by comparing real loan purposes, which H1 must overlap.
+NATURAL_HMDA_BAND = (0.643, 0.773)
+
 # O1: the naive alternative wins unless the correlation clears this in the right direction.
 MIN_NAIVE_R = 0.30
 
@@ -126,6 +162,32 @@ MIN_NAIVE_R = 0.30
 def op_arm_name(state: str, threshold: float) -> str:
     """Where ``run_levelling_up --model logistic_regression@<t>`` writes, per its own rule."""
     return f"{arm_name(state, 50_000)}_{model_code(f'logistic_regression@{threshold}')}"
+
+
+def op_arm_name_for(dataset_name: str, threshold: float) -> str:
+    """The same rule for any dataset, addressed by its loader's own name."""
+    return (f"{dataset_name}_levelling_up"
+            f"_{model_code(f'logistic_regression@{threshold}')}")
+
+
+def load_points_for(dataset_name: str, points: list[float]) -> pd.DataFrame:
+    """Operating-point arms for a dataset that is not an ACS state."""
+    rows = []
+    for t in points:
+        mean = _load(RESEARCH_RESULTS_DIR / op_arm_name_for(dataset_name, t)
+                     / "levelling_up_runs.csv")
+        if mean is None:
+            continue
+        rows.append({
+            "axis": "operating_point", "knob": t,
+            "positives_base": mean.loc[BASE, "positives"],
+            "n_test": mean.loc[BASE, "n_test"] if "n_test" in mean.columns else np.nan,
+            "dp_base": mean.loc[BASE, "dp_diff"],
+            "pie": mean.loc[PLAIN, "positives_pct_change"],
+            "exchange": mean.loc[PLAIN, "lost_per_gained"],
+            "acc_base": mean.loc[BASE, "accuracy"],
+        })
+    return pd.DataFrame(rows)
 
 
 def _load(path) -> pd.DataFrame | None:
@@ -171,11 +233,14 @@ def load_cutoffs(state: str) -> pd.DataFrame:
         })
     frame = pd.DataFrame(rows)
     if not frame.empty and frame["n_test"].isna().any():
-        # Arms that predate the recorded denominator borrow it from a sibling; the split
-        # protocol is identical across arms of one state, which tests/test_acs_threshold
-        # asserts, so this is exact rather than approximate.
-        frame["n_test"] = frame["n_test"].fillna(frame["n_test"].dropna().iloc[0]
-                                                 if frame["n_test"].notna().any() else np.nan)
+        # Every cutoff arm predates the recorded denominator, so there is no sibling to
+        # borrow from and the size has to come from the experiment that does record it --
+        # the same route `analyse_threshold.attach_selection_rate` takes. Getting this
+        # wrong is silent: the rates come out NaN and the crossover comparison reports
+        # "disjoint" for two brackets it never actually computed.
+        from .analyse_levelling_up import test_size
+        size = test_size(arm_name(state, 50_000))
+        frame["n_test"] = frame["n_test"].fillna(size)
     return frame
 
 
@@ -185,6 +250,7 @@ def crossover_bracket(frame: pd.DataFrame) -> tuple[float, float] | None:
     The highest selection rate that still shrinks the pool, and the lowest that grows it.
     Returns ``None`` when the arms do not bracket a sign change at all.
     """
+    frame = frame.dropna(subset=["selection_rate", "pie"])
     below = frame[frame["pie"] < 0]["selection_rate"]
     above = frame[frame["pie"] > 0]["selection_rate"]
     if below.empty or above.empty or below.max() >= above.min():
@@ -279,29 +345,38 @@ def verdict(ops: pd.DataFrame, cuts: pd.DataFrame) -> dict:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--state", default="AL")
+    parser.add_argument("--states", nargs="+", default=["AL"])
     parser.add_argument("--points", type=float, nargs="+", default=OPERATING_POINTS)
     args = parser.parse_args()
 
-    ops = load_operating_points(args.state, args.points)
-    if ops.empty:
-        raise SystemExit(
-            "no operating-point arms found; run\n"
-            "  python -m src.experiments.run_levelling_up --dataset acs:AL "
-            "--model logistic_regression@0.49")
-    cuts = load_cutoffs(args.state)
+    # Per state, never pooled. O3 asks where the crossover sits, and that is a property of
+    # a population -- Alabama's and Oregon's differ. Pooling would interleave two brackets
+    # into one meaningless interval and hide the very difference the comparison is for.
+    written, results = [], {}
+    for state in args.states:
+        ops = load_operating_points(state, args.points)
+        if ops.empty:
+            print(f"no operating-point arms for {state}; run\n"
+                  f"  python -m src.experiments.run_levelling_up --dataset acs:{state} "
+                  f"--model logistic_regression@0.49")
+            continue
+        cuts = load_cutoffs(state)
+        for frame in (ops, cuts):
+            if not frame.empty:
+                frame["selection_rate"] = frame["positives_base"] / frame["n_test"]
+        print(f"=== operating point against income cutoff on {state} ===\n")
+        results[state] = verdict(ops, cuts)
+        ops["state"] = cuts["state"] = state
+        written.append(pd.concat([ops, cuts]))
+        print()
 
-    for frame in (ops, cuts):
-        if not frame.empty:
-            frame["selection_rate"] = frame["positives_base"] / frame["n_test"]
-
-    print(f"=== operating point against income cutoff on {args.state} ===\n")
-    result = verdict(ops, cuts)
+    if not written:
+        raise SystemExit("no operating-point arms found for any requested state")
 
     OUT = research_dir("operating_point")
-    pd.concat([ops, cuts]).round(6).to_csv(OUT / "operating_point_arms.csv", index=False)
-    pd.Series(result).to_csv(OUT / "operating_point_verdict.csv", header=False)
-    print(f"\nwrote {OUT}/operating_point_arms.csv")
+    pd.concat(written).round(6).to_csv(OUT / "operating_point_arms.csv", index=False)
+    pd.DataFrame(results).to_csv(OUT / "operating_point_verdict.csv")
+    print(f"wrote {OUT}/operating_point_arms.csv")
 
 
 if __name__ == "__main__":
