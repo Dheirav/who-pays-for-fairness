@@ -259,7 +259,8 @@ score distribution, not about a scalar operating point a practitioner can read o
 
 **What therefore survives here:**
 
-1. **The first empirical characterisation.** 26 populations, 61 arms, two domains. They
+1. **The first empirical characterisation.** 26 arms from 15 populations, 61 arms with
+   cutoff sweeps, two domains. They
    have none.
 2. **A predictor that can actually be computed.** Their condition needs the joint score
    geometry; ours is "what fraction of applicants do you currently approve", which is
@@ -277,7 +278,7 @@ object.
 
 **Net.** The headline narrows from "levelling down is conditional, and nobody has said so"
 to "it is conditional — proven in theory contemporaneously — and here is what actually
-predicts it, measured across 26 populations." Theory paired with independent empirics is a
+predicts it, measured across 26 arms from 15 populations." Theory paired with independent empirics is a
 normal and defensible pairing, but the framing has to change and the citation is mandatory.
 
 ---

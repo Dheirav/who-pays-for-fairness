@@ -47,7 +47,7 @@ It had not. Found by reading their paper properly, and corrected.
 **The way of measuring it is not mine either.** A 2023 paper set out how to audit what one
 of these fixes does to individuals: how many people it moves, which way it moves them, and
 what happens to the overall approval rate. Those are the three things counted here. What is
-mine is what the counts say once you run them on 26 datasets instead of one — the direction
+mine is what the counts say once you run them on 26 runs across 15 populations instead of one — the direction
 turns out to depend on the data, which their framework was never used to ask.
 
 **And there is a second one.** A March 2026 paper proves mathematically that when the
@@ -146,7 +146,7 @@ was mine, and it was found by a population rather than by me.
 
 Three things came out of checking this work against that 2026 paper:
 
-1. **Their conditions never actually hold.** Applied to all 26 real datasets here, the
+1. **Their conditions never actually hold.** Applied to all 26 real runs here, the
    mathematical conditions in their theorem are satisfied **zero times**. The quantity they
    are written over blows up on real data. So their result, as stated, cannot be used on
    anything.

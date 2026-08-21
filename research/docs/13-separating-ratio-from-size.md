@@ -20,7 +20,7 @@ attribute.
 
 Protecting `RAC1P` on the same nine states spans a group ratio of **1.94 to 24.98**, and
 inverts the confound — the racially homogeneous states are also the small ones, so
-r(ratio, n) = **−0.567** there against **+0.794** on sex. Pooling gives 19 populations in
+r(ratio, n) = **−0.567** there against **+0.794** on sex. Pooling gives 19 arms in
 which the two vary nearly independently.
 
 `src/experiments/analyse_arms.py` was written and committed **before the race sweep
@@ -44,7 +44,7 @@ arm separately*: **+0.885** on sex, **+0.689** on race. Not an artifact of pooli
 
 **A2 — PARTIAL, and this is the interesting one.**
 
-| pooled, 19 populations | raw | partial |
+| pooled, 19 arms | raw | partial |
 |---|---|---|
 | log group ratio vs error | +0.522 | **+0.548** (controlling for size) |
 | population size vs error | −0.667 | **−0.683** (controlling for ratio) |
@@ -93,7 +93,7 @@ Worth setting out plainly, because it is the most instructive thing in this proj
 |---|---|---|
 | 9 states, sex arm | **+0.364** | error rises with group inequality |
 | + Adult (10 populations) | **−0.557** | the first reading was an artifact; ratio is a confound |
-| + race arm (19 populations) | **+0.522** | the first reading was directionally right |
+| + race arm (19 arms, 10 populations) | **+0.522** | the first reading was directionally right |
 
 The original reading was **correct**, and I corrected it into an error. Adult sits at
 2.08 with a huge sample and a very low error, and with only ten populations it had

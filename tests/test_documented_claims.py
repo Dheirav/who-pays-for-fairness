@@ -165,7 +165,7 @@ def test_doc13_partial_correlations() -> None:
         assert abs(got - documented) < TOLERANCE, (
             f"docs/13 says {name} = {documented:+.3f}, data gives {got:+.3f}"
         )
-    assert len(pooled) == 19, f"docs/13 claims 19 populations, file has {len(pooled)}"
+    assert len(pooled) == 19, f"docs/13 claims 19 arms, file has {len(pooled)}"
     print(f"  5 partial correlations re-derived from {len(pooled)} pooled populations")
 
 
@@ -449,13 +449,13 @@ def test_doc21_floor_replication() -> None:
         )
 
     combined = pd.concat(arms.values())
-    assert len(combined) == 19, f"docs/21 claims 19 populations, got {len(combined)}"
+    assert len(combined) == 19, f"docs/21 claims 19 arms, got {len(combined)}"
     assert int((combined["exchange_floor"] < 1).sum()) == 16, "docs/21 states 16 of 19 under 1.0"
     assert int((combined["exchange_plain"] < 1).sum()) == 1, "docs/21 states 1 of 19 under 1.0 plain"
     assert int((combined["pie_floor"] < 0).sum()) == 1, "docs/21 states only Adult still shrinks"
     assert combined.loc["Adult", "pie_plain"].mean() < combined[
         combined.index != "Adult"]["pie_plain"].mean(), "docs/21 claims Adult is the extreme case"
-    print(f"  19 populations; L3 unanimous, L2 failed as documented; "
+    print(f"  19 arms from 10 populations; L3 unanimous, L2 failed as documented; "
           f"exchange under 1.0 in {int((combined['exchange_floor'] < 1).sum())}/19")
 
 
@@ -995,6 +995,47 @@ def test_doc37_spread_guard_audit() -> None:
     print(f"  {scored} arm sets audited; {len(void)} void (all CT); none passed on noise")
 
 
+def test_doc38_population_counts_are_recomputed() -> None:
+    """docs/38: every 'N populations' claim must match the file it comes from.
+
+    Three counts in this project were arm counts wearing a population label, and each was
+    found only when something else forced a look at the underlying file. Reading the
+    documents never caught it -- they are internally consistent and all repeat the same
+    wrong number. So the counts are recomputed here rather than checked against prose.
+    """
+    import re as _re
+
+    text = _doc(38)
+    _quotes(text, "19 arms from 10 populations", "26 arms from 15 populations")
+
+    def populations(names) -> int:
+        """Distinct sets of *people*: strip the label and the grouping, keep the source."""
+        return len({_re.sub(r"_(rac1p|race|sex)$", "", _re.sub(r"_t\d+", "", str(n)))
+                    for n in names})
+
+    pooled = pd.read_csv(RESEARCH / "sweep" / "arms_p1_pooled.csv")
+    assert len(pooled) == 19, f"docs/38's nineteen is 19 arms, found {len(pooled)}"
+    per_arm = pooled.groupby("arm")["population"].nunique().to_dict()
+    assert populations(pooled["population"]) == 10, (
+        f"docs/38 says the 19 arms come from 10 populations, found "
+        f"{populations(pooled['population'])}")
+    assert per_arm == {"SEX": 10, "RAC1P": 9}, (
+        f"docs/38 describes nine ACS states under both attributes plus Adult under one; "
+        f"the split is now {per_arm}")
+
+    zeta = pd.read_csv(RESEARCH / "zeta" / "zeta_correspondence.csv")
+    assert len(zeta) == 26, f"docs/38's twenty-six is 26 arms, found {len(zeta)}"
+    assert populations(zeta.iloc[:, 0]) == 15, (
+        f"docs/38 says the 26 arms come from 15 populations, found "
+        f"{populations(zeta.iloc[:, 0])}")
+
+    # The tell docs/38 records: the abstract cannot claim the nineteen AND both arms.
+    frame = (ROOT / "research" / "PAPER.md").read_text()
+    assert "19 populations and in both protected-attribute arms" not in frame, (
+        "PAPER.md's abstract double-counts again: the nineteen ARE the two attribute arms")
+    print(f"  19 arms/10 populations and 26 arms/15 populations, recomputed from source")
+
+
 def main() -> None:
     tests = [
         test_doc11_cross_flow_correlations,
@@ -1018,6 +1059,7 @@ def main() -> None:
         test_doc34_epsilon_robustness,
         test_doc36_second_learner,
         test_doc37_spread_guard_audit,
+        test_doc38_population_counts_are_recomputed,
         test_course_documents_still_match_their_results,
     ]
     failures = 0

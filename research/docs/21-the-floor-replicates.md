@@ -8,7 +8,10 @@ Wyoming is repeated below.
 ## What was run
 
 `run_levelling_up` on nine ACS states in both protected-attribute arms, five seeds each,
-ε = 0.01, plus Adult from document 19. **19 populations, no failed runs.**
+ε = 0.01, plus Adult from document 19. **19 arms, no failed runs** — nine ACS states under
+two protected attributes each, plus Adult under one, so **ten populations**. Arms of one
+state are the same people grouped differently; see
+[document 38](38-the-population-counts-were-arm-counts.md).
 
 Three arms per population: unconstrained, `expgrad_dp`, and `expgrad_dp` stacked with a
 floor on the overall selection rate set at the unconstrained model's own rate.
@@ -44,7 +47,7 @@ The reason is that the floored arm does not land near zero — it overshoots **u
 |---|---|---|
 | mean change in favourable decisions, sex arm | −6.4% | **+2.1%** |
 | mean change, race arm | −7.4% | **+3.1%** |
-| mean *absolute* change, all 19 | 6.88% | **2.65%** |
+| mean *absolute* change, all 19 arms | 6.88% | **2.65%** |
 | populations still shrinking the pie | 18/19 | **1/19** (Adult) |
 
 The construction is `P(h(x) = 1) ≥ target`, an inequality. Nothing stops the optimiser
@@ -57,14 +60,14 @@ threshold was fixed in advance and the result is what it is. Two things follow, 
 should be weighed separately:
 
 * **L3 tests the same substantive claim without the flaw, and was also fixed in advance.**
-  The exchange rate — favourable decisions destroyed per one created — fell in **19 of 19
+  The exchange rate — favourable decisions destroyed per one created — fell in **19 of 19 arms
   populations**, from 1.47 to 0.88 in the sex arm and 1.59 to 0.79 in the race arm. Under
-  1.0 means more decisions created than destroyed. It goes from **1 of 19** populations
+  1.0 means more decisions created than destroyed. It goes from **1 of 19** arms
   under 1.0 to **16 of 19**. On the substance, the finding replicates and does so
   unanimously.
 * **There is a real caveat inside L2's failure, and it is not a technicality.** The floored
   model hands out *more* favourable decisions than the unconstrained model it replaced, in
-  18 of 19 populations. That is a more permissive classifier, with whatever false-positive
+  18 of 19 arms. That is a more permissive classifier, with whatever false-positive
   cost that carries. Document 19 framed the floor as protecting the pie; it does more than
   protect it. Whether that is desirable is a question about the deployment and not one this
   measurement answers.
@@ -121,11 +124,11 @@ A single-seed run on any of them could report almost anything.
 | claim | status |
 |---|---|
 | Document 19's Adult measurements | **Stand.** Re-verified exactly (0.0178/0.0179, −20.5%/−0.6%, 2.68/1.03) |
-| "Levelling up is expressible" | **Replicated**, 19 populations, both protected-attribute arms |
-| Parity is not traded away for the pie (L1) | **Confirmed** across all 19 |
+| "Levelling up is expressible" | **Replicated**, 19 arms from 10 populations |
+| Parity is not traded away for the pie (L1) | **Confirmed** across all 19 arms |
 | The floor is cheap (L4) | **Confirmed**, and cheaper than Adult suggests: +0.12–0.15 pts against Adult's 0.38 |
 | Document 19's numbers as representative | **Corrected.** Adult is the extreme; the typical effect is about a third the size |
-| The floor merely *protects* the pie | **Corrected.** It grows it, in 18 of 19 populations |
+| The floor merely *protects* the pie | **Corrected.** It grows it, in 18 of 19 arms |
 | L2 as I specified it | **Failed.** Recorded, not repaired |
 
 ## Limits

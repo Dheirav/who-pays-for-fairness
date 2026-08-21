@@ -24,7 +24,7 @@ defines every term the others use.
 > These fairness fixes make two groups equal either by approving more from the group being
 > turned down, or by rejecting more from the group getting through — and the certifying
 > score cannot tell which happened. Theory published in March 2026 proves it can go either
-> way. **I measured which way, on 26 datasets: it depends on how generous the system already
+> way. **I measured which way, on 26 runs across 15 populations: it depends on how generous the system already
 > is.** And the domains these tools are deployed in sit at opposite ends of that scale — CV
 > screening approves 2–3%, mortgage lending approves 84% — so two organisations can apply
 > the identical tool in good faith and get opposite effects, with identical fairness reports.
@@ -74,7 +74,7 @@ flip happens, not why.
 **3. The conditionality itself was published five months before I got to it.** A March 2026
 theory paper (paper 11) proves the effect can go either way in exactly my setting. I found
 it by running a novelty check, not before starting. What survives is the empirical half:
-they have no experiments, their conditions hold on **none** of my 26 datasets because the
+they have no experiments, their conditions hold on **none** of my 26 runs because the
 quantity they use diverges on real data, and my rule needs only an approval rate. The two
 agree at 0.93 — independent theory and independent measurement converging.
 

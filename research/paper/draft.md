@@ -8,9 +8,11 @@
 evidence trail, including the four references still unverified and why each is low-risk, is
 in [`reading-notes.md`](reading-notes.md). No section is waiting on an experiment.
 
-**Scale.** 26 populations — Adult, 21 ACS Income populations across twelve states and two
-protected attributes, and four HMDA mortgage populations across two states and two
-attributes — over 61 experimental arms once the label-threshold sweeps are counted.
+**Scale.** **26 dataset-by-attribute arms drawn from 15 populations** — Adult, twelve ACS
+states and two HMDA states — reaching 61 experimental arms once the label-threshold sweeps
+are counted. The arms of one state are the same people relabelled or regrouped, so fifteen is
+the number that governs independence; see
+[`../docs/38-the-population-counts-were-arm-counts.md`](../docs/38-the-population-counts-were-arm-counts.md).
 
 ---
 
@@ -19,11 +21,11 @@ attributes — over 61 experimental arms once the label-threshold sweeps are cou
 Group-fairness constraints of the reduction family (Agarwal et al., 2018) reliably do what
 they promise: on UCI Adult they drive the demographic parity violation from 0.186 to 0.018
 for under two accuracy points, on any base classifier, without modifying the training data.
-We audit what they do to *get* there, across 26 populations spanning a household survey, its
+We audit what they do to *get* there, across 26 arms drawn from 15 populations spanning a household survey, its
 modern replacement, and an administrative record of real mortgage decisions.
 
 **(i)** Parity is reached by withdrawing favourable decisions rather than extending them: on
-Adult every method in a six-method ablation shrinks the total by 7.9–22.1%, and 18 of 19
+Adult every method in a six-method ablation shrinks the total by 7.9–22.1%, and 18 of 19 survey arms
 survey populations shrink it. On mortgage data the same constraint *grows* the pool by 4.3%.
 The parity metric reports the same success in both cases — 0.018 where a fifth of all
 favourable decisions were destroyed, 0.010 where more were created than destroyed. That a
@@ -51,7 +53,7 @@ by stating the missing objective — a result anticipated in normative form by M
 al. (2023), whose minimum rate constraints we position ourselves against explicitly. Our
 variant is an in-processing moment constraint requiring no protected attribute at prediction
 time; the exchange rate falls from 1.47 favourable decisions destroyed per one created to
-0.88 in all 19 survey populations, and the benefit tracks the damage at r ≈ −0.99. Against
+0.88 in all 19 survey arms, and the benefit tracks the damage at r ≈ −0.99. Against
 the *optimal* DP classifier the same levelling down appears, so it is not a solver artifact;
 against minimax group fairness, the established levelling-down remedy, we find it destroys
 10% of favourable decisions on mortgage data at an exchange rate of 46.7.
@@ -78,7 +80,8 @@ behind the number.
 **Contributions.**
 
 1. **A four-part audit** of what a demographic parity constraint does beyond its own metric,
-   run identically across 26 populations and 61 experimental arms, spanning two survey
+   run identically across 15 populations, 26 dataset-by-attribute arms and 61 experimental
+   arms once cutoff sweeps are counted, spanning two survey
    instruments and one administrative record of real lending decisions.
 2. **The first empirical characterisation of a conditionality that theory predicts.**
    Contemporaneous theory establishes that in the attribute-blind regime the direction of
@@ -135,7 +138,7 @@ leveling up or leveling down."
 and independently, in theory. What that paper does not have is any empirical component: it
 contains zero experiments and names no dataset, and its conditions are ordering relations on
 score regions rather than a quantity a practitioner can measure. Our contribution against it
-is (a) the first empirical characterisation, across 26 populations and two domains; (b) the
+is (a) the first empirical characterisation, across 26 arms from 15 populations and two domains; (b) the
 identification of the *operating selection rate* as the practical predictor, computable
 before a model is built; and (c) the crossover located experimentally by a single-factor
 design. It also explains our own failed derivation (§4.5): the governing condition is an
@@ -167,7 +170,7 @@ each narrow and each checkable:
    replaces it — so parity is still enforced to ε and the pie is preserved simultaneously.
 4. **Held-out replication.** They report Adult, and explicitly on the training set:
    "Transferring them to the unseen test data introduces noise which would make the results
-   less clear." We report test-set results across 26 populations at five seeds.
+   less clear." We report test-set results across 26 arms from 15 populations at five seeds.
 
 **Auditing the individual impact of a mitigation.** `[VERIFIED against arXiv:2302.07185]`
 Ferry, Aivodji, Gambs, Huguet and Siala (2023), *When Mitigating Bias is Unfair*, propose a
@@ -177,7 +180,7 @@ direction ("positive versus negative changes") and decision rates ("impact on mo
 acceptance rates"). Those three are the decomposition we report throughout §4, and we claim
 no part of it: it was published in February 2023 and we adopt it. What we add is what those
 axes report at scale. FRAME audits a given model against a given baseline; we run the same
-measurements across 26 populations and find that the change-direction dimension is not a
+measurements across 26 arms and find that the change-direction dimension is not a
 property of the method being audited but of the population it is applied to, reversing at a
 selection rate their framework does not measure — the full text contains no occurrence of
 "selection rate" or "base rate". Their dimensions are what make our claim (i) legible; the
@@ -190,7 +193,7 @@ of ours. Maheshwari, Bellet, Denis and Keller (2023) report that levelling down 
 intersectional fairness "often goes unnoticed in the overall performance of the model";
 Ferry et al. (2023) build FRAME around the same gap, auditing impact size, change direction
 and effect on acceptance rates because the aggregate metric reports none of them. What we
-add is not the blindness but what it hides: the size of the effect across 26 populations
+add is not the blindness but what it hides: the size of the effect across 26 arms
 (§4.1–4.3) and the quantity that predicts its direction (§4.4).
 
 **Remedies that avoid harm.** Minimax group fairness (Martinez et al., 2020; Diana et al.,
@@ -443,7 +446,7 @@ floor applied by post-processing, it requires no protected attribute at predicti
 
 On Adult, parity is satisfied to the same tolerance (0.0179 against 0.0178) while the pie loss
 falls from **−20.5% to −0.6%** and the exchange rate from **2.68 to 1.03**, for 0.37 accuracy
-points. Across 19 survey populations and both arms, the exchange rate falls in **19 of 19**,
+points. Across 19 survey arms — ten populations under two protected attributes — the exchange rate falls in **19 of 19**,
 from 1.47 to 0.88 and 1.59 to 0.79, and the number of populations creating more favourable
 decisions than they destroy goes from 1 to 16. The extra accuracy cost averages 0.12–0.15
 points.

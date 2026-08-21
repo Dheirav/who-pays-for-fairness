@@ -79,7 +79,7 @@ would count as a failure, and which items need pre-registering.
 | 18 | [The collinearity test is confounded](docs/18-the-collinearity-test-is-confounded.md) | The third candidate resisted a clean test; why the design cannot work |
 | 19 | [Levelling up is expressible](docs/19-levelling-up-is-expressible.md) | Put "don't shrink the pie" in the objective and you get it, for 0.37 accuracy points |
 | 20 | [What a share can carry](docs/20-what-a-share-can-carry.md) | Most of the +151% is credit moving inside one collinear pair; document 17's claim is narrowed |
-| 21 | [The floor replicates](docs/21-the-floor-replicates.md) | The selection-rate floor holds across 19 populations; Adult was the extreme case, and one prediction failed |
+| 21 | [The floor replicates](docs/21-the-floor-replicates.md) | The selection-rate floor holds across 19 arms from 10 populations; Adult was the extreme case, and one prediction failed |
 | 22 | [Levelling down is not universal](docs/22-levelling-down-is-not-universal.md) | A second *domain*: on mortgage decisions the constraint levels up unprompted, and document 05 gains a scope condition |
 | 23 | [What decides the direction](docs/23-the-selection-rate-sets-the-direction.md) | Move one number and the direction flips: levelling down happens below a selection rate of ~0.3 |
 | 24 | [Group ratio is not the residual](docs/24-group-ratio-is-not-the-residual.md) | The candidate for the leftover magnitude is refuted, with the opposite sign; document 23 gains a second protected attribute |
@@ -96,6 +96,7 @@ would count as a failure, and which items need pre-registering.
 | 35 | [What to actually do about it](docs/35-what-to-do-about-it.md) | The decision procedure, including how to measure your own crossover on the model you already have |
 | 36 | [Not a property of linear models](docs/36-not-a-property-of-linear-models.md) | Boosted trees give the same crossover as logistic regression in **5 of 5** populations — the only test here that holds everywhere. Connecticut flips under trees where it never does under a linear model |
 | 37 | [The guard that should have been there](docs/37-the-guard-that-should-have-been-there.md) | A correction to this project's own method: T1 fixes a correlation bar but no minimum movement. All 20 arm sets re-scored — three are void, none ever passed on noise |
+| 38 | [The population counts were arm counts](docs/38-the-population-counts-were-arm-counts.md) | Every 'N populations' claim recomputed from its source file. 19 is 19 arms from 10 populations; 26 is 26 arms from 15. No measurement changes; the independence of the evidence does |
 
 ## The short version
 
@@ -117,7 +118,7 @@ observation. And the *conditionality* of levelling down — that it can go
 either way rather than being a default — is proven in arXiv:2603.06901 (March 2026), five
 months before this project reached it independently. What survives that collision is the
 empirical half, and document 27 makes the case precisely: their conditions are satisfied on
-**0 of 26** populations because the quantity they are stated over diverges on real data,
+**0 of 26** arms — fifteen populations — because the quantity they are stated over diverges on real data,
 their direction is right once relaxed (24–25 of 26), and the overall selection rate proxies
 their structural quantity at **r = +0.935** while requiring nothing but a historical
 approval rate. Independent theory and independent measurement converging.
@@ -189,11 +190,11 @@ a linear constraint on a conditional moment and sits inside the base paper's own
 framework. The finding is about objectives, not algorithms.
 
 That claim has since been through the same replication as everything else here, and it
-holds: across **19 populations and both protected-attribute arms, the exchange rate fell in
+holds: across **19 arms — ten populations under two protected attributes — the exchange rate fell in
 every one**, from 1.47 to 0.88 in the sex arm and 1.59 to 0.79 in the race arm (document
 21). Two things needed correcting. Adult is the **extreme** case rather than the typical
 one — its −20.5% pie loss sits against a −6.1% mean elsewhere — and the floor does not
-merely protect the pie, it *grows* it, in 18 of 19 populations. One of that document's five
+merely protect the pie, it *grows* it, in 18 of 19 arms. One of that document's five
 pre-registered predictions failed, and the failure is recorded rather than repaired.
 
 **The through-line, which is borrowed rather than found here.** A fairness metric describes
@@ -235,7 +236,7 @@ and the error grows fivefold.
 
 The diagnostic is the cross-flow share,
 `(priv_gained + unpriv_lost) / (priv_lost + unpriv_gained)`, which correlates with the
-conversion's error at **r = +0.885** across nineteen populations. Both group inequality
+conversion's error at **r = +0.885** across nineteen arms. Both group inequality
 and small samples raise it, independently — see
 [document 13](docs/13-separating-ratio-from-size.md).
 

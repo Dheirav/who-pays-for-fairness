@@ -40,7 +40,7 @@ That is a claim about what is *expressible*. It is now tested.
 > 3. **What was measured.** They report Adult, and explicitly on the **training set**:
 >    "Transferring them to the unseen test data introduces noise which would make the
 >    results less clear." [Document 21](21-the-floor-replicates.md) reports held-out test
->    results across 19 populations, two protected-attribute arms and five seeds.
+>    results across 19 arms — ten populations under two protected attributes — and five seeds.
 >
 > What is **not** anticipated by them is
 > [document 23](23-the-selection-rate-sets-the-direction.md): they treat levelling down as
@@ -117,13 +117,13 @@ population-level documents in this folder exist because single-dataset findings 
 exactly what should not be trusted, and this one has not been through that.
 
 > **Addressed in [document 21](21-the-floor-replicates.md).** It has now been through that:
-> nineteen populations, both protected-attribute arms. The finding **replicates** — the
-> exchange rate fell in 19 of 19 populations — and the measurements above were re-verified
+> nineteen arms across ten populations. The finding **replicates** — the
+> exchange rate fell in 19 of 19 arms — and the measurements above were re-verified
 > exactly. Two corrections follow. **Adult is the extreme case, not the typical one:** its
 > plain constraint destroys −20.5% of favourable decisions against a −6.1% mean elsewhere,
 > and its exchange rate is 2.68 against 1.46, so quoting this page's numbers as
 > representative overstates the typical case by roughly a factor of three. And **the floor
-> does not merely protect the pie, it grows it**, in 18 of 19 populations — which is a
+> does not merely protect the pie, it grows it**, in 18 of 19 arms — which is a
 > larger change to the classifier than "don't shrink the pie" implies.
 
 **The floor target is a choice.** Setting it at the unconstrained model's own selection

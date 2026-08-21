@@ -25,7 +25,8 @@ The design
 Protecting ``RAC1P`` on the same nine states spans a group ratio of 1.94 to 24.98 with
 the confound **inverted**: r(ratio, n) = -0.567 there, because the racially homogeneous
 states are also the small ones. Pooling the arms should therefore drive the confound
-toward zero and leave nineteen populations in which ratio and size vary independently.
+toward zero and leave nineteen arms -- ten populations under two protected attributes -- in
+which ratio and size vary independently.
 
 Stated in advance, so they can fail
 -----------------------------------

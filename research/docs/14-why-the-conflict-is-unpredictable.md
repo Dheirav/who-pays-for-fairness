@@ -32,7 +32,7 @@ model separates positives from negatives **inside** that group. Well-separated s
 the selection rate travel while touching mostly borderline cases; poorly separated scores
 mean the same movement cuts through the middle of the distribution.
 
-| | pooled, 19 populations |
+| | pooled, 19 arms |
 |---|---|
 | r(EO cost, within-group AUC) | +0.203 |
 | r(EO cost, worst group AUC) | +0.246 |
@@ -96,7 +96,7 @@ artifact in document 11's first draft, dressed differently.
 ## What can and cannot be claimed
 
 **Can:** the post-constraint EO violation is statistically independent of the
-pre-constraint one across 19 populations, and this accounts for the failure of every
+pre-constraint one across 19 arms, and this accounts for the failure of every
 predictor P2 tried.
 
 **Cannot:** that the constrained model converges to a *fixed* EO level. Pooled standard
@@ -121,7 +121,7 @@ The test above was written into this document and **committed before it was run*
 post-constraint EO belongs to the constrained *solution*, two different mitigations
 satisfying the same DP bound on one population should land at similar EO.
 `expgrad_dp` and `gridsearch_dp` both target DP ≤ 0.01 and both already existed in all
-nineteen populations, so it cost no refits.
+nineteen arms, so it cost no refits.
 
 | | result | bar | |
 |---|---|---|---|

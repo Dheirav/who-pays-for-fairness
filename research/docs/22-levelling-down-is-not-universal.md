@@ -5,7 +5,7 @@ domain that is not a household survey.
 
 ## Why a second domain, and not a twentieth population
 
-Documents 11–13 and 21 span nineteen populations, and eighteen of them are US state slices
+Documents 11–13 and 21 span nineteen arms drawn from ten populations, and nine of those are US state slices
 of ACS — one survey instrument, one encoding, one sampling design, one synthetic income
 threshold. "Replicates across populations" was earned. "Replicates across domains" was not,
 and the two are different claims.

@@ -13,7 +13,7 @@ Where this comes from
 levelling-down direction **reversing** on HMDA mortgage data: the demographic parity
 constraint grew the pool of favourable decisions by 4.3% instead of shrinking it, at an
 exchange rate of 0.50. Every survey population in documents 11-13 and 21 went the other
-way, 18 of 19 shrinking the pie.
+way, 18 of 19 arms shrinking the pie.
 
 The obvious candidate is where the task sits on the selection-rate scale. The survey
 populations all land between **0.195 and 0.353**; HMDA's arms sit at **0.808 and 0.758**.

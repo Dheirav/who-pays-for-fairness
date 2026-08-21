@@ -1,7 +1,7 @@
 # 15 — When the coin flip is bigger than the constraint
 
 **Individual work, beyond the course submission.** Extends Finding 4 of
-[document 05](../../docs/05-who-pays.md) across 19 populations.
+[document 05](../../docs/05-who-pays.md) across 19 arms drawn from 10 populations.
 
 ## The finding this extends
 
@@ -17,7 +17,7 @@ direction that matters.
 
 ## The result
 
-Across 38 runs of the two randomized methods over 19 populations:
+Across 38 runs of the two randomized methods over 19 arms:
 
 ```
 floor / churn > 1  in 5 of 38 runs

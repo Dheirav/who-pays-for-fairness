@@ -27,7 +27,7 @@ did. Nothing has to be explained away.
 > populations spanning two protected attributes, and find four things the certifying
 > metric does not report and standard auditing does not reveal. **(i)** Parity is reached
 > by withdrawing favourable decisions rather than extending them — on Adult every method
-> in a six-method ablation shrinks the total by 7.9–22.1%, and 18 of 19 survey populations
+> in a six-method ablation shrinks the total by 7.9–22.1%, and 18 of 19 survey arms
 > shrink it — while the rate-level view understates the burden counted in people, with the
 > divergence predicted by a cross-flow diagnostic (r = +0.885). On mortgage-approval data,
 > the same constraint *grows* the pie by 4.3% at an exchange rate of 0.50, and the parity
@@ -54,7 +54,8 @@ did. Nothing has to be explained away.
 > selection rate — a linear moment constraint inside the base paper's own framework, not a
 > new method — preserves parity to the same tolerance while the exchange rate falls from
 > 1.47 favourable decisions destroyed per one created to 0.88, for 0.12 accuracy points.
-> **The exchange rate falls in all 19 populations and in both protected-attribute arms**,
+> **The exchange rate falls in all 19 arms — ten populations across two protected
+> attributes**,
 > and in 16 of them lands below one, meaning the constrained model now creates more
 > favourable decisions than it destroys. Fairness constraints do exactly what they are
 > asked. The gap is between what is asked and what is meant, and nothing in the standard
@@ -65,7 +66,7 @@ did. Nothing has to be explained away.
 | claim | evidence | status |
 |---|---|---|
 | The method works as advertised | docs 02–04 | Solid. Background, not contribution |
-| (i) Levelling down, and rate-vs-people | docs 05, 11, 13, 22, 23, 27 | Solid on survey data, 19 populations, diagnostic at r = +0.885. Reverses on mortgage data (doc 22), and **doc 23 identifies the moderator by single-factor sweep**: the selection rate, crossing over between 0.25 and 0.60. State the condition, never the bare claim. **The conditionality itself is anticipated by arXiv:2603.06901 (doc 27) — concede it in the first paragraph.** What survives: their conditions hold on 0/26 populations, ours proxies theirs at r = +0.935, and they have no experiments. **The decomposition is also not ours: impact size, change direction and decision rates are FRAME's first three dimensions (Ferry et al. 2023, arXiv:2302.07185). Cite it wherever doc 05 is cited. What we add is what those axes report across 26 populations — the direction is a property of the population, and it reverses** |
+| (i) Levelling down, and rate-vs-people | docs 05, 11, 13, 22, 23, 27 | Solid on survey data, 19 arms from 10 populations, diagnostic at r = +0.885. Reverses on mortgage data (doc 22), and **doc 23 identifies the moderator by single-factor sweep**: the selection rate, crossing over between 0.25 and 0.60. State the condition, never the bare claim. **The conditionality itself is anticipated by arXiv:2603.06901 (doc 27) — concede it in the first paragraph.** What survives: their conditions hold on 0/26 populations, ours proxies theirs at r = +0.935, and they have no experiments. **The decomposition is also not ours: impact size, change direction and decision rates are FRAME's first three dimensions (Ferry et al. 2023, arXiv:2302.07185). Cite it wherever doc 05 is cited. What we add is what those axes report across 26 populations — the direction is a property of the population, and it reverses** |
 | (ii) Intersectional subgroups left behind | docs 07, 12 | **Strongest result in the project, and not a novel one — say so in the same sentence.** Kearns et al. (2018) named the failure mode; Maheshwari et al. (2023) report that intersectional levelling down is worse *and* "often goes unnoticed in the overall performance", which is our thesis sentence in their words. What is ours is scope and a boundary: ten populations, 9.0× on Adult against 13.2× in Mississippi, and the minority-share condition under which it stops holding |
 | **The rate is the mechanism, not the task** | docs 32, 34, 36 | Moving only the decision line reproduces the direction in **4 of 5** ACS populations and the crossover *location* in **3 of 5**. Kentucky's two routes disagree; Connecticut has no sign change to find; **on lending the route fails outright** (r = +0.633, non-monotone). Quote 4/5 and 3/5, never 'the routes agree' |
 | **Robustness, ranked by how well it held** | docs 34, 36, 32, 33 | Base learner **5/5** (tightest correlations in the project). Epsilon **4/5** across a 25x range. Operating point **4/5** direction, **3/5** location. Equalized odds **fails**, and fails harder with more data. Report in this order; the first two are clean, the last two are not |
@@ -73,7 +74,7 @@ did. Nothing has to be explained away.
 | **The crossover is not a constant** | docs 31, 32 | AL 0.25-0.60, OR 0.35-0.65, HMDA lending 0.64-0.77. Route-invariant within a population, population-specific between. **Never quote 0.25-0.60 as general** |
 | (iii) Arbitrariness below ~2,500 subjects | doc 15 | Solid but not novel — position as a caution, cite the multiplicity literature |
 | (iv) Attribution audits do not recover it | docs 06, 16, 17, 18, 20 | Solid as a negative result. Do not oversell |
-| The fix | docs 19, 21 | Strongest *useful* result. **Replicated across 19 populations, both arms, exchange rate down in 19/19.** Quote doc 21's typical numbers, not doc 19's Adult ones |
+| The fix | docs 19, 21 | Strongest *useful* result. **Replicated across 19 arms from 10 populations, exchange rate down in 19/19.** Quote doc 21's typical numbers, not doc 19's Adult ones |
 | Method: pre-registration and retraction | commit history, docs 13, 17, 20 | Underused. Belongs in the methods section as a reason to trust the numbers |
 
 ## What is cut
@@ -106,12 +107,14 @@ did. Nothing has to be explained away.
 * **Lead the limits with magnitude.** Four manipulations preserve the direction and the
   crossover while changing the size of the effect 3-8x. The rate predicts *which way*, never
   *how much*, and a reviewer who finds that out unaided will assume it was hidden.
-* **"19 populations" overstates the external validity.** They are US states sharing one
-  survey instrument, one encoding and one threshold construction. Say "19 populations
-  drawn from one survey" and stop leaning on the count.
+* **"19 populations" is wrong twice over — see [doc 38](docs/38-the-population-counts-were-arm-counts.md).**
+  It is **19 arms from 10 populations**: nine ACS states counted once under each protected
+  attribute, plus Adult. And those ten are US states sharing one survey instrument, one
+  encoding and one threshold construction. Say "19 arms across ten populations from one
+  survey" and stop leaning on the count entirely.
 * **Never quote Adult's fix numbers as typical.** −20.5% → −0.6% and 2.68 → 1.03 are the
   most extreme case in the study, roughly three times the typical effect (doc 21). Lead
-  with 1.47 → 0.88 across 19 populations, which is smaller, unanimous, and defensible. The
+  with 1.47 → 0.88 across 19 arms from 10 populations, which is smaller, unanimous, and defensible. The
   paper is about the audit surface being blind; getting caught overstating an effect on the
   one dataset everyone knows would be the worst possible way to lose that argument.
 * **Neither the observation NOR the remedy is new.** `[VERIFIED, arXiv:2302.02404]`
@@ -136,7 +139,7 @@ did. Nothing has to be explained away.
   fairness interventions along five dimensions; the first three are impact size, change
   direction and decision rates. That is doc 05, published February 2023. Cite it the first
   time the decomposition appears and never describe it as an instrument we built. What we
-  add is what it shows when it is run across 26 populations rather than on one model: the
+  add is what it shows when it is run across 26 arms from 15 populations rather than on one model: the
   direction dimension is not a property of the method but of the population, and it
   reverses with the selection rate — a quantity that does not appear in their full text.
   They supply the axes; the empirical finding is ours.

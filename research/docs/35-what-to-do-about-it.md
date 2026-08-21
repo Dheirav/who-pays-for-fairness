@@ -84,8 +84,8 @@ Mittelstadt, Wachter & Russell (2023) propose in their §6, which must be cited.
 
 What it costs and returns ([documents 19](19-levelling-up-is-expressible.md) and
 [21](21-the-floor-replicates.md)): about **0.12 accuracy points**; the exchange rate falls
-from **1.47 to 0.88** favourable decisions destroyed per one created, across 19 populations
-and both protected-attribute arms, landing below 1.0 in 16 of them. The benefit scales with
+from **1.47 to 0.88** favourable decisions destroyed per one created, across 19 arms drawn
+from 10 populations under two protected attributes, landing below 1.0 in 16 of them. The benefit scales with
 the damage at **r ≈ −0.99** — the worse the levelling down, the more the floor recovers — so
 it is cheapest to skip exactly where it matters least.
 

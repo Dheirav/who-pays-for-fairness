@@ -60,7 +60,7 @@ remedy --- their \S6 requires that every group receives at least some minimum ap
 I originally believed my version of this was new. It is not. I found that by reading their
 paper properly, and corrected my write-up. What is different about mine is narrower: it
 works without the program ever being told which group an applicant belongs to, and it is
-tested on data the programs had never seen, across 26 datasets --- where they report one
+tested on data the programs had never seen, across 26 runs from 15 populations --- where they report one
 dataset, scored on the same data they trained on.
 
 \textbf{Also known: how to measure who paid.} A February 2023 paper by Ferry and
@@ -234,7 +234,7 @@ That check is the core of the argument, not a footnote to it.
 
 Checking my measurements against that 2026 paper produced three results.
 
-\textbf{Their conditions hold on none of my 26 datasets.} Their theorem is written over the
+\textbf{Their conditions hold on none of my 26 runs.} Their theorem is written over the
 extrema of a ratio that diverges wherever its denominator approaches zero, and every real
 dataset has such points. The two regions it compares always overlap, by large margins. The
 conditions are sufficient rather than necessary, and as stated the theorem cannot be applied
@@ -245,7 +245,7 @@ comparison of the two regions, it predicts correctly in 24 of 26; a median versi
 Both misses are the two smallest effects in the set.
 
 \textbf{And the approval rate is a proxy for their structural quantity}, at
-\textbf{r = +0.935}. The two rules agree with each other on 25 of 26 datasets. Theirs
+\textbf{r = +0.935}. The two rules agree with each other on 25 of 26 runs. Theirs
 requires the joint distribution of the model's scores and group membership; mine requires
 last year's approval rate.
 
@@ -367,7 +367,7 @@ remedy was new, which the literature had got to first.
 
 A theory paper published in March 2026 proves this effect can go either way, and contains no
 experiments. I have the experiments, a rule computable from a historical approval rate, and
-the finding that their conditions are satisfied on none of my 26 datasets.
+the finding that their conditions are satisfied on none of my 26 runs.
 
 Is that an empirical paper worth publishing on its own --- or does it now read as a follow-up
 to someone else's theorem?

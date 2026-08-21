@@ -175,16 +175,16 @@ cannot silently restate a recorded verdict.
       crossover can be bracketed. Document 35's central recommendation is therefore *not*
       validated on the domain it is aimed at, and now says so
 
-- [ ] **Audit every remaining "26 populations" claim individually.** Document 27's was
-      verified and corrected — its 26 rows are arms from **15** populations (Adult, twelve ACS
-      states, two HMDA states; nine rows are cutoff variants, four are two states under two
-      attributes). **There appears to be a second, different 26**: `research/paper/draft.md`
-      line 11 describes "Adult, 21 ACS Income populations across twelve states and two
-      protected attributes" plus HMDA, which is a different composition. Both are quoted as
-      "26 populations" in `PAPER.md`, `research/README.md`, `docs/30`, the paper draft, and
-      four supervisor-pack files — **27 occurrences across 9 files, not yet individually
-      verified.** Mass-editing them without establishing each one's provenance would risk
-      replacing one miscount with another, which is why it was left rather than swept
+- [x] **Audit every "N populations" claim against the file it comes from.** Done — see
+      [document 38](docs/38-the-population-counts-were-arm-counts.md). **Three counts were arm
+      counts wearing a population label.** The nineteen is 19 arms from 10 populations (nine
+      ACS states under two protected attributes, plus Adult under one); both twenty-sixes are
+      26 arms from the same 15 populations. 45 occurrences corrected across 15 files. No
+      measurement changes — the arithmetic was always over arms — but the independence of the
+      evidence does. `PAPER.md`'s abstract had been claiming the exchange rate fell "in all 19
+      populations **and** in both protected-attribute arms", which double-counts and cannot be
+      true as written. The docs test now recomputes both counts from source and pins the split
+      nine-plus-Adult, so this cannot drift back
 - [x] **Fix document 23's T1 by adding a minimum-spread guard** — done, see
       [document 37](docs/37-the-guard-that-should-have-been-there.md). Twenty arm sets
       re-scored; three void, all Connecticut under a linear model; **none had ever passed on
