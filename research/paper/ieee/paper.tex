@@ -178,6 +178,19 @@ favourable decisions, and 0.010 on the one that created more than it destroyed.
 
 \section{What Sets the Direction}
 
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{fig-crossover.pdf}
+\caption{Every retained arm from every densely swept population. Within a population the
+change in the pool rises with the baseline selection rate and crosses zero; the two that
+reverse are marked, and both are sweeps whose viable band confines them below the crossover.
+Panels are deliberately \emph{not} pooled: across populations a single slope reaches only
+$r=+0.487$ and fails its pre-registered bar, so one scatter would assert a common curve the
+data rejects. Vertical band: the 0.511--0.576 cluster of Table~\ref{tab:crossover}.}
+\label{fig:crossover}
+\end{figure*}
+
+
 \subsection{A single-factor design}
 
 ACS Income's label is ``earns more than \$50{,}000'' --- a benchmark convention, not a fact.
@@ -196,6 +209,18 @@ constraint across its loan book would take opportunities away in one product and
 in another, with its fairness report showing success in both.
 
 \subsection{It is the rate, not the difficulty of the task}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.86\textwidth]{fig-two-routes.pdf}
+\caption{The design that separates the selection rate from the difficulty of the task. Moving
+the income cutoff changes the label, and therefore how hard the problem is; moving the decision
+threshold changes neither, only where the fitted model draws its line. Both routes cross zero
+inside the same band. If difficulty were doing the work, the second curve would not reproduce
+the first.}
+\label{fig:tworoutes}
+\end{figure*}
+
 
 The design above moves the \emph{label}. ``Earns over \$100{,}000'' is not a rarer version of
 ``earns over \$20{,}000''; it is a harder problem. That design therefore cannot separate two
@@ -232,7 +257,7 @@ LSAC & legal education & unsweepable \\
 \end{tabular}
 \end{table}
 
-Table~\ref{tab:domains} gives the picture. The pre-registered alternative --- ``this is a
+Fig.~\ref{fig:crossover} shows every arm, and Table~\ref{tab:domains} the summary. The pre-registered alternative --- ``this is a
 property of income prediction and American mortgage lending'', requiring $|r| < 0.30$ --- loses
 on both new instruments.
 
