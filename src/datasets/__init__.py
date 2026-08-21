@@ -19,7 +19,8 @@ from .base import DatasetLoader, FairnessDataset
 
 __all__ = ["DatasetLoader", "FairnessDataset", "build", "AVAILABLE"]
 
-AVAILABLE = ("adult", "acs[:STATE[,STATE...]][:ATTRIBUTE]")
+AVAILABLE = ("adult", "acs[:STATE[,STATE...]][:ATTRIBUTE]", "hmda[:STATE:ATTRIBUTE[:PURPOSE]]",
+             "compas[:race|sex]", "lawschool[:race|male]")
 
 
 def build(name: str) -> DatasetLoader:
@@ -66,5 +67,17 @@ def build(name: str) -> DatasetLoader:
             protected=attribute.strip() or RACE,
             purpose=purpose.strip() or None,
         )
+
+    if key == "compas":
+        # Lazily imported for the same reason as ACS and HMDA: individual work, excluded
+        # from the submission bundle, and the course code must neither import nor need it.
+        from .compas import RACE as COMPAS_RACE, CompasLoader
+
+        return CompasLoader(protected=argument.strip() or COMPAS_RACE)
+
+    if key == "lawschool":
+        from .lawschool import RACE as LAW_RACE, LawSchoolLoader
+
+        return LawSchoolLoader(protected=argument.strip() or LAW_RACE)
 
     raise KeyError(f"unknown dataset '{name}'; available: {AVAILABLE}")

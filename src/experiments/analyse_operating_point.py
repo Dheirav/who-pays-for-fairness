@@ -164,17 +164,23 @@ def op_arm_name(state: str, threshold: float) -> str:
     return f"{arm_name(state, 50_000)}_{model_code(f'logistic_regression@{threshold}')}"
 
 
-def op_arm_name_for(dataset_name: str, threshold: float) -> str:
-    """The same rule for any dataset, addressed by its loader's own name."""
+def op_arm_name_for(dataset_name: str, threshold: float, suffix: str = "") -> str:
+    """The same rule for any dataset, addressed by its loader's own name.
+
+    ``suffix`` selects a variant sweep -- ``"_hgb"``, ``"_eps005"`` -- and must match what
+    ``run_levelling_up.output_stem`` produced, which appends the learner or tolerance code
+    *after* the operating point.
+    """
     return (f"{dataset_name}_levelling_up"
-            f"_{model_code(f'logistic_regression@{threshold}')}")
+            f"_{model_code(f'logistic_regression@{threshold}')}{suffix}")
 
 
-def load_points_for(dataset_name: str, points: list[float]) -> pd.DataFrame:
+def load_points_for(dataset_name: str, points: list[float],
+                    suffix: str = "") -> pd.DataFrame:
     """Operating-point arms for a dataset that is not an ACS state."""
     rows = []
     for t in points:
-        mean = _load(RESEARCH_RESULTS_DIR / op_arm_name_for(dataset_name, t)
+        mean = _load(RESEARCH_RESULTS_DIR / op_arm_name_for(dataset_name, t, suffix)
                      / "levelling_up_runs.csv")
         if mean is None:
             continue

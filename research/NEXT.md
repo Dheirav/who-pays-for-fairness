@@ -197,8 +197,8 @@ cannot silently restate a recorded verdict.
       exclusion, pre-registered before re-running
 - [ ] **A sixth population that is neither ACS nor HMDA**, if the crossover claim is to be
       about domains rather than about two instruments
-- [ ] **Nothing is committed past the pre-registrations.** ~30 files of literature
-      housekeeping, five new documents, six new tests and the rebuilt PDF/PPTX are uncommitted
+- [x] ~~Nothing is committed past the pre-registrations.~~ All committed; working tree clean,
+      44 tests passing across four suites.
 
 ## Explicitly not doing
 
