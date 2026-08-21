@@ -90,6 +90,11 @@ would count as a failure, and which items need pre-registering.
 | 29 | [Where real decisions actually sit](docs/29-where-real-decisions-actually-sit.md) | The punchline was wrong: deployed systems span the crossover, from 0.02 in hiring to 0.84 in mortgages |
 | 30 | [Novelty audit](docs/30-novelty-audit.md) | Every claim checked against 72 citing papers and five full texts: what is new, what is not |
 | 31 | [The crossover on natural data](docs/31-the-crossover-on-natural-data.md) | A real lending product at 0.555 levels down while refinancing levels up — the transition observed, not manufactured |
+| 32 | [The rate, not the task](docs/32-the-rate-not-the-task.md) | Move only the model's decision line: the direction reproduces in 4 of 5 populations, the crossover *location* in 3 of 5. Kentucky's routes disagree, Connecticut never crosses, and on lending the route fails outright |
+| 33 | [The rule does not survive equalized odds](docs/33-the-rule-does-not-survive-equalized-odds.md) | **A failed pre-registration**, and it fails harder on five states than on two: +0.644 → +0.334. The claim is about criteria that constrain selection rates |
+| 34 | [The crossover survives the tolerance](docs/34-the-crossover-survives-the-tolerance.md) | Identical crossover across a 25× range of ε, in 4 of 5 populations. Connecticut fails on a spread of 0.34 points — exposing that doc 23's T1 lacks the minimum-spread guard doc 33's E0 has |
+| 35 | [What to actually do about it](docs/35-what-to-do-about-it.md) | The decision procedure, including how to measure your own crossover on the model you already have |
+| 36 | [Not a property of linear models](docs/36-not-a-property-of-linear-models.md) | Boosted trees give the same crossover as logistic regression in **5 of 5** populations — the only test here that holds everywhere. Connecticut flips under trees where it never does under a linear model |
 
 ## The short version
 
@@ -100,10 +105,14 @@ a finding survives a population it was not derived from, "the constraint causes 
 populations across two protected attributes — and then, in document 22, on a domain that is
 not a survey at all.
 
-**Where this sits in the literature, after checking.** Two of this folder's claims turned
-out to be anticipated, and both were found by reading rather than assumed. The
+**Where this sits in the literature, after checking.** Three of this folder's claims turned
+out to be anticipated, and all three were found by reading rather than assumed. The
 selection-rate floor is a variant of Mittelstadt et al.'s minimum rate constraints
-(document 19's correction). And the *conditionality* of levelling down — that it can go
+(document 19's correction). The intersectional result is Kearns et al.'s (2018) fairness
+gerrymandering, and the reason it escapes an audit is Maheshwari et al.'s (2023) finding
+that intersectional levelling down "often goes unnoticed in the overall performance of the
+model" — what document 12 adds is ten populations and a minority-share condition, not the
+observation. And the *conditionality* of levelling down — that it can go
 either way rather than being a default — is proven in arXiv:2603.06901 (March 2026), five
 months before this project reached it independently. What survives that collision is the
 empirical half, and document 27 makes the case precisely: their conditions are satisfied on
@@ -120,11 +129,16 @@ decisions by 4.3% at an exchange rate of 0.50 while removing 94% of the parity v
 the other. Nothing in documents 05 or 21 is retracted; what changes is their reach.
 Levelling down is a property of the fairness-constrained problems this project had been
 looking at, not of demographic parity constraints in general. The parity metric reports the
-same success either way, which is the project's through-line stated as sharply as it gets.
+same success either way — which is the frame this work inherited rather than something it
+found. Maheshwari et al. (2023) report levelling down going unnoticed in a model's overall
+performance, and Ferry et al. (2023) built an audit tool around the same gap. What document
+22 adds is that the direction reverses, not that the metric is silent about it.
 
-**What replicated.** The intersectional result is the strongest thing here: fairness
-gerrymandering appears in every sufficiently diverse population and is *worse* than Adult
-showed — 9.0× there against 13.2× in Mississippi (document 12). It gains one condition,
+**What replicated.** The intersectional result is the strongest thing here, and it is a
+replication in the strict sense: Kearns et al. (2018) named fairness gerrymandering and
+Maheshwari et al. (2023) reported that the intersectional harm is the worse one and goes
+unnoticed in aggregate performance. It appears in every sufficiently diverse population and
+is *worse* than Adult showed — 9.0× there against 13.2× in Mississippi (document 12). It gains one condition,
 that the effect needs a substantial minority to hide in, and that condition is the first
 relationship in the project whose two candidate explanations are not confounded with each
 other. In five of ten populations the worst-off subgroup after a sex constraint is a
@@ -181,8 +195,11 @@ one — its −20.5% pie loss sits against a −6.1% mean elsewhere — and the 
 merely protect the pie, it *grows* it, in 18 of 19 populations. One of that document's five
 pre-registered predictions failed, and the failure is recorded rather than repaired.
 
-**The through-line.** A fairness metric describes an outcome state, not a mechanism. Every
-headline number in documents 02–04 is correct and every finding above is invisible in it.
+**The through-line, which is borrowed rather than found here.** A fairness metric describes
+an outcome state, not a mechanism — the point Maheshwari et al. (2023) and Ferry et al.
+(2023) both make ahead of this work. Every headline number in documents 02–04 is correct and
+every finding above is invisible in it, which is why each one had to be measured separately
+instead of read off the metric.
 When this project tried to identify the *mechanism* behind one of those findings, three
 candidate explanations were proposed and none survived. When it instead tried to *fix* one
 of them by stating the missing objective outright, that worked immediately. The reduction
