@@ -95,12 +95,16 @@ def model_code(model: str) -> str:
 DEFAULT_CONSTRAINT = "demographic_parity"
 
 
-def arms_for(constraint: str) -> list[str]:
+def arms_for(constraint: str, method: str = "reduction") -> list[str]:
     """Which arms this constraint supports.
 
     The floor is a demographic-parity object. Under equalized odds the run is baseline
     against the plain constraint, which is all the direction question needs.
     """
+    if method == "postprocess":
+        # The floor is a reduction object and there is no post-processing analogue, so the
+        # run is baseline against the constraint, which is all the direction question needs.
+        return ["baseline", f"postprocess_{CONSTRAINT_CODE[constraint]}"]
     plain = f"expgrad_{CONSTRAINT_CODE[constraint]}"
     return ["baseline", plain] + (
         ["expgrad_dp_floor"] if constraint == DEFAULT_CONSTRAINT else []
@@ -109,9 +113,18 @@ def arms_for(constraint: str) -> list[str]:
 
 DEFAULT_EPS = 0.01
 
+# Every crossover result in this project comes from one optimiser: Agarwal et al.'s
+# reduction. "This is a property of that algorithm" has had no answer. Post-processing is
+# the structurally different alternative -- it leaves the trained model alone and moves
+# per-group thresholds afterwards -- and it necessarily reads the protected attribute at
+# prediction time, which puts it in the *attribute-aware* regime that Backfire's theory
+# treats separately from everything else measured here. That is a scope change, not a
+# detail, and it is why the arm is named for the method rather than hidden as a variant.
+METHOD_CODE = {"reduction": "", "postprocess": "_post"}
+
 
 def output_stem(dataset_name: str, constraint: str, model: str,
-                eps: float = DEFAULT_EPS) -> str:
+                eps: float = DEFAULT_EPS, method: str = "reduction") -> str:
     """Where this configuration's results live, isolated from every other one.
 
     ``eps`` joins the path because loosening the constraint is a different experiment, not
@@ -126,12 +139,29 @@ def output_stem(dataset_name: str, constraint: str, model: str,
         stem = f"{stem}_{model_code(model)}"
     if eps != DEFAULT_EPS:
         stem = f"{stem}_eps{eps:g}".replace(".", "")
-    return stem
+    return stem + METHOD_CODE[method]
 
 
-def fit_arms(split, seed: int, eps: float, constraint: str, model: str):
+def fit_arms(split, seed: int, eps: float, constraint: str, model: str,
+             method: str = "reduction"):
     baseline = build_model(model, random_state=seed)
     baseline.fit(split.X_train, split.y_train)
+
+    if method == "postprocess":
+        from fairlearn.postprocessing import ThresholdOptimizer
+
+        post = ThresholdOptimizer(
+            estimator=build_model(model, random_state=seed),
+            constraints=("demographic_parity" if constraint == DEFAULT_CONSTRAINT
+                         else "equalized_odds"),
+            predict_method="predict_proba", prefit=False,
+        )
+        post.fit(split.X_train, split.y_train, sensitive_features=split.a_train)
+        return {
+            "baseline": baseline.predict(split.X_test),
+            f"postprocess_{CONSTRAINT_CODE[constraint]}": post.predict(
+                split.X_test, sensitive_features=split.a_test, random_state=seed),
+        }, float("nan")
 
     plain = fit_exponentiated_gradient(
         build_model(model, random_state=seed),
@@ -163,15 +193,16 @@ def fit_arms(split, seed: int, eps: float, constraint: str, model: str):
     return predictions, target
 
 
-def run_seed(dataset, seed: int, eps: float, constraint: str, model: str) -> list[dict]:
+def run_seed(dataset, seed: int, eps: float, constraint: str, model: str,
+             method: str = "reduction") -> list[dict]:
     split = prepare(dataset, random_state=seed)
     group_kw = {"privileged": dataset.privileged_value,
                 "unprivileged": dataset.unprivileged_value}
-    predictions, target = fit_arms(split, seed, eps, constraint, model)
+    predictions, target = fit_arms(split, seed, eps, constraint, model, method)
     y_base = predictions["baseline"]
 
     rows = []
-    for arm in arms_for(constraint):
+    for arm in arms_for(constraint, method):
         y = predictions[arm]
         scores = evaluate(split.y_test, y, split.a_test, label=arm, **group_kw)
         row = {"seed": seed, "arm": arm, "floor_target": target,
@@ -211,10 +242,13 @@ def main() -> None:
                         choices=sorted(CONSTRAINT_CODE))
     parser.add_argument("--model", default=BASE_MODEL,
                         help="base learner; non-default values are isolated on disk")
+    parser.add_argument("--method", default="reduction", choices=sorted(METHOD_CODE),
+                        help="postprocess moves per-group thresholds after training and "
+                             "reads the protected attribute at prediction time")
     parser.add_argument("--force", action="store_true")
     args = parser.parse_args()
 
-    arms = arms_for(args.constraint)
+    arms = arms_for(args.constraint, args.method)
     plain_arm = arms[1]
 
     dataset = build_dataset(args.dataset).load()
@@ -224,7 +258,8 @@ def main() -> None:
     rows = []
     for seed in args.seeds:
         print(f"--- seed {seed} ---", flush=True)
-        rows.extend(run_seed(dataset, seed, args.eps, args.constraint, args.model))
+        rows.extend(run_seed(dataset, seed, args.eps, args.constraint, args.model,
+                             args.method))
 
     runs = pd.DataFrame(rows)
     summary = runs.groupby("arm")[
@@ -267,7 +302,8 @@ def main() -> None:
               f"{plain['lost_per_gained']:.2f}")
     print("=" * 74)
 
-    OUT = output_dir(output_stem(dataset.name, args.constraint, args.model, args.eps))
+    OUT = output_dir(output_stem(dataset.name, args.constraint, args.model, args.eps,
+                                 args.method))
     for path in save(OUT, "levelling_up", {"runs": runs, "summary": summary},
                      params=dict(dataset=args.dataset, seeds=args.seeds, eps=args.eps,
                                  constraint=args.constraint, model=args.model),

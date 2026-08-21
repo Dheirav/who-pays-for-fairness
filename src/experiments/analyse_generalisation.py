@@ -72,6 +72,24 @@ odds than under demographic parity, consistent with
 [document 33](../../research/docs/33-the-rule-does-not-survive-equalized-odds.md). Reported as
 a magnitude comparison; no correlation bar attaches, because four arms cannot support one.
 
+**G7 — the group-gap alternative, on the population where it should show.**
+The oldest competing explanation is that the direction is set by the **gap between the two
+groups** rather than by the overall selection rate. Document 23 partialled that gap out and
+the relationship survived, but no population measured had an extreme gap, so the test was
+weak where it mattered.
+
+The Dutch census 2001 has one: men hold a high-status occupation at 0.626 and women at 0.327,
+a gap of **0.298 — roughly twice Adult's**. It is also non-US and non-2010s, which no other
+population here is.
+
+    **Prediction.** The sweep behaves like every other mid-base-rate population: ``r >= MIN_R``
+    with a sign flip, and the crossover lands inside the 0.25–0.77 span where every crossover
+    so far has fallen. **A gap twice as large does not change the rule.**
+
+    **The alternative it must beat:** "the group gap is doing the work, so a population with
+    twice the gap behaves differently." That predicts either a failed correlation or a
+    crossover outside the observed span.
+
 **G6 — a prediction about this project's own earlier finding.**
 [Document 15](../../research/docs/15-arbitrariness-at-small-scale.md) put the floor for
 measurability at about 2,500 test subjects. COMPAS has **1,584**; LSAC has **6,240**. So
@@ -104,6 +122,7 @@ from .analyse_threshold import MIN_BASELINE_GAP, MIN_R, MIN_SPAN, MIN_SPAN_PIE
 POINTS = {
     "compas": [0.15, 0.30, 0.45, 0.55, 0.65, 0.75],
     "lawschool": [0.60, 0.90, 0.95, 0.975, 0.99, 0.995],
+    "dutch": [0.10, 0.25, 0.40, 0.62, 0.80, 0.93],
 }
 
 # G6: document 15's floor. COMPAS sits below it and LSAC above.

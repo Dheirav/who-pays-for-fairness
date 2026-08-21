@@ -104,9 +104,30 @@ def test_lawschool_is_the_high_selection_rate_instrument() -> None:
           f"{int(build('compas').load().n_samples * 0.3):,} (below it, as documented)")
 
 
+def test_dutch_is_the_non_us_high_gap_instrument() -> None:
+    """The Dutch census is carried for two reasons; check both still hold."""
+    dataset = build("dutch").load()
+    rates = dataset.base_rates().set_index("group")["P(y=1)"]
+    gap = float(rates["privileged"] - rates["unprivileged"])
+    assert gap > 0.25, (
+        f"dutch is carried because its base-rate gap is roughly twice Adult's; it is now "
+        f"{gap:.3f}, which no longer makes it the test of the group-gap alternative")
+    assert int(dataset.n_samples * 0.3) > 3 * 2500, (
+        "dutch should clear docs/15's floor by a wide margin, so nothing here is "
+        "limited by arbitrariness")
+    # Census codes must not be read as quantities: household_size is 111..126, not 1..6.
+    assert "household_size" in dataset.categorical_features, (
+        "household_size is a census code, not a count; treating it as numeric invents an "
+        "ordering that does not exist")
+    assert set(dataset.numeric_features) == {"age", "edu_level"}, (
+        f"only age and edu_level are ordered; got {dataset.numeric_features}")
+    print(f"  gap {gap:.3f} (~2x Adult), test split {int(dataset.n_samples * 0.3):,}, "
+          f"codes kept categorical")
+
+
 def test_no_nulls_reach_the_estimator() -> None:
     """A NaN in X reaches fairlearn as a crash three layers down; catch it here."""
-    for spec in ["compas", "compas:sex", "lawschool", "lawschool:male"]:
+    for spec in ["compas", "compas:sex", "lawschool", "lawschool:male", "dutch"]:
         dataset = build(spec).load()
         assert not dataset.X.isna().any().any(), f"{spec}: nulls in X"
         assert not dataset.y.isna().any(), f"{spec}: nulls in y"
@@ -120,6 +141,7 @@ def main() -> None:
         test_compas_label_is_the_favourable_outcome,
         test_privileged_group_follows_the_data_everywhere,
         test_lawschool_is_the_high_selection_rate_instrument,
+        test_dutch_is_the_non_us_high_gap_instrument,
         test_no_nulls_reach_the_estimator,
     ]
     failures = 0
