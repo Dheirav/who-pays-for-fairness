@@ -5,6 +5,8 @@
 \usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{url}
+\usepackage{algorithm}
+\usepackage{algorithmic}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 
@@ -338,22 +340,68 @@ the constraint. COMPAS has 1{,}584 and flips sign between seeds on two of four a
 6{,}240 and flips on none. COMPAS carries direction here and never magnitude.
 
 \section{What to Do About It}
+\label{sec:procedure}
 
-\begin{enumerate}
-\item \textbf{Check the criterion.} The rule is for criteria that constrain selection rates.
-\item \textbf{Look up your current approval rate.}
-\item \textbf{Locate your crossover.} Sweep your deployed model's threshold, fit the constraint
-at each point, and find where the change in the pool turns positive. Discard arms below
-$\max(p,1-p)$, check the viable band first, and use ten to twelve points.
-\item \textbf{Act.} Below the crossover, expect withdrawal and add a floor on the overall
-selection rate: about 0.12 accuracy points, exchange rate $1.47 \rightarrow 0.88$ across
-nineteen arms, below 1.0 in sixteen of them.
-\item \textbf{Do not forecast the size.}
-\end{enumerate}
+Algorithm~\ref{alg:locate} states the procedure. Three of its steps are worth drawing out,
+because each is a place where a plausible-looking run returns a meaningless answer.
+
+\textbf{It can refuse.} Lines 6--8 compute the viable band and exit before any constraint is
+fitted, if no threshold reaches a low selection rate with a model still beating the trivial
+predictor. On LSAC that band spans 0.056 and the procedure declines, rather than returning arms
+that would be discarded later.
+
+\textbf{It can return \textsc{void}.} Line 16 requires the pool to have moved at all. A
+correlation computed over arms that barely move is fitted to noise: Connecticut returns
+$r=-0.924$ on a spread of a tenth of a percentage point, and without this test that number
+reads as a refutation of the whole finding.
+
+\textbf{It returns a sign, never a size.} The distance from the crossover \emph{orders} the
+effect within a population, so a team can rank its own segments; but no slope transfers between
+populations, so lines 25 and 27 return a direction and stop there.
+
+\begin{algorithm}[t]
+\caption{Locate the crossover; decide whether to add a floor}
+\label{alg:locate}
+\begin{algorithmic}[1]
+\REQUIRE deployed model $h$, held-out $(X,y,a)$, fairness constraint $C$
+\ENSURE predicted direction, and whether a selection-rate floor is needed
+\IF{$C$ does not constrain selection rates}
+  \RETURN \textsc{out of scope} \COMMENT{e.g.\ equalized odds}
+\ENDIF
+\STATE $\pi \leftarrow \max(\bar{y},\, 1-\bar{y})$ \COMMENT{trivial-predictor accuracy}
+\STATE $s \leftarrow h(X)$
+\STATE $\mathcal{V} \leftarrow \{\tau : \mathrm{acc}(s>\tau) \geq \pi \;\wedge\; 0.05 \leq
+       \overline{(s>\tau)} \leq 0.95\}$
+\IF{$\mathrm{span}(\mathcal{V}) < 0.40$}
+  \RETURN \textsc{unsweepable}; compare natural sub-populations
+\ENDIF
+\STATE $T \leftarrow$ 12 thresholds from $\mathcal{V}$, spread evenly in \emph{selection rate}
+\FORALL{$\tau \in T$}
+  \STATE $r_\tau \leftarrow \overline{(s>\tau)}$; fit $C$ on the arm thresholded at $\tau$
+  \STATE $\Delta_\tau \leftarrow$ \% change in favourable decisions
+  \STATE discard $\tau$ if parity gap $<0.05$ or $\mathrm{acc}<\pi$
+\ENDFOR
+\IF{$\max\Delta - \min\Delta < 2$ points}
+  \RETURN \textsc{void} \COMMENT{nothing moved; not a refutation}
+\ENDIF
+\STATE $c \leftarrow \big(\max\{r_\tau\!:\!\Delta_\tau<0\},\; \min\{r_\tau\!:\!\Delta_\tau>0\}\big)$
+\IF{$c$ is empty \OR $c$ is far from $0.54$}
+  \STATE inspect the sweep before believing it
+\ENDIF
+\STATE $r_0 \leftarrow$ selection rate of the deployed model
+\IF{$r_0 < \min c$}
+  \RETURN \textsc{withdrawal}; add a selection-rate floor
+\ELSE
+  \RETURN \textsc{extension}; the floor buys little
+\ENDIF
+\end{algorithmic}
+\end{algorithm}
 
 The floor is \textbf{not a new method}: a selection-rate floor is a linear moment constraint
 inside the framework of \cite{agarwal2018}, and a variant of the minimum rate constraints of
-\cite{mittelstadt2023}.
+\cite{mittelstadt2023}. It costs about 0.12 accuracy points and moves the exchange rate from
+1.47 favourable decisions destroyed per one created to 0.88 across nineteen arms, landing below
+1.0 in sixteen of them, with the benefit scaling with the damage at $r \approx -0.99$.
 
 \section{Method, and What We Got Wrong}
 \label{sec:failures}
