@@ -105,11 +105,10 @@ OPTIMISER_POPULATIONS = [
 
 
 def _arm(name: str, suffix: str = "") -> pd.DataFrame | None:
+    # Adult's levelling-up arms live under research/results/adult_levelling_up, not in the
+    # course results root: `output_dir` routes on the *stem*, and "adult_levelling_up" is not
+    # the course dataset name. Special-casing it to RESULTS_DIR read the wrong file.
     path = RESEARCH_RESULTS_DIR / f"{name}_levelling_up{suffix}" / "levelling_up_runs.csv"
-    if name == "adult":
-        from ..results_io import RESULTS_DIR
-
-        path = RESULTS_DIR / "levelling_up_runs.csv"
     if not path.exists():
         return None
     return pd.read_csv(path).groupby("arm").mean(numeric_only=True)

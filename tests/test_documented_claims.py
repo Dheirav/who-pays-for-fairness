@@ -1117,6 +1117,106 @@ def test_doc41_postprocessing_arm_is_void() -> None:
     print(f"  post-processed output constant at {positives[0]:.0f} across all six points")
 
 
+def test_paper_draft_population_count_is_recomputed() -> None:
+    """The paper's own scale claim must match the results on disk.
+
+    Three population counts in this project turned out to be arm counts (docs/38), and each
+    was found only when something forced a look at the underlying files. The paper is the one
+    document where that error is unrecoverable, so its count is recomputed here rather than
+    read.
+    """
+    import re as _re
+
+    draft = ROOT / "research" / "paper" / "draft-v2.md"
+    if not draft.exists():
+        print("  draft-v2.md absent; skipping")
+        return
+    text = draft.read_text()
+
+    method = _re.compile(r"_(eo|hgb|eps\d+|op[\d]+|post)$")
+    purpose = _re.compile(r"_(purchase|refinance|cashout|improvement|other)$")
+    names = set()
+    for directory in RESEARCH.glob("*"):
+        if directory.is_dir() and (directory / "levelling_up_runs.csv").exists():
+            stem = directory.name.replace("_levelling_up", "")
+            while method.search(stem):
+                stem = method.sub("", stem)
+            names.add(stem)
+
+    def population(stem: str) -> str:
+        stem = purpose.sub("", _re.sub(r"_t\d+", "", stem))
+        return _re.sub(r"_(rac1p|race|sex)$", "", stem)
+
+    pops = {population(n) for n in names}
+    # hmda_ms_la pools two populations already counted, so it is not independent of them.
+    independent = {p for p in pops if p != "hmda_ms_la_2018"}
+
+    assert len(independent) == 18, (
+        f"the draft claims 18 independent populations; the results give {len(independent)}: "
+        f"{sorted(independent)}")
+    assert "18 independent populations" in text or "Across 18 populations" in text, (
+        "the draft no longer states its population count, or states a different one")
+    # And the error docs/38 records: never claim populations where arms are meant.
+    assert "21 populations" not in text, "the draft is back to an overstated population count"
+    print(f"  draft claims 18; results give {len(independent)} independent populations")
+
+
+def test_doc42_and_43_dense_and_regime() -> None:
+    """docs/42-43: the two reversals, the crossover cluster, and the regime split."""
+    from src.experiments.analyse_dense import DENSE, dense_mode  # noqa: F401
+    from src.experiments.analyse_calibration import apply_rules, majority_baseline
+    from src.experiments.analyse_operating_point import crossover_bracket, load_points_for
+    from src.experiments.viable_points import points_for
+    from src.results_io import RESEARCH_RESULTS_DIR as RR
+
+    _quotes(_doc(42), "-0.368", "-0.654", "+0.946", "0.507", "0.587")
+    _quotes(_doc(43), "-0.024", "+0.585", "18 of 18")
+
+    scored = {}
+    for spec in ["acs:AL", "acs:KY", "acs:SC", "acs:OR", "dutch", "compas"]:
+        info = points_for(spec)
+        kept, counts = apply_rules(load_points_for(info["dataset"], info["points"]),
+                                   majority_baseline(spec))
+        assert counts["n_kept"] >= 6, (
+            f"docs/42's D1 needs at least six arms retained on {spec}; got "
+            f"{counts['n_kept']}. The twelve-point redesign is what makes the rest readable")
+        scored[info["dataset"]] = (
+            float(np.corrcoef(kept["selection_rate"], kept["pie"])[0, 1]),
+            crossover_bracket(kept))
+
+    # The two reversals are load-bearing: docs/42 withdraws the claim that the relationship
+    # holds WITHIN one side of the crossover on the strength of them.
+    for name in ["acs_income_al_2018", "acs_income_ky_2018"]:
+        assert scored[name][0] < 0, (
+            f"docs/42 reports {name} REVERSING under the dense sweep; it is now "
+            f"{scored[name][0]:+.3f}, and the withdrawal it justifies no longer follows")
+
+    # The cluster: three domains, two countries, inside a tenth of each other.
+    mids = [sum(b) / 2 for r, b in scored.values() if b is not None]
+    assert len(mids) >= 4, f"docs/42 needs at least four located crossovers, got {len(mids)}"
+    assert max(mids) - min(mids) < 0.12, (
+        f"docs/42 rests on the non-lending crossovers clustering; their mid-points now span "
+        f"{max(mids) - min(mids):.3f}")
+
+    # docs/43: the attribute-aware regime, where the theory says the direction is determined.
+    both = 0
+    total = 0
+    for directory in sorted(RR.glob("*_levelling_up_post")):
+        frame = pd.read_csv(directory / "levelling_up_runs.csv").groupby("arm").mean(
+            numeric_only=True)
+        arm = next((a for a in frame.index if a.startswith("postprocess")), None)
+        if arm is None or "priv_lost" not in frame.columns:
+            continue
+        total += 1
+        both += int(frame.loc[arm, "priv_lost"] > 0 and frame.loc[arm, "unpriv_gained"] > 0)
+    assert total >= 15 and both == total, (
+        f"docs/43 reports the advantaged group losing AND the disadvantaged gaining in every "
+        f"post-processed population; it is now {both}/{total}")
+    print(f"  D1 >= 6 arms everywhere; AL {scored['acs_income_al_2018'][0]:+.3f} and KY "
+          f"{scored['acs_income_ky_2018'][0]:+.3f} reversed; crossovers span "
+          f"{max(mids) - min(mids):.3f}; attribute-aware {both}/{total}")
+
+
 def main() -> None:
     tests = [
         test_doc11_cross_flow_correlations,
@@ -1143,6 +1243,8 @@ def main() -> None:
         test_doc38_population_counts_are_recomputed,
         test_doc40_accuracy_rule_and_its_withdrawals,
         test_doc41_postprocessing_arm_is_void,
+        test_doc42_and_43_dense_and_regime,
+        test_paper_draft_population_count_is_recomputed,
         test_course_documents_still_match_their_results,
     ]
     failures = 0

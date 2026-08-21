@@ -200,9 +200,26 @@ cannot silently restate a recorded verdict.
 - [x] ~~Nothing is committed past the pre-registrations.~~ All committed; working tree clean,
       44 tests passing across four suites.
 
+## Closed by documents 42-43
+
+- [x] **Re-run the sweeps at twelve points.** Done — nine to twelve arms retained everywhere
+      against two to four before. It cost two results: Alabama and Kentucky reverse when
+      confined below the crossover, so the claim is now "across the transition" only
+- [x] **The second-optimiser objection.** Tested and **failed**: r = −0.024 under
+      post-processing. It is the theory's regime boundary rather than fragility — the
+      attribute-aware prediction holds 18 of 18 — but the paper's scope is now explicitly
+      attribute-blind in-processing
+- [x] **Locate the Dutch crossover.** 0.534-0.618, and it joins a tight cluster
+
 ## Open after the generalisation and calibration work
 
-- [ ] **Re-run the operating-point sweeps with ten to twelve points.** Six is too coarse to
+- [ ] **Pre-register an attribute-aware test.** The 18-of-18 confirmation in document 43 was
+      decided after P1 failed and is post-hoc. The theory's prediction for that regime deserves
+      a test written before the data
+- [ ] **Try to predict the magnitude, and let it fail.** The paper concedes magnitude is
+      unpredictable without ever having attempted it. A pre-registered model beaten by the data
+      is a far stronger concession than an untested one, and it needs no new compute
+- [ ] ~~Re-run the operating-point sweeps with ten to twelve points.~~ Done, see above. Original note: Six is too coarse to
       survive the parity-gap rule and the accuracy rule together: five of eight populations are
       left with two to four arms and three are void. The relationship is not what failed there,
       the design is. Alabama, Kentucky and South Carolina need re-running before their results
