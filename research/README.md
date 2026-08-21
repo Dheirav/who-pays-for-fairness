@@ -95,6 +95,7 @@ would count as a failure, and which items need pre-registering.
 | 34 | [The crossover survives the tolerance](docs/34-the-crossover-survives-the-tolerance.md) | Identical crossover across a 25× range of ε, in 4 of 5 populations. Connecticut fails on a spread of 0.34 points — exposing that doc 23's T1 lacks the minimum-spread guard doc 33's E0 has |
 | 35 | [What to actually do about it](docs/35-what-to-do-about-it.md) | The decision procedure, including how to measure your own crossover on the model you already have |
 | 36 | [Not a property of linear models](docs/36-not-a-property-of-linear-models.md) | Boosted trees give the same crossover as logistic regression in **5 of 5** populations — the only test here that holds everywhere. Connecticut flips under trees where it never does under a linear model |
+| 37 | [The guard that should have been there](docs/37-the-guard-that-should-have-been-there.md) | A correction to this project's own method: T1 fixes a correlation bar but no minimum movement. All 20 arm sets re-scored — three are void, none ever passed on noise |
 
 ## The short version
 

@@ -101,10 +101,14 @@ points in Kentucky and 14.5 in South Carolina — carries no information in eith
 **This exposes a defect in document 23's pre-registration, not in Connecticut.** T1 requires
 r >= 0.70 but sets **no minimum spread**. Document 33's E0, written months later, does exactly
 that: it demands a 2.0-point spread before any correlation is allowed to count, precisely so a
-constant cannot be beaten by noise. Had T1 carried that guard, Connecticut would have been
-returned as *void for insufficient movement* rather than as a failure. The later
-pre-registration is better designed than the earlier one, and the earlier one is the project's
-headline.
+constant cannot be beaten by noise. The later pre-registration is better designed than the
+earlier one, and the earlier one is the project's headline.
+
+**The guard has since been added and applied backwards over every arm set ever scored under
+T1** ([document 37](37-the-guard-that-should-have-been-there.md)). Three of twenty are void,
+all three Connecticut under a linear model; **none ever passed T1 on noise**, so nothing this
+project has claimed is overturned. Connecticut is therefore *void*, not a refutation, and the
+O1/O2 entries for it above should be read that way.
 
 ### Lending: the pre-registered H1 is undecidable
 

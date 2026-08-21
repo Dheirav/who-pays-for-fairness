@@ -156,10 +156,64 @@ A different way of grouping people & Four populations, all agree \\
 \textbf{Fourteen runs, on four new populations, made \emph{after} the prediction was written down} &
   All consistent; correlation $+0.901$ \\
 Real mortgage decisions, where no arbitrary cutoff exists & Lands exactly where predicted \\
+Two loan products in one market, nothing manipulated & Opposite directions, as predicted \\
 Two datasets it was never tuned on & Both placed on the correct side \\
 \bottomrule
 \end{tabularx}
 \end{center}
+
+\subsection{What broke when it was tested harder}
+
+Since the previous version of this document the finding has been attacked four separate
+ways, on five populations each rather than one. Two attacks it survived; two found real
+limits.
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{lXl}
+\toprule
+\textbf{Attack} & \textbf{What it asks} & \textbf{Result} \\
+\midrule
+A different learner &
+  Is this just a property of straight-line models? & \textbf{5 of 5} \\
+A looser or tighter rule &
+  Is it just an artefact of one setting, 25$\times$ apart? & \textbf{4 of 5} \\
+A different way of reaching the same approval rate &
+  Is it the approval rate, or how hard the task is? & \textbf{4 of 5} \\
+A different fairness definition &
+  Does it hold for a rule that never mentions approval rates? & \textbf{Failed} \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\textbf{The third attack is the important one.} The original evidence changed the approval
+rate by changing what counted as success --- earning over \$20{,}000 against over
+\$100{,}000. Those are not the same problem: one is harder than the other. So the evidence
+could never tell apart ``the approval rate drives this'' from ``the difficulty drives
+this''.
+
+The new test holds the task completely fixed and moves only where the model draws its line.
+Same people, same features, same scores. \textbf{The approval rate is what matters}, in four
+populations of five, and the two methods agree on \emph{where} the switch happens in three of
+five. That also explains something the previous version could only report as a puzzle: the
+switch point sits in a different place for mortgages than for income, and it is a genuine
+difference between populations rather than an artefact of how the earlier evidence was built.
+
+\textbf{The fourth attack failed, and it is reported as a failure.} Under
+\emph{equalized odds} --- a fairness definition concerned with error rates rather than
+approval rates --- the relationship drops to $+0.334$ where the original definition gives
+$+0.762$ on the very same runs. Adding more populations made it \emph{worse}, not better,
+which is what a near-absent effect does. The claim is therefore narrower than it was: it
+applies to fairness rules that constrain \emph{how many people are approved}, and not to
+fairness rules in general.
+
+\textbf{One population produced no answer at all.} Connecticut's approval rates never fall
+below the switch point, so the constraint barely moves anything there and the arithmetic has
+nothing to work with. That exposed a flaw in my own method: the original test fixed a bar for
+the strength of the relationship but never required that anything actually \emph{move}. I have
+added that requirement and re-checked all twenty run-sets scored under the old test.
+\textbf{Three become ``no answer''; none of them had ever passed on noise}, so no conclusion
+changes --- but the hole was real and it was mine.
 
 \subsection{The obvious objection, answered in advance}
 

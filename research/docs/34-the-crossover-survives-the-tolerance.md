@@ -68,7 +68,10 @@ Oregon, Connecticut, Kentucky and South Carolina were added afterwards at both t
 | South Carolina | +0.898 | +0.880 | +0.873 | yes | 14.5 pts |
 | **Connecticut** | **−0.924** | **−0.130** | **−0.332** | **no** | **0.34 pts** |
 
-**Four of five hold at every tolerance. Connecticut fails at all three.**
+**Four of five hold at every tolerance. Connecticut is VOID at all three** — see
+[document 37](37-the-guard-that-should-have-been-there.md). It was first written up here as
+a failure, which was wrong: T1 lacked a minimum-spread guard, and a correlation over 0.34
+points is neither support nor refutation.
 
 Connecticut fails for the same reason it fails every other test in this project, and the
 reason is not the tolerance: its four arms span selection rates 0.306–0.821 and **all of them
@@ -79,9 +82,11 @@ noise does.
 
 **By sign, the rule is right about Connecticut at every tolerance**: high rates, pool grows,
 four times over. The pre-registered T1 has no minimum-spread guard — document 33's E0, written
-later, does — so it scores an uninformative arm set as a refutation. That defect belongs to
-document 23's design and is recorded in
-[document 32](32-the-rate-not-the-task.md).
+later, does — so it scored an uninformative arm set as a refutation. The guard has now been
+applied retrospectively to all twenty arm sets ever scored under T1
+([document 37](37-the-guard-that-should-have-been-there.md)): three are void, all three
+Connecticut under a linear model, and **none ever passed on noise**, so no conclusion is
+overturned.
 
 **What survives unqualified:** in every population where the arms actually span the crossover,
 the bracket does not move across a twenty-five-fold range of ε.

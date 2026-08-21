@@ -102,6 +102,46 @@ It then held up in:
   influenced it. Four is the number that matters: runs on the same population share their
   people and differ only in where the cutoff was put.
 
+## What happened when I tried hard to break it
+
+Since the last version I attacked this finding four ways, on five populations each instead
+of one. Two of the attacks it survived. Two found real limits, and both are reported here
+as limits rather than tucked away.
+
+| I tried | Asking | What happened |
+|---|---|---|
+| a completely different kind of model | is this just true of simple models? | **held, 5 out of 5** |
+| making the fairness rule much stricter, and much looser | is it just one setting? | **held, 4 out of 5** |
+| reaching the same approval rate a different way | is it the approval rate, or the difficulty? | **held, 4 out of 5** |
+| a different definition of fairness | does it hold for any fairness rule? | **it failed** |
+
+**The third one matters most.** The original evidence changed the approval rate by changing
+what counted as success — earning over $20,000 instead of over $100,000. But those are not
+the same task; one is much harder to predict than the other. So the old evidence could never
+separate *"the approval rate is what drives this"* from *"the difficulty is what drives
+this."*
+
+The new test changes nothing about the task at all. Same people, same information, same
+predictions — only the cut-off the model uses to say yes. **The approval rate is what
+matters.** And it also cleared up a puzzle I could not explain before: the switch point sits
+in a different place for mortgages than for income, and that turns out to be a real
+difference between the two worlds rather than a mistake in how I built the earlier evidence.
+
+**The fourth one failed, and I am not going to dress it up.** There is a second common
+definition of fairness, concerned with error rates rather than with how many people get
+approved. Under that definition the relationship almost disappears, and adding more
+populations made it weaker rather than stronger. So the finding is narrower than I first
+claimed: it is about fairness rules that control **how many people are approved**, not about
+fairness rules generally.
+
+**One population gave no answer at all.** In Connecticut almost everybody is above the switch
+point already, so the fairness rule barely changes anything and there is nothing to measure.
+That turned up a flaw in my own method — my original test demanded that the relationship be
+strong, but never demanded that anything actually *move*. I have added that requirement and
+re-checked every earlier result against it. Three go from "failed" to "no answer"; **none of
+them had ever passed by accident**, so nothing I claimed turns out to be wrong. But the hole
+was mine, and it was found by a population rather than by me.
+
 ## How this sits with the theory
 
 Three things came out of checking this work against that 2026 paper:

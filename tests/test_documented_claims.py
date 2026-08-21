@@ -658,7 +658,16 @@ def test_doc27_theory_correspondence() -> None:
     text = _doc(27)
     _quotes(text, "+0.935", "24 / 26", "25 / 26")
     frame = pd.read_csv(RESEARCH / "zeta" / "zeta_correspondence.csv")
-    assert len(frame) == 26, f"docs/27 reports 26 populations, found {len(frame)}"
+    assert len(frame) == 26, f"docs/27 reports 26 arms, found {len(frame)}"
+    # docs/27's headline count is arms, not populations: nine rows are income-cutoff variants
+    # and four are two HMDA states under two attributes each. Arms of one population share
+    # their rows, so fifteen is the number that governs independence.
+    import re as _re
+    _pops = {_re.sub(r"_(race|sex)$", "", _re.sub(r"_t\d+$", "", n))
+             for n in frame.iloc[:, 0]}
+    assert len(_pops) == 15, (
+        f"docs/27 says its 26 arms come from 15 populations, found {len(_pops)}: "
+        f"{sorted(_pops)}")
 
     obs = frame["pie"] > 0
     zeta_rule = frame["A_max_q"] > frame["B_max_q"]
@@ -947,6 +956,45 @@ def test_doc36_second_learner() -> None:
           f"linear {b_lr[0]:.3f}-{b_lr[1]:.3f}; 5/5 states hold incl. CT")
 
 
+def test_doc37_spread_guard_audit() -> None:
+    """docs/37: no arm set may ever PASS T1 on a spread below the guard."""
+    from src.experiments.analyse_threshold import (
+        MIN_BASELINE_GAP, MIN_R, MIN_SPAN_PIE, THRESHOLDS, attach_selection_rate, load)
+
+    text = _doc(37)
+    _quotes(text, "2.0-point spread", "-0.924", "0.10", "2.03", "Twenty arm sets")
+    assert MIN_SPAN_PIE == 2.0, "docs/37 documents a 2.0-point guard"
+
+    scored, void, passed_on_noise = 0, [], []
+    for suffix in ("", "_eps005", "_eps0002", "_hgb"):
+        for state in ["AL", "OR", "CT", "KY", "SC"]:
+            frame = load([state], THRESHOLDS, suffix)
+            if len(frame) < 3:
+                continue
+            frame = attach_selection_rate(frame, [state])
+            kept = frame[frame["dp_base"] >= MIN_BASELINE_GAP]
+            if len(kept) < 3 or kept["selection_rate"].isna().any():
+                continue
+            scored += 1
+            r = float(np.corrcoef(kept["selection_rate"], kept["pie_plain"])[0, 1])
+            spread = float(kept["pie_plain"].max() - kept["pie_plain"].min())
+            if spread < MIN_SPAN_PIE:
+                void.append((state, suffix or "_eps001", round(r, 3), round(spread, 2)))
+                if r >= MIN_R:
+                    passed_on_noise.append((state, suffix, r, spread))
+
+    # The load-bearing assertion. A conclusion resting on a correlation fitted to a
+    # sub-threshold spread is the failure mode T1's missing guard allowed, and docs/37's
+    # whole finding is that it never happened. If one appears, something is now wrong.
+    assert not passed_on_noise, (
+        f"docs/37 reports that NO arm set ever passed T1 on a spread under "
+        f"{MIN_SPAN_PIE} points; these now do: {passed_on_noise}")
+    assert scored == 20, f"docs/37 audits twenty arm sets, found {scored}"
+    assert len(void) == 3 and {v[0] for v in void} == {"CT"}, (
+        f"docs/37 reports three void arm sets, all Connecticut: {void}")
+    print(f"  {scored} arm sets audited; {len(void)} void (all CT); none passed on noise")
+
+
 def main() -> None:
     tests = [
         test_doc11_cross_flow_correlations,
@@ -969,6 +1017,7 @@ def main() -> None:
         test_doc33_eo_scope_condition,
         test_doc34_epsilon_robustness,
         test_doc36_second_learner,
+        test_doc37_spread_guard_audit,
         test_course_documents_still_match_their_results,
     ]
     failures = 0

@@ -175,10 +175,21 @@ cannot silently restate a recorded verdict.
       crossover can be bracketed. Document 35's central recommendation is therefore *not*
       validated on the domain it is aimed at, and now says so
 
-- [ ] **Fix document 23's T1 by adding a minimum-spread guard**, as document 33's E0 has.
-      Connecticut returns r = −0.924 on a spread of 0.34 percentage points and T1 scores that
-      as a refutation. The guard has to be applied *retrospectively and stated*, not slipped
-      in — every arm set already scored under T1 must be re-reported with its spread
+- [ ] **Audit every remaining "26 populations" claim individually.** Document 27's was
+      verified and corrected — its 26 rows are arms from **15** populations (Adult, twelve ACS
+      states, two HMDA states; nine rows are cutoff variants, four are two states under two
+      attributes). **There appears to be a second, different 26**: `research/paper/draft.md`
+      line 11 describes "Adult, 21 ACS Income populations across twelve states and two
+      protected attributes" plus HMDA, which is a different composition. Both are quoted as
+      "26 populations" in `PAPER.md`, `research/README.md`, `docs/30`, the paper draft, and
+      four supervisor-pack files — **27 occurrences across 9 files, not yet individually
+      verified.** Mass-editing them without establishing each one's provenance would risk
+      replacing one miscount with another, which is why it was left rather than swept
+- [x] **Fix document 23's T1 by adding a minimum-spread guard** — done, see
+      [document 37](docs/37-the-guard-that-should-have-been-there.md). Twenty arm sets
+      re-scored; three void, all Connecticut under a linear model; **none had ever passed on
+      noise**, so nothing is overturned
+
 - [ ] **Decide what to do about mis-calibrated arms in the operating-point sweep.** On ACS
       data extreme thresholds are filtered automatically because the parity gap collapses; on
       HMDA the gap stays large, so a model approving 35% where 72.5% are approved (accuracy

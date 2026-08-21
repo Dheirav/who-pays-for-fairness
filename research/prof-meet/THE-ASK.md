@@ -9,9 +9,9 @@ publishing, or does it now read as a follow-up to someone else's result?**
 ## Why it is a genuine fork
 
 **If the empirical half stands on its own**, the paper is close to ready. Their paper proves
-the possibility and contains zero experiments. Mine has 26 datasets, a controlled design, a
+the possibility and contains zero experiments. Mine has 26 measured arms from 15 populations, a controlled design, a
 rule computable from a historical approval rate, and the finding that **their conditions are
-satisfied on none of my 26 datasets** — the quantity they are stated over diverges on real
+satisfied on none of those 26 arms** — the quantity they are stated over diverges on real
 data. Theory and measurement then agree at a correlation of 0.93, having been arrived at
 independently.
 
@@ -30,9 +30,12 @@ The "when" is the contribution, and it stands on its own:
    than an application of it.
 3. **My rule is computable and theirs is not.** Theirs needs the joint distribution of the
    model's scores and group membership. Mine needs last year's approval rate.
-4. **The practical reading needs no mechanism.** Loans, hiring and admissions are nearly all
-   stingy systems — so the setting where these fixes take opportunities away is the setting
-   they are actually used in.
+4. **The practical reading is sharper than I first thought, and less comfortable.** I
+   originally claimed loans, hiring and admissions are nearly all stingy systems, so the
+   harmful direction is the usual one. **I measured it, and that was wrong** — they span the
+   whole range and sit on both sides of the switch. The real practical claim is better: two
+   products in the *same* mortgage market, run through the *same* fairness constraint, move
+   in opposite directions, and the fairness report says success in both cases.
 
 ## The objection I expect
 

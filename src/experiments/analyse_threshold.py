@@ -107,6 +107,15 @@ MIN_PARTIAL_R = 0.40
 # T4: below this baseline parity gap there is nothing to mitigate. Document 12's ground.
 MIN_BASELINE_GAP = 0.05
 
+# T1b, added retrospectively -- see document 37. T1 as originally written fixes a
+# correlation bar and no minimum movement, so an arm set where the constraint barely
+# touches the pool can produce a large |r| fitted to noise and be scored as a refutation.
+# Connecticut returns r = -0.924 on a spread of 0.10 percentage points. Document 33's E0,
+# written months later, requires this guard; T1 should have from the start. The audit of
+# every arm set ever scored under T1 found none that PASSED on noise, so no result is
+# overturned -- but three were reported as failures that are properly void.
+MIN_SPAN_PIE = 2.0
+
 
 def arm_name(state: str, threshold: int, suffix: str = "") -> str:
     """Directory for one arm.
@@ -119,6 +128,26 @@ def arm_name(state: str, threshold: int, suffix: str = "") -> str:
     if threshold != DEFAULT_THRESHOLD:
         stem = f"{stem}_t{threshold}"
     return f"{stem}_levelling_up{suffix}"
+
+
+def _recorded_size(state: str) -> float | None:
+    """Test-set size from any arm of this population that recorded one.
+
+    A state's earliest arms predate the ``n_test`` column and no ``who_pays`` run exists
+    for several of them, so within one sweep there is nothing to borrow from. Any *other*
+    sweep of the same state -- a different tolerance, a different learner -- ran the same
+    split protocol on the same rows and did record it. Scanning for that is exact.
+
+    Without it the rates come out NaN, T0 reports "the knob does not move the selection
+    rate" for a state where the knob works fine, and the whole arm set silently disappears
+    from the analysis rather than raising.
+    """
+    for path in sorted(RESEARCH_RESULTS_DIR.glob(
+            f"acs_income_{state.lower()}_2018*_levelling_up*/levelling_up_runs.csv")):
+        runs = pd.read_csv(path)
+        if "n_test" in runs.columns and runs["n_test"].notna().any():
+            return float(runs["n_test"].dropna().iloc[0])
+    return None
 
 
 def partial_corr(x, y, control) -> float:
@@ -197,8 +226,9 @@ def attach_selection_rate(frame: pd.DataFrame, states: list[str]) -> pd.DataFram
     if frame["n_test"].isna().any():
         for state, rows in frame.groupby("state"):
             known = rows["n_test"].dropna()
-            if not known.empty:
-                frame.loc[rows.index, "n_test"] = rows["n_test"].fillna(known.iloc[0])
+            size = known.iloc[0] if not known.empty else _recorded_size(str(state))
+            if size is not None:
+                frame.loc[rows.index, "n_test"] = rows["n_test"].fillna(size)
     frame["selection_rate"] = frame["positives_base"] / frame["n_test"]
     return frame
 
@@ -241,8 +271,19 @@ def verdict(frame: pd.DataFrame) -> None:
     lowest = kept.loc[kept["selection_rate"].idxmin()]
     highest = kept.loc[kept["selection_rate"].idxmax()]
     flipped = lowest["pie_plain"] < 0 < highest["pie_plain"]
+    spread = float(kept["pie_plain"].max() - kept["pie_plain"].min())
+    informative = spread >= MIN_SPAN_PIE
     t1 = r1 >= MIN_R and flipped
-    print(f"\nT1  the pie change rises with it           -> {'HOLDS' if t1 else 'FAILS'}")
+
+    print(f"\nT1b the constraint moved the pool at all   -> "
+          f"{'HOLDS' if informative else 'VOID'}")
+    print(f"      spread {spread:.2f} points across {len(kept)} arms  (bar {MIN_SPAN_PIE})")
+    if not informative:
+        print("      the pool barely moves here, so any correlation below is fitted to")
+        print("      noise. This arm set is VOID -- neither support nor refutation.")
+
+    print(f"\nT1  the pie change rises with it           -> "
+          f"{'VOID' if not informative else ('HOLDS' if t1 else 'FAILS')}")
     print(f"      r = {r1:+.3f} over {len(kept)} arms  (bar {MIN_R})")
     print(f"      lowest  rate {lowest['selection_rate']:.3f}: pie {lowest['pie_plain']:+.2f}%")
     print(f"      highest rate {highest['selection_rate']:.3f}: pie {highest['pie_plain']:+.2f}%")
@@ -263,6 +304,12 @@ def verdict(frame: pd.DataFrame) -> None:
           f"{highest['exchange_plain']:.2f} at the highest")
 
     print("\n" + "=" * 78)
+    if t0 and not informative:
+        print("VOID. The constraint does not move the pool enough here for a direction to")
+        print("exist, so this arm set neither supports nor refutes the conjecture. It is")
+        print("reported as void rather than as evidence either way -- see document 37.")
+        print("=" * 78)
+        return
     if t0 and t1 and t2:
         print("The selection rate is a moderator of the levelling-down direction, and the")
         print("relationship is not the base-rate gap in disguise. Document 22's reversal has")

@@ -34,7 +34,14 @@ occurrences of "experiment", "dataset", "Adult" or "COMPAS" in its full text.
 
 ## Result 1 — the conditions are never satisfied
 
-**Neither strict condition holds on any of the 26 populations.** Not one.
+**Neither strict condition holds on any of the 26 arms.** Not one.
+
+**Those 26 arms come from 15 populations**, not 26: Adult, twelve ACS states, and two HMDA
+states. Nine of the rows are income-cutoff variants of Alabama, Oregon and Kentucky, and the
+four HMDA rows are two states under two protected attributes each. Arms of one population
+share their rows, so the count that governs independence is fifteen. This is the same
+miscount [document 26](26-the-derivation-does-not-earn-its-keep.md) corrected for its own
+held-out set, found later and in this document's own headline.
 
 The reason is structural rather than incidental: `zeta` is a ratio that diverges as
 `nu -> 0`, and every real dataset has points arbitrarily close to `nu = 0`. So the empirical
@@ -83,7 +90,7 @@ thing**.
 | question | answer |
 |---|---|
 | Is the conditionality claim ours? | **No.** Established theoretically and independently, five months earlier |
-| Does their theorem predict our data? | **Not as stated** — its conditions hold on 0 of 26 populations |
+| Does their theorem predict our data? | **Not as stated** — its conditions hold on 0 of 26 arms, drawn from 15 populations |
 | Is its *direction structure* right? | **Yes**, once relaxed to an ordering: 24–25 of 26 |
 | Is our rule a different phenomenon? | **No** — it proxies their quantity at r = +0.935 |
 | Is our rule usable where theirs is not? | **Yes.** Theirs needs the joint score-and-group distribution; ours needs a historical approval rate |

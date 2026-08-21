@@ -80,5 +80,9 @@ agree at 0.93 — independent theory and independent measurement converging.
 
 ## Scale
 
-26 datasets · 61 experimental runs · 3 data sources · 2 kinds of decision · 5 repeats of
-everything
+16 populations · 191 experimental runs · 1,011 model fits · 2 data sources · 2 kinds of
+decision · 5 repeats of everything, 12 where the effects were small enough to need them
+
+Four separate attempts to break the finding, on five populations each: a different learner
+(survived 5/5), a 25× range of constraint strength (4/5), a different route to the same
+approval rate (4/5), and a different fairness definition (**failed**).
