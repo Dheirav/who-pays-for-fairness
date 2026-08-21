@@ -1,0 +1,30 @@
+{
+  "experiment": "levelling_up",
+  "signature": "constraintequalized_odds_eps0.01_modellogistic_regression_seeds0-11",
+  "params": {
+    "dataset": "acs:OR:SEX:30000",
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "eps": 0.01,
+    "constraint": "equalized_odds",
+    "model": "logistic_regression"
+  },
+  "files": [
+    "levelling_up_runs__constraintequalized_odds_eps0.01_modellogistic_regression_seeds0-11.csv",
+    "levelling_up_runs.csv",
+    "levelling_up_summary__constraintequalized_odds_eps0.01_modellogistic_regression_seeds0-11.csv",
+    "levelling_up_summary.csv"
+  ]
+}

@@ -1,0 +1,11 @@
+,KY
+void,False
+r_pie,0.8496773031628937
+o0,True
+o1,True
+o2,True
+o3,False
+beats_naive,True
+n_kept,4
+op_band,"(0.6103604968191457, 0.7582550742199333)"
+cut_band,"(0.26031505604362315, 0.6049984853074826)"
