@@ -1,0 +1,11 @@
+dataset,dutch_2001_sex
+void,False
+span,0.7091912170363014
+spread,49.63141499320875
+informative,True
+r,0.914924036607366
+n_kept,6
+band_low,
+band_high,
+beats_naive,True
+holds,True

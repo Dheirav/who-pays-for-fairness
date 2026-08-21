@@ -1,5 +1,15 @@
 # 32 — It is the selection rate, not how hard the task is
 
+> **Correction, [document 40](40-the-arms-that-were-worse-than-doing-nothing.md).** The
+> Alabama result below — r = +0.979, this document's headline and the strongest correlation
+> in the project — is **VOID**. Two of its retained arms were models beaten by always
+> predicting the majority label, and only two arms survive once those are removed. Kentucky
+> and South Carolina are void for the same reason. **The claim now rests on Oregon
+> (r = +0.778 after exclusion), on COMPAS (+0.870) and on the Dutch census (+0.915) from
+> [document 39](39-three-more-instruments.md).** It survives, on fewer populations and with a
+> weaker correlation than stated here. The numbers below are left as they were computed, with
+> this notice, rather than silently restated.
+
 **Individual work, beyond the course submission.** Predictions and thresholds were fixed in
 `src/experiments/analyse_operating_point.py` and committed at `a73e1e0`, before any arm was
 run.

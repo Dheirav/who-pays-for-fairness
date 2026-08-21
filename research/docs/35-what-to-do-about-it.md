@@ -47,6 +47,18 @@ population-specific, and quoting one population's as a constant is the mistake
    decisions**, not the fairness metric;
 4. the crossover is where that change turns from negative to positive.
 
+**Throw out any arm where the model is worse than doing nothing.** Compare each arm's
+accuracy against `max(p, 1 − p)` — what always predicting the more common label achieves. The
+sweep works by mis-calibrating your model on purpose, and past a point it produces a
+classifier nobody would deploy. On a task where 89% of people already qualify, **five of six
+arms** fail this check ([document 40](40-the-arms-that-were-worse-than-doing-nothing.md)).
+Applying it is what turned the lending result from a failure into agreement with an
+independent estimate.
+
+**Use ten to twelve operating points, not six.** After this rule and the parity-gap rule, a
+six-point sweep is routinely left with two arms and nothing can be said. That is the single
+most common way this procedure fails.
+
 **Check the spread before trusting the answer.** If the largest and smallest pie changes
 differ by less than about two percentage points, you have not measured a crossover — you have
 fitted a line to noise, which is precisely how Connecticut produces a confident-looking
@@ -66,13 +78,17 @@ mortgage data:
   0.26–0.61, with opposite signs on the arm at 0.61, both under 1%;
 * in **Connecticut** there is nothing to find: every arm levels up and the spread is 0.34
   percentage points;
-* on **pooled Mississippi and Louisiana lending data the route fails** — the relationship is
-  not monotone (r = +0.633) and no single crossover can be bracketed.
+* on **lending it now works, once the accuracy rule above is applied** — and this is the
+  strongest validation the procedure has. Four independent estimates of the mortgage crossover
+  agree: 0.643–0.773 from comparing five real loan products with nothing manipulated
+  ([document 31](31-the-crossover-on-natural-data.md)), against 0.620–0.700 pooled,
+  0.620–0.697 on Louisiana held out, and 0.709–0.807 on refinance held out
+  ([document 40](40-the-arms-that-were-worse-than-doing-nothing.md)).
 
-**So this procedure is not validated on lending, which is the domain this project most wants
-to speak to.** Use it on a rate-constraining criterion, expect it to work about four times in
-five, and treat a result that shows no sign change as "your arms do not span the crossover"
-rather than "there is no crossover".
+**Before the accuracy rule this procedure failed on lending outright.** It was rescued by
+excluding arms whose model was worse than a constant — which is why that step is not optional.
+Expect it to work on most populations, treat a result with no sign change as "your arms do not
+span the crossover" rather than "there is no crossover", and do not run it with six points.
 
 ### Step 3 — Act on where you sit
 

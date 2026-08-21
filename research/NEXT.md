@@ -200,6 +200,26 @@ cannot silently restate a recorded verdict.
 - [x] ~~Nothing is committed past the pre-registrations.~~ All committed; working tree clean,
       44 tests passing across four suites.
 
+## Open after the generalisation and calibration work
+
+- [ ] **Re-run the operating-point sweeps with ten to twelve points.** Six is too coarse to
+      survive the parity-gap rule and the accuracy rule together: five of eight populations are
+      left with two to four arms and three are void. The relationship is not what failed there,
+      the design is. Alabama, Kentucky and South Carolina need re-running before their results
+      can be quoted at all
+- [ ] **The second-optimiser objection is still open.** The post-processing arm is void by
+      construction — `ThresholdOptimizer` re-derives its own thresholds and never sees the
+      decision rule the sweep manipulates, so it produced an identical model at all six points
+      ([document 41](docs/41-two-scope-tests-one-void-by-my-own-error.md)). A correct test has
+      to vary the *population* at each method's natural operating point, or vary the base
+      model's training. Do not cite document 41 as having tested this
+- [ ] **Locate the Dutch crossover.** r = +0.915 across six arms, but one near-zero arm sits
+      out of order so no bracket can be drawn. More operating points would settle it
+- [ ] **Decide what COMPAS's attribute disagreement means.** Its race and sex arms move in
+      opposite directions at similar rates, while Oregon's two arms give near-identical
+      crossovers. The COMPAS arms are not the same population — the race arm drops defendants
+      outside ProPublica's two groups — but that has not been shown to be the explanation
+
 ## Explicitly not doing
 
 **Chasing the mechanism again.** *Backfire* has it, and document 27 shows its conditions do

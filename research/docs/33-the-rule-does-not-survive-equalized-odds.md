@@ -1,5 +1,13 @@
 # 33 — The rule does not survive a change of criterion, at the bar it was given
 
+> **Scope correction, [document 41](41-two-scope-tests-one-void-by-my-own-error.md).** The
+> *correlation* finding below stands where it was measured: on ACS data, equalized odds gives
+> +0.334 against parity's +0.762. The **magnitude claim does not generalise.** On COMPAS the
+> pool moves *more* under equalized odds than under parity (+20.0% against +32.7% on race),
+> the Dutch census agrees (+0.88% against +4.07%), and a COMPAS operating-point sweep under
+> equalized odds gives **r = +0.900**, higher than its parity result. "Equalized odds moves
+> the pool eight times less" is an ACS observation and must be written as one.
+
 **Individual work, beyond the course submission.** Predictions and thresholds were fixed in
 `src/experiments/analyse_eo.py` and committed at `e658ed1`, before any Alabama or Oregon
 equalized-odds arm was run.

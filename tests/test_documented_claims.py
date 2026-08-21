@@ -1036,6 +1036,87 @@ def test_doc38_population_counts_are_recomputed() -> None:
     print(f"  19 arms/10 populations and 26 arms/15 populations, recomputed from source")
 
 
+def test_doc40_accuracy_rule_and_its_withdrawals() -> None:
+    """docs/40: the exclusion must keep withdrawing what it withdrew and rescuing lending."""
+    from src.experiments.analyse_calibration import apply_rules, majority_baseline
+    from src.experiments.analyse_operating_point import (
+        HMDA_POINTS, OPERATING_POINTS, crossover_bracket, load_points_for)
+    from src.experiments.analyse_threshold import MIN_R
+
+    text = _doc(40)
+    _quotes(text, "+0.979", "VOID", "+0.858", "0.620", "+0.995", "worse than doing nothing")
+
+    def scored(spec, name, points):
+        ops = load_points_for(name, points)
+        kept, counts = apply_rules(ops, majority_baseline(spec))
+        if len(kept) < 3:
+            return None, counts
+        r = float(np.corrcoef(kept["selection_rate"], kept["pie"])[0, 1])
+        return (r, crossover_bracket(kept)), counts
+
+    # The two withdrawals. If either comes back, docs/32 and docs/39 are describing results
+    # that no longer hold, and a withdrawn number quietly returning is the worse failure.
+    for spec, name, pts, label in [
+        ("acs:AL", "acs_income_al_2018", OPERATING_POINTS, "Alabama"),
+        ("lawschool", "lawschool_race",
+         [0.60, 0.90, 0.95, 0.975, 0.99, 0.995], "LSAC")]:
+        got, counts = scored(spec, name, pts)
+        assert got is None, (
+            f"docs/40 withdraws {label} as VOID under the accuracy rule; it now scores "
+            f"{got} with {counts['n_kept']} arms retained")
+
+    # The rescue: lending fails without the rule and holds with it.
+    got, counts = scored("hmda:MS,LA:derived_race", "hmda_ms_la_2018_race", HMDA_POINTS)
+    assert got is not None, "docs/40 reports pooled HMDA HOLDING under the rule"
+    r, band = got
+    assert r >= MIN_R and band is not None, f"docs/40 says HMDA holds at +0.858; got {r:+.3f}"
+
+    # And the convergence that makes it worth something: the operating-point band must
+    # overlap document 31's natural-split estimate, which used no manipulation at all.
+    natural = (0.643, 0.773)
+    assert band[0] <= natural[1] and natural[0] <= band[1], (
+        f"docs/40 rests on the swept band {band} overlapping docs/31's natural {natural}")
+
+    # The out-of-sample half scored 2 of 4 and is reported as a FAILURE. Pin the count.
+    held = {}
+    for spec in ["hmda:MS:derived_race", "hmda:LA:derived_race",
+                 "hmda:MS,LA:derived_race:improvement", "hmda:MS,LA:derived_race:refinance"]:
+        from src.datasets import build as _build
+        got, _ = scored(spec, _build(spec).name, HMDA_POINTS)
+        held[spec] = bool(got and got[0] >= MIN_R and got[1] is not None)
+    assert sum(held.values()) == 2, (
+        f"docs/40 reports A1b passing on two of four populations and scores that a failure; "
+        f"it is now {sum(held.values())}: {held}")
+    print(f"  AL and LSAC still void; HMDA holds at {r:+.3f}, band {band[0]:.3f}-{band[1]:.3f} "
+          f"overlaps docs/31; A1b still 2/4")
+
+
+def test_doc41_postprocessing_arm_is_void() -> None:
+    """docs/41: the post-processing sweep measured a constant, and must keep saying so."""
+    from src.experiments.run_levelling_up import model_code
+    from src.results_io import RESEARCH_RESULTS_DIR
+
+    text = _doc(41)
+    _quotes(text, "1,722", "void", "+0.900")
+
+    positives = []
+    for point in [0.02, 0.06, 0.16, 0.49, 0.72, 0.87]:
+        path = (RESEARCH_RESULTS_DIR
+                / f"acs_income_al_2018_levelling_up_"
+                  f"{model_code(f'logistic_regression@{point}')}_post"
+                / "levelling_up_runs.csv")
+        frame = pd.read_csv(path).groupby("arm").mean(numeric_only=True)
+        arm = next(a for a in frame.index if a.startswith("postprocess"))
+        positives.append(float(frame.loc[arm, "positives"]))
+
+    # The whole point of docs/41: the post-processed model ignores the operating point, so
+    # its output is identical everywhere and the apparent reversal is arithmetic.
+    assert max(positives) - min(positives) < 1.0, (
+        f"docs/41 reports the post-processed model producing an identical number of "
+        f"favourable decisions at every operating point; it now varies: {positives}")
+    print(f"  post-processed output constant at {positives[0]:.0f} across all six points")
+
+
 def main() -> None:
     tests = [
         test_doc11_cross_flow_correlations,
@@ -1060,6 +1141,8 @@ def main() -> None:
         test_doc36_second_learner,
         test_doc37_spread_guard_audit,
         test_doc38_population_counts_are_recomputed,
+        test_doc40_accuracy_rule_and_its_withdrawals,
+        test_doc41_postprocessing_arm_is_void,
         test_course_documents_still_match_their_results,
     ]
     failures = 0
