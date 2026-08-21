@@ -1,0 +1,11 @@
+dataset,lawschool_race
+void,False
+span,0.8012820512820513
+spread,94.60958363464974
+informative,True
+r,0.9679335059912374
+n_kept,6
+band_low,0.6923397435897436
+band_high,0.9263461538461538
+beats_naive,True
+holds,True

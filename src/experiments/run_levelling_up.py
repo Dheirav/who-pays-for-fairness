@@ -85,7 +85,11 @@ def model_code(model: str) -> str:
     """
     base, _, threshold = model.partition("@")
     if threshold:
-        return f"op{threshold.replace('.', '')}"
+        # Normalised through float, so that "0.30" typed on a command line and the float
+        # 0.3 held in an analyser's constant list produce the SAME directory. Formatting
+        # the raw string gave op030 and op03, and the arms then simply vanished from the
+        # analysis -- no error, just two fewer rows and a verdict computed over the rest.
+        return f"op{float(threshold):g}".replace(".", "")
     return MODEL_CODE[base]
 
 DEFAULT_CONSTRAINT = "demographic_parity"
