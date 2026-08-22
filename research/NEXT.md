@@ -15,12 +15,13 @@ constant (document 26).
 
 ## Where the work stands
 
-* **27 independent populations**, 6 domains, 5 instruments, 3 countries, 2 decades.
+* **37 independent populations**, 6 domains, 5 instruments, 3 countries, 2 decades.
 * **The claim, in full:** within a population, in the **attribute-blind in-processing** regime,
-  between roughly 0.10 and the crossover, the baseline selection rate predicts *which way* a
-  parity constraint moves the pool of favourable decisions, and orders *how much*. Neither
-  transfers between populations. The crossover is ~0.54 as a **prior for auditing, not a
-  constant**.
+  the baseline selection rate against the ~0.54 prior predicts *which way* a parity constraint
+  moves the pool of favourable decisions, and orders *how much* within the population. Neither
+  the magnitude nor a pooled slope transfers between populations. The crossover is ~0.54 as a
+  **prior for auditing, not a constant** — and the direction claim is now **sealed**: 9 of 10
+  on never-measured states, bar 9, constant 6, committed first (document 49).
 * **The paper** is 8 pages, IEEE format, builds from `research/paper/ieee/build.sh`.
   `research/paper/draft-v2.md` is **superseded** — do not edit it; the pack copies the typeset
   PDF.
@@ -28,12 +29,15 @@ constant (document 26).
   results. Run all five before trusting anything:
   `for m in test_documented_claims test_output_isolation test_incidence test_acs_threshold test_new_instruments; do .venv/bin/python -m tests.$m; done`
 
-### Four results to know before touching anything
+### Five results to know before touching anything
 
-1. **The sealed prediction failed** (document 47). Nine populations, predictions committed
-   first: **4 of 8, not beating a constant**. What broke it was a refinement added two hours
-   earlier from four in-sample populations — carrying it turned a 7-of-8 prediction into
-   4-of-8. Document 46 is withdrawn in place because of it.
+1. **The first sealed prediction failed; the re-seal of the simpler rule holds** (documents
+   47, 49). Doc 47: predictions committed first scored **4 of 8, not beating a constant**,
+   because they carried a refinement added two hours earlier from four in-sample populations;
+   document 46 is withdrawn in place because of it. Doc 49: the pre-refinement rule — *down
+   below 0.54, up above* — re-sealed against ten never-measured states scored **9 of 10, bar
+   9, constant 6**. The one miss (MN, 0.699) is flagged by the sealed criterion as against
+   the rule, not a boundary call; its effect is seed-noise around zero, noted post-hoc.
 2. **The rule is regime-bound** (documents 43, 47). Under post-processing it vanishes
    (r = −0.024 against +0.585). That is the theory's regime boundary rather than fragility, and
    the attribute-aware prediction holds **27 of 27**, nine pre-registered.
@@ -49,10 +53,11 @@ constant (document 26).
 
 ## Open, in the order I would do them
 
-- [ ] **Re-seal the simpler rule.** The 7-of-8 in document 47 is post-hoc. Sealing *down below
-      0.54, up above* on fresh populations would convert this project's weakest evidence into
-      its strongest. **Highest value on the list.** ~2 hours. Populations must never have been
-      measured; 38 unused ACS states and several HMDA arms are available.
+- [x] **Re-seal the simpler rule. DONE — it holds** (document 49): 9 of 10 on ten
+      never-measured ACS states, sealed bar 9, constant 6 beaten, committed at `356bfa5`
+      before any arm ran. The paper's framing should now lead with this. A future seal should
+      pre-state a minimum-magnitude guard: the one miss was an arm whose effect is
+      indistinguishable from zero.
 - [ ] **Explain the route divergence below 0.10.** Currently a described fact with a conjecture
       attached. Whatever explains it probably also explains why the accuracy rule fails to
       catch it — a real gap in the procedure document 35 recommends.

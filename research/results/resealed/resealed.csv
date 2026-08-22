@@ -1,0 +1,11 @@
+spec,population,rate,pie,predicted,actual,correct
+acs:IA:SEX:10000,acs_income_ia_2018_t10000,0.896056,0.042096,up,up,True
+acs:WI:SEX:20000,acs_income_wi_2018_t20000,0.81401,0.685871,up,up,True
+acs:KS:SEX:20000,acs_income_ks_2018_t20000,0.767531,0.582472,up,up,True
+acs:CO:SEX:30000,acs_income_co_2018_t30000,0.700894,0.632015,up,up,True
+acs:MN:SEX:30000,acs_income_mn_2018_t30000,0.699173,-0.036632,up,down,False
+acs:NV,acs_income_nv_2018,0.296871,-1.570504,down,down,True
+acs:OK,acs_income_ok_2018,0.219792,-12.779556,down,down,True
+acs:AR,acs_income_ar_2018,0.194927,-2.547293,down,down,True
+acs:WA:SEX:70000,acs_income_wa_2018_t70000,0.232543,-5.522446,down,down,True
+acs:NE:SEX:100000,acs_income_ne_2018_t100000,0.014153,-6.349391,down,down,True
