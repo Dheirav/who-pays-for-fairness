@@ -28,7 +28,7 @@ region that could never survive.
 **Some populations have no viable band, and that is a finding rather than an obstacle.** On a
 task where 89% of people already qualify, every threshold that reaches a low selection rate
 produces a classifier worse than approving everyone. The measured viable span on LSAC is
-**0.107**, against the 0.40 this project requires of a sweep, so the operating-point route is
+**0.056**, against the 0.40 this project requires of a sweep, so the operating-point route is
 **unusable there** and no number of extra points changes it. ``viable_band`` reports the span
 so a caller can refuse rather than produce arms that will be excluded later.
 """
