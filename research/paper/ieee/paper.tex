@@ -189,6 +189,41 @@ post-processing is explicitly under test.
 always predicting the more common label. The second rule matters more than it sounds
 (Section~\ref{sec:failures}).
 
+\textbf{Accounting.} Table~\ref{tab:accounting} states which populations enter which
+analysis, because three counts in this project's own history turned out to be arm counts
+masquerading as population counts, and a reader should not have to reconstruct the
+denominators.
+
+\begin{table}[t]
+\caption{Which populations enter which analysis. An \emph{arm} is one population under one
+configuration; populations are counted once however many arms they contribute.}
+\label{tab:accounting}
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Analysis} & \textbf{Populations (arms)} \\
+\midrule
+Ablation; who pays & Adult (6 methods $\times$ 5 seeds) \\
+Rate--people divergence & 10 pops.\ (19 arms, 2 attributes) \\
+Label route (income cutoffs) & AL sex; AL, MS, OR, UT race (4 each) \\
+Natural transition & HMDA MS+LA (5 loan purposes) \\
+Threshold route, dense sweeps & Dutch, SC, COMPAS, AL, KY (12 pts.) \\
+Tolerance, $25\times$ range & AL, CT, KY, OR, SC \\
+Boosted trees & the same five states \\
+Intersectional & Adult + 10 populations \\
+Post-processing regime & 17 populations ($r=-0.024$) \\
+Attribute-aware direction & 27 of 27, of which 9 pre-registered \\
+Relaxed $\zeta$ ordering & 26 arms from 15 populations \\
+Crossover intervals & 4 non-lending + 3 lending estimates \\
+Sealed test 1 (failed) & 8 scored + Taiwan, all fresh \\
+Re-seal (holds) & 10 fresh ACS states \\
+Selection-rate floor & 10 pops.\ (19 arms) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \section{Parity Is Bought by Withdrawal --- Where It Is}
 
 \begin{table}[t]
@@ -737,7 +772,31 @@ inside the framework of \cite{agarwal2018}, and a variant of the minimum rate co
 \label{sec:failures}
 
 Every prediction was registered with its thresholds \emph{and the naive alternative it had to
-beat}, before the data existed. Three episodes matter for reading the results above.
+beat}, before the data existed. Table~\ref{tab:registered} is the complete ledger --- every
+registered or sealed test this work ran, with its committed bar and its outcome, failures
+included and uncorrected. Three episodes matter for reading the results above.
+
+\begin{table}[t]
+\caption{Every registered or sealed test, with the bar committed in advance and the outcome.
+Nothing is omitted.}
+\label{tab:registered}
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{Test} & \textbf{Bar} & \textbf{Outcome} & \\
+\midrule
+HMDA held-out sweep & 4 of 4 bracket & 2 of 4 & fail \\
+Equalized-odds transfer & $r \geq +0.70$ & $+0.334$ & fail \\
+Post-processing transfer & rule carries over & $r = -0.024$ & fail \\
+Selection-rate derivation & bars + beat constant & beaten, 12 v.\ 13 & fail \\
+Sealed rule, refined & 7 of 8 & 4 of 8 & fail \\
+Attr.-aware replication & 9 of 9 & 9 of 9 & \textbf{holds} \\
+Re-seal, unrefined rule & 9 of 10 + beat const. & 9 of 10, const.\ 6 & \textbf{holds} \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \textbf{A held-out prediction, scored as a failure.} The clearest evidence format available is
 a prediction registered before the data exists. We ran one: after adding the accuracy rule
@@ -777,6 +836,17 @@ here.
 clean reversal. It was void: the method re-derives its own thresholds and returned an identical
 model at all six operating points, so the measured effect was a constant divided by a shrinking
 baseline. What exposed it was an exchange rate of 0.000.
+
+\textbf{The claim that survives every test above, stated once and in full.} Within a
+population, in the attribute-blind in-processing regime, across the transition: the baseline
+selection rate, read against a crossover prior near 0.54, predicts the direction in which a
+parity constraint moves the pool of favourable decisions --- sealed at 9 of 10 on populations
+never previously measured --- and orders the magnitude within that population. The boundaries,
+equally part of the claim: the crossover clusters at 0.43--0.58 and is unexplained; magnitude
+does not transfer across populations and no pooled slope exists; below a selection rate of
+about 0.10 the two routes to the rate disagree, and only the label route carries the claim
+there; and in the attribute-aware regime the direction is determined by theorem, the rate
+predicts nothing, and there is nothing left to predict.
 
 \section{Limitations}
 
