@@ -103,6 +103,14 @@ that after the run cannot excuse the miss.
 - [ ] **Magnitude.** Ordered within a population (ρ up to +0.96), no pooled slope (+0.487,
       failed). A better model is possible; the current concession is honest without one.
 
+## Screened and refused, so nobody screens them twice
+
+* **UCI diabetes readmission (130 hospitals, 102k rows), 23 Aug.** Band is excellent
+  (0.135–0.948, span 0.813) but no attribute carries a workable gap: gender +0.018, race
+  −0.034 (inverted), both under the 0.05 floor. A parity constraint has nothing to act on
+  there. Third refusal species alongside band-too-narrow (LSAC, Taiwan) and
+  below-noise-floor (the small states).
+
 ## Explicitly not doing
 
 **Another derivation.** *Backfire*'s Theorem 3 is the mechanism and we cite it; document 26

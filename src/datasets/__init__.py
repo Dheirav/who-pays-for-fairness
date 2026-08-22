@@ -45,9 +45,15 @@ def build(name: str) -> DatasetLoader:
         from .acs import PROTECTED, ACSIncomeLoader
 
         state_part, _, rest = argument.partition(":")
-        attribute, _, threshold = rest.partition(":")
+        attribute, _, rest = rest.partition(":")
+        threshold, _, year = rest.partition(":")
         states = [s.strip().upper() for s in state_part.split(",") if s.strip()]
         options = {"threshold": int(threshold)} if threshold.strip() else {}
+        # Survey year as an optional fourth segment ("acs:TX:SEX:50000:2014"), because the
+        # cross-year design needs the same state at different wealth levels and the year is
+        # part of the population's identity -- the loader's name already carries it.
+        if year.strip():
+            options["year"] = year.strip()
         return ACSIncomeLoader(
             states=states or None,
             protected=attribute.strip().upper() or PROTECTED,

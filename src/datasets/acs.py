@@ -201,6 +201,15 @@ class ACSIncomeLoader:
         )
         frame = source.get_data(states=self.states, download=True)
 
+        # The 2019+ PUMS files rename RELP to RELSHIPP with a new code scheme. Our
+        # folktables version predates the rename, and upgrading it mid-project would put
+        # every committed result on a different library. The column is one-hot encoded, so
+        # the codes are unordered levels either way; renaming keeps the feature present.
+        # The caveat is real and documented: RELP levels are not comparable across the
+        # 2018/2019 boundary, so no cross-year feature-level claim may use this column.
+        if "RELP" not in frame.columns and "RELSHIPP" in frame.columns:
+            frame = frame.rename(columns={"RELSHIPP": "RELP"})
+
         if self.threshold == DEFAULT_THRESHOLD:
             X, y, _ = ACSIncome.df_to_pandas(frame)
         else:
