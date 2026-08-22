@@ -89,7 +89,10 @@ theory draws, and we verify it from both sides.
 Contemporaneous theory \cite{backfire2026} establishes that in the attribute-blind regime the
 direction is distribution-dependent. It contains no experiments and its conditions are ordering
 relations on score regions rather than measurable quantities. We supply the measurement across
-27 populations and six domains, and find its stated conditions hold on \textbf{0 of 26} arms.
+27 populations and six domains, and find its stated conditions --- which are \emph{sufficient,
+not necessary} --- cannot be evaluated on any of 26 real arms, for a structural reason given in
+Section~\ref{sec:regime}. A relaxed form of the same ordering agrees with the measured
+direction on 24 of 26.
 
 \item \textbf{Separation of the predictor from its confound.} Varying the selection rate by moving
 a label threshold cannot distinguish ``the rate predicts the direction'' from ``task difficulty
@@ -437,7 +440,20 @@ post-hoc, so we repeated it as a confirmatory test on nine populations never pre
 post-processed, with the bar set at all nine and committed before the runs: it holds \textbf{9
 of 9}. The regime result therefore stands at 27 of 27, nine of them predicted in advance.
 
-Section~\ref{sec:failures} notes that the same theory's \emph{conditions} hold on 0 of 26 arms.
+\textbf{A word on what we do and do not claim against the theory.} Its Theorem 3 states
+conditions over the extrema of $\zeta(x) = (\eta(x)-c)/\nu(x)$, and those extrema
+are unattainable on real data: $\zeta$ diverges as $\nu \to 0$, every dataset has points
+arbitrarily close to $\nu = 0$, and the two regions' empirical ranges therefore always overlap
+--- on Adult by $[-139, 4.1]$ against $[-39, 6662]$. The conditions are \emph{sufficient, not
+necessary}, so this does not make the theorem false. It makes it \emph{silent} on every population
+we measure, which is a claim about applicability and not a refutation.
+
+Two further caveats belong here. Our $\nu$ is \emph{estimated}, by a probe predicting the
+protected attribute from the features --- their paper prescribes no estimator, so the
+evaluation is ours and a different one might behave differently. And a \emph{relaxed} version of
+their ordering, replacing the unattainable extrema with 5th/95th percentiles, agrees with the
+measured direction on \textbf{24 of 26} arms, against 25 of 26 for the selection rate. The
+theory is directionally right; what fails is the form in which it can be checked.
 Its regime distinction holds on 18 of 18. The theory is right about which regime you are in
 mattering, and wrong about which quantity decides it within one --- which is what an empirical
 study can settle and a population-level argument cannot.
@@ -687,8 +703,9 @@ theoretical account of \emph{why} the selection rate should matter. A general th
 exists and we cite it: \cite{backfire2026}'s Theorem 3 gives explicit conditions, over the
 extrema of the score-region quantity $\zeta(x) = (\eta(x)-c)/\nu(x)$, under which every group's
 rate weakly falls or weakly rises. Those conditions are ordering relations rather than anything
-a practitioner can compute, and Section~\ref{sec:regime} reports that they hold on \textbf{0 of
-26} of our arms.
+a practitioner can compute, and Section~\ref{sec:regime} reports that they cannot be
+evaluated on real data at all --- while a relaxed form of the same ordering tracks the
+direction on 24 of 26 arms.
 
 We attempted the missing step --- a derivation predicting the sign from the selection rate
 directly --- and pre-registered its bars. \textbf{It cleared them and was then beaten by a

@@ -50,7 +50,7 @@ through citations.
 | C | Who-pays / incidence decomposition (doc 05) | **Substantially anticipated.** FRAME's first three dimensions are impact size, change direction, and effect on acceptance rates |
 | D | The direction is conditional and can reverse | **Anticipated**, theoretically. *Backfire* 2026, attribute-blind regime |
 | **E** | **The selection rate predicts the direction, with a crossover, measured** | **Not found.** See below |
-| **F** | ***Backfire*'s conditions hold on 0 of 26 real arms, from 15 populations** | **Not found**, and zero papers cite that work |
+| **F** | ***Backfire*'s conditions cannot be evaluated on any of 26 real arms, from 15 populations** — they are sufficient rather than necessary, so the theorem is silent rather than wrong | **Not found**, and zero papers cite that work |
 | **G** | **The selection rate proxies their structural quantity, r = +0.935** | **Not found** |
 | H | The remedy: a selection-rate floor | **Anticipated.** Mittelstadt §6, minimum rate constraints |
 | I | The remedy's benefit scales with the damage (r ≈ −0.99) and is inert otherwise | Not found |

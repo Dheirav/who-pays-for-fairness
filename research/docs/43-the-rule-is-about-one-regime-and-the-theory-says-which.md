@@ -75,8 +75,10 @@ than a discovery, and not a rescue of P1.
 ## What this does to the project's position
 
 Document 27 found that *Backfire*'s **conditions** — the ordering relations its theorem is
-stated over — hold on **0 of 26** arms. This document finds that its **regime distinction**
-holds on **18 of 18**.
+stated over — **cannot be evaluated on any of 26 arms**, because they are stated over extrema
+that diverge on real data. They are *sufficient, not necessary*, so the theorem is **silent**
+there rather than wrong, and a relaxed form of the same ordering tracks the direction on 24 of
+26. This document finds that its **regime distinction** holds on **27 of 27**.
 
 Those are not in tension and together they are a better position than either alone. The theory
 is right about *which regime you are in mattering*, and wrong about *which quantity decides it

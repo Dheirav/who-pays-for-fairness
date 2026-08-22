@@ -105,8 +105,11 @@ on the model an organisation already has.
    that in the attribute-blind regime the direction is distribution-dependent (§2). It contains
    no experiments and its conditions are ordering relations on score regions rather than
    anything measurable. We supply the measurement, across 18 populations and five domains, and
-   we find **its stated conditions hold on 0 of 26 arms** — a result only an empirical study
-   could produce, and one that runs *against* the theory rather than applying it.
+   we find **its stated conditions cannot be evaluated on any of 26 arms**: they are stated
+   over extrema of a quantity that diverges on real data, and they are *sufficient, not
+   necessary*, so the theorem is **silent** on our populations rather than wrong. A relaxed
+   form of the same ordering tracks the direction on 24 of 26. This is a result about
+   *applicability*, which only an empirical study could produce, and not a refutation.
 
 2. **The identification of the operative variable, by a design that separates it from its
    confound.** Varying the selection rate by moving a label threshold cannot distinguish "the

@@ -17,8 +17,11 @@ difficulty of the task; and a rule computable from a historical approval rate.
 **The strongest thing I have is a two-sided result about their theory.** They split the world
 into two regimes — whether the protected attribute is available when the decision is made.
 
-* Their **conditions**, the ordering relations their theorem is stated over, hold on **0 of 26**
-  of my arms. The quantity diverges on real data.
+* Their **conditions**, the ordering relations their theorem is stated over, **cannot be
+  evaluated on any of my 26 arms** — the quantity diverges on real data, so the two regions'
+  ranges always overlap. They are *sufficient, not necessary*, so this says their theorem is
+  **silent** on real populations, not that it is wrong. A relaxed form of the same ordering
+  tracks the direction on 24 of 26.
 * Their **regime distinction** holds on **18 of 18**. In the attribute-aware regime they predict
   the direction is determined rather than variable, and it is: the advantaged group loses and
   the disadvantaged gains in every population, with no exceptions.

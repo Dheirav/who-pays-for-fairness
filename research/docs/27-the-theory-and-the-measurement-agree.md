@@ -90,7 +90,7 @@ thing**.
 | question | answer |
 |---|---|
 | Is the conditionality claim ours? | **No.** Established theoretically and independently, five months earlier |
-| Does their theorem predict our data? | **Not as stated** — its conditions hold on 0 of 26 arms, drawn from 15 populations |
+| Does their theorem predict our data? | **It is silent** — its conditions are stated over extrema that diverge on real data, so none of 26 arms (15 populations) can be evaluated. Sufficient, not necessary: silent rather than wrong |
 | Is its *direction structure* right? | **Yes**, once relaxed to an ordering: 24–25 of 26 |
 | Is our rule a different phenomenon? | **No** — it proxies their quantity at r = +0.935 |
 | Is our rule usable where theirs is not? | **Yes.** Theirs needs the joint score-and-group distribution; ours needs a historical approval rate |
