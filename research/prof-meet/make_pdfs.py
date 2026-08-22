@@ -35,6 +35,8 @@ DOCUMENTS = [
      "One fork, the argument for it, and the counter-argument expected"),
     (HERE.parent / "paper" / "reading-notes.md", "05-reading-notes", "Reading Notes",
      "What each cited paper was checked for, and what it changed"),
+    (HERE / "REPORT.md", "06-status-report", "The Project, Complete",
+     "Findings, sealed evidence, open questions and the asks --- 22 August 2026"),
 ]
 
 # Characters LaTeX treats specially, in an order that does not double-escape.
@@ -255,7 +257,10 @@ PREAMBLE = r"""\documentclass[11pt,a4paper]{article}
 
 def build(source: Path, stem: str, title: str, subtitle: str) -> bool:
     body = convert(source.read_text())
-    tex = (PREAMBLE.replace("TITLE", escape(title)).replace("SUBTITLE", escape(subtitle))
+    # SUBTITLE before TITLE: replacing TITLE first also hits the TITLE inside SUBTITLE,
+    # leaving a literal "SUB" plus the title where the subtitle belongs -- which is exactly
+    # what every PDF built before this line shipped with.
+    tex = (PREAMBLE.replace("SUBTITLE", escape(subtitle)).replace("TITLE", escape(title))
            + body + "\n\\end{document}\n")
     tex_path = HERE / f"{stem}.tex"
     tex_path.write_text(tex)
