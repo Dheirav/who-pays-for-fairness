@@ -32,14 +32,16 @@ EXEMPT = {"__init__.py", "methods.py"}
 
 # Analysers whose population list IS the pre-registration. The guard below exists so that no
 # module has its populations hardcoded *as a default a caller cannot change*; these are the
-# opposite case. `analyse_sealed` names the eight populations its prediction was sealed over
-# and `analyse_attribute_aware` the nine its bar was set against, both committed before the
-# arms existed. Making either configurable would let a later caller quietly change what was
-# predicted, which is the failure the seal exists to prevent. `make_figures` renders whatever
-# the analysers produced and selects nothing.
+# opposite case. `analyse_sealed` names the eight populations its prediction was sealed over,
+# `analyse_attribute_aware` the nine its bar was set against, and `analyse_resealed` the ten
+# fresh states the monotone rule was re-sealed on, each committed before the arms existed.
+# Making any of them configurable would let a later caller quietly change what was predicted,
+# which is the failure the seal exists to prevent. `make_figures` renders whatever the
+# analysers produced and selects nothing.
 PREREGISTERED = {
     "analyse_sealed.py", "analyse_attribute_aware.py", "analyse_dense.py",
     "analyse_magnitude.py", "analyse_uncertainty_crossover.py", "make_figures.py",
+    "analyse_resealed.py",
 }
 
 
