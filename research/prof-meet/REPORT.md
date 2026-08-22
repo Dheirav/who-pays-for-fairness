@@ -55,19 +55,29 @@ rule under the criterion sealed with it, and it is an instructive miss: an arm w
 effect is around −0.04% and flips sign between random seeds, which means there may have
 been no direction there to predict.
 
-The complete ledger of registered tests, kept in the paper as a table:
+The complete ledger of registered tests is below, and one thing matters for reading it:
+these are not seven attempts at one claim, of which two succeeded. Each test targeted a
+**different** claim, and each failure removed a claim *stronger* than the one that
+survives — so the failures are boundary measurements, and the passes test the claim as
+those boundaries define it. Averaging the rows into "2 out of 7" would be reading a map as
+a scorecard.
 
-| Test | Bar | Outcome |
+| Test | Outcome | What it settled |
 |---|---|---|
-| HMDA held-out sweep | 4 of 4 bracket | 2 of 4 — fail |
-| Equalized-odds transfer | r at least +0.70 | +0.334 — fail |
-| Post-processing transfer | rule carries over | r = −0.024 — fail |
-| Selection-rate derivation | beat a constant | beaten — fail |
-| Sealed rule, refined | 7 of 8 | 4 of 8 — fail |
-| Attribute-aware replication | 9 of 9 | 9 of 9 — **holds** |
-| Re-seal, unrefined rule | 9 of 10 + beat constant | 9 of 10, constant 6 — **holds** |
+| HMDA held-out sweep | 2 of 4 — fail | our measuring procedure is unreliable on mortgage data, so no claim rests on it there |
+| Equalized-odds transfer | +0.334 vs +0.70 — fail | the rule works for parity, which controls approval rates directly; it failed for equalized odds, which does not |
+| Post-processing transfer | r = −0.024 — fail | the rule stops working the moment the model may read the protected attribute — and that turned out to be the boundary the theory predicts |
+| Selection-rate derivation | beaten by a constant — fail | we cannot explain **why** the rule works; the paper claims only that it does |
+| Sealed rule, refined | 4 of 8 — fail | the extra clause we had added from early data was wrong, and is withdrawn |
+| Attribute-aware replication | 9 of 9 — **holds** | where the attribute is readable, the disadvantaged group always gains — as the theory says, predicted in advance |
+| Re-seal, unrefined rule | 9 of 10, constant 6 — **holds** | the simple rule predicts populations it has never seen, from the approval rate alone |
 
-Five failures are reported uncorrected, which is what makes the two passes worth believing.
+Five failures are reported uncorrected, which removes the usual way lucky results reach
+print: selective reporting. And the passes are unlikely to be luck on their own terms — 9
+of 10 against a guesser as good as the best constant happens about one time in twenty by
+chance, the arms were deliberately spread so no constant strategy could score well, and
+the refined rule, which looked equally convincing in-sample, was given the same sealed
+test and failed it.
 
 ## The relationship to the 2026 theory paper
 

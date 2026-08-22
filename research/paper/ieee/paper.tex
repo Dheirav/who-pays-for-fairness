@@ -802,26 +802,37 @@ inside the framework of \cite{agarwal2018}, and a variant of the minimum rate co
 Every prediction was registered with its thresholds \emph{and the naive alternative it had to
 beat}, before the data existed. Table~\ref{tab:registered} is the complete ledger --- every
 registered or sealed test this work ran, with its committed bar and its outcome, failures
-included and uncorrected. Three episodes matter for reading the results above.
+included and uncorrected. The rows should not be read as seven attempts at one claim, of
+which two succeeded: each test targeted a \emph{different} claim, each failure removed a
+stronger claim than the one that survives, and the last column records what each row
+settled. The failures are boundary measurements; the passes are tests of the claim
+\emph{as those boundaries define it}. Three episodes matter for reading the results above.
 
 \begin{table}[t]
-\caption{Every registered or sealed test, with the bar committed in advance and the outcome.
-Nothing is omitted.}
+\caption{Every registered or sealed test. Each row targets a different claim; the last
+column is what its outcome settled. Nothing is omitted.}
 \label{tab:registered}
 \centering
-\footnotesize
+\scriptsize
 \setlength{\tabcolsep}{3pt}
-\begin{tabular}{@{}llll@{}}
+\begin{tabular}{@{}p{2.35cm}p{1.55cm}p{3.6cm}@{}}
 \toprule
-\textbf{Test} & \textbf{Bar} & \textbf{Outcome} & \\
+\textbf{Test} & \textbf{Bar / outcome} & \textbf{What it settled} \\
 \midrule
-HMDA held-out sweep & 4 of 4 bracket & 2 of 4 & fail \\
-Equalized-odds transfer & $r \geq +0.70$ & $+0.334$ & fail \\
-Post-processing transfer & rule carries over & $r = -0.024$ & fail \\
-Selection-rate derivation & bars + beat constant & beaten, 12 v.\ 13 & fail \\
-Sealed rule, refined & 7 of 8 & 4 of 8 & fail \\
-Attr.-aware replication & 9 of 9 & 9 of 9 & \textbf{holds} \\
-Re-seal, unrefined rule & 9 of 10 + beat const. & 9 of 10, const.\ 6 & \textbf{holds} \\
+HMDA sweep & 4 of 4; got 2 --- fail & our sweep procedure is unreliable on mortgage data,
+so no claim rests on it there \\
+EO transfer & $r \geq +0.70$; $+0.334$ --- fail & the rule works for parity, which controls
+approval rates directly; it failed for equalized odds, which does not \\
+Post-processing transfer & carry over; $r = -0.024$ --- fail & the rule stops where the
+model may read the protected attribute --- the boundary of Sec.~\ref{sec:regime} \\
+Derivation & beat a constant; beaten --- fail & we cannot explain \emph{why} the rule
+works, and claim only that it does \\
+Sealed rule, refined & 7 of 8; got 4 --- fail & the extra clause added from early data was
+wrong, and is withdrawn \\
+Attribute-aware replication & 9 of 9; got 9 --- \textbf{holds} & where the attribute is
+readable, the disadvantaged group always gains --- as theory says, predicted in advance \\
+Re-seal, unrefined rule & 9 of 10 + beat constant; got 9, constant 6 --- \textbf{holds} &
+the simple rule predicts populations it has never seen, from the rate alone \\
 \bottomrule
 \end{tabular}
 \end{table}
