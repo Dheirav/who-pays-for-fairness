@@ -1127,11 +1127,13 @@ def test_paper_draft_population_count_is_recomputed() -> None:
     """
     import re as _re
 
-    draft = ROOT / "research" / "paper" / "draft-v2.md"
-    if not draft.exists():
-        print("  draft-v2.md absent; skipping")
+    # The typeset paper is the live claim; draft-v2.md is superseded and deliberately
+    # frozen, so checking it would enforce a number the record has moved past.
+    paper = ROOT / "research" / "paper" / "ieee" / "paper.tex"
+    if not paper.exists():
+        print("  paper.tex absent; skipping")
         return
-    text = draft.read_text()
+    text = paper.read_text()
 
     method = _re.compile(r"_(eo|hgb|eps\d+|op[\d]+|post)$")
     purpose = _re.compile(r"_(purchase|refinance|cashout|improvement|other)$")
@@ -1154,14 +1156,13 @@ def test_paper_draft_population_count_is_recomputed() -> None:
     # Read the claim rather than hardcode it. A test that pins a number has to be edited
     # every time the evidence grows, and an edit is exactly where a stale claim survives;
     # this one recomputes from the results and checks the document against that.
-    claimed = _re.search(r"\*\*(\d+) independent populations\*\*", text)
-    assert claimed, "the draft no longer states an independent-population count"
+    claimed = _re.search(r"(\d+) independent populations", text)
+    assert claimed, "the paper no longer states an independent-population count"
     assert int(claimed.group(1)) == len(independent), (
-        f"the draft claims {claimed.group(1)} independent populations; the results give "
+        f"the paper claims {claimed.group(1)} independent populations; the results give "
         f"{len(independent)}: {sorted(independent)}")
-    # And the error docs/38 records: never claim populations where arms are meant.
-    assert "21 populations" not in text, "the draft is back to an overstated population count"
-    print(f"  draft claims 18; results give {len(independent)} independent populations")
+    print(f"  paper claims {claimed.group(1)}; results give {len(independent)} "
+          f"independent populations")
 
 
 def test_doc42_and_43_dense_and_regime() -> None:

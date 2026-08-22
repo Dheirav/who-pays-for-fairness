@@ -30,25 +30,22 @@ very different worlds should close it: one where the disadvantaged group is lift
 where the advantaged group is pulled down. Both satisfy the constraint and both score
 identically on the metric that certifies them. We ask which of the two occurs, and show it is
 predictable in advance from a quantity every deploying organisation already has --- the rate at
-which its current model says yes. Across 27 independent populations spanning two household
-surveys, US mortgage records, criminal-justice risk data, US law-school outcomes and the Dutch
-national census, a parity constraint withdraws favourable decisions below a crossover and
-extends them above it. On UCI Adult, six in-processing methods each shrink the pool by
-7.9--22.1\%; on mortgage lending the identical constraint grows it. The certifying metric
-reports the same success in both cases. The relationship is not an artifact of how the
-selection rate is varied: holding the task, features, groups and fitted scores fixed and moving
-only the decision threshold reproduces both the direction and the location of the transition.
-It survives a twenty-five-fold range of constraint tolerance, a boosted-tree learner, and a
-protected attribute swapped from sex to race. Crucially, it is bounded: under
+which its current model says yes. Across 37 independent populations spanning six domains and
+five instruments, an attribute-blind parity constraint withdraws favourable decisions below a
+crossover near 0.54 and extends them above it; on UCI Adult six in-processing methods each
+shrink the pool by 7.9--22.1\%, while on mortgage lending the identical constraint grows it,
+and the certifying metric reports the same success in both cases. The claim is \emph{sealed}:
+with the rule, the populations and the pass mark committed to version control before any run,
+it predicted the direction on \textbf{9 of 10} populations never previously measured, against
+a best constant of 6. An earlier sealed attempt that carried an in-sample refinement
+\textbf{failed at four of eight}; both outcomes are reported. The relationship survives a
+change of route to the rate, a twenty-five-fold range of constraint tolerance, a boosted-tree
+learner, and a protected attribute swapped from sex to race. It is bounded: under
 \emph{post-processing}, which reads the protected attribute at decision time, the effect
-vanishes entirely ($r = -0.024$ against $+0.585$), and contemporaneous theory says why --- in
-that regime the direction is determined, not distributional. The theory's prediction for that regime holds in 18 of 18 populations post-hoc and \textbf{9
-of 9} in a pre-registered replication. The practical result is a procedure: locate your own crossover
-by sweeping your deployed model's threshold, needing no new data. We also report a
-\emph{sealed} prediction on nine populations never previously measured, committed before the
-runs, which \textbf{failed at four of eight} --- and the reason is instructive: a refinement
-derived from four in-sample populations turned a seven-of-eight prediction into a
-four-of-eight one.
+vanishes ($r = -0.024$ against $+0.585$) --- exactly where contemporaneous theory says the
+direction is determined rather than distributional --- and the theory's prediction for that
+regime holds 27 of 27, nine pre-registered. The practical result is a procedure: locate your
+own crossover by sweeping your deployed model's threshold, needing no new data.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -77,8 +74,8 @@ move, before it moves.
 
 This is a paper about \textbf{attribute-blind in-processing} constraints --- the regime in which
 the protected attribute is unavailable at decision time. That is where almost every deployed
-system sits, because per-group thresholds constitute disparate treatment on their face in most
-jurisdictions. Under post-processing, which does read the attribute, the effect we report
+system sits, because per-group thresholds are widely read as disparate treatment on their face
+\cite{barocas2016,corbett2017}. Under post-processing, which does read the attribute, the effect we report
 disappears (Section~\ref{sec:regime}). This is not a weakness of the finding but the boundary
 theory draws, and we verify it from both sides.
 
@@ -89,10 +86,12 @@ theory draws, and we verify it from both sides.
 Contemporaneous theory \cite{backfire2026} establishes that in the attribute-blind regime the
 direction is distribution-dependent. It contains no experiments and its conditions are ordering
 relations on score regions rather than measurable quantities. We supply the measurement across
-27 populations and six domains, and find its stated conditions --- which are \emph{sufficient,
+37 populations and six domains, and find its stated conditions --- which are \emph{sufficient,
 not necessary} --- cannot be evaluated on any of 26 real arms, for a structural reason given in
 Section~\ref{sec:regime}. A relaxed form of the same ordering agrees with the measured
-direction on 24 of 26.
+direction on 24 of 26. The direction rule itself is \emph{sealed}: committed before ten
+populations this work had never measured, it scored 9 of 10 against a best constant of 6
+(Section~\ref{sec:resealed}).
 
 \item \textbf{Separation of the predictor from its confound.} Varying the selection rate by moving
 a label threshold cannot distinguish ``the rate predicts the direction'' from ``task difficulty
@@ -165,8 +164,8 @@ instrument.
 
 \section{Setup and Method}
 
-\textbf{Data.} Twenty-seven independent populations across five instruments: UCI Adult (45{,}222
-rows); ACS Income \cite{ding2021} across twelve US states and two protected attributes; HMDA
+\textbf{Data.} Thirty-seven independent populations across five instruments: UCI Adult (45{,}222
+rows); ACS Income \cite{ding2021} across thirty US states and two protected attributes; HMDA
 mortgage records for two states, by race and sex and split by loan purpose; COMPAS
 \cite{propublica2016} (5{,}278 rows on the race arm after ProPublica's documented filter); LSAC
 bar passage (20{,}798 rows); and the Dutch national census of 2001 (60{,}420 rows).
@@ -274,7 +273,9 @@ change in the pool rises with the baseline selection rate and crosses zero; the 
 reverse are marked, and both are sweeps whose viable band confines them below the crossover.
 Panels are deliberately \emph{not} pooled: across populations a single slope reaches only
 $r=+0.487$ and fails its pre-registered bar, so one scatter would assert a common curve the
-data rejects. Vertical band: the 0.511--0.576 cluster of Table~\ref{tab:crossover}.}
+data rejects. Vertical band: the 0.511--0.576 cluster of point estimates from
+Table~\ref{tab:crossover}; carrying that table's bootstrap intervals widens it to roughly
+0.43--0.58.}
 \label{fig:crossover}
 \end{figure*}
 
@@ -330,18 +331,22 @@ any claim that it holds within the low-rate region alone.}
 \subsection{Five domains, and the group-gap alternative}
 
 \begin{table}[t]
-\caption{The relationship across instruments}
+\caption{The relationship across instruments. Each $r$ is computed within one population of
+that instrument, over the retained arms counted in the last column --- not pooled across the
+instrument, for the reason Fig.~\ref{fig:crossover} does not pool.}
 \label{tab:domains}
 \centering
-\begin{tabular}{@{}llc@{}}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lllcc@{}}
 \toprule
-\textbf{Instrument} & \textbf{Domain} & \textbf{$r$} \\
+\textbf{Instrument} & \textbf{Domain} & \textbf{Population} & \textbf{$r$} & \textbf{Arms} \\
 \midrule
-ACS Income & income prediction & $+0.801$ \\
-HMDA & mortgage lending & $+0.858$ \\
-COMPAS & criminal justice & $+0.870$ \\
-Dutch census & occupational status & $+0.915$ \\
-LSAC & legal education & unsweepable \\
+ACS Income & income & Alabama & $+0.801$ & 4 \\
+HMDA & mortgages & MS+LA pooled & $+0.858$ & 4 \\
+COMPAS & crim. justice & race arm & $+0.870$ & 5 \\
+Dutch census & occupation & sex arm & $+0.915$ & 6 \\
+LSAC & legal educ. & --- & unsweepable & --- \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -454,9 +459,10 @@ evaluation is ours and a different one might behave differently. And a \emph{rel
 their ordering, replacing the unattainable extrema with 5th/95th percentiles, agrees with the
 measured direction on \textbf{24 of 26} arms, against 25 of 26 for the selection rate. The
 theory is directionally right; what fails is the form in which it can be checked.
-Its regime distinction holds on 18 of 18. The theory is right about which regime you are in
-mattering, and wrong about which quantity decides it within one --- which is what an empirical
-study can settle and a population-level argument cannot.
+Its regime distinction holds on 18 of 18. The theory is right that which regime you are in is
+what matters; within the attribute-blind regime, its stated sufficient conditions do not yield
+an operational predictor of the direction, and the selection rate does --- which is what an
+empirical study can settle and a population-level argument cannot.
 
 \section{Boundaries}
 \label{sec:boundaries}
@@ -548,7 +554,10 @@ Kentucky & $-0.590$ & $-0.590$ & $-0.654$ & --- \\
 Every result above is a correlation computed after the arms were run, which is the weakest
 support for a claim of the form \emph{you can know in advance}. We therefore ran the strongest
 format available: nine populations whose direction had never been measured, with the rule, the
-populations and the pass mark committed before any of them existed.
+populations and the pass mark committed before any of them existed. Eight enter the sealed
+score; the ninth, Taiwan, was sealed alongside them but registered as reported separately,
+because a single non-Western population can carry no claim on its own (it was predicted
+correctly: rate 0.885, observed $+0.68\%$).
 
 \textbf{It failed. Four of eight, against a bar of seven, not beating a constant.}
 
@@ -601,7 +610,58 @@ A refinement drawn from four in-sample populations, internally consistent and ba
 twenty-seed replication, made the prediction worse than the rule it replaced and no better than
 a constant. Nothing in the in-sample data could have shown that.
 
-\subsection{Small populations}\subsection{Small populations}
+\subsection{The rule re-sealed, and it holds}
+\label{sec:resealed}
+
+\begin{table}[t]
+\caption{The re-sealed prediction: the unrefined rule --- down below 0.54, up at or above ---
+committed before ten never-measured states ran. Bar: 9 of 10 \emph{and} beat the best
+constant.}
+\label{tab:resealed}
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lrrcc@{}}
+\toprule
+\textbf{Population} & \textbf{Rate} & \textbf{$\Delta$pool} & \textbf{Pred.} & \textbf{Actual} \\
+\midrule
+NE, \$100k & 0.014 & $-6.35\%$ & down & down \\
+AR, \$50k & 0.195 & $-2.55\%$ & down & down \\
+OK, \$50k & 0.220 & $-12.78\%$ & down & down \\
+WA, \$70k & 0.233 & $-5.52\%$ & down & down \\
+NV, \$50k & 0.297 & $-1.57\%$ & down & down \\
+MN, \$30k & 0.699 & $-0.04\%$ & up & \textbf{down} \\
+CO, \$30k & 0.701 & $+0.63\%$ & up & up \\
+KS, \$20k & 0.767 & $+0.58\%$ & up & up \\
+WI, \$20k & 0.814 & $+0.69\%$ & up & up \\
+IA, \$10k & 0.896 & $+0.04\%$ & up & up \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The failure above left one honest move: seal the \emph{unrefined} rule --- down below 0.54, up
+at or above, no low-rate clause --- against populations with no measurement history of any
+kind. Ten ACS states this project had never touched, one arm per state so the arm count is the
+population count by construction, income cutoffs assigned to spread the expected rates across
+both sides of the crossover so that no constant could mimic the rule. The bar, committed with
+the populations before any arm ran: at least 9 of 10, \emph{and} strictly beating the best
+constant.
+
+\textbf{It holds: 9 of 10, best constant 6} (Table~\ref{tab:resealed}). The prediction used
+the baseline selection rate and the fixed 0.54 prior alone --- no sweep, no per-population
+characterisation. Below 0.10, where the refuted refinement said up, Nebraska at 0.014 moved
+down by 6.35\%, as the unrefined rule predicts.
+
+The miss is scored by the criterion sealed with it, and it is \emph{not} excused as a boundary
+call: Minnesota sits at 0.699, far from the crossover, so under the registered rubric it
+counts against the rule itself. What can be said post-hoc is that its effect is the smallest
+in the set by an order of magnitude and flips sign across seeds (mean $-0.04\%$) --- a rule
+predicting a sign has nothing to grip on an arm whose true value may not have one, while
+Colorado, 0.002 away in rate, moved $+0.63\%$ and was called correctly. The registered rubric
+did not anticipate near-zero magnitudes away from the boundary; a future seal should state a
+minimum-magnitude guard in advance, and this one is charged the miss for not having done so.
+
+\subsection{Small populations}
 
 Below roughly 2{,}500 test subjects the method's own randomness exceeds the entire effect of
 the constraint. This is a specific instance of predictive multiplicity \cite{black2022} ---
@@ -720,10 +780,14 @@ baseline. What exposed it was an exchange rate of 0.000.
 
 \section{Limitations}
 
-\textbf{The rule has not passed a sealed out-of-sample test.} Section~\ref{sec:sealed}
-reports one that failed at four of eight. A simpler form scores seven of eight on the same
-arms, but that comparison is post-hoc; the honest position is that the predictive claim is
-supported within populations and \emph{not yet} demonstrated on unseen ones.
+\textbf{The sealed record is one failure and one pass.} The first sealed test
+(Section~\ref{sec:sealed}) failed at four of eight, carrying an in-sample refinement; the
+re-seal of the unrefined rule (Section~\ref{sec:resealed}) passed at nine of ten with the bar
+at nine, beating the constant at six. The pass has its own limits: all ten populations share
+one instrument and one country --- held-out ACS states are the cheapest clean populations
+available, so the sealed evidence buys depth, not breadth --- and the single miss is charged
+to the rule by the registered rubric, because no minimum-magnitude guard was stated in
+advance.
 
 \textbf{The two manipulations diverge at low selection rates.} The operating-point route and
 the label route disagree completely below a rate of about 0.10, and the accuracy rule does not
@@ -756,8 +820,9 @@ advance and from something a team already has, which of the two silences you are
 \section*{Reproducibility}
 
 Every load-bearing figure is re-derived from stored results by an automated check that fails if
-a document and its data disagree; 28 such checks accompany this work. Pre-registrations are
-committed before the runs they govern.
+a document and its data disagree; 55 checks across five suites accompany this work, 28 of them
+of that document-against-data form. Pre-registrations are committed before the runs they
+govern.
 
 \begin{thebibliography}{00}
 
@@ -775,8 +840,8 @@ arXiv:2302.07185, 2023.
 \bibitem{maheshwari2023} G. Maheshwari, A. Bellet, P. Denis, and M. Keller, ``Fair without
 leveling down: A new intersectional fairness definition,'' in \emph{Proc. EMNLP}, 2023.
 
-\bibitem{backfire2026} ``Fairness may backfire: When leveling-down occurs,'' arXiv:2603.06901,
-2026.
+\bibitem{backfire2026} Y. Yang, X. Chang, and P.-y. Chen, ``Fairness may backfire: When
+leveling-down occurs in fair machine learning,'' arXiv:2603.06901, 2026.
 
 \bibitem{kearns2018} M. Kearns, S. Neel, A. Roth, and Z. S. Wu, ``Preventing fairness
 gerrymandering: Auditing and learning for subgroup fairness,'' in \emph{Proc. ICML}, 2018.
@@ -798,6 +863,9 @@ fairness: Algorithms and experiments,'' in \emph{Proc. AAAI/ACM AIES}, 2021.
 
 \bibitem{black2022} E. Black, M. Raghavan, and S. Barocas, ``Model multiplicity: Opportunities,
 concerns, and solutions,'' in \emph{Proc. FAccT}, 2022.
+
+\bibitem{barocas2016} S. Barocas and A. D. Selbst, ``Big data's disparate impact,''
+\emph{California Law Review}, vol.~104, no.~3, pp. 671--732, 2016.
 
 \end{thebibliography}
 
