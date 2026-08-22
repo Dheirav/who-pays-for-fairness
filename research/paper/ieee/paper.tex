@@ -752,6 +752,37 @@ models with equivalent aggregate performance disagreeing substantially on indivi
 we position it as a caution supported by that literature rather than as a novel finding. COMPAS has 1{,}584 and flips sign between seeds on two of four arms; LSAC has
 6{,}240 and flips on none. COMPAS carries direction here and never magnitude.
 
+\subsection{How the withdrawal is implemented: a lottery}
+\label{sec:lottery}
+
+The reduction returns a randomized mixture by design \cite{agarwal2018}, and each person's
+approval probability under that mixture shows which solution the optimiser found. On
+threshold-sweep arms deep in the score distribution's tail, two qualitatively different
+solutions appear. Where the constraint \emph{lifts}, the mixture behaves like an informed
+adjustment: probability is granted below the threshold, rising with the person's score,
+with the disadvantaged group favoured within each score band. Where it \emph{cuts}, the
+mixture is a lottery: nobody below the threshold receives any probability at all, and
+every predicted positive of both groups is kept with one flat probability --- 0.65 on the
+Dutch census arm, 0.135 on COMPAS, where the correlation between a person's keep
+probability and their own score is exactly zero. The gap closes because discarding a fixed
+fraction of everyone's approvals at random shrinks it multiplicatively; the certificate
+reports the same success either way. A single quantity --- the mean probability granted
+just below the threshold --- separates the two behaviours on all nine deep-tail arms
+tested, including a matched pair that agrees on every aggregate we can compute and moves
+in opposite directions.
+
+Three delineations keep this claim its right size. Theory says the \emph{optimal}
+randomized fair classifier randomizes at the decision boundary \cite{agarwal2022}, so the
+global flat lottery is a deviation from the optimum, not an instance of it. The known
+arbitrariness of fair models is \emph{across} retrained models \cite{long2023}; this is
+deliberate randomization inside one fitted model. And randomness itself has been advocated
+as a fairness device \cite{grgic2017} --- the observation here is not that randomness is
+present but that \emph{uninformative} randomness stands in for a measured closing of the
+gap, certified identically. The standard derandomization remedy \cite{cotter2019} applied
+to a flat lottery amounts to re-choosing a threshold, which undoes the parity the lottery
+bought; for an auditor, the flat-probability signature itself is the usable part, and it
+is computable from any fitted mitigation.
+
 \section{What to Do About It}
 \label{sec:procedure}
 
@@ -934,8 +965,9 @@ minimum-magnitude guard was stated in advance.
 operating-point sweep are unreliable in direction at whatever rate they land (observed from
 0.027 to 0.142): they close the gap by \emph{lifting} where every natural-route arm at a
 matched rate closes it by \emph{cutting}, and the accuracy rule does not separate them ---
-all fifteen such arms clear it. What selects lift over cut is measured to be none of the
-rate, the gap, the qualified reservoir, or the threshold height; it remains open. We claim
+all fifteen such arms clear it. What each solution looks like inside the fitted model is
+Section~\ref{sec:lottery}; what \emph{selects} lift over cut is measured to be none of the
+rate, the gap, the qualified reservoir, or the threshold height, and remains open. We claim
 the relationship across the transition, on the label route and natural sub-populations.
 
 \textbf{Magnitude does not transfer} between populations, only within them --- and a sealed
@@ -1013,6 +1045,16 @@ fairness: Algorithms and experiments,'' in \emph{Proc. AAAI/ACM AIES}, 2021.
 
 \bibitem{long2023} C. X. Long, H. Hsu, W. Alghamdi, and F. P. Calmon, ``Individual
 arbitrariness and group fairness,'' in \emph{Proc. NeurIPS}, 2023.
+
+\bibitem{agarwal2022} S. Agarwal and A. Deshpande, ``On the power of randomization in fair
+classification and representation,'' in \emph{Proc. FAccT}, 2022.
+
+\bibitem{cotter2019} A. Cotter, M. Gupta, and H. Narasimhan, ``On making stochastic
+classifiers deterministic,'' in \emph{Proc. NeurIPS}, 2019.
+
+\bibitem{grgic2017} N. Grgi\'{c}-Hla\v{c}a, M. B. Zafar, K. P. Gummadi, and A. Weller,
+``On fairness, diversity and randomness in algorithmic decision making,''
+arXiv:1706.10208, 2017.
 
 \bibitem{black2022} E. Black, M. Raghavan, and S. Barocas, ``Model multiplicity: Opportunities,
 concerns, and solutions,'' in \emph{Proc. FAccT}, 2022.
