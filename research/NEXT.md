@@ -1,15 +1,19 @@
 # What to do next, and what will bite you
 
 Live handover. Read this first, then `research/README.md` for the document index. Documents
-11–47 are the research record; the paper is `research/paper/ieee/paper.tex`. The checklist this
+11–50 are the research record; the paper is `research/paper/ieee/paper.tex`. The checklist this
 replaced, with the original reasoning behind each completed item, is in
-[`NEXT-archive.md`](NEXT-archive.md).
+[`NEXT-archive.md`](NEXT-archive.md), including the two items completed on 22 Aug (the
+re-seal, and the route-divergence mechanism).
 
 **Standing rule.** Anything whose outcome could go either way gets its predictions, its
 numerical thresholds **and the naive baseline it must beat** committed to git *before* the run.
 Re-analysis of existing results is labelled post-hoc. Both are fine; mislabelling is not. The
 rule exists because a derivation of ours cleared every stated bar and was then beaten by a
-constant (document 26).
+constant (document 26). After document 49: a seal that predicts *signs* must also pre-state a
+minimum-magnitude guard, because its one miss was an arm whose true effect is
+indistinguishable from zero — a sign prediction has nothing to grip there, and discovering
+that after the run cannot excuse the miss.
 
 ---
 
@@ -53,20 +57,12 @@ constant (document 26).
 
 ## Open, in the order I would do them
 
-- [x] **Re-seal the simpler rule. DONE — it holds** (document 49): 9 of 10 on ten
-      never-measured ACS states, sealed bar 9, constant 6 beaten, committed at `356bfa5`
-      before any arm ran. The paper's framing should now lead with this. A future seal should
-      pre-state a minimum-magnitude guard: the one miss was an arm whose effect is
-      indistinguishable from zero.
-- [x] **Explain the route divergence below 0.10. HALF DONE** (document 50): the divergence is
-      a divergence in *who moves* — turn-up arms lift (gained/lost 1.3–2.3), everything else
-      cuts — and it is **not a rate band**: CT turns up at 0.142, so the boundary is the
-      sweep's deepest-tail arms, not "below 0.10". The accuracy rule can't catch it because
-      clearance constrains global error, not who sits near the line (15/15 divergent-region
-      arms clear). **Open remainder:** what selects lift over cut. Five aggregates die by
-      counterexample; OR op087 vs Dutch op0965 agree on every stored quantity and move
-      opposite ways. Next probe: per-group score density near the threshold for that matched
-      pair. All post-hoc; the paper's limitation is updated.
+- [ ] **The lift-or-cut selector** (document 50's open remainder). The route divergence is
+      known to be lift-vs-cut, but nothing observable in the stored aggregates predicts which
+      a deep-tail arm will do: OR op087 and Dutch op0965 agree on every stored quantity and
+      move opposite ways. Next probe, ~an afternoon: per-group score density near the
+      threshold for that matched pair, from the fitted baselines. Names the selector or kills
+      the geometry story too.
 - [ ] **A *sweepable* non-Western population.** Taiwan is non-Western but the viable-band test
       refused it, as it did LSAC. One that can be swept would be the first crossover located
       outside the West.

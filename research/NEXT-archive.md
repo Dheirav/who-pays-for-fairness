@@ -257,3 +257,39 @@ Re-deriving would duplicate published work and abandon the better position.
 - [ ] **Is the empirical half a paper on its own**, given the theory exists? See
       `prof-meet/03-the-ask.pdf`
 - [ ] **How to disclose AI assistance**, and whether the commit trailer should be added
+
+---
+
+# Appended 22 Aug — the two items completed after document 48
+
+## Re-seal the simpler rule (was the top item; document 49)
+
+**Weakness.** The 7-of-8 for *down below 0.54, up above* in document 47 was post-hoc — a rule
+chosen from a menu of two after the outcomes were known — leaving the project's central claim
+in its weakest evidence format.
+
+**What was done.** The unrefined rule, the ten populations (ACS states never measured, swept,
+viability-checked or downloaded; one arm per state), the bar (9 of 10 **and** strictly beat
+the best constant) and the boundary criterion were committed at `356bfa5` before any arm ran.
+
+**Outcome. HOLDS: 9 of 10, best constant 6.** The miss is Minnesota at 0.699 — not a boundary
+call under the sealed criterion, and charged to the rule; post-hoc, its effect is seed-noise
+around zero (signs −,+,+,−,− across five seeds). Lesson folded into the standing rule: sign
+seals must pre-state a minimum-magnitude guard. Populations 27 → 37.
+
+## Explain the route divergence below 0.10 (document 50; half done)
+
+**Weakness.** A described fact with a conjecture attached, and a known blind spot in the
+document-35 procedure: the accuracy rule does not catch the divergent arms.
+
+**What was done.** Post-hoc re-analysis of every stored arm below a rate of 0.30
+(`analyse_routes.py`): who-moves decomposition, qualified reservoir, accuracy clearance.
+
+**Outcome.** The divergence is a divergence in *who moves* — turn-up arms lift
+(gained/lost 1.3–2.3), everything else cuts (0.0–0.8) — and it was never a rate band:
+CT op087 turns up at 0.142, so the boundary is the sweep's deepest-tail thresholds. The
+accuracy rule cannot catch it because clearance constrains global error, not who sits near
+the line (15/15 divergent-region arms clear). **Still open:** what selects lift over cut —
+five aggregate candidates each die by counterexample, with OR op087 vs Dutch op0965 as the
+matched pair that agrees on every stored quantity and moves opposite ways. The next probe is
+per-group score density near the threshold, and it stays on the live list.

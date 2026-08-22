@@ -1,3 +1,9 @@
+> **SUPERSEDED — do not quote numbers from this file.** This is the paper *frame* as drafted
+> when thirteen documents existed; the population counts, the abstract and several claims
+> below have been overtaken by documents 14–50. The live paper is
+> [`paper/ieee/paper.tex`](paper/ieee/paper.tex); the live handover is [`NEXT.md`](NEXT.md).
+> Kept because it records why the argument has the shape it has.
+
 # The paper frame
 
 Written before the experiments that followed it, because the shape of the argument decides
