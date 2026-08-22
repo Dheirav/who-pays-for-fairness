@@ -31,11 +31,12 @@ can be pulled down. Both outcomes satisfy the constraint, and the metric that ce
 reports the same number in each case, which means a deployment team cannot tell from its own
 dashboard which of the two it is about to cause. We show that the direction is predictable in
 advance from a quantity every deploying organisation already has: the rate at which its
-current model says yes. Across 37 independent populations covering six domains and five
-instruments, an attribute-blind parity constraint withdraws favourable decisions when the
-baseline selection rate sits below a crossover near 0.54, and extends them when it sits
-above; on UCI Adult six in-processing methods each shrink the pool by 7.9--22.1\%, while on
-mortgage lending the identical constraint grows it. The claim is \emph{sealed} rather than
+current model says yes, read against an empirically observed crossover near 0.54. Across 37
+independent populations covering six decision domains and seven data sources, an
+attribute-blind parity constraint withdraws favourable decisions when the baseline selection
+rate sits below the crossover, and extends them when it sits above; on UCI Adult six
+in-processing methods each shrink the pool by 7.9--22.1\%, while on mortgage lending the
+identical constraint grows it. The claim is \emph{sealed} rather than
 fitted: with the rule, the populations and the pass mark committed to version control before
 any run, it predicted the direction on \textbf{9 of 10} populations never previously
 measured, while the best constant reached 6. An earlier sealed attempt that carried an
@@ -46,8 +47,10 @@ boosted-tree learner and a protected attribute swapped from sex to race, but it 
 under post-processing ($r = -0.024$ against $+0.585$), which reads the protected attribute at
 decision time. That boundary is where contemporaneous theory says the direction stops being
 distributional and becomes determined, and the theory's prediction for that regime holds in
-27 of 27 populations, nine pre-registered. The practical outcome is a procedure: a team can
-locate its own crossover by sweeping its deployed model's threshold, using no new data.
+27 of 27 populations, nine pre-registered. The practical outcome is a procedure: when the
+deployed model's viable operating band is wide enough --- which the procedure itself checks
+first --- a team can locate its own crossover by sweeping that model's threshold, using no
+new data.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -77,10 +80,10 @@ is what this paper provides and tests.
 \subsection{Scope, stated first}
 
 This is a paper about \textbf{attribute-blind in-processing} constraints, meaning the regime
-in which the protected attribute is unavailable at decision time. Almost every deployed
-system sits there, because per-group thresholds are widely read as disparate treatment on
-their face \cite{barocas2016,corbett2017}, which rules out the attribute-aware alternatives
-in most regulated settings. Under post-processing, which does read the attribute, the effect
+in which the protected attribute is unavailable at decision time. Many deployed systems sit
+there, because per-group thresholds are widely read as disparate treatment on their face
+\cite{barocas2016,corbett2017}, which rules out the attribute-aware alternatives in most
+regulated settings. Under post-processing, which does read the attribute, the effect
 we report disappears (Section~\ref{sec:regime}). We treat this not as a weakness of the
 finding but as the boundary the theory draws, and we verify it from both sides.
 
@@ -169,13 +172,19 @@ instrument.
 
 \section{Setup and Method}
 
-\textbf{Data.} Thirty-seven independent populations across five instruments: UCI Adult (45{,}222
-rows); ACS Income \cite{ding2021} across thirty US states and two protected attributes; HMDA
-mortgage records for two states, by race and sex and split by loan purpose; COMPAS
-\cite{propublica2016} (5{,}278 rows on the race arm after ProPublica's documented filter); LSAC
-bar passage (20{,}798 rows); and the Dutch national census of 2001 (60{,}420 rows).
+\textbf{Data.} Thirty-seven independent populations across seven data sources: UCI Adult
+(45{,}222 rows); ACS Income \cite{ding2021} across thirty US states and two protected
+attributes; HMDA mortgage records for two states, by race and sex and split by loan purpose;
+COMPAS \cite{propublica2016} (5{,}278 rows on the race arm after ProPublica's documented
+filter); LSAC bar passage (20{,}798 rows); the Dutch national census of 2001 (60{,}420
+rows); and Taiwanese credit-card default records of 2005 (30{,}000 rows). A
+\emph{population} here is one such unit --- a state, cohort or census --- and
+\emph{independent} means no person appears in two of them: arms within a population share
+people, so however many arms a population contributes, it is counted once
+(Table~\ref{tab:accounting}).
 
-The last three were added to leave the instruments the finding was formed in. The Dutch census
+COMPAS, LSAC and the Dutch census were added to leave the sources the finding was formed
+in. The Dutch census
 carries a between-group gap of 0.298, roughly twice Adult's, making it the test of the standard
 alternative explanation. LSAC was chosen because bar passage is naturally generous (base rate
 0.890).
@@ -507,8 +516,9 @@ protected attribute from the features; their paper prescribes no estimator, so t
 is ours, and a different estimator might behave differently. At the same time, a
 \emph{relaxed} version of their ordering, replacing the unattainable extrema with 5th/95th
 percentiles, agrees with the measured direction on \textbf{24 of 26} arms, compared with 25
-of 26 for the selection rate. Taken together, this suggests the theory is directionally
-right and that what fails is only the form in which its conditions can be checked. The
+of 26 for the selection rate. Taken together, this suggests the theory captures the relevant
+regime distinction, and that its stated sufficient conditions are not operationally
+checkable on the populations studied. The
 regime distinction itself matters most: within the attribute-blind regime the stated
 sufficient conditions do not yield an operational predictor of the direction, while the
 selection rate does, and that difference is something an empirical study can settle where a
@@ -694,8 +704,10 @@ rule --- down below 0.54, up at or above, with no low-rate clause --- against po
 with no measurement history of any kind. We used ten ACS states this project had never
 touched, one arm per state so that the arm count is the population count by construction,
 with income cutoffs assigned to spread the expected rates across both sides of the crossover
-so that no constant could mimic the rule. The bar was committed with the populations before
-any arm ran: at least 9 of 10, \emph{and} strictly beating the best constant.
+so that no constant could mimic the rule. The 0.54 prior itself predates the test: it is the
+mid-point of the non-lending cluster, fixed from four populations that include none of the
+ten. The bar was committed with the populations before any arm ran: at least 9 of 10,
+\emph{and} strictly beating the best constant.
 
 \textbf{It holds: 9 of 10, best constant 6} (Table~\ref{tab:resealed}). The prediction used
 the baseline selection rate and the fixed 0.54 prior alone --- no sweep, no per-population
@@ -740,7 +752,8 @@ effect within a population, so a team can rank its own segments; but no slope tr
 populations, so lines 25 and 27 return a direction and stop there.
 
 \begin{algorithm}[t]
-\caption{Locate the crossover; decide whether to add a floor}
+\caption{Directional audit: decide whether the predictor applies at all; if it does, locate
+the crossover and decide whether to add a floor}
 \label{alg:locate}
 \begin{algorithmic}[1]
 \REQUIRE deployed model $h$, held-out $(X,y,a)$, fairness constraint $C$
@@ -884,7 +897,7 @@ the relationship across the transition, on the label route and natural sub-popul
 
 \textbf{Magnitude does not transfer} between populations, only within them. \textbf{The
 crossover clusters but is not explained}: two candidate predictors are collinear at $+0.947$
-and neither survives four populations. \textbf{Coverage} is five instruments, three
+and neither survives four populations. \textbf{Coverage} is seven data sources, three
 countries and two decades; Taiwan is the only non-Western population, and one population is
 not coverage. \textbf{The regime result} was post-hoc at 18 of 18 and has since been confirmed
 pre-registered at 9 of 9, but it confirms a published theorem rather than establishing one.

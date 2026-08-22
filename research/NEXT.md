@@ -19,7 +19,8 @@ that after the run cannot excuse the miss.
 
 ## Where the work stands
 
-* **37 independent populations**, 6 domains, 5 instruments, 3 countries, 2 decades.
+* **37 independent populations**, 6 domains, 7 data sources, 3 countries, 2 decades. ("5
+  instruments" was stale once Taiwan and Adult were counted; the paper now says 7 sources.)
 * **The claim, in full:** within a population, in the **attribute-blind in-processing** regime,
   the baseline selection rate against the ~0.54 prior predicts *which way* a parity constraint
   moves the pool of favourable decisions, and orders *how much* within the population. Neither
