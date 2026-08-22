@@ -66,9 +66,17 @@ that after the run cannot excuse the miss.
       52). TX, FL, NJ, VA, MA level up at natural rates 0.29–0.52 where every earlier
       population levelled down; several show U-shaped sweeps with no crossover at all. The
       misses are internally consistent (FL turns up at 0.288 and its located crossover is
-      0.284), so something population-level is real here — and these states are the largest
-      and richest, which is a lead, not an answer. Any proposed separator goes through a
-      seal; there are 9 unused states plus IPUMS.
+      0.284), so something population-level is real here.
+      **A post-hoc shape screen (23 Aug, scratch `shapes.py`) found the candidate:** within
+      ACS, base rate orders the shape class — p ≤ 0.36 gives monotone/all-negative (8/8),
+      p 0.37–0.47 gives U-shapes, p ≥ 0.44 gives all-positive, with slight interleaving —
+      and the sharper form is (natural rate − p), the reservoir headroom: monotone states
+      run far below their base rate, U/all-positive states at or above it, which ties the
+      shape to docs 50/51's lift mechanism. Cross-instrument it fails (COMPAS is monotone
+      at p = 0.53), consistent with everything else here. **The sealable test is IPUMS:**
+      Brazil/Mexico base rates are computable before any sweep, so commit shape
+      predictions (thresholds fitted on ACS only) before the first non-Western arm runs.
+      The 9 unused ACS states are below the noise floor and cannot serve.
 - [ ] **The crossover residual — still open, and harder** (document 52). The sealed test
       returned UNDERPOWERED (3 new locations against a minimum of 6) because locating a
       crossover assumes a monotone landscape and a third of the large states do not have
