@@ -84,3 +84,28 @@ The selector. The concrete next step, if it is worth an afternoon: for the match
 threshold from the fitted baselines, and check whether the lift arm has unprivileged mass
 piled just under the line where the cut arm does not. That is a mechanism probe, not a
 correlation, and it would either name the selector or kill the geometry story too.
+
+## Addendum, same day — the geometry story is killed too
+
+The probe was run (`analyse_routes.py --probe-geometry`, results in
+`routes_geometry_probe.csv`), over all nine deep-tail arms rather than just the matched
+pair, and **both** simple geometry candidates fail:
+
+* **Depth-to-equalise.** How far each group's threshold would have to move to close the gap
+  by lifting versus by cutting. Cutting is cheaper *in score units* on **all nine arms**
+  (depth ratios 1.32–6.11) — including the five that lifted. The ratio does not separate the
+  directions either: COMPAS cuts at 1.38, inside the lift arms' 1.32–1.85 range.
+* **Mass near the line.** Under a global group-correlated tilt, more unprivileged mass just
+  below the threshold than privileged mass just above it would make lifting dominate. The
+  privileged mass is larger on **all nine arms** (mass ratios 0.15–0.85), lift and cut
+  alike, and the ranges overlap completely.
+
+So the selector is not in the baseline score distribution's simple summaries at all — six
+candidates are now dead (rate, gap-to-rate, reservoir, accuracy clearance, threshold height,
+and both geometry forms). What remains is the optimiser itself: ExpGrad does not move
+thresholds, it reweights and refits, and its chosen direction must come from the feasible
+set of *linear* tilts — which features correlate with group, and where each group's mass
+moves under the cheapest tilt. Probing that means diffing the mitigated models' per-person
+scores against the baselines on one lift arm and one cut arm, not computing another summary
+of the baseline. That is the next and probably last cheap step; past it, this is a theory
+question rather than a measurement one.

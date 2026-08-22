@@ -110,13 +110,78 @@ def population_facts(spec: str) -> dict:
     }
 
 
+# The deep-tail arms the geometry probes run over: (spec, threshold, observed direction).
+# Fixed here because they are the arms document 50 is about, not a tunable default.
+PROBE_ARMS = [
+    ("acs:OR", 0.87, "up"), ("acs:AL", 0.87, "up"), ("acs:KY", 0.87, "up"),
+    ("acs:SC", 0.87, "up"), ("acs:CT", 0.87, "up"),
+    ("dutch", 0.965, "down"), ("dutch", 0.93, "down"),
+    ("compas", 0.775, "down"), ("lawschool", 0.995, "down (void)"),
+]
+
+
+def probe_geometry(seeds: int = 5) -> pd.DataFrame:
+    """The two geometry candidates for the lift-or-cut selector, both of which fail.
+
+    *Depth*: how far each group's threshold would have to move to equalise rates by
+    lifting (unpriv down to priv's rate) or by cutting (priv up to unpriv's rate).
+    *Mass*: how many of each group sit within a window of the threshold. Either would be a
+    usable pre-fit guard if it separated the observed directions; document 50's addendum
+    records that neither does.
+    """
+    import numpy as np
+
+    from ..datasets import build as build_dataset
+    from ..models import build as build_model
+    from ..preprocessing import prepare
+
+    rows = []
+    for spec, tau, direction in PROBE_ARMS:
+        dataset = build_dataset(spec).load()
+        d_lift, d_cut, below_u, above_p = [], [], [], []
+        for seed in range(seeds):
+            split = prepare(dataset, random_state=seed)
+            model = build_model("logistic_regression", random_state=seed)
+            model.fit(split.X_train, split.y_train)
+            s = model.predict_proba(split.X_test)[:, 1]
+            priv = np.asarray(split.a_test == dataset.privileged_value)
+            r_p, r_u = float((s[priv] > tau).mean()), float((s[~priv] > tau).mean())
+            if r_p <= r_u:
+                continue
+            d_lift.append(tau - float(np.quantile(s[~priv], 1 - r_p)))
+            d_cut.append(float(np.quantile(s[priv], 1 - r_u)) - tau)
+            window = 0.02
+            below_u.append(int(((s >= tau - window) & (s < tau) & ~priv).sum()))
+            above_p.append(int(((s >= tau) & (s < tau + window) & priv).sum()))
+        if not d_lift:
+            continue
+        rows.append({"arm": f"{spec}@{tau:g}", "observed": direction,
+                     "d_lift": float(np.mean(d_lift)), "d_cut": float(np.mean(d_cut)),
+                     "depth_ratio": float(np.mean(d_lift)) / float(np.mean(d_cut)),
+                     "unpriv_near_below": float(np.mean(below_u)),
+                     "priv_near_above": float(np.mean(above_p)),
+                     "mass_ratio": float(np.mean(below_u)) / float(np.mean(above_p))})
+    return pd.DataFrame(rows)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dataset", default=None,
                         help="restrict to one population stem (default: all)")
     parser.add_argument("--rate-ceiling", type=float, default=0.30,
                         help="survey arms whose baseline rate is below this")
+    parser.add_argument("--probe-geometry", action="store_true",
+                        help="refit the deep-tail baselines and score the two geometry "
+                             "candidates for the lift-or-cut selector")
     args = parser.parse_args()
+
+    if args.probe_geometry:
+        probe = probe_geometry()
+        print(probe.round(4).to_string(index=False))
+        OUT = research_dir("routes")
+        probe.round(6).to_csv(OUT / "routes_geometry_probe.csv", index=False)
+        print(f"\nwrote {OUT}/routes_geometry_probe.csv")
+        return
 
     rows = []
     for stem, spec in OP_POPULATIONS.items():

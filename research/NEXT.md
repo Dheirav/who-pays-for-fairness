@@ -57,12 +57,14 @@ that after the run cannot excuse the miss.
 
 ## Open, in the order I would do them
 
-- [ ] **The lift-or-cut selector** (document 50's open remainder). The route divergence is
-      known to be lift-vs-cut, but nothing observable in the stored aggregates predicts which
-      a deep-tail arm will do: OR op087 and Dutch op0965 agree on every stored quantity and
-      move opposite ways. Next probe, ~an afternoon: per-group score density near the
-      threshold for that matched pair, from the fitted baselines. Names the selector or kills
-      the geometry story too.
+- [ ] **The lift-or-cut selector** (document 50's open remainder, now harder). Six candidates
+      are dead: rate, gap-to-rate, reservoir, accuracy clearance, threshold height, and — per
+      the same-day addendum — both simple geometry forms (depth-to-equalise and
+      mass-near-the-line fail on all nine deep-tail arms; `--probe-geometry` recomputes
+      them). The selector is not in the baseline score distribution's summaries. Last cheap
+      step: refit ExpGrad on one lift arm (OR@0.87) and one cut arm (Dutch@0.965) and diff
+      the mitigated models' per-person scores against baseline by group — look at what the
+      optimiser's tilt actually did. Past that, it is a theory question.
 - [ ] **A *sweepable* non-Western population.** Taiwan is non-Western but the viable-band test
       refused it, as it did LSAC. One that can be swept would be the first crossover located
       outside the West.
