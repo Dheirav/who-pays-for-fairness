@@ -1,0 +1,10 @@
+spec,population,rate,pie,predicted,actual,held_out,correct
+acs:GA:SEX:10000,acs_income_ga_2018_t10000,0.905074,0.300984,up,up,True,True
+acs:NC:SEX:20000,acs_income_nc_2018_t20000,0.788618,0.160834,up,up,True,True
+acs:MI:SEX:30000,acs_income_mi_2018_t30000,0.612024,0.854134,up,up,True,True
+acs:TN,acs_income_tn_2018,0.255191,-1.677107,down,down,True,True
+acs:IN:SEX:70000,acs_income_in_2018_t70000,0.081298,-23.321066,up,down,True,False
+acs:AZ:SEX:100000,acs_income_az_2018_t100000,0.036939,-23.342772,up,down,True,False
+acs:MO:SEX:100000,acs_income_mo_2018_t100000,0.026,-16.483333,up,down,True,False
+acs:MD:SEX:50000,acs_income_md_2018,0.50802,0.775562,down,up,True,False
+taiwan,taiwan_2005_sex,0.884533,0.675806,up,up,False,True

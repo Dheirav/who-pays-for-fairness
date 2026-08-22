@@ -1,5 +1,15 @@
 # 46 — The relationship turns back up at the very bottom, and that is what the exclusion was hiding
 
+> **WITHDRAWN as a claim about the selection rate — see
+> [document 47](47-the-sealed-prediction-failed-and-took-document-46-with-it.md).** A sealed
+> prediction on eight populations none of this data had seen tested the low-rate regime
+> directly. **All three low-rate arms came out strongly negative** (−16%, −23%, −23%) where
+> this document predicts positive. The turn-up is real but belongs to the **operating-point
+> route**, not to the selection rate: reaching a rate of 0.05 by thresholding a fitted model
+> produces a classifier unlike one trained on a rare label, and the two routes disagree there
+> completely. Carrying this refinement turned a 7-of-8 prediction into 4-of-8. The
+> measurements below stand; the conclusion drawn from them does not.
+
 **Individual work, beyond the course submission.** **Post-hoc**, and it began as a
 robustness check rather than a hypothesis: external review asked why the parity-gap exclusion
 was set at 0.05, [document 45](45-intervals-and-what-the-exclusion-threshold-was-doing.md)
