@@ -19,8 +19,12 @@ that after the run cannot excuse the miss.
 
 ## Where the work stands
 
-* **37 independent populations**, 6 domains, 7 data sources, 3 countries, 2 decades. ("5
+* **47 independent populations**, 6 domains, 7 data sources, 3 countries, 2 decades. ("5
   instruments" was stale once Taiwan and Adult were counted; the paper now says 7 sources.)
+* **After document 52 the claim carries a sharper scope.** The sealed 9/10 stands, but the
+  ten large states swept that night score the fixed 0.54 prior at 5/10 post-hoc, each miss
+  consistent with its own state's sweep: the within-population relationship survives, the
+  universal prior does not transfer everywhere, and located crossovers now span 0.28–0.65.
 * **The claim, in full:** within a population, in the **attribute-blind in-processing** regime,
   the baseline selection rate against the ~0.54 prior predicts *which way* a parity constraint
   moves the pool of favourable decisions, and orders *how much* within the population. Neither
@@ -58,6 +62,18 @@ that after the run cannot excuse the miss.
 
 ## Open, in the order I would do them
 
+- [ ] **What separates the states that level up below 0.54?** New top question (document
+      52). TX, FL, NJ, VA, MA level up at natural rates 0.29–0.52 where every earlier
+      population levelled down; several show U-shaped sweeps with no crossover at all. The
+      misses are internally consistent (FL turns up at 0.288 and its located crossover is
+      0.284), so something population-level is real here — and these states are the largest
+      and richest, which is a lead, not an answer. Any proposed separator goes through a
+      seal; there are 9 unused states plus IPUMS.
+- [ ] **The crossover residual — still open, and harder** (document 52). The sealed test
+      returned UNDERPOWERED (3 new locations against a minimum of 6) because locating a
+      crossover assumes a monotone landscape and a third of the large states do not have
+      one. A future design must handle U-shapes and levels-up-everywhere before it can ask
+      what predicts the location; located values now span 0.28–0.65.
 - [ ] **The lift-or-cut selector** (document 50's open remainder, now harder). Six candidates
       are dead: rate, gap-to-rate, reservoir, accuracy clearance, threshold height, and — per
       the same-day addendum — both simple geometry forms (depth-to-equalise and

@@ -1,0 +1,15 @@
+population,gap,n_test,arms_retained,status,crossover,bracket_lo,bracket_hi
+compas_2016_race,0.248119,1584.0,12,located,0.511427,0.473611,0.549242
+dutch_2001_sex,0.185834,18126.0,9,located,0.575919,0.533929,0.617908
+acs_income_sc_2018,0.097285,7464.0,11,located,0.529515,0.50485,0.55418
+acs_income_or_2018,0.096599,6576.0,10,located,0.558166,0.527616,0.588717
+acs_income_tx_2018,0.114027,40778.0,9,unlocated,,,
+acs_income_ny_2018,0.071056,30907.0,7,void (spread guard),,,
+acs_income_fl_2018,0.104558,29678.0,8,located,0.284042,0.259189,0.308895
+acs_income_il_2018,0.121565,20105.0,8,unlocated,,,
+acs_income_pa_2018,0.085779,20493.0,9,located,0.652213,0.623471,0.680954
+acs_income_oh_2018,0.094516,18641.0,8,located,0.556322,0.527847,0.584797
+acs_income_nj_2018,0.104911,14335.0,6,unlocated,,,
+acs_income_va_2018,0.122887,13844.0,7,unlocated,,,
+acs_income_ma_2018,0.090677,12035.0,6,unlocated,,,
+acs_income_la_2018,0.165523,6201.0,8,unlocated,,,
