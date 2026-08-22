@@ -1151,11 +1151,14 @@ def test_paper_draft_population_count_is_recomputed() -> None:
     # hmda_ms_la pools two populations already counted, so it is not independent of them.
     independent = {p for p in pops if p != "hmda_ms_la_2018"}
 
-    assert len(independent) == 18, (
-        f"the draft claims 18 independent populations; the results give {len(independent)}: "
-        f"{sorted(independent)}")
-    assert "18 independent populations" in text or "Across 18 populations" in text, (
-        "the draft no longer states its population count, or states a different one")
+    # Read the claim rather than hardcode it. A test that pins a number has to be edited
+    # every time the evidence grows, and an edit is exactly where a stale claim survives;
+    # this one recomputes from the results and checks the document against that.
+    claimed = _re.search(r"\*\*(\d+) independent populations\*\*", text)
+    assert claimed, "the draft no longer states an independent-population count"
+    assert int(claimed.group(1)) == len(independent), (
+        f"the draft claims {claimed.group(1)} independent populations; the results give "
+        f"{len(independent)}: {sorted(independent)}")
     # And the error docs/38 records: never claim populations where arms are meant.
     assert "21 populations" not in text, "the draft is back to an overstated population count"
     print(f"  draft claims 18; results give {len(independent)} independent populations")

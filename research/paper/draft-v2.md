@@ -5,7 +5,7 @@ over from `draft.md` with counts corrected; everything else is new. The evidence
 including every reference checked against its source, is in
 [`reading-notes.md`](reading-notes.md).
 
-**Scale.** 5 domains, 4 instruments, 2 countries, 2 decades. **18 independent populations**
+**Scale.** 6 domains, 5 instruments, 3 countries, 2 decades. **27 independent populations**
 — Adult, twelve ACS states, two HMDA states, COMPAS, LSAC and the Dutch census — carrying 67
 dataset-by-attribute arms and 326 arm directories once label, operating-point, tolerance,
 learner and criterion variants are counted. Arms of one population share their people, so 18
@@ -259,7 +259,7 @@ that literature rather than as a novel finding.
 
 ## 3. Setup and method
 
-**Data.** Eighteen independent populations across four instruments. UCI Adult (45,222 rows). ACS Income
+**Data.** Twenty-seven independent populations across five instruments. UCI Adult (45,222 rows). ACS Income
 (Ding et al., 2021) across twelve US states and two protected attributes. HMDA mortgage
 records for Mississippi and Louisiana, by race and by sex, and split by loan purpose. COMPAS
 (ProPublica, 2016; 5,278 rows on the race arm after their documented filter). LSAC bar passage

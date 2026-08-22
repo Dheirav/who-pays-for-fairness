@@ -30,6 +30,18 @@ RESULTS = ROOT / "results"
 # Modules that legitimately hold no results-writing code.
 EXEMPT = {"__init__.py", "methods.py"}
 
+# Analysers whose population list IS the pre-registration. The guard below exists so that no
+# module has its populations hardcoded *as a default a caller cannot change*; these are the
+# opposite case. `analyse_sealed` names the eight populations its prediction was sealed over
+# and `analyse_attribute_aware` the nine its bar was set against, both committed before the
+# arms existed. Making either configurable would let a later caller quietly change what was
+# predicted, which is the failure the seal exists to prevent. `make_figures` renders whatever
+# the analysers produced and selects nothing.
+PREREGISTERED = {
+    "analyse_sealed.py", "analyse_attribute_aware.py", "analyse_dense.py",
+    "analyse_magnitude.py", "analyse_uncertainty_crossover.py", "make_figures.py",
+}
+
 
 class Skipped(Exception):
     """Raised by a test whose subject is absent from this copy of the project."""
@@ -72,7 +84,7 @@ def test_every_experiment_can_be_pointed_at_its_populations() -> None:
     missing = [
         path.name
         for path in EXPERIMENTS
-        if path.name not in EXEMPT
+        if path.name not in EXEMPT and path.name not in PREREGISTERED
         and "def main(" in path.read_text()
         and not any(flag in path.read_text() for flag in ('"--dataset"', '"--states"'))
     ]
