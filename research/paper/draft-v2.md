@@ -1,3 +1,10 @@
+> **SUPERSEDED — do not read as current.** The paper is maintained in LaTeX at
+> [`ieee/paper.tex`](ieee/paper.tex), and that version is the one the supervisor pack carries.
+> This file stopped being updated once the typeset version existed and is missing, among other
+> things, the sealed prediction and its failure, the Taiwan population, the crossover
+> intervals, and the correction from "the theory is refuted" to "the theory is silent". It is
+> kept because it holds the prose the LaTeX was written from, not because it is accurate.
+
 # Which Way Does Fairness Go? The Selection Rate Predicts Whether an Attribute-Blind Constraint Gives or Takes
 
 **Status.** Rewrite complete; no results outstanding. §2 and the reference list are carried

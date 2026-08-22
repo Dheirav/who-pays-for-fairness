@@ -33,8 +33,6 @@ DOCUMENTS = [
      "What is in this folder, and the order to read it"),
     (HERE / "THE-ASK.md", "03-the-ask", "The Decision I Need",
      "One fork, the argument for it, and the counter-argument expected"),
-    (HERE.parent / "paper" / "draft-v2.md", "04-paper-draft", "Paper Draft",
-     "Full working draft, rewritten"),
     (HERE.parent / "paper" / "reading-notes.md", "05-reading-notes", "Reading Notes",
      "What each cited paper was checked for, and what it changed"),
 ]
@@ -272,9 +270,28 @@ def build(source: Path, stem: str, title: str, subtitle: str) -> bool:
     return ok
 
 
+def copy_typeset_paper() -> None:
+    """The paper is maintained in LaTeX; the pack takes that PDF rather than re-rendering.
+
+    It used to render `paper/draft-v2.md` here, which meant two papers to keep in step. They
+    did not stay in step: the markdown copy was missing the sealed prediction, Taiwan, and
+    every correction of the last day, and the pack was handing that version to the supervisor
+    while the typeset one was current. One source, copied.
+    """
+    import shutil
+
+    source = HERE.parent / "paper" / "ieee" / "paper.pdf"
+    if not source.exists():
+        print("  04-paper-draft       <- ieee/paper.pdf MISSING (run ieee/build.sh)")
+        return
+    shutil.copyfile(source, HERE / "04-paper-draft.pdf")
+    print("  04-paper-draft       <- ieee/paper.pdf (typeset, copied)")
+
+
 def main() -> None:
     if not shutil.which("pdflatex"):
         sys.exit("pdflatex not found")
+    copy_typeset_paper()
     # 02-findings.tex is hand-written LaTeX rather than converted markdown, so it is
     # built here rather than listed in DOCUMENTS.
     print(f"  {'02-findings':<20} <- 02-findings.tex", end=" ")
