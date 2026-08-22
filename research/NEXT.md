@@ -108,6 +108,17 @@ that after the run cannot excuse the miss.
 - [ ] **Magnitude.** Ordered within a population (ρ up to +0.96), no pooled slope (+0.487,
       failed). A better model is possible; the current concession is honest without one.
 
+## Screened and viable, waiting on a loader and a seal
+
+* **ACSEmployment and ACSPublicCoverage, 23 Aug** (scratch `screen_tasks.py`). Employment
+  passes every gate on AL, OH, PA (p 0.41–0.47, spans 0.75–0.86); the richer states fail
+  its gap floor (NY +0.031, NJ +0.035). Coverage passes on OH, PA, NY (p 0.31–0.40, spans
+  0.43–0.65; note the direction inverts — women are the higher-rate group). Together: six
+  populations, two tasks, sealed-boundary predictions on **both** sides (employment all
+  HIGH-family, coverage OH/PA LOW, NY HIGH) — the cross-task test of the shape boundary,
+  one rung below cross-instrument. Needs: two loaders in `acs.py`'s style, then the usual
+  seal-then-sweep. Decide after the cross-year verdict lands.
+
 ## Screened and refused, so nobody screens them twice
 
 * **UCI diabetes readmission (130 hospitals, 102k rows), 23 Aug.** Band is excellent
