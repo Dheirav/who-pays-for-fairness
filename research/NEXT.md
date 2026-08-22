@@ -82,13 +82,15 @@ that after the run cannot excuse the miss.
       crossover assumes a monotone landscape and a third of the large states do not have
       one. A future design must handle U-shapes and levels-up-everywhere before it can ask
       what predicts the location; located values now span 0.28–0.65.
-- [x] **A novelty audit for the lottery finding. DONE** (document 53): the observation,
-      the tilt-vs-lottery signature and the direction connection are not found anywhere
-      searched; the neighbourhood is Long et al. 2023 (across-model multiplicity — now
+- [x] **A novelty audit for the lottery finding. DONE, citation-graph level** (document 53
+      + addendum): 89 citing papers of four anchors screened, ten varied-vocabulary arXiv
+      queries; the observation, the signature and the direction connection found nowhere.
+      Four fences for the write-up: Long et al. 2023 (across-model multiplicity — now
       cited in the paper), Agarwal & Deshpande 2022 (theory's optimum randomizes at the
-      boundary, not globally — the contrast strengthens the finding) and Cotter et al.
-      2019 (derandomization). Residual: an evening's sweep, not doc 30's citation-graph
-      pass; do that pass if the lottery is promoted into the paper.
+      boundary, not globally), Cotter et al. 2019 (derandomization), Grgić-Hlača et al.
+      2017 (randomness *advocated* as a fairness device — the mirror image; the
+      indictment is uninformative randomness, not randomness). The lottery is clear to
+      promote into the paper.
 - [ ] **The lift-or-cut selector** (document 50's open remainder, now harder). Six candidates
       are dead: rate, gap-to-rate, reservoir, accuracy clearance, threshold height, and — per
       the same-day addendum — both simple geometry forms (depth-to-equalise and

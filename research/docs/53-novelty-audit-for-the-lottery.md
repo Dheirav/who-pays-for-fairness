@@ -61,3 +61,28 @@ practice, each of which the write-up must cite and delineate. The residual risk 
 audit's own coverage — an evening against document 30's fuller sweep — and a
 citation-graph pass over Long et al. and Agarwal & Deshpande's citers is the cheap
 tightening if the lottery is promoted into the paper.
+
+## Addendum, next day — the citation-graph pass, and the verdict holds
+
+The pass document 30 would demand was run: **every citing paper of all three anchors
+pulled from Semantic Scholar and screened by title and abstract** — Long et al. (15
+citers), Agarwal & Deshpande (6), Cotter et al. (24) — plus the citers of a fourth anchor
+found by a widened arXiv keyword pass, Grgić-Hlača et al. 2017 (44 citers), and ten
+arXiv API queries under deliberately varied vocabulary ("randomized rejection", "random
+tie-breaking", "uniform lottery", "randomly discard", "keep probability", and others).
+Eighty-nine citing papers screened in all; one cleared at abstract level (ensemble
+fairness composition, 2022 — fairness *of* ordinary ensembles, not degeneracy of
+fairness-constrained mixtures); none observes the lottery, the signature, or the
+direction connection.
+
+The widened pass added a **fourth fence**: Grgić-Hlača et al. 2017 *advocate* randomized
+classifier ensembles as a deliberate fairness device. That is the mirror of our finding —
+designed randomness as a virtue versus randomness *emerging* as the degenerate way to buy
+a certificate — and the write-up should engage it directly: the indictment is not
+randomness per se, but uninformative randomness standing in for a measured closing of the
+gap.
+
+**Verdict as it now stands: ours, at citation-graph confidence, with four fences.** The
+remaining risk is the irreducible kind — venue-only publications, non-English work,
+vocabulary none of fourteen queries reached — which is the same residual document 30
+accepted.
