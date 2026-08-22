@@ -160,3 +160,10 @@ Three pieces of discipline are worth naming because they caught real errors:
 3. **AI disclosure.** How the department wants assistance disclosed, including whether
    commits should carry a trailer; none currently do.
 4. **Whether the course submission window is still open** for the rebuilt report and deck.
+5. **Contacting the theory paper's authors.** Our results confirm their regime prediction
+   (27 of 27, nine pre-registered), extend their framework with a computable proxy for its
+   central quantity, and show its stated conditions cannot be evaluated on real data — the
+   last of which rests on an estimator choice they would be the best people to challenge
+   before a reviewer does. Standard practice would be a short collegial email, ideally
+   after a preprint exists; I would like your read on whether and when, and whether you
+   want to be on it.

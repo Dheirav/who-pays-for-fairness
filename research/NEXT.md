@@ -74,6 +74,10 @@ that after the run cannot excuse the miss.
       crossover assumes a monotone landscape and a third of the large states do not have
       one. A future design must handle U-shapes and levels-up-everywhere before it can ask
       what predicts the location; located values now span 0.28–0.65.
+- [ ] **A novelty audit for the lottery finding.** Document 30's sweep predates document
+      51, so "the cut is a lottery" has never been checked against the literature the way
+      the core claims were. Before the paper leans on it as a contribution: a targeted
+      pass over randomized-fair-classifier and mixture-degeneracy vocabulary. An evening.
 - [ ] **The lift-or-cut selector** (document 50's open remainder, now harder). Six candidates
       are dead: rate, gap-to-rate, reservoir, accuracy clearance, threshold height, and — per
       the same-day addendum — both simple geometry forms (depth-to-equalise and
@@ -135,5 +139,9 @@ Every one produced a plausible wrong answer without raising an error. They will 
       The position is strong: their conditions are unusable on data, their regime distinction
       holds 27/27, and the selection rate proxies their quantity at r = +0.935.
 - [ ] **AI disclosure**, including whether commits should carry a trailer. None do.
+- [ ] **Contacting the *Backfire* authors** — our results confirm their regime prediction,
+      extend their framework, and bound its applicability; the uncomputability finding
+      rests on an estimator choice they are best placed to challenge. Standard move is a
+      collegial email after a preprint exists; supervisor first, their call on timing.
 - [ ] **Is the course submission still open?** The report, deck and bundle were rebuilt because
       `docs/05` claimed originality for a decomposition Ferry et al. published first.

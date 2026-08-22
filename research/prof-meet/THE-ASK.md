@@ -1,5 +1,15 @@
 # The decision I need
 
+> **Update, 23 August.** This document's argument stands, but its numbers are from an
+> earlier stage; `06-status-report.pdf` carries the current ones. Since this was written:
+> the population count went from 18 to 47; the direction rule passed a sealed test
+> committed before the data existed (**9 of 10** never-measured states, best constant 6);
+> the theory's own regime prediction was confirmed 27 of 27, nine pre-registered; and a
+> second sealed campaign then showed the fixed 0.54 tipping point is population-dependent
+> (located values 0.28–0.65), which narrowed the claim honestly rather than breaking it.
+> The fork below is unchanged — if anything, the sealed pass strengthens the "stands on
+> its own" branch.
+
 ## The question
 
 **A 2026 theory paper proves the effect can go either way, with no experiments in it. I have

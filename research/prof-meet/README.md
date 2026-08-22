@@ -9,12 +9,13 @@ Everything is a PDF. The `.md` files beside them are the editable sources; run
 
 | # | file | what it is | time |
 |---|---|---|---|
-| 0 | **`00-plain-english.pdf`** | The whole thing with no jargon, plus a glossary | 6 min |
-| 1 | **`02-findings.pdf`** | The findings, with the numbers | 12 min |
-| 2 | `03-the-ask.pdf` | The one decision I need from you | 2 min |
+| 0 | **`00-plain-english.pdf`** | The whole thing with no jargon, plus a glossary | 7 min |
+| 1 | **`06-status-report.pdf`** | The current state: findings, sealed evidence, the asks | 8 min |
+| 2 | `03-the-ask.pdf` | The one decision I need from you (see its update note) | 3 min |
 | 3 | `papers/01-mittelstadt-2023-*.pdf`, section 6 only | The closest competing work | 15 min |
-| 4 | `04-paper-draft.pdf` | The full paper draft, in academic style | 40 min |
+| 4 | `04-paper-draft.pdf` | The full paper, in academic style | 40 min |
 | 5 | `05-reading-notes.pdf` | What I checked in each cited paper, and what changed | 10 min |
+| 6 | `02-findings.pdf` | The earlier findings deck (see its update note) | 12 min |
 
 `01-start-here.pdf` is this document. **If any wording is unfamiliar, start at 00** — it
 defines every term the others use.
@@ -24,10 +25,12 @@ defines every term the others use.
 > These fairness fixes make two groups equal either by approving more from the group being
 > turned down, or by rejecting more from the group getting through — and the certifying
 > score cannot tell which happened. Theory published in March 2026 proves it can go either
-> way. **I measured which way, on 26 runs across 15 populations: it depends on how generous the system already
-> is.** And the domains these tools are deployed in sit at opposite ends of that scale — CV
-> screening approves 2–3%, mortgage lending approves 84% — so two organisations can apply
-> the identical tool in good faith and get opposite effects, with identical fairness reports.
+> way. **I measured which way, across 47 populations: it depends on how generous the system
+> already is, with a tipping point each population owns** — and a rule committed to git
+> before the test data existed called 9 of 10 never-measured populations correctly. The
+> domains these tools are deployed in sit at opposite ends of that scale — CV screening
+> approves 2–3%, mortgage lending approves 84% — so two organisations can apply the
+> identical tool in good faith and get opposite effects, with identical fairness reports.
 > Their conditions hold on none of my datasets; my rule needs only a historical approval
 > rate, and the two agree at 0.93.
 
@@ -50,7 +53,8 @@ defines every term the others use.
 
 ## Where the underlying work is
 
-- `../docs/11`–`26` — 16 documents, one per finding, each stating its own limits
+- `../docs/11`–`52` — one document per finding, each stating its own limits, failures and
+  withdrawals recorded in place
 - `../../docs/01`–`10` — the coursework this grew out of
 - `../results/` — every number as a spreadsheet
 - `../../tests/test_documented_claims.py` — regenerates every headline figure and fails if a
@@ -80,9 +84,11 @@ agree at 0.93 — independent theory and independent measurement converging.
 
 ## Scale
 
-18 independent populations · 326 experimental runs · 1,011 model fits · 2 data sources · 2 kinds of
-decision · 5 repeats of everything, 12 where the effects were small enough to need them
+47 independent populations · 7 data sources · 6 kinds of decision · 3 countries · 5 repeats
+of everything, 12 or 20 where the effects were small enough to need them · 55 automated
+checks that re-derive every documented figure from stored results
 
-Four separate attempts to break the finding, on five populations each: a different learner
-(survived 5/5), a 25× range of constraint strength (4/5), a different route to the same
-approval rate (4/5), and a different fairness definition (**failed**).
+Nine tests written down and committed before their data existed: six failed, one returned
+underpowered, two passed — including the central one, the direction rule at **9 of 10** on
+populations never previously measured, against a best lucky guesser's 6. Every failure is
+in the paper, uncorrected; the passes are what survive that map.
