@@ -42,9 +42,13 @@ It survives a twenty-five-fold range of constraint tolerance, a boosted-tree lea
 protected attribute swapped from sex to race. Crucially, it is bounded: under
 \emph{post-processing}, which reads the protected attribute at decision time, the effect
 vanishes entirely ($r = -0.024$ against $+0.585$), and contemporaneous theory says why --- in
-that regime the direction is determined, not distributional. A \emph{post-hoc} consistency
-check finds the theory's prediction for that regime holding in 18 of 18 populations. The practical result is a procedure: locate your own crossover
-by sweeping your deployed model's threshold, needing no new data.
+that regime the direction is determined, not distributional. The theory's prediction for that regime holds in 18 of 18 populations post-hoc and \textbf{9
+of 9} in a pre-registered replication. The practical result is a procedure: locate your own crossover
+by sweeping your deployed model's threshold, needing no new data. We also report a
+\emph{sealed} prediction on nine populations never previously measured, committed before the
+runs, which \textbf{failed at four of eight} --- and the reason is instructive: a refinement
+derived from four in-sample populations turned a seven-of-eight prediction into a
+four-of-eight one.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -290,6 +294,7 @@ constraint across its loan book would take opportunities away in one product and
 in another, with its fairness report showing success in both.
 
 \subsection{It is the rate, not the difficulty of the task}
+\label{sec:tworoutes-note}
 
 \begin{figure*}[t]
 \centering
@@ -427,8 +432,10 @@ pre-registered prediction failed and its naive alternative won outright.
 
 \textbf{In the attribute-aware regime the theory says there is nothing to predict}, because the
 direction is determined. Its prediction for that regime is that the advantaged group loses and
-the disadvantaged gains, always. On our populations that holds in \textbf{18 of 18}, without
-exception. (This check was decided after the failure and is post-hoc.)
+the disadvantaged gains, always. On our populations that holds in \textbf{18 of 18}, without exception. That check was
+post-hoc, so we repeated it as a confirmatory test on nine populations never previously
+post-processed, with the bar set at all nine and committed before the runs: it holds \textbf{9
+of 9}. The regime result therefore stands at 27 of 27, nine of them predicted in advance.
 
 Section~\ref{sec:failures} notes that the same theory's \emph{conditions} hold on 0 of 26 arms.
 Its regime distinction holds on 18 of 18. The theory is right about which regime you are in
@@ -498,11 +505,12 @@ sweep. This is computable before running anything.
 When the viable band forbids a sweep, the crossover can still be located by comparing natural
 sub-populations --- which is how the mortgage crossover was first found.
 
-\subsection{The relationship is bounded below as well as above}
+\subsection{A sealed prediction, and what it cost}
+\label{sec:sealed}
 
 \begin{table}[t]
-\caption{Sensitivity to the parity-gap exclusion, and what it conceals. Correlation per
-population as the exclusion threshold is loosened.}
+\caption{Sensitivity to the parity-gap exclusion. Correlation per population as the
+threshold is loosened.}
 \label{tab:sensitivity}
 \centering
 \footnotesize
@@ -521,32 +529,63 @@ Kentucky & $-0.590$ & $-0.590$ & $-0.654$ & --- \\
 \end{tabular}
 \end{table}
 
-A reviewer is entitled to ask why arms are excluded at a baseline parity gap of 0.05, a
-threshold this work inherited. Table~\ref{tab:sensitivity} gives the sweep, and it looks
-damaging: South Carolina moves from $+0.905$ to $+0.012$ when the bar is loosened to 0.02.
+Every result above is a correlation computed after the arms were run, which is the weakest
+support for a claim of the form \emph{you can know in advance}. We therefore ran the strongest
+format available: nine populations whose direction had never been measured, with the rule, the
+populations and the pass mark committed before any of them existed.
 
-\textbf{The reason is not noise, and it is not an artifact.} The arms admitted at the looser
-bar sit at a selection rate near 0.05 with 331--371 baseline positives. Re-run at twenty seeds
-they do not collapse toward zero: they are consistently \emph{positive}, at $+8.73$, $+6.85$
-and $+9.09$, roughly six standard errors from zero.
+\textbf{It failed. Four of eight, against a bar of seven, not beating a constant.}
 
-Looking for the pattern rather than at the threshold, \textbf{all four ACS populations turn
-positive at their lowest arm and negative immediately above it} --- $+14.85$, $+9.09$, $+8.73$
-and $+6.85$ at a rate of about 0.05, against $-6.17$, $-1.76$, $-4.60$ and $-0.80$ at 0.10. The
-Dutch census and COMPAS do not, and it is not a sample-size effect: COMPAS's arm at a rate of
-0.093 has 147 baseline positives, fewer than any ACS arm, and reaches $-87.12$.
+\begin{table}[t]
+\caption{The sealed prediction. Populations never previously measured; predictions committed
+before the runs.}
+\label{tab:sealed}
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lrrcc@{}}
+\toprule
+\textbf{Population} & \textbf{Rate} & \textbf{$\Delta$pool} & \textbf{Pred.} & \textbf{Actual} \\
+\midrule
+MO, \$100k & 0.026 & $-16.48\%$ & up & \textbf{down} \\
+AZ, \$100k & 0.037 & $-23.34\%$ & up & \textbf{down} \\
+IN, \$70k & 0.081 & $-23.32\%$ & up & \textbf{down} \\
+TN, \$50k & 0.255 & $-1.68\%$ & down & down \\
+MD, \$50k & 0.508 & $+0.78\%$ & down & \textbf{up} \\
+MI, \$30k & 0.612 & $+0.85\%$ & up & up \\
+NC, \$20k & 0.789 & $+0.16\%$ & up & up \\
+GA, \$10k & 0.905 & $+0.30\%$ & up & up \\
+\midrule
+Taiwan 2005 & 0.885 & $+0.68\%$ & up & up \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-So the relationship is \textbf{bounded on both sides}. It holds between roughly 0.10 and the
-crossover; below 0.10 it turns back up on survey data. A candidate explanation --- that near a
-selection rate of 0.05 the disadvantaged group's rate is already close to zero, so a parity
-constraint has little to take and equalises by adding --- is offered as a conjecture and not
-tested here.
+\textbf{What failed is a refinement, not the rule.} Table~\ref{tab:sensitivity} shows the
+exclusion threshold doing real work: South Carolina moves from $+0.905$ to $+0.012$ when it is
+loosened. Investigating that, we found the newly admitted arms are not noise --- at twenty
+seeds they are consistently \emph{positive}, $+8.73$, $+6.85$, $+9.09$, six standard errors
+from zero --- and concluded the relationship turns back up below a selection rate of 0.10. The
+sealed rule carried that refinement.
 
-The exclusion at 0.05 therefore retains arms on one side of a second regime boundary rather
-than manufacturing a correlation. We report the sweep so that a reader who runs it finds the
-explanation here rather than concluding the result is an artifact.
+All three held-out low-rate arms came out strongly \emph{negative}. Scoring the same eight arms
+under the simpler rule we held before the refinement --- down below the crossover, up above it
+--- gives \textbf{seven of eight}, its only miss being Maryland at 0.508, within 0.03 of the
+crossover on an effect of $+0.78\%$. That seven is post-hoc and we do not claim it; what was
+sealed scored four.
 
-\subsection{Small populations}
+\textbf{The refinement was route-specific.} Its arms reach a rate near 0.05 by thresholding one
+fixed score vector; the sealed arms reach it with a genuinely rarer label. At that rate the two
+disagree completely, $+8.73$, $+6.85$, $+9.09$ against $-16.48$, $-23.34$, $-23.32$. So
+Section~\ref{sec:tworoutes-note} qualifies: the two routes agree through the middle of the range
+and diverge at the bottom, and the accuracy rule does not catch the divergent arms --- they
+clear the trivial-predictor bar and remain artifacts.
+
+A refinement drawn from four in-sample populations, internally consistent and backed by a
+twenty-seed replication, made the prediction worse than the rule it replaced and no better than
+a constant. Nothing in the in-sample data could have shown that.
+
+\subsection{Small populations}\subsection{Small populations}
 
 Below roughly 2{,}500 test subjects the method's own randomness exceeds the entire effect of
 the constraint. This is a specific instance of predictive multiplicity \cite{black2022} ---
@@ -664,10 +703,22 @@ baseline. What exposed it was an exchange rate of 0.000.
 
 \section{Limitations}
 
-Magnitude transfers within a population and not between. The crossover is nearly stable and its
-residual is unexplained. Coverage is four instruments, two countries and two decades, with no
-non-Western data. The 18-of-18 confirmation in Section~\ref{sec:regime} is post-hoc. The
-relationship is not monotone below the crossover. The remedy is a variant, not a discovery.
+\textbf{The rule has not passed a sealed out-of-sample test.} Section~\ref{sec:sealed}
+reports one that failed at four of eight. A simpler form scores seven of eight on the same
+arms, but that comparison is post-hoc; the honest position is that the predictive claim is
+supported within populations and \emph{not yet} demonstrated on unseen ones.
+
+\textbf{The two manipulations diverge at low selection rates.} The operating-point route and
+the label route disagree completely below a rate of about 0.10, and the accuracy rule does not
+separate them. We claim the relationship across the transition only.
+
+\textbf{Magnitude does not transfer} between populations, only within them. \textbf{The
+crossover clusters but is not explained}: two candidate predictors are collinear at $+0.947$
+and neither survives four populations. \textbf{Coverage} is five instruments, three
+countries and two decades; Taiwan is the only non-Western population, and one population is
+not coverage. \textbf{The regime result} was post-hoc at 18 of 18 and has since been confirmed
+pre-registered at 9 of 9, but it confirms a published theorem rather than establishing one.
+\textbf{The remedy is a variant}, not a discovery.
 
 \section{Discussion}
 

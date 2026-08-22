@@ -63,9 +63,14 @@ exceptions.
 **It does, in 18 of 18 populations** — Adult, twelve ACS states, two HMDA states, COMPAS, the
 Dutch census and LSAC. Not a majority; every one.
 
-**This was decided after P1 failed and is post-hoc.** It is reported as a confirmation of an
-existing theoretical prediction on data that had never tested it, not as a discovery, and not
-as a rescue of P1.
+**That check was decided after P1 failed and was post-hoc.** It has since been repeated as a
+**confirmatory** test: nine populations that had never been post-processed — Taiwan 2005 and
+the eight ACS states of the sealed prediction — with the bar set at *all nine* and committed
+before any of them ran, because the theorem says "necessarily" and a majority is not the claim.
+
+**It holds 9 of 9.** So the regime result now stands at **27 of 27**, of which nine were
+predicted in advance. It remains a confirmation of an existing theoretical prediction rather
+than a discovery, and not a rescue of P1.
 
 ## What this does to the project's position
 
