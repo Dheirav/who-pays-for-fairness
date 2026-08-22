@@ -65,11 +65,12 @@ gives conditions written in terms of the shape of the program's internal scores.
 Count what fraction of *everyone* gets approved, across both groups. Call that the approval
 rate of the system as a whole.
 
-- If the system approves **few** people overall — say under 30% — then forcing equality
-  takes approvals **away**. Way two. The harmful one.
-- If the system approves **most** people — say over 60% — then forcing equality **hands
-  approvals out**. Way one. The good one.
-- Somewhere in between, it flips.
+- If the system approves **fewer than about half** of everyone, forcing equality takes
+  approvals **away**. Way two. The harmful one.
+- If it approves **more than about half**, forcing equality **hands approvals out**. Way
+  one. The good one.
+- The switch sits close to an approval rate of 0.54, and everywhere it has been measured
+  carefully it lands between roughly 0.43 and 0.58.
 
 Same tool. Same instruction. Opposite effect on real people, depending on nothing more than
 how generous the system already was.
@@ -173,10 +174,12 @@ fundamentally different: when you *can* see the protected attribute, the outcome
 *cannot*, it could go either way, which is when a rule for telling which is worth having.
 
 So there was nothing for my rule to predict in the second case. And the theory's prediction for
-that case held in **18 out of 18** of my populations, with no exceptions.
+that case held in **27 out of 27** of my populations, with no exceptions — nine of those
+predicted in advance, on populations that had never been measured that way before.
 
 My claim is now smaller and firmer: it is about systems that **cannot** see the protected
-attribute when they decide — which is almost all of them.
+attribute when they decide — which is most of them, because looking at race or sex at the
+moment of the decision is illegal in most regulated settings.
 
 ## How this sits with the theory
 
@@ -194,6 +197,43 @@ Three things came out of checking this work against that 2026 paper:
 So: their maths explains *why* it happens. This work shows *how you can tell in advance* —
 using a number any organisation already has, rather than one requiring the model's internals.
 Two independent routes to the same place, which is better evidence than either alone.
+
+## The strongest test: predictions written down before the data existed
+
+Everything above was measured by running experiments and then looking at the results, and
+the honest problem with that is well known: with enough looking, a pattern can always be
+found. So the rule was put through the one kind of test that looking cannot pass.
+
+The idea is simple. Write the rule down. Name the datasets it will be tested on — ones
+nobody has ever measured. Write down the score it must reach, and write down what a lucky
+guesser would score, because the rule has to beat luck, not just do well. Save all of that
+in the project's history, where the timestamps cannot be faked. *Then* run the experiments.
+
+**The first attempt failed, and the failure taught the most important lesson in the
+project.** Two hours before the test was locked in, I had added a clever extra clause to
+the rule, based on four datasets I had already seen. With that clause, the sealed test
+scored 4 out of 8 — no better than guessing. Without it, the same test would have scored 7
+out of 8. A refinement that looked completely convincing on the data I had was exactly what
+ruined the prediction on data I had not seen.
+
+So the clause was thrown away, and the plain rule — below the switch point means take away,
+above means hand out — was sealed against **ten more states nobody had touched**, with the
+pass mark set at 9 out of 10 and the requirement to beat the best possible lucky guesser,
+which scored 6.
+
+**It scored 9 out of 10.** The one miss is counted as a miss, no excuses — though it is
+worth knowing that the missed state's true effect was about four hundredths of a percent,
+flipping sign between random re-runs, which means there may have been nothing there to
+predict in either direction.
+
+One more thing about reading this project's record. Seven of these written-down-in-advance
+tests were run in total, and five failed. That is not a bad score, because they were not
+seven attempts at the same thing: each failure tested a *bigger* claim than the one that
+survives, and each one drew a boundary — the rule does not extend to a second definition of
+fairness, does not survive into the see-the-attribute world, does not come with an
+explanation of *why* it works. The five failures are the map of where the claim ends. The
+two passes show that inside that map, the prediction works — and every failure is printed
+in the paper, uncorrected, which is what makes the passes worth believing.
 
 ## Why it matters
 
@@ -233,8 +273,10 @@ written into the paper rather than left out.
 
 ## The one number that is worth remembering
 
-**About 0.3.** Below roughly a 30% approval rate, these fairness tools take opportunities
-away. Above it, they hand them out.
+**About 0.54 — call it "roughly half".** Below that approval rate, these fairness tools
+take opportunities away. Above it, they hand them out. (An earlier version of this document
+said 0.3; measuring the switch point properly, on more data with better checks, moved it,
+and that correction is part of the record rather than papered over.)
 
 And you can check which side you are on before building anything, using a number you
 already have.
@@ -313,5 +355,11 @@ relationship is not really caused by that third thing.
 standard benchmark. *ACS* is its modern replacement, available per state. *HMDA* is a
 public record of real US mortgage applications and the lender's actual decision.
 
-**Population.** One dataset, with one choice of protected attribute. Twenty-six were used
-here.
+**Population.** One dataset — a state, a cohort, a census — counted once no matter how many
+experiments run on it. Thirty-nine have been measured at the time of writing, with ten more
+finishing overnight.
+
+**Sealed test.** A prediction written down and saved in the project's history before the
+data it predicts about existed, together with its pass mark and the lucky-guesser score it
+must beat. The strongest form of evidence in this project, and the only kind that cannot be
+produced by hunting through results until something looks good.
