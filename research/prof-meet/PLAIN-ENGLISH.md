@@ -1,18 +1,17 @@
 # The whole thing, in plain words
 
-No jargon in this document. Every technical term used in the other documents is defined at
-the end.
+There is no jargon in this document. Every technical term used in the other documents is
+defined at the end.
 
 ## The situation
 
 A bank uses a computer program to decide who gets a mortgage. The program looks at income,
-loan size, property value and so on, and says yes or no.
+loan size, property value and so on, and it says yes or no.
 
-Someone checks the results and finds a problem: the program approves **79%** of one group of
-applicants and only **57%** of another. Same kind of applications, very different outcomes.
-
-That is the thing people call "algorithmic bias", and there are well-known tools for fixing
-it. You tell the program: *approve both groups at the same rate.*
+Someone checks the results and finds a problem: the program approves **79%** of one group
+of applicants but only **57%** of another, even though the applications are the same kind.
+This is what people call "algorithmic bias", and there are well-known tools for fixing it.
+You tell the program to approve both groups at the same rate.
 
 ## The catch, and it is a known one
 
@@ -22,92 +21,85 @@ There are two completely different ways for the program to obey that instruction
 
 **Way two:** turn down more people from the group that was getting through.
 
-Both make the rates equal. Both count as "fixed". **And the score that certifies the fix
-cannot tell them apart** — it only measures whether the two rates match, not how they came
-to match.
+Both ways make the rates equal, and both count as "fixed". The problem is that the score
+which certifies the fix cannot tell them apart, because it only measures whether the two
+rates match, not how they came to match.
 
-Way one helps people. Way two helps nobody — it just spreads the disadvantage around. There
-is a name for it in the ethics literature: *levelling down*.
+Way one helps people. Way two helps nobody, because it just spreads the disadvantage
+around. The ethics literature has a name for it: *levelling down*.
 
 ## What was already known
 
-A well-known 2023 paper from Oxford showed that these tools mostly do **way two**. They put
+A well-known 2023 paper from Oxford showed that these tools mostly do way two, and they put
 it in their title: levelling down happens "by default".
 
-**And that the score cannot tell way one from way two was known too.** A 2023 paper on
-fairness across combinations of groups says as much in plain words — this "often goes
-unnoticed in the overall performance of the model" — and a separate 2023 auditing tool
-exists because a fairness score does not say how many people were affected or in which
-direction. So the catch above is where this work starts, not something it found.
+The fact that the score cannot tell way one from way two was also known. A 2023 paper on
+fairness across combinations of groups says it in plain words, that this "often goes
+unnoticed in the overall performance of the model", and a separate 2023 auditing tool
+exists precisely because a fairness score does not say how many people were affected or in
+which direction. This means the catch above is where this work starts, not something it
+found.
 
-That paper is also the closest competitor — because it not only identified the problem, it
-proposed the fix. This project originally believed it had invented that fix independently.
-It had not. Found by reading their paper properly, and corrected.
+The Oxford paper is also the closest competitor, because it not only identified the problem
+but proposed the fix. This project originally believed it had invented that fix
+independently. It had not, which was found by reading their paper properly, and corrected.
 
-**The way of measuring it is not mine either.** A 2023 paper set out how to audit what one
-of these fixes does to individuals: how many people it moves, which way it moves them, and
-what happens to the overall approval rate. Those are the three things counted here. What is
-mine is what the counts say once you run them on 26 runs across 15 populations instead of one — the direction
-turns out to depend on the data, which their framework was never used to ask.
+The way of measuring the effect is not mine either. A 2023 paper set out how to audit what
+one of these fixes does to individuals: how many people it moves, which way it moves them,
+and what happens to the overall approval rate. Those are the three things counted here.
+What is mine is what the counts show once you run them on 26 runs across 15 populations
+instead of one, which is that the direction depends on the data. Their framework was never
+used to ask that question.
 
-**And there is a second one.** A March 2026 paper proves mathematically that when the
-program cannot see which group someone belongs to — which is the situation studied here —
-the effect **can go either way** depending on the data. So the *idea* that it is not always
+There is a second piece of prior work. A March 2026 paper proves mathematically that when
+the program cannot see which group someone belongs to, which is the situation studied here,
+the effect **can go either way** depending on the data. So the idea that it is not always
 harmful was published, in theory, five months before this work reached it independently.
-
-That paper has no experiments in it at all. Not one dataset. It proves the possibility and
+That paper has no experiments in it at all, not one dataset. It proves the possibility and
 gives conditions written in terms of the shape of the program's internal scores.
 
 ## What this work found
 
-**It is not "by default". It depends on how generous the system is to begin with.**
+It is not "by default". It depends on how generous the system is to begin with.
 
-Count what fraction of *everyone* gets approved, across both groups. Call that the approval
-rate of the system as a whole.
+Count what fraction of everyone gets approved, across both groups, and call that the
+approval rate of the system as a whole.
 
-- If the system approves **fewer than about half** of everyone, forcing equality takes
-  approvals **away**. Way two. The harmful one.
-- If it approves **more than about half**, forcing equality **hands approvals out**. Way
-  one. The good one.
+- If the system approves fewer than about half of everyone, forcing equality takes
+  approvals **away**. That is way two, the harmful one.
+- If it approves more than about half, forcing equality **hands approvals out**. That is
+  way one, the good one.
 - The switch sits close to an approval rate of 0.54, and everywhere it has been measured
   carefully it lands between roughly 0.43 and 0.58.
 
-Same tool. Same instruction. Opposite effect on real people, depending on nothing more than
-how generous the system already was.
+This means the same tool, given the same instruction, has opposite effects on real people,
+and what decides between them is nothing more than how generous the system already was.
 
 ## How it was proven, and why the proof is trustworthy
 
-The obvious worry is that two datasets differ in a hundred ways, so you can never tell which
-difference caused what.
+The obvious worry is that two datasets differ in a hundred ways, so you can never tell
+which difference caused what. The test therefore used one dataset and changed exactly one
+thing.
 
-So the test used **one** dataset and changed exactly **one** thing.
+The dataset predicts whether a person earns more than \$50,000, and that \$50,000 is an
+arbitrary number someone picked. Move it to \$70,000 and fewer people qualify, while moving
+it to \$20,000 means most people do. Same people, same information about them, same groups.
+Only the finish line moved, and the effect flipped exactly as described. There is automated
+test code that checks the people, the information and the groups really are identical
+between runs, so this is not a matter of trust.
 
-The dataset predicts whether a person earns more than \$50,000. That \$50,000 is an
-arbitrary number someone picked. Move it to \$70,000 and fewer people qualify. Move it to
-\$20,000 and most people do.
-
-Same people. Same information about them. Same groups. **Only the finish line moved.**
-
-And the effect flipped, exactly as described. There is automated test code that checks the
-people, the information and the groups really are identical between runs, so this is not a
-matter of trust.
-
-It then held up in:
-
-- a second population,
-- a second way of dividing people into groups,
-- **real mortgage data**, where there is no arbitrary cutoff at all — the answer is a real
-  lender's real decision,
-- and **fourteen further runs — four new populations, each measured at several income
-  cutoffs — carried out *after* the prediction was written down**, so they could not have
-  influenced it. Four is the number that matters: runs on the same population share their
-  people and differ only in where the cutoff was put.
+It then held up in a second population, in a second way of dividing people into groups, in
+real mortgage data where there is no arbitrary cutoff at all because the answer is a real
+lender's real decision, and in fourteen further runs on four new populations carried out
+after the prediction was written down, which means they could not have influenced it. Four
+is the number that matters there, because runs on the same population share their people
+and differ only in where the cutoff was put.
 
 ## What happened when I tried hard to break it
 
-Since the last version I attacked this finding four ways, on five populations each instead
-of one. Two of the attacks it survived. Two found real limits, and both are reported here
-as limits rather than tucked away.
+I attacked this finding four ways, on five populations each instead of one. Two of the
+attacks it survived, while two found real limits, and both limits are reported here rather
+than tucked away.
 
 | I tried | Asking | What happened |
 |---|---|---|
@@ -116,38 +108,37 @@ as limits rather than tucked away.
 | reaching the same approval rate a different way | is it the approval rate, or the difficulty? | **held, 4 out of 5** |
 | a different definition of fairness | does it hold for any fairness rule? | **it failed** |
 
-**The third one matters most.** The original evidence changed the approval rate by changing
-what counted as success — earning over $20,000 instead of over $100,000. But those are not
-the same task; one is much harder to predict than the other. So the old evidence could never
-separate *"the approval rate is what drives this"* from *"the difficulty is what drives
-this."*
+The third one matters most. The original evidence changed the approval rate by changing
+what counted as success, earning over \$20,000 instead of over \$100,000, but those are not
+the same task, because one is much harder to predict than the other. So the old evidence
+could never separate "the approval rate is what drives this" from "the difficulty is what
+drives this". The new test changes nothing about the task at all: same people, same
+information, same predictions, and only the cut-off the model uses to say yes moves. The
+effect reproduced, which shows the approval rate is what matters. It also cleared up a
+puzzle I could not explain before, because the switch point sits in a different place for
+mortgages than for income, and that turns out to be a real difference between the two
+worlds rather than a mistake in how I built the earlier evidence.
 
-The new test changes nothing about the task at all. Same people, same information, same
-predictions — only the cut-off the model uses to say yes. **The approval rate is what
-matters.** And it also cleared up a puzzle I could not explain before: the switch point sits
-in a different place for mortgages than for income, and that turns out to be a real
-difference between the two worlds rather than a mistake in how I built the earlier evidence.
-
-**The fourth one failed, and I am not going to dress it up.** There is a second common
+The fourth attack failed, and I am not going to dress it up. There is a second common
 definition of fairness, concerned with error rates rather than with how many people get
 approved. Under that definition the relationship almost disappears, and adding more
 populations made it weaker rather than stronger. So the finding is narrower than I first
-claimed: it is about fairness rules that control **how many people are approved**, not about
+claimed: it is about fairness rules that control how many people are approved, not about
 fairness rules generally.
 
-**One population gave no answer at all.** In Connecticut almost everybody is above the switch
-point already, so the fairness rule barely changes anything and there is nothing to measure.
-That turned up a flaw in my own method — my original test demanded that the relationship be
-strong, but never demanded that anything actually *move*. I have added that requirement and
-re-checked every earlier result against it. Three go from "failed" to "no answer"; **none of
-them had ever passed by accident**, so nothing I claimed turns out to be wrong. But the hole
-was mine, and it was found by a population rather than by me.
+One population gave no answer at all. In Connecticut almost everybody is above the switch
+point already, so the fairness rule barely changes anything and there is nothing to
+measure. That turned up a flaw in my own method, because my original test demanded that the
+relationship be strong but never demanded that anything actually move. I added that
+requirement and re-checked every earlier result against it. Three go from "failed" to "no
+answer", and none of them had ever passed by accident, so nothing I claimed turns out to be
+wrong. But the hole was mine, and it was found by a population rather than by me.
 
 ## Two things I learned since the last version
 
-**Where the switch sits is much more predictable than I thought.** Measuring it properly — more
-points, and throwing away any test where the model had become worse than useless — four
-completely different populations agree:
+The first is that where the switch sits is much more predictable than I thought. Measuring
+it properly, with more points and after throwing away any test where the model had become
+worse than useless, four completely different populations agree:
 
 | population | field | switch point |
 |---|---|---|
@@ -156,47 +147,47 @@ completely different populations agree:
 | Oregon | income | 0.558 |
 | Dutch census 2001 | jobs | 0.576 |
 
-Three fields, two countries, four separate data sources — all between **0.51 and 0.58**. So the
-advice is now "expect about 0.54 and check", instead of "you'll have to work yours out from
-scratch".
+Three fields, two countries and four separate data sources all land between 0.51 and 0.58,
+which means the advice is now "expect about 0.54 and check" instead of "you will have to
+work yours out from scratch".
 
-**And the finding belongs to one specific situation — which the theory predicted.** There are
-two ways to make a system fairer. You can change how it is *trained*, which is what I do. Or
-you can leave the training alone and *adjust the decisions afterwards* — but that requires
-knowing each person's race or sex at the moment you decide, which is illegal in most places for
-exactly that reason.
+The second is that the finding belongs to one specific situation, which the theory
+predicted. There are two ways to make a system fairer. You can change how it is trained,
+which is what I do, or you can leave the training alone and adjust the decisions
+afterwards. The second way requires knowing each person's race or sex at the moment you
+decide, and that is illegal in most places for exactly that reason.
 
-I tried the second way across seventeen populations. **My finding disappeared completely.**
+I tried the second way across seventeen populations, and my finding disappeared
+completely. That sounds bad, but it is the opposite. The theory paper says these two
+situations are fundamentally different: when the program can see the protected attribute,
+the outcome is guaranteed, with the disadvantaged group always gaining and the advantaged
+group always losing, while when it cannot, the outcome could go either way, which is
+exactly when a rule for telling which is worth having. So there was nothing for my rule to
+predict in the second case, and the theory's prediction for that case held in **27 out of
+27** of my populations with no exceptions, nine of those predicted in advance on
+populations that had never been measured that way before.
 
-That sounds bad, and it is the opposite. The theory paper says these two situations are
-fundamentally different: when you *can* see the protected attribute, the outcome is
-**guaranteed** — the disadvantaged group always gains and the advantaged always loses. When you
-*cannot*, it could go either way, which is when a rule for telling which is worth having.
-
-So there was nothing for my rule to predict in the second case. And the theory's prediction for
-that case held in **27 out of 27** of my populations, with no exceptions — nine of those
-predicted in advance, on populations that had never been measured that way before.
-
-My claim is now smaller and firmer: it is about systems that **cannot** see the protected
-attribute when they decide — which is most of them, because looking at race or sex at the
+My claim is now smaller and firmer. It is about systems that cannot see the protected
+attribute when they decide, which is most of them, because looking at race or sex at the
 moment of the decision is illegal in most regulated settings.
 
 ## How this sits with the theory
 
-Three things came out of checking this work against that 2026 paper:
+Three things came out of checking this work against that 2026 paper.
 
 1. **Their conditions never actually hold.** Applied to all 26 real runs here, the
-   mathematical conditions in their theorem are satisfied **zero times**. The quantity they
-   are written over blows up on real data. So their result, as stated, cannot be used on
-   anything.
+   mathematical conditions in their theorem are satisfied zero times, because the quantity
+   they are written over blows up on real data. So their result, as stated, cannot be used
+   on anything.
 2. **Their direction is still right.** Loosened into a comparison rather than a strict
    requirement, it predicts correctly in 24 of 26 cases.
-3. **And it matches the approval-rate rule almost exactly** — the two agree on 25 of 26
-   datasets, and the numbers behind them correlate at **0.93**.
+3. **And it matches the approval-rate rule almost exactly.** The two agree on 25 of 26
+   datasets, and the numbers behind them correlate at 0.93.
 
-So: their maths explains *why* it happens. This work shows *how you can tell in advance* —
-using a number any organisation already has, rather than one requiring the model's internals.
-Two independent routes to the same place, which is better evidence than either alone.
+So their maths explains why it happens, while this work shows how you can tell in advance,
+using a number any organisation already has rather than one requiring the model's
+internals. Two independent routes arrive at the same place, which is better evidence than
+either alone.
 
 ## The strongest test: predictions written down before the data existed
 
@@ -204,41 +195,43 @@ Everything above was measured by running experiments and then looking at the res
 the honest problem with that is well known: with enough looking, a pattern can always be
 found. So the rule was put through the one kind of test that looking cannot pass.
 
-The idea is simple. Write the rule down. Name the datasets it will be tested on — ones
+The idea is simple. Write the rule down. Name the datasets it will be tested on, ones
 nobody has ever measured. Write down the score it must reach, and write down what a lucky
-guesser would score, because the rule has to beat luck, not just do well. Save all of that
-in the project's history, where the timestamps cannot be faked. *Then* run the experiments.
+guesser would score, because the rule has to beat luck rather than just do well. Save all
+of that in the project's history, where the timestamps cannot be faked, and only then run
+the experiments.
 
-**The first attempt failed, and the failure taught the most important lesson in the
-project.** Two hours before the test was locked in, I had added a clever extra clause to
-the rule, based on four datasets I had already seen. With that clause, the sealed test
-scored 4 out of 8 — no better than guessing. Without it, the same test would have scored 7
-out of 8. A refinement that looked completely convincing on the data I had was exactly what
+The first attempt failed, and the failure taught the most important lesson in the project.
+Two hours before the test was locked in, I had added a clever extra clause to the rule,
+based on four datasets I had already seen. With that clause the sealed test scored 4 out of
+8, which is no better than guessing, while without it the same test would have scored 7 out
+of 8. A refinement that looked completely convincing on the data I had was exactly what
 ruined the prediction on data I had not seen.
 
-So the clause was thrown away, and the plain rule — below the switch point means take away,
-above means hand out — was sealed against **ten more states nobody had touched**, with the
-pass mark set at 9 out of 10 and the requirement to beat the best possible lucky guesser,
+So the clause was thrown away, and the plain rule, below the switch point means take away
+while above means hand out, was sealed against ten more states nobody had touched, with the
+pass mark set at 9 out of 10 plus the requirement to beat the best possible lucky guesser,
 which scored 6.
 
-**It scored 9 out of 10.** The one miss is counted as a miss, no excuses — though it is
-worth knowing that the missed state's true effect was about four hundredths of a percent,
-flipping sign between random re-runs, which means there may have been nothing there to
+**It scored 9 out of 10.** The one miss is counted as a miss with no excuses, though it is
+worth knowing that the missed state's true effect was about four hundredths of a percent
+and flipped sign between random re-runs, which means there may have been nothing there to
 predict in either direction.
 
-One more thing about reading this project's record. Seven of these written-down-in-advance
-tests were run in total, and five failed. That is not a bad score, because they were not
-seven attempts at the same thing: each failure tested a *bigger* claim than the one that
-survives, and each one drew a boundary — the rule does not extend to a second definition of
-fairness, does not survive into the see-the-attribute world, does not come with an
-explanation of *why* it works. The five failures are the map of where the claim ends. The
-two passes show that inside that map, the prediction works — and every failure is printed
-in the paper, uncorrected, which is what makes the passes worth believing.
+One more thing matters for reading this project's record. Seven of these
+written-down-in-advance tests were run in total, and five failed. That is not a bad score,
+because they were not seven attempts at the same thing. Each failure tested a bigger claim
+than the one that survives, and each one drew a boundary: the rule does not extend to a
+second definition of fairness, it does not survive into the see-the-attribute world, and it
+does not come with an explanation of why it works. The five failures are the map of where
+the claim ends, while the two passes show that inside that map the prediction works. Every
+failure is printed in the paper, uncorrected, and that is what makes the passes worth
+believing.
 
 ## Why it matters
 
-Loans. Job applications. University admissions. These are the places these tools actually
-get used — and I checked where each one sits.
+Loans, job applications and university admissions are the places these tools actually get
+used, and I checked where each one sits.
 
 | what is being decided | share who get a "yes" | which way the fix goes |
 |---|---|---|
@@ -247,36 +240,32 @@ get used — and I checked where each one sits.
 | Getting into university generally | 66–73% | hands opportunities out |
 | Getting a mortgage | **~84%** | hands opportunities out |
 
-They are at **opposite ends**. So:
+They sit at opposite ends, which means two organisations can use exactly the same fairness
+tool, in good faith, and get opposite effects on how many people get helped. The fairness
+report looking identical either way is not my observation, since it is why Maheshwari et
+al. and Ferry et al. wrote their papers. What is new is that the direction differs between
+them, and that you can tell in advance which one you are about to get.
 
-**Two organisations can use exactly the same fairness tool, in good faith, and get opposite
-effects on how many people get helped.** That the fairness report looks identical either way
-is not my observation — it is why Maheshwari et al. and Ferry et al. wrote their papers. What
-is new is that the *direction* differs between them, and that you can tell in advance which
-one you are about to get.
-
-A bank fixing its mortgage model will end up approving more people. A company fixing its
-CV-screening will end up interviewing fewer. Same tool. Same score. Opposite result.
-
+A bank fixing its mortgage model will end up approving more people, while a company fixing
+its CV-screening will end up interviewing fewer. Same tool, same score, opposite result.
 That is why knowing which side you are on matters, and why it is worth being able to check.
 
 ## What could not be worked out
 
-**Why** the flip happens.
+Why the flip happens.
 
-There was an attempt: derive it from theory, write the prediction down in advance, then test
-it on new data. It passed the test that was set for it — and then a much stupider rule
-("more than half get approved? then it's the good kind") did *better*.
-
-So the honest position is: we know **when** it flips. We do not know **why**. That failure is
-written into the paper rather than left out.
+There was an attempt: derive it from theory, write the prediction down in advance, then
+test it on new data. It passed the test that was set for it, and then a much stupider rule,
+"more than half get approved? then it is the good kind", did better. So the honest position
+is that we know when it flips but we do not know why, and that failure is written into the
+paper rather than left out.
 
 ## The one number that is worth remembering
 
-**About 0.54 — call it "roughly half".** Below that approval rate, these fairness tools
-take opportunities away. Above it, they hand them out. (An earlier version of this document
+**About 0.54, call it roughly half.** Below that approval rate, these fairness tools take
+opportunities away, while above it they hand them out. An earlier version of this document
 said 0.3; measuring the switch point properly, on more data with better checks, moved it,
-and that correction is part of the record rather than papered over.)
+and that correction is part of the record rather than papered over.
 
 And you can check which side you are on before building anything, using a number you
 already have.
@@ -291,75 +280,76 @@ Terms used in the other documents in this folder.
 groups of people, usually because it learned from data in which that difference already
 existed.
 
-**Protected attribute.** The characteristic the fairness rule is about — sex, race, and so
-on. In this work the programs are never allowed to see it directly.
+**Protected attribute.** The characteristic the fairness rule is about, such as sex or
+race. In this work the programs are never allowed to see it directly.
 
 **Proxy.** A piece of information that stands in for the protected attribute without being
 it. If almost everybody labelled "husband" is male, then that label is a proxy for sex, and
 removing "sex" from the data does not remove the information.
 
-**Demographic parity.** The rule "approve both groups at the same rate". The main fairness
-rule studied here.
+**Demographic parity.** The rule "approve both groups at the same rate", which is the main
+fairness rule studied here.
 
-**Constraint.** The instruction given to the program. "Approve both groups at the same rate"
-is a constraint.
+**Constraint.** The instruction given to the program. "Approve both groups at the same
+rate" is a constraint.
 
 **Mitigation.** Any method for reducing bias. This work studies methods that change the
-program's *instructions* rather than editing the data.
+program's instructions rather than editing the data.
 
 **Selection rate.** The fraction of everyone who gets the good outcome. If a bank approves
-8,000 of 10,000 applications, the selection rate is 0.8. **This is the central quantity in
-this work.**
+8,000 of 10,000 applications, the selection rate is 0.8. This is the central quantity in
+this work.
 
-**Base rate.** How often the good outcome genuinely occurs in a group — as opposed to how
+**Base rate.** How often the good outcome genuinely occurs in a group, as opposed to how
 often the program predicts it.
 
-**Levelling down.** Making two groups equal by making the better-off group worse, rather
+**Levelling down.** Making two groups equal by making the better-off group worse rather
 than the worse-off group better.
 
 **Levelling up.** The opposite, and the desirable version.
 
 **"The pie."** Informal shorthand for the total number of approvals. Levelling down shrinks
-the pie; levelling up grows it.
+the pie, while levelling up grows it.
 
 **Exchange rate.** How many approvals were destroyed for each one created. Below 1.0 means
-more were created than destroyed — good. On one dataset here it reached 46.7, meaning 46
-people lost an approval for every one who gained one.
+more were created than destroyed, which is good. On one dataset here it reached 46.7,
+meaning 46 people lost an approval for every one who gained one.
 
 **Baseline.** The ordinary program, before any fairness fix, used as the comparison point.
 
-**Seed.** A random number that decides how data is split for testing. Everything here is run
-five times with five different seeds, so that a result cannot be an accident of one split.
+**Seed.** A random number that decides how data is split for testing. Everything here is
+run five times with five different seeds, so that a result cannot be an accident of one
+split.
 
 **Held out.** Data deliberately not looked at until after a prediction is written down, so
 the prediction cannot have been shaped by it.
 
 **Pre-registration.** Writing down what you expect to find, and what would count as being
-wrong, *before* running the experiment. The commit history proves the order.
+wrong, before running the experiment. The commit history proves the order.
+
+**Sealed test.** A prediction written down and saved in the project's history before the
+data it predicts about existed, together with its pass mark and the lucky-guesser score it
+must beat. This is the strongest form of evidence in the project, and the only kind that
+cannot be produced by hunting through results until something looks good.
 
 **Feature attribution / SHAP.** A tool that claims to show which pieces of information a
 program relied on. This work finds it can move dramatically without the program's actual
 behaviour changing much.
 
-**Intersectional.** Looking at combinations — not just "women" and "Black applicants" but
+**Intersectional.** Looking at combinations, not just "women" and "Black applicants" but
 "Black women" specifically. A fix can look fine for each group separately while a
 combination is treated badly.
 
-**Correlation (r).** A number from −1 to +1 for how strongly two things move together. +0.9
-is a strong positive relationship; 0 is none.
+**Correlation (r).** A number from −1 to +1 for how strongly two things move together.
++0.9 is a strong positive relationship, while 0 is none.
 
 **Partial correlation.** The same, but with a third factor held fixed, to check the
 relationship is not really caused by that third thing.
 
-**Adult / ACS / HMDA.** The three data sources. *Adult* is a 1994 US census extract, the
-standard benchmark. *ACS* is its modern replacement, available per state. *HMDA* is a
-public record of real US mortgage applications and the lender's actual decision.
+**Adult / ACS / HMDA.** Three of the data sources. *Adult* is a 1994 US census extract and
+the standard benchmark, *ACS* is its modern replacement available per state, and *HMDA* is
+a public record of real US mortgage applications with the lender's actual decision.
 
-**Population.** One dataset — a state, a cohort, a census — counted once no matter how many
-experiments run on it. Thirty-nine have been measured at the time of writing, with ten more
-finishing overnight.
-
-**Sealed test.** A prediction written down and saved in the project's history before the
-data it predicts about existed, together with its pass mark and the lucky-guesser score it
-must beat. The strongest form of evidence in this project, and the only kind that cannot be
-produced by hunting through results until something looks good.
+**Population.** One dataset, such as a state, a cohort or a census, counted once no matter
+how many experiments run on it. Thirty-nine have been measured at the time of writing, with
+ten more finishing overnight.
