@@ -25,27 +25,29 @@ Whether an Attribute-Blind Constraint Gives or Takes}
 \maketitle
 
 \begin{abstract}
-A group-fairness constraint is a statement about a gap, and says nothing about which of two
-very different worlds should close it: one where the disadvantaged group is lifted, and one
-where the advantaged group is pulled down. Both satisfy the constraint and both score
-identically on the metric that certifies them. We ask which of the two occurs, and show it is
-predictable in advance from a quantity every deploying organisation already has --- the rate at
-which its current model says yes. Across 37 independent populations spanning six domains and
-five instruments, an attribute-blind parity constraint withdraws favourable decisions below a
-crossover near 0.54 and extends them above it; on UCI Adult six in-processing methods each
-shrink the pool by 7.9--22.1\%, while on mortgage lending the identical constraint grows it,
-and the certifying metric reports the same success in both cases. The claim is \emph{sealed}:
-with the rule, the populations and the pass mark committed to version control before any run,
-it predicted the direction on \textbf{9 of 10} populations never previously measured, against
-a best constant of 6. An earlier sealed attempt that carried an in-sample refinement
-\textbf{failed at four of eight}; both outcomes are reported. The relationship survives a
-change of route to the rate, a twenty-five-fold range of constraint tolerance, a boosted-tree
-learner, and a protected attribute swapped from sex to race. It is bounded: under
-\emph{post-processing}, which reads the protected attribute at decision time, the effect
-vanishes ($r = -0.024$ against $+0.585$) --- exactly where contemporaneous theory says the
-direction is determined rather than distributional --- and the theory's prediction for that
-regime holds 27 of 27, nine pre-registered. The practical result is a procedure: locate your
-own crossover by sweeping your deployed model's threshold, needing no new data.
+A group-fairness constraint requires two groups' selection rates to be close, but it does not
+say how the gap should close: the disadvantaged group can be lifted, or the advantaged group
+can be pulled down. Both outcomes satisfy the constraint, and the metric that certifies it
+reports the same number in each case, which means a deployment team cannot tell from its own
+dashboard which of the two it is about to cause. We show that the direction is predictable in
+advance from a quantity every deploying organisation already has: the rate at which its
+current model says yes. Across 37 independent populations covering six domains and five
+instruments, an attribute-blind parity constraint withdraws favourable decisions when the
+baseline selection rate sits below a crossover near 0.54, and extends them when it sits
+above; on UCI Adult six in-processing methods each shrink the pool by 7.9--22.1\%, while on
+mortgage lending the identical constraint grows it. The claim is \emph{sealed} rather than
+fitted: with the rule, the populations and the pass mark committed to version control before
+any run, it predicted the direction on \textbf{9 of 10} populations never previously
+measured, while the best constant reached 6. An earlier sealed attempt that carried an
+in-sample refinement \textbf{failed at four of eight}, and we report both outcomes because
+the difference between them is what a sealed test exists to expose. The relationship survives
+a change in how the rate is varied, a twenty-five-fold range of constraint tolerance, a
+boosted-tree learner and a protected attribute swapped from sex to race, but it disappears
+under post-processing ($r = -0.024$ against $+0.585$), which reads the protected attribute at
+decision time. That boundary is where contemporaneous theory says the direction stops being
+distributional and becomes determined, and the theory's prediction for that regime holds in
+27 of 27 populations, nine pre-registered. The practical outcome is a procedure: a team can
+locate its own crossover by sweeping its deployed model's threshold, using no new data.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -55,29 +57,32 @@ disparate impact
 
 \section{Introduction}
 
-A fairness constraint says two groups' rates should be close. It says nothing about how. The
-gap can close because the disadvantaged group is lifted, or because the advantaged group is
-pulled down. Both satisfy the constraint; only one is what anybody meant.
+A fairness constraint says that two groups' rates should be close, but it does not say how
+that closeness should be reached. The gap can close because the disadvantaged group is
+lifted, or because the advantaged group is pulled down, and while both directions satisfy
+the constraint, only one of them is what anyone imposing it actually wants.
 
-That this ambiguity exists is established. Mittelstadt \emph{et al.} \cite{mittelstadt2023}
+This ambiguity is already well established. Mittelstadt \emph{et al.} \cite{mittelstadt2023}
 made levelling down the centre of a well-known critique; Maheshwari \emph{et al.}
-\cite{maheshwari2023} report that it ``often goes unnoticed in the overall performance of the
-model''; Ferry \emph{et al.} \cite{ferry2023} built an auditing framework because an aggregate
-score reports neither how many people were affected nor in which direction. We take all of that
-as given.
+\cite{maheshwari2023} observe that it ``often goes unnoticed in the overall performance of
+the model''; and Ferry \emph{et al.} \cite{ferry2023} built an auditing framework precisely
+because an aggregate score reports neither how many people were affected nor in which
+direction. We take all of that as given.
 
-Our question is the one this literature leaves open: \textbf{when?} A deploying team cannot act
-on ``this sometimes happens''. It can act on a rule that says which way its own system will
-move, before it moves.
+What the literature leaves open is the question a deploying team actually faces:
+\textbf{when} does each direction happen? A team cannot act on ``this sometimes occurs'',
+but it can act on a rule that says which way its own system will move before it moves, which
+is what this paper provides and tests.
 
 \subsection{Scope, stated first}
 
-This is a paper about \textbf{attribute-blind in-processing} constraints --- the regime in which
-the protected attribute is unavailable at decision time. That is where almost every deployed
-system sits, because per-group thresholds are widely read as disparate treatment on their face
-\cite{barocas2016,corbett2017}. Under post-processing, which does read the attribute, the effect we report
-disappears (Section~\ref{sec:regime}). This is not a weakness of the finding but the boundary
-theory draws, and we verify it from both sides.
+This is a paper about \textbf{attribute-blind in-processing} constraints, meaning the regime
+in which the protected attribute is unavailable at decision time. Almost every deployed
+system sits there, because per-group thresholds are widely read as disparate treatment on
+their face \cite{barocas2016,corbett2017}, which rules out the attribute-aware alternatives
+in most regulated settings. Under post-processing, which does read the attribute, the effect
+we report disappears (Section~\ref{sec:regime}). We treat this not as a weakness of the
+finding but as the boundary the theory draws, and we verify it from both sides.
 
 \subsection{Contributions}
 
@@ -103,8 +108,8 @@ causal mechanism: no pooled slope transfers across populations (Section~\ref{sec
 their own crossover on a deployed model. Four independent estimates of the mortgage crossover
 agree.
 
-\item \textbf{Boundaries stated rather than discovered by a referee}, including a computable
-test for when the procedure cannot be used at all.
+\item \textbf{Boundaries stated explicitly rather than left for review to find}, including a
+computable test for when the procedure cannot be used at all.
 \end{enumerate}
 
 \section{Related Work}
@@ -224,7 +229,7 @@ Selection-rate floor & 10 pops.\ (19 arms) \\
 \end{tabular}
 \end{table}
 
-\section{Parity Is Bought by Withdrawal --- Where It Is}
+\section{Parity Is Reached by Withdrawal --- in Some Populations}
 
 \begin{table}[t]
 \caption{Six in-processing methods on UCI Adult, five seeds. Every one reaches parity, and
@@ -249,13 +254,15 @@ ExpGrad (EO) & 0.836 & 0.107 & \textbf{0.032} & 0.521 & $-7.9\%$ \\
 \end{table}
 
 Table~\ref{tab:ablation} gives the ablation. Every method reaches its target: demographic
-parity falls from 0.186 to as little as 0.015 for under two accuracy points, on a linear model
-and on an adversarial one alike. This is the part that works, and it is background rather than
-contribution.
+parity falls from 0.186 to as little as 0.015 for under two accuracy points, and this holds
+on a linear model and on an adversarial one alike. The mitigation itself works, which is why
+we treat it as background rather than as a contribution.
 
-\textbf{Every one of them shrinks the pool}, by 7.9\% to 22.1\%. Not one closes the gap
-primarily by extending decisions to the disadvantaged group. Eighteen of nineteen survey arms
-do the same.
+What changes alongside is the part the metric does not report: \textbf{every one of these
+methods shrinks the pool}, by 7.9\% to 22.1\%, and not one of them closes the gap primarily
+by extending decisions to the disadvantaged group. Eighteen of nineteen survey arms show the
+same pattern, which suggests this is a property of the populations rather than of any one
+method.
 
 \subsection{Rates understate what is happening to people}
 
@@ -283,20 +290,22 @@ advantaged group losing ground and the part gained by the disadvantaged group. M
 \emph{rates}, that split is close to even --- 0.50 to 0.58 of the closure comes from
 withdrawal (Table~\ref{tab:whopays}).
 
-Measured in \emph{people} it is not. Between 0.66 and 0.74 of the individuals whose decision
-changed are members of the advantaged group losing a favourable one. Equal-looking rate
-changes fall on groups of unequal size, so the rate-level view --- which is the view a fairness
-dashboard reports --- understates the burden counted in individuals in every method tested. The
-divergence between the two views is itself predictable, from a cross-flow diagnostic, at
-$r = +0.885$ across populations.
+Measured in \emph{people} the split is not even. Between 0.66 and 0.74 of the individuals
+whose decision changed are members of the advantaged group losing a favourable one. The
+reason the two views disagree is that equal-looking rate changes fall on groups of unequal
+size, so the rate-level view --- which is what a fairness dashboard reports --- understates
+the burden counted in individuals, and it does so in every method tested. The divergence
+between the two views is itself predictable from a cross-flow diagnostic, at $r = +0.885$
+across populations.
 
-The \textbf{exchange rate} makes the same point without a share: ExpGrad under demographic
-parity destroys 2.68 favourable decisions for every one it creates.
+The \textbf{exchange rate} shows the same thing without needing a share: ExpGrad under
+demographic parity destroys 2.68 favourable decisions for every one it creates.
 
-\textbf{And then it reverses.} On HMDA mortgage data the identical constraint \emph{grows} the
-pool by 4.3\%, at an exchange rate of 0.50 --- two favourable decisions created for every one
-destroyed. The parity metric reports 0.018 on the population that destroyed a fifth of its
-favourable decisions, and 0.010 on the one that created more than it destroyed.
+On HMDA mortgage data, however, the direction reverses. The identical constraint \emph{grows}
+the pool by 4.3\%, at an exchange rate of 0.50 --- two favourable decisions created for every
+one destroyed. What makes this worth noticing is that the parity metric cannot see the
+difference: it reports 0.018 on the population that destroyed a fifth of its favourable
+decisions, and 0.010 on the one that created more than it destroyed.
 
 \section{What Predicts the Direction}
 
@@ -317,20 +326,22 @@ Table~\ref{tab:crossover}; carrying that table's bootstrap intervals widens it t
 
 \subsection{A single-factor design}
 
-ACS Income's label is ``earns more than \$50{,}000'' --- a benchmark convention, not a fact.
-Moving it on one fixed state varies the selection rate while holding population, instrument,
-feature set, group ratio and proxy structure fixed. The change in the pool rises with the
-baseline selection rate at $r = +0.801$, and $+0.980$ once the confounded between-group gap is
-partialled out. The sign flips: 22 decisions destroyed per one created at a rate of 0.03,
-against 0.75 at 0.89.
+ACS Income's label is ``earns more than \$50{,}000'', and that threshold is a benchmark
+convention rather than a fact about the world, which makes it a knob we can turn. Moving it
+on one fixed state varies the selection rate while the population, instrument, feature set,
+group ratio and proxy structure all stay fixed. The change in the pool rises with the
+baseline selection rate at $r = +0.801$, and at $+0.980$ once the confounded between-group
+gap is partialled out. The sign also flips along the way: 22 decisions are destroyed per one
+created at a rate of 0.03, compared with 0.75 at 0.89.
 
 \subsection{The transition appears without being manufactured}
 
-Pooling two states across five real loan products --- nothing manipulated --- home improvement
-at a selection rate of 0.555 levels \emph{down} ($-1.57\%$) while refinancing at 0.871 levels
-\emph{up} ($+2.95\%$), with $r = +0.803$ and Spearman $\rho = +0.900$. A bank running one
-constraint across its loan book would take opportunities away in one product and hand them out
-in another, with its fairness report showing success in both.
+The same transition also appears where nothing is manipulated at all. Pooling two states
+across five real loan products, home improvement at a selection rate of 0.555 levels
+\emph{down} ($-1.57\%$) while refinancing at 0.871 levels \emph{up} ($+2.95\%$), with
+$r = +0.803$ and Spearman $\rho = +0.900$. This means a bank running one constraint across
+its loan book would take opportunities away in one product while handing them out in
+another, and its fairness report would show success in both.
 
 \subsection{It is the rate, not the difficulty of the task}
 \label{sec:tworoutes-note}
@@ -465,13 +476,16 @@ this analysis is most likely to produce and hardest to notice.
 \section{The Regime Boundary}
 \label{sec:regime}
 
-The last row of Table~\ref{tab:robust} is not fragility. Post-processing reads the protected
-attribute at prediction time; the reduction does not. That is the distinction on which the
-theory of \cite{backfire2026} is built.
+The last row of Table~\ref{tab:robust} looks like a failure of robustness, but we read it
+differently, because it falls exactly on a line the theory draws. Post-processing reads the
+protected attribute at prediction time while the reduction does not, and that is the
+distinction on which \cite{backfire2026} is built.
 
 Running post-processing at each population's natural operating point across 17 populations
-gives $r = -0.024$, against $+0.585$ for the reduction on the same populations. The
-pre-registered prediction failed and its naive alternative won outright.
+gives $r = -0.024$, compared with $+0.585$ for the reduction on the same populations. Our
+pre-registered prediction --- that the rule would carry over --- failed, and its naive
+alternative won outright, which is what pointed us at the regime distinction in the first
+place.
 
 \textbf{In the attribute-aware regime the theory says there is nothing to predict}, because the
 direction is determined. Its prediction for that regime is that the advantaged group loses and
@@ -489,15 +503,16 @@ necessary}, so this does not make the theorem false. It makes it \emph{silent} o
 we measure, which is a claim about applicability and not a refutation.
 
 Two further caveats belong here. Our $\nu$ is \emph{estimated}, by a probe predicting the
-protected attribute from the features --- their paper prescribes no estimator, so the
-evaluation is ours and a different one might behave differently. And a \emph{relaxed} version of
-their ordering, replacing the unattainable extrema with 5th/95th percentiles, agrees with the
-measured direction on \textbf{24 of 26} arms, against 25 of 26 for the selection rate. The
-theory is directionally right; what fails is the form in which it can be checked.
-Its regime distinction holds on 18 of 18. The theory is right that which regime you are in is
-what matters; within the attribute-blind regime, its stated sufficient conditions do not yield
-an operational predictor of the direction, and the selection rate does --- which is what an
-empirical study can settle and a population-level argument cannot.
+protected attribute from the features; their paper prescribes no estimator, so the evaluation
+is ours, and a different estimator might behave differently. At the same time, a
+\emph{relaxed} version of their ordering, replacing the unattainable extrema with 5th/95th
+percentiles, agrees with the measured direction on \textbf{24 of 26} arms, compared with 25
+of 26 for the selection rate. Taken together, this suggests the theory is directionally
+right and that what fails is only the form in which its conditions can be checked. The
+regime distinction itself matters most: within the attribute-blind regime the stated
+sufficient conditions do not yield an operational predictor of the direction, while the
+selection rate does, and that difference is something an empirical study can settle where a
+population-level argument cannot.
 
 \section{Boundaries}
 \label{sec:boundaries}
@@ -674,13 +689,13 @@ IA, \$10k & 0.896 & $+0.04\%$ & up & up \\
 \end{tabular}
 \end{table}
 
-The failure above left one honest move: seal the \emph{unrefined} rule --- down below 0.54, up
-at or above, no low-rate clause --- against populations with no measurement history of any
-kind. Ten ACS states this project had never touched, one arm per state so the arm count is the
-population count by construction, income cutoffs assigned to spread the expected rates across
-both sides of the crossover so that no constant could mimic the rule. The bar, committed with
-the populations before any arm ran: at least 9 of 10, \emph{and} strictly beating the best
-constant.
+After that failure, the only move that could settle anything was to seal the \emph{unrefined}
+rule --- down below 0.54, up at or above, with no low-rate clause --- against populations
+with no measurement history of any kind. We used ten ACS states this project had never
+touched, one arm per state so that the arm count is the population count by construction,
+with income cutoffs assigned to spread the expected rates across both sides of the crossover
+so that no constant could mimic the rule. The bar was committed with the populations before
+any arm ran: at least 9 of 10, \emph{and} strictly beating the best constant.
 
 \textbf{It holds: 9 of 10, best constant 6} (Table~\ref{tab:resealed}). The prediction used
 the baseline selection rate and the fixed 0.54 prior alone --- no sweep, no per-population
@@ -877,19 +892,22 @@ pre-registered at 9 of 9, but it confirms a published theorem rather than establ
 
 \section{Discussion}
 
-The finding a practitioner can use is small and specific: \textbf{look up the rate at which your
-model currently says yes, locate your own crossover, and you can anticipate whether a parity
-constraint is about to give or to take.} We do not claim the selection rate \emph{causes} the
-direction; we claim it predicts it, within a population, in the attribute-blind regime, and
-with the boundaries of Section~\ref{sec:boundaries} attached.
+The finding a practitioner can use is small and specific: \textbf{look up the rate at which
+your model currently says yes, locate your own crossover, and you can anticipate whether a
+parity constraint is about to give or to take.} We do not claim that the selection rate
+\emph{causes} the direction; we claim that it predicts it, within a population, in the
+attribute-blind regime, and with the boundaries of Section~\ref{sec:boundaries} attached.
 
-What makes that worth saying is not that it is surprising once stated. It is that the certifying
-metric --- the number a deployment team reports, an auditor checks, and a regulator may one day
-require --- is identical in both worlds. A constraint that withdraws a fifth of all favourable
-decisions and one that creates more than it destroys produce the same certificate.
+What makes this worth stating is not that the rule is surprising once seen, because it is
+not. It is that the certifying metric --- the number a deployment team reports, an auditor
+checks, and a regulator may one day require --- comes out identical in both directions. A
+constraint that withdraws a fifth of all favourable decisions and one that creates more than
+it destroys produce the same certificate, so nothing in the existing reporting pipeline
+would ever distinguish them.
 
-The literature already knew the metric was silent. What was missing was a way to know, in
-advance and from something a team already has, which of the two silences you are standing in.
+The literature already knew the metric was silent about this. What was missing, and what
+this paper adds, is a way to know in advance --- from a number a team already has --- which
+of the two outcomes its own system is heading toward.
 
 \section*{Reproducibility}
 
