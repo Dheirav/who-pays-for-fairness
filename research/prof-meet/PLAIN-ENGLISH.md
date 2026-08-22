@@ -260,15 +260,20 @@ test it on new data. It passed the test that was set for it, and then a much stu
 is that we know when it flips but we do not know why, and that failure is written into the
 paper rather than left out.
 
-## The one number that is worth remembering
+## The one number that is worth remembering, with its health warning
 
-**About 0.54, call it roughly half.** Below that approval rate, these fairness tools take
-opportunities away, while above it they hand them out. An earlier version of this document
-said 0.3; measuring the switch point properly, on more data with better checks, moved it,
-and that correction is part of the record rather than papered over.
+**About 0.54, call it roughly half.** Below that approval rate these fairness tools
+usually take opportunities away, while above it they usually hand them out, and you can
+check which side you are on before building anything, using a number you already have.
 
-And you can check which side you are on before building anything, using a number you
-already have.
+The health warning comes from our own latest measurements, and it matters. When ten more
+states were tested, the switch point turned out to sit at 0.28 in Florida and at 0.65 in
+Pennsylvania, and a few of the largest states had no clean switch point at all. So "roughly
+half" is the right starting guess and it called 9 out of 10 sealed predictions correctly,
+but it is a starting guess to check against your own system, not a law of nature. An
+earlier version of this document said 0.3; better measurement moved it to 0.54, and more
+measurement has now widened it into a range. Both corrections are part of the record
+rather than papered over, which is how this project treats every number.
 
 ---
 
@@ -351,5 +356,4 @@ the standard benchmark, *ACS* is its modern replacement available per state, and
 a public record of real US mortgage applications with the lender's actual decision.
 
 **Population.** One dataset, such as a state, a cohort or a census, counted once no matter
-how many experiments run on it. Thirty-nine have been measured at the time of writing, with
-ten more finishing overnight.
+how many experiments run on it. Forty-seven have been measured.

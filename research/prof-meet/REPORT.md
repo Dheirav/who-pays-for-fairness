@@ -108,12 +108,20 @@ optional once you know to ask for it. Knowing when to ask is what the crossover 
 
 ## Scale, and the discipline behind the numbers
 
-As of this afternoon the record holds **39 independent populations** across seven data
-sources (UCI Adult, ACS states, HMDA mortgages, COMPAS, LSAC, the Dutch census, Taiwanese
-credit-card default), six decision domains, three countries and two decades. A
-pre-registered sweep of ten further states is running tonight, which takes it to 47 and
-tests — with predictions committed this afternoon, before any of those arms existed —
-whether anything measurable predicts where a population's crossover sits.
+The record holds **47 independent populations** across seven data sources (UCI Adult, ACS
+states, HMDA mortgages, COMPAS, LSAC, the Dutch census, Taiwanese credit-card default),
+six decision domains, three countries and two decades. The last ten arrived through a
+pre-registered sweep whose verdicts landed the same day this report was finished, and both
+went against us in instructive ways: the test of what predicts the crossover's location
+returned **underpowered** (three located against a floor of six), a sealed model of the
+effect's *size* lost outright to predicting zero, and the three crossovers that did locate
+**broke the cluster** — Florida at 0.284 and Pennsylvania at 0.652, far outside the
+0.43–0.58 band, on the same instrument that built it. Several of the largest states turn
+out to have no crossover at all, and the fixed 0.54 prior scores 5 of 10 on their natural
+arms, each miss agreeing with that state's own measured crossover. So the within-population
+claim survived the week's hardest test, while the transferable prior narrowed to "usually,
+not always" — and every one of those sentences comes from a prediction committed before the
+data existed.
 
 Three pieces of discipline are worth naming because they caught real errors:
 
@@ -129,10 +137,10 @@ Three pieces of discipline are worth naming because they caught real errors:
 
 ## What is open, honestly
 
-* **Why 0.54.** The crossover clusters (0.43–0.58 carrying bootstrap intervals) but nothing
-  explains its location; the one derivation attempt cleared its pre-registered bars and was
-  then beaten by a constant, and that failure is reported. Tonight's sealed sweep is the
-  first adequately powered test of the two candidate predictors.
+* **Why the crossover sits where it sits.** Located values now span 0.28–0.65 and nothing
+  predicts the location; the sealed test built to answer this returned underpowered, partly
+  because a third of the large states have no crossover to locate — their response to the
+  constraint is U-shaped or positive throughout, which is itself the newest open question.
 * **Breadth.** The sealed 9-of-10 is ten US census populations — depth, not breadth. A
   non-Western census extract (Brazil 2000/2010, Mexico 2015/2020) is requested and pending
   approval, which would allow the first crossover located outside the West.
