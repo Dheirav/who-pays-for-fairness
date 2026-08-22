@@ -1156,7 +1156,9 @@ def test_paper_draft_population_count_is_recomputed() -> None:
     # Read the claim rather than hardcode it. A test that pins a number has to be edited
     # every time the evidence grows, and an edit is exactly where a stale claim survives;
     # this one recomputes from the results and checks the document against that.
-    claimed = _re.search(r"(\d+) independent populations", text)
+    # \s+ rather than a literal space: LaTeX source wraps lines freely, and the guard's
+    # subject is the number, not the layout.
+    claimed = _re.search(r"(\d+)\s+independent populations", text)
     assert claimed, "the paper no longer states an independent-population count"
     assert int(claimed.group(1)) == len(independent), (
         f"the paper claims {claimed.group(1)} independent populations; the results give "
