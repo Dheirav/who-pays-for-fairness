@@ -108,6 +108,7 @@ would count as a failure, and which items need pre-registering.
 | 47 | [The sealed prediction failed](docs/47-the-sealed-prediction-failed-and-took-document-46-with-it.md) | **4/8, bar was 7, constant not beaten.** A rule sealed before nine unseen populations ran. Doc 46's refinement — added two hours earlier from four in-sample populations — turned a 7/8 prediction into 4/8. The low-rate turn-up is a property of the operating-point *route*, not of the selection rate |
 | 48 | [The attribute-aware regime, confirmed](docs/43-the-rule-is-about-one-regime-and-the-theory-says-which.md) | Pre-registered replication of doc 43's post-hoc count, on nine populations never post-processed, bar set at all nine: **9/9**. The regime result stands at 27 of 27, nine predicted in advance |
 | 49 | [The re-sealed rule holds](docs/49-the-resealed-rule-holds.md) | **9/10 against a sealed bar of 9, best constant 6 — beaten.** The monotone rule doc 47 could only score post-hoc, committed before ten never-measured states ran. The one miss is an arm whose effect is seed-noise around zero, and the sealed criterion scores it against the rule anyway |
+| 50 | [The divergence is who moves](docs/50-the-divergence-is-who-moves.md) | The route divergence is lift-vs-cut (gained/lost 1.3–2.3 against 0.0–0.8), it is **not a rate band** — CT turns up at 0.142, so "below 0.10" was an artifact of which arms existed — and five candidate selectors each die by counterexample. Mechanism measured, selector open |
 
 ## The short version
 

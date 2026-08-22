@@ -58,9 +58,15 @@ constant (document 26).
       before any arm ran. The paper's framing should now lead with this. A future seal should
       pre-state a minimum-magnitude guard: the one miss was an arm whose effect is
       indistinguishable from zero.
-- [ ] **Explain the route divergence below 0.10.** Currently a described fact with a conjecture
-      attached. Whatever explains it probably also explains why the accuracy rule fails to
-      catch it — a real gap in the procedure document 35 recommends.
+- [x] **Explain the route divergence below 0.10. HALF DONE** (document 50): the divergence is
+      a divergence in *who moves* — turn-up arms lift (gained/lost 1.3–2.3), everything else
+      cuts — and it is **not a rate band**: CT turns up at 0.142, so the boundary is the
+      sweep's deepest-tail arms, not "below 0.10". The accuracy rule can't catch it because
+      clearance constrains global error, not who sits near the line (15/15 divergent-region
+      arms clear). **Open remainder:** what selects lift over cut. Five aggregates die by
+      counterexample; OR op087 vs Dutch op0965 agree on every stored quantity and move
+      opposite ways. Next probe: per-group score density near the threshold for that matched
+      pair. All post-hoc; the paper's limitation is updated.
 - [ ] **A *sweepable* non-Western population.** Taiwan is non-Western but the viable-band test
       refused it, as it did LSAC. One that can be swept would be the first crossover located
       outside the West.
