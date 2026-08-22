@@ -31,12 +31,13 @@ can be pulled down. Both outcomes satisfy the constraint, and the metric that ce
 reports the same number in each case, which means a deployment team cannot tell from its own
 dashboard which of the two it is about to cause. We show that the direction is predictable in
 advance from a quantity every deploying organisation already has: the rate at which its
-current model says yes, read against an empirically observed crossover near 0.54. Across
-39 independent populations covering six decision domains and seven data sources, an
-attribute-blind parity constraint withdraws favourable decisions when the baseline selection
-rate sits below the crossover, and extends them when it sits above; on UCI Adult six
-in-processing methods each shrink the pool by 7.9--22.1\%, while on mortgage lending the
-identical constraint grows it. The claim is \emph{sealed} rather than
+current model says yes, read against that population's crossover. Across 47 independent
+populations covering six decision domains and seven data sources, an attribute-blind parity
+constraint withdraws favourable decisions when the baseline selection rate sits below a
+crossover, and extends them when it sits above; on UCI Adult six in-processing methods each
+shrink the pool by 7.9--22.1\%, while on mortgage lending the identical constraint grows it.
+The crossover's location is population-specific --- located values span 0.28 to 0.65, with
+0.54 as the useful but fallible prior. The claim is \emph{sealed} rather than
 fitted: with the rule, the populations and the pass mark committed to version control before
 any run, it predicted the direction on \textbf{9 of 10} populations never previously
 measured, while the best constant reached 6. An earlier sealed attempt that carried an
@@ -172,8 +173,8 @@ instrument.
 
 \section{Setup and Method}
 
-\textbf{Data.} Thirty-nine independent populations across seven data sources: UCI Adult
-(45{,}222 rows); ACS Income \cite{ding2021} across thirty-two US states and two protected
+\textbf{Data.} Forty-seven independent populations across seven data sources: UCI Adult
+(45{,}222 rows); ACS Income \cite{ding2021} across forty US states and two protected
 attributes; HMDA mortgage records for two states, by race and sex and split by loan purpose;
 COMPAS \cite{propublica2016} (5{,}278 rows on the race arm after ProPublica's documented
 filter); LSAC bar passage (20{,}798 rows); the Dutch national census of 2001 (60{,}420
@@ -233,6 +234,8 @@ Relaxed $\zeta$ ordering & 26 arms from 15 populations \\
 Crossover intervals & 4 non-lending + 3 lending estimates \\
 Sealed test 1 (failed) & 8 scored + Taiwan, all fresh \\
 Re-seal (holds) & 10 fresh ACS states \\
+Residual campaign (underpow.) & 10 fresh states (76 arms) \\
+Sealed magnitude (failed) & NY + TX (16 arms) \\
 Selection-rate floor & 10 pops.\ (19 arms) \\
 \bottomrule
 \end{tabular}
@@ -527,7 +530,7 @@ population-level argument cannot.
 \section{Boundaries}
 \label{sec:boundaries}
 
-\subsection{The crossover is nearly stable}
+\subsection{The crossover clustered, until more states were measured}
 
 \begin{table}[t]
 \caption{Crossover location with bootstrap intervals over seeds (2{,}000 resamples).
@@ -546,6 +549,11 @@ S. Carolina & income & 0.530 \,(0.526--0.533) & 99\% \\
 Oregon & income & 0.558 \,(0.556--0.560) & \textbf{77\%} \\
 Dutch census & occupation & 0.576 \,(0.572--0.580) & 100\% \\
 \midrule
+\multicolumn{4}{@{}l}{\emph{Added by the sealed sweep campaign (bracket, no bootstrap)}} \\
+Florida & income & \textbf{0.284} \,(0.259--0.309) & --- \\
+Ohio & income & 0.556 \,(0.528--0.585) & --- \\
+Pennsylvania & income & \textbf{0.652} \,(0.624--0.681) & --- \\
+\midrule
 \multicolumn{4}{@{}l}{\emph{Lending --- one market, three overlapping estimates}} \\
 HMDA pooled & mortgages & 0.660 & --- \\
 HMDA Louisiana & mortgages & 0.659 & --- \\
@@ -554,25 +562,36 @@ HMDA refinance & mortgages & 0.758 & --- \\
 \end{tabular}
 \end{table}
 
-Table~\ref{tab:crossover} separates the two groups deliberately, because averaging them would
-hide the only disagreement in the data. Four non-lending populations, across three domains and
-two countries, have overlapping intervals. \textbf{Carrying those intervals the cluster spans
-roughly 0.43--0.58}, not the 0.511--0.576 that point estimates alone suggest: COMPAS's interval
-is six times wider than the Dutch census's, and Oregon's bracket fails to exist in 23\% of seed
-resamples.
+Table~\ref{tab:crossover} tells the honest history in three blocks. The first four
+populations, across three domains and two countries, have overlapping intervals, and
+carrying those intervals gave a cluster spanning roughly 0.43--0.58. A sealed sweep campaign
+across ten further states was then run to test what predicts the location, and the three
+crossovers it located break the cluster: Ohio lands inside it, while \textbf{Florida sits at
+0.284 and Pennsylvania at 0.652}, both with tight brackets and every guard passed, on the
+same instrument the cluster was built from. Located crossovers now span \textbf{0.28 to
+0.65}, which means the location is population-specific, often but not reliably near the
+middle. The same campaign found that a third of the large states have no crossover to
+locate at all: Texas, New York and Illinois sweep U-shaped, with the pool change positive
+at both window edges and negative between, while New Jersey and Virginia level \emph{up}
+across their entire windows. The monotone within-population picture, which held on every
+population swept before, is therefore itself population-dependent.
 
-Every lending estimate sits above every non-lending one. They come from a \emph{single} market
-measured three overlapping ways, so ``lending is different'' is a hypothesis here and not a
-finding.
+Every lending estimate sits above every non-lending one, but those come from a \emph{single}
+market measured three overlapping ways, so ``lending is different'' remains a hypothesis.
 
-\textbf{We therefore treat a crossover near 0.54 as an empirical prior for auditing, not a
-theoretically justified constant.} Nothing in this work explains why 0.54 rather than some
-other value, and Section~\ref{sec:failures} records an attempt to derive it that failed.
+\textbf{We therefore treat a crossover near 0.54 as an empirical prior with a measured
+failure rate, not a constant.} It predicted 9 of 10 sealed populations in advance
+(Section~\ref{sec:resealed}); scored post-hoc on the campaign's ten natural arms it manages
+5 of 10, and every miss agrees with its own state's sweep --- Florida's natural arm turns up
+at a rate of 0.288, and Florida's located crossover is 0.284. The within-population
+relationship survives where the landscape is monotone; the fixed prior transfers to some
+populations and not others, and nothing in this work yet says which in advance.
 
-Two population properties appeared to explain the residual, at $r = +0.724$ and $+0.865$. They
-are collinear with each other at $+0.947$ and neither is distinguishable from chance at four
-populations ($p = 0.277$, $p = 0.135$). We report them as a hypothesis for a larger study, not
-a formula.
+The residual question --- what predicts the location --- was given a sealed test with two
+candidate predictors, a $\rho \geq 0.70$ bar and a floor of six new locations. It returned
+\textsc{underpowered}: three located, so neither candidate is judged. The earlier screen's
+two correlations ($+0.724$, $+0.865$, collinear at $+0.947$ over four populations) remain a
+hypothesis, and any future test must first handle landscapes with no crossover at all.
 
 \subsection{The procedure is unusable on very generous tasks}
 
@@ -833,6 +852,10 @@ Attribute-aware replication & 9 of 9; got 9 --- \textbf{holds} & where the attri
 readable, the disadvantaged group always gains --- as theory says, predicted in advance \\
 Re-seal, unrefined rule & 9 of 10 + beat constant; got 9, constant 6 --- \textbf{holds} &
 the simple rule predicts populations it has never seen, from the rate alone \\
+Crossover residual & 6+ located, $\rho \geq 0.70$; 3 located --- underpowered & neither
+candidate judged; a third of large states have no crossover to locate \\
+Sealed magnitude model & beat predict-zero; MAE 4.50 v.\ 0.77 --- fail & size cannot be
+predicted from distance and band span; the direction-only concession is earned \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -877,26 +900,33 @@ model at all six operating points, so the measured effect was a constant divided
 baseline. What exposed it was an exchange rate of 0.000.
 
 \textbf{The claim that survives every test above, stated once and in full.} Within a
-population, in the attribute-blind in-processing regime, across the transition: the baseline
-selection rate, read against a crossover prior near 0.54, predicts the direction in which a
-parity constraint moves the pool of favourable decisions --- sealed at 9 of 10 on populations
-never previously measured --- and orders the magnitude within that population. The boundaries,
-equally part of the claim: the crossover clusters at 0.43--0.58 and is unexplained; magnitude
-does not transfer across populations and no pooled slope exists; the deepest-tail arms of a
-threshold sweep are unreliable in direction, so at low rates only the label route and natural
-sub-populations carry the claim; and in the attribute-aware regime the direction is
-determined by theorem, the rate predicts nothing, and there is nothing left to predict.
+population whose response is monotone, in the attribute-blind in-processing regime, across
+the transition: the baseline selection rate, read against \emph{that population's} crossover,
+predicts the direction in which a parity constraint moves the pool of favourable decisions,
+and orders the magnitude within that population. The fixed 0.54 prior is a fallible
+substitute for the population's own crossover: sealed at 9 of 10 in advance on one cohort of
+unseen populations, 5 of 10 post-hoc on a second cohort of larger, richer states whose
+misses each agree with their own measured crossovers. The boundaries, equally part of the
+claim: located crossovers span 0.28--0.65 and nothing yet predicts the location; some large
+populations have no crossover at all, sweeping U-shaped or levelling up throughout;
+magnitude does not transfer across populations and a sealed model of it failed; the
+deepest-tail arms of a threshold sweep are unreliable in direction; and in the
+attribute-aware regime the direction is determined by theorem, the rate predicts nothing,
+and there is nothing left to predict.
 
 \section{Limitations}
 
-\textbf{The sealed record is one failure and one pass.} The first sealed test
-(Section~\ref{sec:sealed}) failed at four of eight, carrying an in-sample refinement; the
-re-seal of the unrefined rule (Section~\ref{sec:resealed}) passed at nine of ten with the bar
-at nine, beating the constant at six. The pass has its own limits: all ten populations share
-one instrument and one country --- held-out ACS states are the cheapest clean populations
-available, so the sealed evidence buys depth, not breadth --- and the single miss is charged
-to the rule by the registered rubric, because no minimum-magnitude guard was stated in
-advance.
+\textbf{The sealed record is two failures, one pass, and one underpowered test.} The first
+sealed test (Section~\ref{sec:sealed}) failed at four of eight, carrying an in-sample
+refinement; the re-seal of the unrefined rule (Section~\ref{sec:resealed}) passed at nine of
+ten, beating the constant at six; a sealed magnitude model then failed outright, and the
+sealed residual test returned no verdict. The pass's own limit turned out to bind sooner
+than expected: its ten populations were mid-size, mid-income states, and when ten larger,
+richer states were swept for the residual campaign, their natural arms scored the fixed
+prior at five of ten post-hoc --- with every miss agreeing with its own state's measured
+crossover, so the within-population claim held while the transferable prior narrowed. The
+single miss in the sealed pass is charged to the rule by the registered rubric, because no
+minimum-magnitude guard was stated in advance.
 
 \textbf{The two manipulations diverge in the score tail.} The deepest-tail arms of an
 operating-point sweep are unreliable in direction at whatever rate they land (observed from
@@ -906,9 +936,11 @@ all fifteen such arms clear it. What selects lift over cut is measured to be non
 rate, the gap, the qualified reservoir, or the threshold height; it remains open. We claim
 the relationship across the transition, on the label route and natural sub-populations.
 
-\textbf{Magnitude does not transfer} between populations, only within them. \textbf{The
-crossover clusters but is not explained}: two candidate predictors are collinear at $+0.947$
-and neither survives four populations. \textbf{Coverage} is seven data sources, three
+\textbf{Magnitude does not transfer} between populations, only within them --- and a sealed
+model of it lost to predicting zero. \textbf{The crossover's location is unexplained and
+wider than it looked}: located values span 0.28--0.65, the sealed test of the two candidate
+predictors returned underpowered at three locations, and some populations have no crossover
+to locate. \textbf{Coverage} is seven data sources, three
 countries and two decades; Taiwan is the only non-Western population, and one population is
 not coverage. \textbf{The regime result} was post-hoc at 18 of 18 and has since been confirmed
 pre-registered at 9 of 9, but it confirms a published theorem rather than establishing one.
