@@ -20,7 +20,7 @@ from .base import DatasetLoader, FairnessDataset
 __all__ = ["DatasetLoader", "FairnessDataset", "build", "AVAILABLE"]
 
 AVAILABLE = ("adult", "acs[:STATE[,STATE...]][:ATTRIBUTE]", "hmda[:STATE:ATTRIBUTE[:PURPOSE]]",
-             "compas[:race|sex]", "lawschool[:race|male]", "dutch")
+             "compas[:race|sex]", "lawschool[:race|male]", "dutch", "taiwan")
 
 
 def build(name: str) -> DatasetLoader:
@@ -79,6 +79,11 @@ def build(name: str) -> DatasetLoader:
         from .lawschool import RACE as LAW_RACE, LawSchoolLoader
 
         return LawSchoolLoader(protected=argument.strip() or LAW_RACE)
+
+    if key == "taiwan":
+        from .taiwan import TaiwanCreditLoader
+
+        return TaiwanCreditLoader()
 
     if key == "dutch":
         from .dutch import DutchLoader
