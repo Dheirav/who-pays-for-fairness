@@ -164,6 +164,54 @@ def probe_geometry(seeds: int = 5) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def probe_mixture(seeds: int = 5) -> pd.DataFrame:
+    """What the mitigated mixture actually grants, per deep-tail arm.
+
+    ExpGrad returns a randomized mixture, and its per-person positive probability shows
+    which solution it found. A *graded tilt* grants probability below the threshold that
+    rises with the score (``graded_below`` well above zero, ``corr_above`` positive); a
+    *lottery* grants nothing below the line and keeps everyone above it with one flat
+    probability. The two are the lift and cut mechanisms of document 50, and this is the
+    probe that separates them.
+    """
+    import numpy as np
+
+    from ..datasets import build as build_dataset
+    from ..mitigation import fit_exponentiated_gradient
+    from ..models import build as build_model
+    from ..preprocessing import prepare
+
+    rows = []
+    for spec, tau, direction in PROBE_ARMS:
+        dataset = build_dataset(spec).load()
+        name = f"logistic_regression@{tau}"
+        graded, keep, corr = [], [], []
+        for seed in range(seeds):
+            split = prepare(dataset, random_state=seed)
+            base = build_model(name, random_state=seed)
+            base.fit(split.X_train, split.y_train)
+            s = base.predict_proba(split.X_test)[:, 1]
+            mitigated = fit_exponentiated_gradient(
+                build_model(name, random_state=seed),
+                split.X_train, split.y_train, split.a_train,
+                constraint="demographic_parity", eps=0.01)
+            p1 = np.asarray(mitigated._pmf_predict(split.X_test))[:, 1]
+            below = (s >= tau - 0.05) & (s < tau)
+            above = s >= tau
+            if below.any():
+                graded.append(float(p1[below].mean()))
+            if above.sum() > 2:
+                keep.append(float(p1[above].mean()))
+                with np.errstate(invalid="ignore"):
+                    c = float(np.corrcoef(p1[above], s[above])[0, 1])
+                corr.append(0.0 if np.isnan(c) else c)
+        rows.append({"arm": f"{spec}@{tau:g}", "observed": direction,
+                     "graded_below": float(np.mean(graded)),
+                     "keep_above": float(np.mean(keep)),
+                     "corr_above": float(np.mean(corr))})
+    return pd.DataFrame(rows)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dataset", default=None,
@@ -173,6 +221,9 @@ def main() -> None:
     parser.add_argument("--probe-geometry", action="store_true",
                         help="refit the deep-tail baselines and score the two geometry "
                              "candidates for the lift-or-cut selector")
+    parser.add_argument("--probe-mixture", action="store_true",
+                        help="refit ExpGrad on the deep-tail arms and profile what the "
+                             "mixture grants: a graded tilt or a lottery")
     args = parser.parse_args()
 
     if args.probe_geometry:
@@ -181,6 +232,14 @@ def main() -> None:
         OUT = research_dir("routes")
         probe.round(6).to_csv(OUT / "routes_geometry_probe.csv", index=False)
         print(f"\nwrote {OUT}/routes_geometry_probe.csv")
+        return
+
+    if args.probe_mixture:
+        probe = probe_mixture()
+        print(probe.round(4).to_string(index=False))
+        OUT = research_dir("routes")
+        probe.round(6).to_csv(OUT / "routes_mixture_probe.csv", index=False)
+        print(f"\nwrote {OUT}/routes_mixture_probe.csv")
         return
 
     rows = []
