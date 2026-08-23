@@ -76,13 +76,13 @@ that after the run cannot excuse the miss.
       invert** — positive at low rates, negative at high — a shape never seen in any
       earlier vintage and the relationship's first sign-flip. Suspects, post-hoc: the
       RELP/RELSHIPP shim (proxy structure differs across 2019+), or the 2022 vintage
-      itself (post-pandemic economy, inflation-eroded label). **NV-2019 diagnostic ran
-      (24 Aug): no inversion — and no signal either** (5 retained arms, spread 1.3, void
-      by the guard). Since 2019 carries the shim and shows no inversion, the shim is
-      weakly acquitted; but acquittal-by-flat-state is thin, so **OH-2019 is sweeping now**
-      — Ohio's lineage is signal-rich in 2018 (spread 8.3) and cleanly inverted in 2022,
-      so its 2019 curve brackets the flip decisively. Until then, no claim covers
-      2020s-vintage data.
+      itself (post-pandemic economy, inflation-eroded label). **Both 2019 diagnostics ran
+      (24 Aug) and the shim is acquitted**: NV-2019 flat, and OH-2019 cleanly classic
+      (crossover 0.58–0.63, spread 8.0) on a file that carries the recoded column — so
+      the inversion arrived between 2019 and 2022 **in the world, not the pipeline**.
+      Ohio's crossover drifts up along the way (0.556 → ~0.60 → none). Mechanism
+      unidentified; any test needs 2021/2023 arms or economic covariates, designed after
+      this data per doc 56's corollary. The 2020s-vintage caveat stands.
       IPUMS (Brazil 2000/2010, Mexico 2015/2020) remains the cross-country shape test.
 - [ ] **The crossover residual — still open, and harder** (document 52). The sealed test
       returned UNDERPOWERED (3 new locations against a minimum of 6) because locating a

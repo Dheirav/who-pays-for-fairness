@@ -53,6 +53,19 @@ The discriminating diagnostic is cheap and is queued: **Nevada 2019** — the fi
 2020s economy; inverted 2019 curves indict the shim era. A drop-the-column variant on one
 2022 state is the follow-up if 2019 is ambiguous.
 
+**Addendum, next day — both diagnostics ran, and the shim is acquitted.** NV-2019 showed
+no inversion but also no signal (spread 1.3, void), an acquittal too thin to lean on. So
+Ohio-2019 was swept — the signal-rich lineage, classic in 2018 and inverted in 2022 — and
+it is **cleanly classic**: signs `-------++`, crossover bracketed at 0.577–0.631, spread
+8.0, gaps healthy throughout. The 2019 file carries the recoded column and a pre-pandemic
+economy, and behaves normally; therefore the recoding does not produce the inversion, and
+whatever does arrived **between 2019 and 2022, in the world rather than in this pipeline**.
+Ohio's crossover also drifts upward along the way (0.556 → ~0.60) before vanishing into
+the 2022 inversion — recorded as trajectory, not theory. The 2020s-vintage caveat stands,
+now with its cause narrowed to the era itself; identifying the mechanism needs 2021/2023
+arms or economic covariates, and is deliberately left for a design that postdates this
+data, per the corollary of document 56.
+
 ## What this changes
 
 * **The base-rate boundary is not a law of shape.** It ordered the 2014/2018 world
