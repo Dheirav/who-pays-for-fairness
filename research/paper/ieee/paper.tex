@@ -31,7 +31,7 @@ can be pulled down. Both outcomes satisfy the constraint, and the metric that ce
 reports the same number in each case, which means a deployment team cannot tell from its own
 dashboard which of the two it is about to cause. We show that the direction is predictable in
 advance from a quantity every deploying organisation already has: the rate at which its
-current model says yes, read against that population's crossover. Across 47 independent
+current model says yes, read against that population's crossover. Across 55 independent
 populations covering six decision domains and seven data sources, an attribute-blind parity
 constraint withdraws favourable decisions when the baseline selection rate sits below a
 crossover, and extends them when it sits above; on UCI Adult six in-processing methods each
@@ -173,9 +173,9 @@ instrument.
 
 \section{Setup and Method}
 
-\textbf{Data.} Forty-seven independent populations across seven data sources: UCI Adult
-(45{,}222 rows); ACS Income \cite{ding2021} across forty US states and two protected
-attributes; HMDA mortgage records for two states, by race and sex and split by loan purpose;
+\textbf{Data.} Fifty-five independent populations across seven data sources: UCI Adult
+(45{,}222 rows); ACS Income \cite{ding2021} across forty US states, eight further
+state-years (2014 and 2022) and two protected attributes; HMDA mortgage records for two states, by race and sex and split by loan purpose;
 COMPAS \cite{propublica2016} (5{,}278 rows on the race arm after ProPublica's documented
 filter); LSAC bar passage (20{,}798 rows); the Dutch national census of 2001 (60{,}420
 rows); and Taiwanese credit-card default records of 2005 (30{,}000 rows). A
@@ -236,6 +236,7 @@ Sealed test 1 (failed) & 8 scored + Taiwan, all fresh \\
 Re-seal (holds) & 10 fresh ACS states \\
 Residual campaign (underpow.) & 10 fresh states (76 arms) \\
 Sealed magnitude (failed) & NY + TX (16 arms) \\
+Cross-year shape seal (failed) & 8 fresh state-years (70 runs) \\
 Selection-rate floor & 10 pops.\ (19 arms) \\
 \bottomrule
 \end{tabular}
@@ -889,6 +890,9 @@ Crossover residual & 6+ located, $\rho \geq 0.70$; 3 located --- underpowered & 
 candidate judged; a third of large states have no crossover to locate \\
 Sealed magnitude model & beat predict-zero; MAE 4.50 v.\ 0.77 --- fail & size cannot be
 predicted from distance and band span; the direction-only concession is earned \\
+Sealed shape boundary & scored$-$1 + beat const.; 4 of 6 --- fail & the base-rate boundary
+called every 2014 shape and both sealed flips; the 2022 curves \emph{invert}, a new
+phenomenon under diagnosis \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -978,7 +982,12 @@ to locate. \textbf{Coverage} is seven data sources, three
 countries and two decades; Taiwan is the only non-Western population, and one population is
 not coverage. \textbf{The regime result} was post-hoc at 18 of 18 and has since been confirmed
 pre-registered at 9 of 9, but it confirms a published theorem rather than establishing one.
-\textbf{The remedy is a variant}, not a discovery.
+\textbf{The remedy is a variant}, not a discovery. \textbf{And every claim carries a data
+vintage}: all populations predate 2019 except four 2022 state-years, and those four
+\emph{invert} the within-population relationship --- positive at low rates, negative at
+high, a shape absent from every earlier vintage. Whether that is the 2022 economy or a
+survey-coding artifact is under diagnosis, and until it is settled no claim here should be
+applied to 2020s-vintage data.
 
 \section{Discussion}
 

@@ -67,16 +67,17 @@ that after the run cannot excuse the miss.
       population levelled down; several show U-shaped sweeps with no crossover at all. The
       misses are internally consistent (FL turns up at 0.288 and its located crossover is
       0.284), so something population-level is real here.
-      **A post-hoc shape screen (23 Aug, scratch `shapes.py`) found the candidate:** within
-      ACS, base rate orders the shape class — p ≤ 0.36 gives monotone/all-negative (8/8),
-      p 0.37–0.47 gives U-shapes, p ≥ 0.44 gives all-positive, with slight interleaving —
-      and the sharper form is (natural rate − p), the reservoir headroom: monotone states
-      run far below their base rate, U/all-positive states at or above it, which ties the
-      shape to docs 50/51's lift mechanism. Cross-instrument it fails (COMPAS is monotone
-      at p = 0.53), consistent with everything else here. **The sealable test is IPUMS:**
-      Brazil/Mexico base rates are computable before any sweep, so commit shape
-      predictions (thresholds fitted on ACS only) before the first non-Western arm runs.
-      The 9 unused ACS states are below the noise floor and cannot serve.
+      **The base-rate boundary was sealed and scored** (document 54): FAILS at 4/6 against
+      bar 5, constant not beaten — asymmetrically. The 2014 side went 4/4 *including both
+      sealed within-state flips* (TX and NY, U-shaped in 2018, classic in 2014 exactly as
+      the boundary called); the 2022 side failed because **all four 2022 populations
+      invert** — positive at low rates, negative at high — a shape never seen in any
+      earlier vintage and the relationship's first sign-flip. Suspects, post-hoc: the
+      RELP/RELSHIPP shim (proxy structure differs across 2019+), or the 2022 vintage
+      itself (post-pandemic economy, inflation-eroded label). **Next diagnostic, queued:
+      NV-2019** — first shim-era year, pre-pandemic economy; classic curves acquit the
+      shim, inverted curves indict it. Until it runs, no claim covers 2020s-vintage data.
+      IPUMS (Brazil 2000/2010, Mexico 2015/2020) remains the cross-country shape test.
 - [ ] **The crossover residual — still open, and harder** (document 52). The sealed test
       returned UNDERPOWERED (3 new locations against a minimum of 6) because locating a
       crossover assumes a monotone landscape and a third of the large states do not have

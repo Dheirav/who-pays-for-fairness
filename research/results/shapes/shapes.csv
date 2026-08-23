@@ -1,0 +1,9 @@
+population,p,predicted,observed,spread,arms,signs
+acs_income_tx_2014,0.316,LOW,LOW,4.5,8,--++++++
+acs_income_ny_2014,0.359,LOW,LOW,4.36,9,-------++
+acs_income_nv_2014,0.286,LOW,LOW,9.23,7,----+++
+acs_income_va_2014,0.388,HIGH,HIGH,6.24,8,++++++++
+acs_income_nv_2022,0.413,HIGH,flat,3.77,3,++-
+acs_income_sc_2022,0.376,HIGH,flat,1.07,8,++------
+acs_income_al_2022,0.379,HIGH,LOW,4.54,8,+++-----
+acs_income_oh_2022,0.416,HIGH,LOW,3.33,7,+------
