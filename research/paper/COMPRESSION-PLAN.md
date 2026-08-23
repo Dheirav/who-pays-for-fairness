@@ -69,7 +69,32 @@ summary. **Tables are primary homes by default** and are untouched in Pass 3.
 
 ### Setup constants
 Row counts (45,222 / 5,278 / 20,798 / 60,420 / 30,000), ε = 0.01, exclusions 0.05 and
-max(p,1−p), $50,000 knob, 55 checks / 28 doc-form — all single-homed already; no action.
+max(p,1−p), $50,000 knob, LSAC base rate 0.890, 55 checks / 28 doc-form — all single-homed
+already; no action.
+
+## Amendment after the verification re-pass (six caught gaps)
+
+A mechanical audit-of-the-audit flagged 47 uncovered lines; most were adjacent-line
+key placement or blanket-covered, and six were genuine manifest gaps, added here:
+
+| claim | grep-key | primary home |
+|---|---|---|
+| ablation headline: parity 0.186 → 0.015 under two accuracy points | `0.015` | §IV + tab:ablation |
+| pre-registered instrument alternative, bar \|r\| < 0.30, loses both | `< 0.30` | §V-D |
+| HMDA held-out residue: r ≥ +0.80 all four, +0.995 refinance | `+0.995` | ledger residue sentence |
+| EO residue: +0.644 two states, +0.822 Alabama alone | `+0.822` | ledger residue sentence |
+| withdrawn results: +0.979 / +0.968 void; exclusion rescued lending | `+0.979` | ledger residue sentences |
+| derivation: cleared bars, beaten 12 correct against 13 of 14 | `against 13` | derivation paragraph |
+| post-processing arithmetic artifact, exchange rate 0.000 | `0.000` | ledger residue sentence |
+
+Also two robustness fixes to the checking itself:
+* **Spelling variants**: the abstract writes `7.9--22.1` while §IV writes `7.9\% to
+  22.1\%`; Pass 4 must grep both spellings for range claims (added keys: `to 22.1`,
+  `0.66 and 0.74`, `0.018`, `22 decisions`, `0.178`).
+* **A missed duplication for Part B's small-dedups list**: the Dutch gap 0.298 appears in
+  both Setup ("carries a between-group gap of 0.298") and §V-D (where it does its
+  argumentative work). Home: §V-D; Setup's sentence trims to the qualitative "roughly
+  twice Adult's".
 
 ## Part B — Pass 3 rulings (the cuts)
 
