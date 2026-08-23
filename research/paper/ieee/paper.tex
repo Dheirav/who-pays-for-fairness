@@ -36,13 +36,16 @@ populations covering six decision domains and seven data sources, an attribute-b
 constraint withdraws favourable decisions when the baseline selection rate sits below a
 crossover, and extends them when it sits above; on UCI Adult six in-processing methods each
 shrink the pool by 7.9--22.1\%, while on mortgage lending the identical constraint grows it.
-The crossover's location is population-specific --- located values span 0.28 to 0.65, with
-0.54 as the useful but fallible prior. The claim is \emph{sealed} rather than
-fitted: with the rule, the populations and the pass mark committed to version control before
-any run, it predicted the direction on \textbf{9 of 10} populations never previously
-measured, while the best constant reached 6. An earlier sealed attempt that carried an
-in-sample refinement \textbf{failed at four of eight}, and we report both outcomes because
-the difference between them is what a sealed test exists to expose. The relationship survives
+The crossover's location is population-specific --- located values span 0.28 to 0.65, and
+the fixed 0.54 prior is a fallible substitute for measuring one's own: sealed at
+\textbf{9 of 10} on one cohort of never-measured populations (best constant 6), 5 of 10
+post-hoc on a second cohort of larger states, every miss agreeing with that population's
+own crossover. The sealed cohort's rule, populations and pass mark were committed to
+version control before any run; an earlier sealed attempt that carried an in-sample
+refinement \textbf{failed at four of eight}, and we report both outcomes because the
+difference between them is what a sealed test exists to expose. All claims are bounded by
+data vintage: four 2022 populations invert the relationship for reasons not yet
+identified, so nothing here should be applied to 2020s-era data unmeasured. The relationship survives
 a change in how the rate is varied, a twenty-five-fold range of constraint tolerance, a
 boosted-tree learner and a protected attribute swapped from sex to race, but it disappears
 under post-processing ($r = -0.024$ against $+0.585$), which reads the protected attribute at
@@ -81,12 +84,18 @@ is what this paper provides and tests.
 \subsection{Scope, stated first}
 
 This is a paper about \textbf{attribute-blind in-processing} constraints, meaning the regime
-in which the protected attribute is unavailable at decision time. Many deployed systems sit
-there, because per-group thresholds are widely read as disparate treatment on their face
-\cite{barocas2016,corbett2017}, which rules out the attribute-aware alternatives in most
-regulated settings. Under post-processing, which does read the attribute, the effect
-we report disappears (Section~\ref{sec:regime}). We treat this not as a weakness of the
-finding but as the boundary the theory draws, and we verify it from both sides.
+in which the protected attribute is unavailable at decision time. This is the regime most
+deployed systems occupy: in the United States, per-group decision thresholds face direct
+disparate-treatment exposure (\emph{Ricci v.\ DeStefano} \cite{ricci2009}; in credit, ECOA
+and Regulation B prohibit attribute-based terms outright), and commentators read the
+doctrine the same way \cite{barocas2016,corbett2017}. Two honest qualifications: the
+barrier is jurisdiction-specific (in the EU it runs through data-protection law rather than
+a per-group-threshold ban), and even \emph{training-time} use of the attribute --- which
+every in-processing method here involves --- is legally unsettled in the US, so we motivate
+the regime as the one systems occupy, not as one the law cleanly compels. Under
+post-processing, which does read the attribute, the effect we report disappears
+(Section~\ref{sec:regime}). We treat this not as a weakness of the finding but as the
+boundary the theory draws, and we verify it from both sides.
 
 \subsection{Contributions}
 
@@ -95,12 +104,15 @@ finding but as the boundary the theory draws, and we verify it from both sides.
 Contemporaneous theory \cite{backfire2026} establishes that in the attribute-blind regime the
 direction is distribution-dependent. It contains no experiments and its conditions are ordering
 relations on score regions rather than measurable quantities. We supply the measurement across
-57 populations and six domains, and find its stated conditions --- which are \emph{sufficient,
-not necessary} --- cannot be evaluated on any of 26 real arms, for a structural reason given in
-Section~\ref{sec:regime}. A relaxed form of the same ordering agrees with the measured
-direction on 24 of 26. The direction rule itself is \emph{sealed}: committed before ten
-populations this work had never measured, it scored 9 of 10 against a best constant of 6
-(Section~\ref{sec:resealed}).
+57 populations and six domains, and find that under our probe estimator its stated
+conditions --- which are \emph{sufficient, not necessary} --- could not be certified on any
+of 26 real arms (Section~\ref{sec:regime}), while a relaxed form of the same ordering
+agrees with the measured direction on 24 of 26 and correlates with our predictor at
+$r = +0.935$: the selection rate operationalizes the theory's quantity. The direction rule
+itself is \emph{sealed}: committed before ten populations this work had never measured, it
+scored 9 of 10 against a best constant of 6 (Section~\ref{sec:resealed}); on a second,
+post-hoc cohort of larger states the fixed prior scored 5 of 10, each miss agreeing with
+that population's own measured crossover.
 
 \item \textbf{Separation of the predictor from its confound.} Varying the selection rate by moving
 a label threshold cannot distinguish ``the rate predicts the direction'' from ``task difficulty
@@ -344,9 +356,11 @@ ACS Income's label is ``earns more than \$50{,}000'', and that threshold is a be
 convention rather than a fact about the world, which makes it a knob we can turn. Moving it
 on one fixed state varies the selection rate while the population, instrument, feature set,
 group ratio and proxy structure all stay fixed. The change in the pool rises with the
-baseline selection rate at $r = +0.801$, and at $+0.980$ once the confounded between-group
-gap is partialled out. The sign also flips along the way: 22 decisions are destroyed per one
-created at a rate of 0.03, compared with 0.75 at 0.89.
+baseline selection rate at $r = +0.801$ over four arms --- too few points for formal
+inference, and reported as descriptive; a partial correlation on four points has one
+degree of freedom and is omitted as uninformative. The sign flip is the substantive
+observation: 22 decisions are destroyed per one created at a rate of 0.03, compared with
+0.75 at 0.89.
 
 \subsection{The transition appears without being manufactured}
 
@@ -506,27 +520,39 @@ direction is determined. Its prediction for that regime is that the advantaged g
 the disadvantaged gains, always. On our populations that holds in \textbf{18 of 18}, without exception. That check was
 post-hoc, so we repeated it as a confirmatory test on nine populations never previously
 post-processed, with the bar set at all nine and committed before the runs: it holds \textbf{9
-of 9}. The regime result therefore stands at 27 of 27, nine of them predicted in advance.
+of 9} (exact tail against a coin: $0.5^9 \approx 0.002$). The regime result therefore stands at 27 of 27, nine of them predicted in advance.
+Scoring is strict rather than weak: an arm counts only if the advantaged group's seed-mean
+losses and the disadvantaged group's seed-mean gains are both positive, and no
+minimum-magnitude guard was applied --- the theorem promises weak inequalities, so a
+near-zero arm could in principle have scored either way, a rubric gap the later sealed
+direction tests closed and this count predates.
 
 \textbf{A word on what we do and do not claim against the theory.} Its Theorem 3 states
-conditions over the extrema of $\zeta(x) = (\eta(x)-c)/\nu(x)$, and those extrema
-are unattainable on real data: $\zeta$ diverges as $\nu \to 0$, every dataset has points
-arbitrarily close to $\nu = 0$, and the two regions' empirical ranges therefore always overlap
---- on Adult by $[-139, 4.1]$ against $[-39, 6662]$. The conditions are \emph{sufficient, not
-necessary}, so this does not make the theorem false. It makes it \emph{silent} on every population
-we measure, which is a claim about applicability and not a refutation.
+conditions over the extrema of $\zeta(x) = (\eta(x)-c)/\nu(x)$, where $\eta(x)$ is the
+positive-class probability at $x$, $c$ the cost threshold, and $\nu(x)$ the group-membership
+signal --- which their paper leaves without a prescribed estimator, so we estimate $\nu$
+with a logistic probe predicting the protected attribute from the features. \textbf{Under
+that estimator, the extrema orderings could not be certified on any of the 26 arms tested}:
+the plug-in $\hat\zeta$ grows without bound where $\hat\nu$ approaches zero, and the two
+regions' empirical ranges overlapped in every case --- on Adult by $[-139, 4.1]$ against
+$[-39, 6662]$. This is an estimator-relative finding, not a structural one; a different
+estimator, or the population quantities themselves, might behave differently. The
+conditions are also \emph{sufficient, not necessary}, so none of this makes the theorem
+false. It leaves it \emph{unverifiable on these populations as we could measure them},
+which is a claim about operational applicability and not a refutation.
 
-Two further caveats belong here. Our $\nu$ is \emph{estimated}, by a probe predicting the
-protected attribute from the features; their paper prescribes no estimator, so the evaluation
-is ours, and a different estimator might behave differently. At the same time, a
-\emph{relaxed} version of their ordering, replacing the unattainable extrema with 5th/95th
-percentiles, agrees with the measured direction on \textbf{24 of 26} arms, compared with 25
-of 26 for the selection rate. Taken together, this suggests the theory captures the relevant
-regime distinction, and that its stated sufficient conditions are not operationally
-checkable on the populations studied. The
-regime distinction itself matters most: within the attribute-blind regime the stated
-sufficient conditions do not yield an operational predictor of the direction, while the
-selection rate does, and that difference is something an empirical study can settle where a
+The relationship between their quantity and ours turns out to be closer than a horse race.
+A \emph{relaxed} version of their ordering, replacing the unattainable extrema with
+5th/95th percentiles of $\hat\zeta$, agrees with the measured direction on \textbf{24 of
+26} arms, compared with 25 of 26 for the selection rate --- and, in a post-hoc comparison,
+\textbf{the baseline selection rate correlates with the relaxed ordering quantity at
+$r = +0.935$}, the two rules agreeing on 25 of 26 populations. That is, the number this
+paper uses is not a rival of the theory's condition but a cheap proxy for it: the theory's
+ordering needs the joint score-and-group distribution and an estimator nobody has
+prescribed, while the selection rate needs one line of a dashboard, and the two point the
+same way almost everywhere. The regime distinction itself matters most: the theory says
+where prediction is possible at all, and the selection rate \emph{operationalizes} its
+within-regime content --- which is something an empirical study can establish and a
 population-level argument cannot.
 
 \section{Boundaries}
@@ -730,7 +756,12 @@ mid-point of the non-lending cluster, fixed from four populations that include n
 ten. The bar was committed with the populations before any arm ran: at least 9 of 10,
 \emph{and} strictly beating the best constant.
 
-\textbf{It holds: 9 of 10, best constant 6} (Table~\ref{tab:resealed}). The prediction used
+\textbf{It holds: 9 of 10, best constant 6} (Table~\ref{tab:resealed}). The exact binomial
+tail is worth stating plainly: a guesser performing at the best constant's rate
+($p = 0.6$) reaches 9 or more of 10 with probability $\approx 0.046$, so this is strong
+evidence rather than proof --- and it is the second sealed attempt at a direction rule
+after the first failed, a sequential context a reader should weight; the adequately
+powered third cohort belongs off-instrument and is future work. The prediction used
 the baseline selection rate and the fixed 0.54 prior alone --- no sweep, no per-population
 characterisation. Below 0.10, where the refuted refinement said up, Nebraska at 0.014 moved
 down by 6.35\%, as the unrefined rule predicts.
@@ -765,17 +796,21 @@ adjustment: probability is granted below the threshold, rising with the person's
 with the disadvantaged group favoured within each score band. Where it \emph{cuts}, the
 mixture is a lottery: nobody below the threshold receives any probability at all, and
 every predicted positive of both groups is kept with one flat probability --- 0.65 on the
-Dutch census arm, 0.135 on COMPAS, where the correlation between a person's keep
-probability and their own score is exactly zero. The gap closes because discarding a fixed
+Dutch census arm, 0.135 on COMPAS, where a person's keep probability is constant in their
+own score (the correlation is degenerate: score carries no information about who is kept). The gap closes because discarding a fixed
 fraction of everyone's approvals at random shrinks it multiplicatively; the certificate
 reports the same success either way. A single quantity --- the mean probability granted
 just below the threshold --- separates the two behaviours on all nine deep-tail arms
 tested, including a matched pair that agrees on every aggregate we can compute and moves
 in opposite directions.
 
-Three delineations keep this claim its right size. Theory says the \emph{optimal}
-randomized fair classifier randomizes at the decision boundary \cite{agarwal2022}, so the
-global flat lottery is a deviation from the optimum, not an instance of it. The known
+Three delineations keep this claim its right size. In the \emph{attribute-aware} setting,
+the optimal randomized fair classifier is characterized as randomizing at group-specific
+decision boundaries \cite{agarwal2022}; the attribute-blind analogue is not characterized,
+and a flat keep-probability is what any two-member blind mixture produces by construction
+--- so the lottery differs in form from the aware-regime optimum, while whether it is
+suboptimal \emph{within} the blind constrained class is an open computation, not a claim
+we make. The known
 arbitrariness of fair models is \emph{across} retrained models \cite{long2023}; this is
 deliberate randomization inside one fitted model. And randomness itself has been advocated
 as a fairness device \cite{grgic2017} --- the observation here is not that randomness is
@@ -801,16 +836,28 @@ correlation computed over arms that barely move is fitted to noise: Connecticut 
 $r=-0.924$ on a spread of a tenth of a percentage point, and without this test that number
 reads as a refutation of the whole finding.
 
+\textbf{It can return \textsc{non-monotone}, and on current data it often will.} Lines
+19--21 exist because the assumption behind bracketing --- one sign change --- is itself
+population-dependent: among the ten largest states we swept, three are U-shaped, two are
+positive throughout, and the 2022 vintages invert, so a bracket step that assumed
+monotonicity would return a confident wrong direction precisely there. A
+\textsc{non-monotone} verdict means the directional rule does not apply to this system,
+which is a first-class answer, not a failure of the audit. Deep-tail sweep arms carry a
+further caution the guards cannot see (Section~\ref{sec:lottery}), so a
+\textsc{withdrawal} verdict resting only on the lowest-rate arms deserves corroboration
+from natural sub-populations before action.
+
 \textbf{It returns a sign, never a size.} The distance from the crossover \emph{orders} the
 effect within a population, so a team can rank its own segments; but no slope transfers between
-populations, so lines 25 and 27 return a direction and stop there.
+populations, so lines 28 and 30 return a direction and stop there.
 
 \begin{algorithm}[t]
 \caption{Directional audit: decide whether the predictor applies at all; if it does, locate
 the crossover and decide whether to add a floor}
 \label{alg:locate}
 \begin{algorithmic}[1]
-\REQUIRE deployed model $h$, held-out $(X,y,a)$, fairness constraint $C$
+\REQUIRE deployed model $h$, held-out $(X,y,a)$ \emph{of the vintage to be deployed on},
+fairness constraint $C$
 \ENSURE predicted direction, and whether a selection-rate floor is needed
 \IF{$C$ does not constrain selection rates}
   \RETURN \textsc{out of scope} \COMMENT{e.g.\ equalized odds}
@@ -831,8 +878,12 @@ the crossover and decide whether to add a floor}
 \IF{$\max\Delta - \min\Delta < 2$ points}
   \RETURN \textsc{void} \COMMENT{nothing moved; not a refutation}
 \ENDIF
+\IF{$\mathrm{sign}(\Delta_\tau)$ changes more than once across $T$, \OR every
+    $\Delta_\tau$ shares one sign}
+  \RETURN \textsc{non-monotone} \COMMENT{no crossover exists; the rule does not apply here}
+\ENDIF
 \STATE $c \leftarrow \big(\max\{r_\tau\!:\!\Delta_\tau<0\},\; \min\{r_\tau\!:\!\Delta_\tau>0\}\big)$
-\IF{$c$ is empty \OR $c$ is far from $0.54$}
+\IF{$c$ is far from $0.54$}
   \STATE inspect the sweep before believing it
 \ENDIF
 \STATE $r_0 \leftarrow$ selection rate of the deployed model
@@ -997,11 +1048,16 @@ it is, no claim here should be applied to 2020s-vintage data.
 
 \section{Discussion}
 
-The finding a practitioner can use is small and specific: \textbf{look up the rate at which
-your model currently says yes, locate your own crossover, and you can anticipate whether a
-parity constraint is about to give or to take.} We do not claim that the selection rate
-\emph{causes} the direction; we claim that it predicts it, within a population, in the
-attribute-blind regime, and with the boundaries of Section~\ref{sec:boundaries} attached.
+The finding a practitioner can use is small and specific: \textbf{run the audit of
+Section~\ref{sec:procedure} on your own current data --- it will locate your crossover, or
+tell you that your system has none --- and where it returns a direction, the rate predicts
+whether a parity constraint is about to give or to take.} The sweep itself is the vintage
+test: the 2022 inversion means no prior fitted here, including 0.54, substitutes for
+measuring one's own recent data, and an inverted or non-monotone sweep is a finding about
+your system, not a failed audit. Re-run it whenever the model or the population it scores
+is refit. We do not claim that the selection rate \emph{causes} the direction; we claim
+that it predicts it, within a population, in the attribute-blind regime, and with the
+boundaries of Section~\ref{sec:boundaries} attached.
 
 What makes this worth stating is not that the rule is surprising once seen, because it is
 not. It is that the certifying metric --- the number a deployment team reports, an auditor
@@ -1013,6 +1069,22 @@ would ever distinguish them.
 The literature already knew the metric was silent about this. What was missing, and what
 this paper adds, is a way to know in advance --- from a number a team already has --- which
 of the two outcomes its own system is heading toward.
+
+Three implications reach beyond deployment teams, each following from measurement rather
+than doctrine. For certification and audit regimes: because a gap statistic certifies
+withdrawal and extension identically, any mandated parity or disparate-impact threshold
+would be materially more informative if it required reporting the pool change and the
+who-pays decomposition alongside the gap --- a reporting recommendation only, requiring no
+doctrinal commitment. For notice obligations: a flat-lottery model
+(Section~\ref{sec:lottery}) cannot generate truthful individualized reasons for a denial,
+since the individual's own score played no role in it, which sits uneasily with
+adverse-action-notice duties wherever they apply --- and unlike accepted lotteries in visa
+or school allocation, this one is not announced as a lottery but certified as fairness.
+And a tension worth naming for law-and-policy readers without advocating anything unlawful:
+the attribute-aware regime the law disfavours is precisely the one where our data show the
+intervention's effect is determined and always favourable to the disadvantaged group
+(27 of 27), while the legally favoured blind regime is where levelling down and the
+lottery live. Blindness, in these measurements, is not neutrality.
 
 \section*{Reproducibility}
 
@@ -1076,6 +1148,8 @@ concerns, and solutions,'' in \emph{Proc. FAccT}, 2022.
 
 \bibitem{barocas2016} S. Barocas and A. D. Selbst, ``Big data's disparate impact,''
 \emph{California Law Review}, vol.~104, no.~3, pp. 671--732, 2016.
+
+\bibitem{ricci2009} \emph{Ricci v. DeStefano}, 557 U.S. 557 (2009).
 
 \end{thebibliography}
 
