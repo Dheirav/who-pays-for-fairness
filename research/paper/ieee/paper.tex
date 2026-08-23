@@ -67,7 +67,9 @@ disparate impact
 A fairness constraint says that two groups' rates should be close, but it does not say how
 that closeness should be reached. The gap can close because the disadvantaged group is
 lifted, or because the advantaged group is pulled down, and while both directions satisfy
-the constraint, only one of them is what anyone imposing it actually wants.
+the constraint, they are morally very different outcomes on most --- though, we note, not
+all --- accounts of what the constraint is for; at minimum, anyone imposing one deserves
+to know which they are getting.
 
 This ambiguity is already well established. Mittelstadt \emph{et al.} \cite{mittelstadt2023}
 made levelling down the centre of a well-known critique; Maheshwari \emph{et al.}
@@ -114,11 +116,15 @@ scored 9 of 10 against a best constant of 6 (Section~\ref{sec:resealed}); on a s
 post-hoc cohort of larger states the fixed prior scored 5 of 10, each miss agreeing with
 that population's own measured crossover.
 
-\item \textbf{Separation of the predictor from its confound.} Varying the selection rate by moving
-a label threshold cannot distinguish ``the rate predicts the direction'' from ``task difficulty
-does''. Holding the task exactly fixed and moving only the decision rule separates them. We
-claim a \emph{predictive} relationship within a population under the tested regime, not a
-causal mechanism: no pooled slope transfers across populations (Section~\ref{sec:boundaries}).
+\item \textbf{Two predictive claims, distinguished by what they require.} The paper contains
+a \emph{sweep-conditional} claim --- run the audit on your own data and, where the response
+is monotone, the rate against your own measured crossover predicts direction --- and a
+weaker \emph{transported-prior} claim, the only one testable before any measurement, whose
+record is the sealed 9 of 10 followed by 5 of 10. Varying the selection rate by moving a
+label threshold cannot alone distinguish ``the rate predicts'' from ``task difficulty
+does''; holding the task fixed and moving only the decision rule separates them across the
+mid-range, and we say \emph{predicts}, never \emph{causes}: no pooled slope transfers
+across populations (Section~\ref{sec:boundaries}).
 
 \item \textbf{A procedure, not an observation.} The same design lets a practitioner locate
 their own crossover on a deployed model. Four independent estimates of the mortgage crossover
@@ -192,9 +198,16 @@ COMPAS \cite{propublica2016} (5{,}278 rows on the race arm after ProPublica's do
 filter); LSAC bar passage (20{,}798 rows); the Dutch national census of 2001 (60{,}420
 rows); and Taiwanese credit-card default records of 2005 (30{,}000 rows). A
 \emph{population} here is one such unit --- a state, cohort or census --- and
-\emph{independent} means no person appears in two of them: arms within a population share
-people, so however many arms a population contributes, it is counted once
-(Table~\ref{tab:accounting}).
+\emph{independent} means disjoint person samples: no person appears in two of them, and
+arms within a population share people, so however many arms a population contributes, it
+is counted once (Table~\ref{tab:accounting}); the seven data sources remain the honest
+count of independent \emph{instruments}. Three survey-methodology conventions are
+deliberate and inherited from the folktables benchmark \cite{ding2021}: ACS person records
+are used \emph{unweighted} (no \texttt{PERWT}), incomes are nominal \texttt{PINCP} without
+the \texttt{ADJINC} adjustment, and household clustering is not modelled, so every
+``selection rate'' here is a property of the unweighted sample rather than a
+design-consistent state estimate, and seed-resampled intervals are anti-conservative. A
+weighted re-analysis is reported as ongoing work.
 
 COMPAS, LSAC and the Dutch census were added to leave the sources the finding was formed
 in. The Dutch census
@@ -214,7 +227,11 @@ post-processing is explicitly under test.
 \textbf{Exclusion rules.} An arm is discarded if the baseline demographic-parity gap is below
 0.05, or if the baseline classifier's accuracy falls below $\max(p, 1-p)$ --- the accuracy of
 always predicting the more common label. The second rule matters more than it sounds
-(Section~\ref{sec:failures}).
+(Section~\ref{sec:failures}). Provenance, because exclusion rules can select on outcomes:
+both rules were developed \emph{during} the exploratory phase, in response to failures the
+ledger records, so retained-arm correlations from that phase are conditioned on
+in-sample-tuned filters and the sensitivity table reports the dependence; every sealed test
+from the re-seal onward carried both rules frozen in its pre-committed protocol.
 
 \textbf{Accounting.} Table~\ref{tab:accounting} states which populations enter which
 analysis, because three counts in this project's own history turned out to be arm counts
@@ -326,6 +343,19 @@ across populations.
 
 The \textbf{exchange rate} shows the same thing without needing a share: ExpGrad under
 demographic parity destroys 2.68 favourable decisions for every one it creates.
+
+\textbf{The normative baseline, stated as the convention it is.} Throughout, ``withdrawal'',
+``who pays'' and the exchange rate are counterfactual-comparative quantities measured
+against the \emph{unconstrained model's} allocation --- a baseline with no privileged moral
+standing, since the constraint exists precisely because that allocation is suspect. On a
+claims-based view \cite{broome1990}, withdrawing an approval that answered to no legitimate
+claim wrongs no one; a positive classification is also not automatically a benefit
+(extension in lending can be predatory inclusion). The exchange rate is therefore an
+unweighted descriptive count, not a welfare ledger: a reader with prioritarian weights on
+the disadvantaged group's gains may score a rate above 1.0 as net-good, and the
+group-conditional flows the tables report make such weighted readings computable. What the
+accounting establishes is narrower and metric-relative: the certifying number cannot tell
+these outcomes apart, whatever one's weights.
 
 On HMDA mortgage data, however, the direction reverses. The identical constraint \emph{grows}
 the pool by 4.3\%, at an exchange rate of 0.50 --- two favourable decisions created for every
@@ -760,8 +790,15 @@ ten. The bar was committed with the populations before any arm ran: at least 9 o
 tail is worth stating plainly: a guesser performing at the best constant's rate
 ($p = 0.6$) reaches 9 or more of 10 with probability $\approx 0.046$, so this is strong
 evidence rather than proof --- and it is the second sealed attempt at a direction rule
-after the first failed, a sequential context a reader should weight; the adequately
-powered third cohort belongs off-instrument and is future work. The prediction used
+after the first failed, a sequential context a reader should weight. A further limit of
+the cohort's own design must be stated: every arm reaches its rate by the label route, and
+the achieved rates leave $[0.30, 0.70]$ unsampled, so this pass cannot discriminate the
+selection rate from label rarity as the operative variable, nor the value 0.54 from any
+prior in that interval --- a rule reading only the income cutoff scores identically here.
+What the pass establishes is that a mid-band rule predicts direction on unseen
+ACS-instrument populations; the adequately powered third cohort must therefore be
+off-instrument, concentrate rates near the crossover, mix both routes, and score against
+the cutoff-only and 0.5-prior nulls, and it is future work. The prediction used
 the baseline selection rate and the fixed 0.54 prior alone --- no sweep, no per-population
 characterisation. Below 0.10, where the refuted refinement said up, Nebraska at 0.014 moved
 down by 6.35\%, as the unrefined rule predicts.
@@ -813,9 +850,13 @@ suboptimal \emph{within} the blind constrained class is an open computation, not
 we make. The known
 arbitrariness of fair models is \emph{across} retrained models \cite{long2023}; this is
 deliberate randomization inside one fitted model. And randomness itself has been advocated
-as a fairness device \cite{grgic2017} --- the observation here is not that randomness is
-present but that \emph{uninformative} randomness stands in for a measured closing of the
-gap, certified identically. The standard derandomization remedy \cite{cotter2019} applied
+as a fairness device \cite{grgic2017}, and the philosophical literature holds that a
+lottery among relevantly equal claims can be exactly what fairness requires
+\cite{broome1990,stone2011} --- so the charge here is deliberately narrower than
+``a lottery occurred'': it is that a lottery occurred \emph{unannounced}, under a
+certificate indistinguishable from an informed adjustment, in settings where
+individualized reasons are owed. Accepted allocation lotteries are public about being
+lotteries; this one is certified as fairness. The standard derandomization remedy \cite{cotter2019} applied
 to a flat lottery amounts to re-choosing a threshold, which undoes the parity the lottery
 bought; for an auditor, the flat-probability signature itself is the usable part, and it
 is computable from any fitted mitigation.
@@ -975,10 +1016,11 @@ failed outright.
 theoretical account of \emph{why} the selection rate should matter. A general theory already
 exists and we cite it: \cite{backfire2026}'s Theorem 3 gives explicit conditions, over the
 extrema of the score-region quantity $\zeta(x) = (\eta(x)-c)/\nu(x)$, under which every group's
-rate weakly falls or weakly rises. Those conditions are ordering relations rather than anything
-a practitioner can compute, and Section~\ref{sec:regime} reports that they cannot be
-evaluated on real data at all --- while a relaxed form of the same ordering tracks the
-direction on 24 of 26 arms.
+rate weakly falls or weakly rises. Those conditions are stated over population score-region
+extrema that an empiricist must estimate, and Section~\ref{sec:regime} reports that under
+the one estimator we tried they could not be certified on any of 26 arms --- while a
+relaxed form of the same ordering tracks the direction on 24 of 26, statistically
+indistinguishable from the selection rate's 25 of 26.
 
 We attempted the missing step --- a derivation predicting the sign from the selection rate
 directly --- and pre-registered its bars. \textbf{It cleared them and was then beaten by a
@@ -1043,8 +1085,13 @@ vintage}: all populations predate 2019 except four 2022 state-years, and those f
 high, a shape absent from every earlier vintage. Two 2019 diagnostics acquit the one
 pipeline suspect (the survey's recoded relationship column: 2019 carries it and behaves
 classically, Ohio's 2019 crossover sitting between its 2018 value and its 2022 inversion),
-so the change lives in the 2019--2022 world itself and its mechanism is unidentified. Until
-it is, no claim here should be applied to 2020s-vintage data.
+so what remains is an \emph{unattributed distribution shift} between 2019 and 2022 ---
+``vintage'' names the calendar, not the mechanism. Three testable candidates are under
+diagnosis: the ACS's documented pandemic-era nonresponse bias, whose corrections live in
+the sampling weights this paper's convention omits; the fixed nominal \$50{,}000 label
+sliding down a post-2021 earnings distribution compressed at the bottom; and sample
+composition shift separable by reweighting 2022 rows to earlier covariates. Until one is
+confirmed or all excluded, no claim here should be applied to 2020s-era data unmeasured.
 
 \section{Discussion}
 
@@ -1084,14 +1131,23 @@ And a tension worth naming for law-and-policy readers without advocating anythin
 the attribute-aware regime the law disfavours is precisely the one where our data show the
 intervention's effect is determined and always favourable to the disadvantaged group
 (27 of 27), while the legally favoured blind regime is where levelling down and the
-lottery live. Blindness, in these measurements, is not neutrality.
+lottery live. The deontic, process-based rationale for blindness is untouched by any
+outcome measurement; what these measurements show is narrower and still worth saying:
+blindness is not outcome-neutral.
 
 \section*{Reproducibility}
 
 Every load-bearing figure is re-derived from stored results by an automated check that fails if
 a document and its data disagree; 55 checks across five suites accompany this work, 28 of them
-of that document-against-data form. Pre-registrations are committed before the runs they
-govern.
+of that document-against-data form, runnable as
+\texttt{python -m tests.\emph{suite}} from the repository:
+\texttt{github.com/Dheirav/who-pays-for-fairness}. Pre-registrations are committed and
+pushed before the runs they govern; the sealed tests' commit hashes are \texttt{356bfa5}
+(direction re-seal), \texttt{93c3446} (crossover residual), \texttt{f0f8056} (magnitude),
+\texttt{391cd17} (cross-year shape) and \texttt{aa6532b} (attribute independence), each
+scored by a committed analyser whose population lists an isolation guard forbids changing.
+Experiments ran on Python 3.12 with scikit-learn and Fairlearn per the repository's pinned
+requirements; all seven data sources are public.
 
 \begin{thebibliography}{00}
 
@@ -1150,6 +1206,12 @@ concerns, and solutions,'' in \emph{Proc. FAccT}, 2022.
 \emph{California Law Review}, vol.~104, no.~3, pp. 671--732, 2016.
 
 \bibitem{ricci2009} \emph{Ricci v. DeStefano}, 557 U.S. 557 (2009).
+
+\bibitem{broome1990} J. Broome, ``Fairness,'' \emph{Proceedings of the Aristotelian
+Society}, vol.~91, pp. 87--101, 1990.
+
+\bibitem{stone2011} P. Stone, \emph{The Luck of the Draw: The Role of Lotteries in
+Decision Making}. Oxford University Press, 2011.
 
 \end{thebibliography}
 
