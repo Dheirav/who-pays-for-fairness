@@ -1,7 +1,7 @@
 # What to do next, and what will bite you
 
 Live handover. Read this first, then `research/README.md` for the document index. Documents
-11–50 are the research record; the paper is `research/paper/ieee/paper.tex`. The checklist this
+11–57 are the research record; the paper is `research/paper/ieee/paper.tex`. The checklist this
 replaced, with the original reasoning behind each completed item, is in
 [`NEXT-archive.md`](NEXT-archive.md), including the two items completed on 22 Aug (the
 re-seal, and the route-divergence mechanism).
@@ -21,7 +21,8 @@ that after the run cannot excuse the miss.
 
 ## Where the work stands
 
-* **47 independent populations**, 6 domains, 7 data sources, 3 countries, 2 decades. ("5
+* **57 independent populations**, 6 domains, 7 data sources, 3 countries, 2 decades
+  (including ten cross-year state-years). ("5
   instruments" was stale once Taiwan and Adult were counted; the paper now says 7 sources.)
 * **After document 52 the claim carries a sharper scope.** The sealed 9/10 stands, but the
   ten large states swept that night score the fixed 0.54 prior at 5/10 post-hoc, each miss
@@ -33,7 +34,7 @@ that after the run cannot excuse the miss.
   the magnitude nor a pooled slope transfers between populations. The crossover is ~0.54 as a
   **prior for auditing, not a constant** — and the direction claim is now **sealed**: 9 of 10
   on never-measured states, bar 9, constant 6, committed first (document 49).
-* **The paper** is 8 pages, IEEE format, builds from `research/paper/ieee/build.sh`.
+* **The paper** is 12 pages, IEEE format (compression Pass 3 pending the venue answer), builds from `research/paper/ieee/build.sh`.
   `research/paper/draft-v2.md` is **superseded** — do not edit it; the pack copies the typeset
   PDF.
 * **55 automated checks** across five suites re-derive every load-bearing figure from stored
@@ -74,16 +75,14 @@ that after the run cannot excuse the miss.
       sealed within-state flips* (TX and NY, U-shaped in 2018, classic in 2014 exactly as
       the boundary called); the 2022 side failed because **all four 2022 populations
       invert** — positive at low rates, negative at high — a shape never seen in any
-      earlier vintage and the relationship's first sign-flip. Suspects, post-hoc: the
-      RELP/RELSHIPP shim (proxy structure differs across 2019+), or the 2022 vintage
-      itself (post-pandemic economy, inflation-eroded label). **Both 2019 diagnostics ran
-      (24 Aug) and the shim is acquitted**: NV-2019 flat, and OH-2019 cleanly classic
-      (crossover 0.58–0.63, spread 8.0) on a file that carries the recoded column — so
-      the inversion arrived between 2019 and 2022 **in the world, not the pipeline**.
-      Ohio's crossover drifts up along the way (0.556 → ~0.60 → none). Mechanism
-      unidentified; any test needs 2021/2023 arms or economic covariates, designed after
-      this data per doc 56's corollary. The 2020s-vintage caveat stands.
-      IPUMS (Brazil 2000/2010, Mexico 2015/2020) remains the cross-country shape test.
+      earlier vintage and the relationship's first sign-flip. The inversion half of
+      this item is **resolved by document 57**: the 2022 sign-flip was substantially the
+      nominal label sliding (real-threshold reruns restore 2018-like behaviour; weighting
+      and the recode acquitted). What remains open here is the pre-resolution half — why
+      TX/FL/NJ/VA/MA level up at their natural rates and what governs curve shape — with
+      the post-hoc note that real-anchoring rehabilitates the base-rate boundary as an
+      IPUMS hypothesis. IPUMS (Brazil 2000/2010, Mexico 2015/2020) remains the
+      cross-country test for both.
 - [ ] **The crossover residual — still open, and harder** (document 52). The sealed test
       returned UNDERPOWERED (3 new locations against a minimum of 6) because locating a
       crossover assumes a monotone landscape and a third of the large states do not have
