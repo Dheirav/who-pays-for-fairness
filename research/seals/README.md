@@ -3,8 +3,9 @@
 Each `<name>-<shorthash>.txt` holds a seal commit's full hash; the `.ots` beside it is
 an OpenTimestamps receipt anchoring that hash via public calendar servers into the
 Bitcoin blockchain, so the seal's existence at stamping time no longer rests on this
-repository's own clock. Verify with `ots verify <file>.ots` (needs the client from
-`requirements.txt`); receipts start as pending calendar attestations and are upgraded
+repository's own clock. Verify with `ots verify <file>.ots` — full independent verification needs a local
+Bitcoin node; without one, `ots info` shows the attested block height for checking
+against any block explorer. The client is in `requirements.txt`. receipts start as pending calendar attestations and are upgraded
 to full Bitcoin attestations with `ots upgrade <file>.ots` once the anchoring
 transaction confirms (hours). The upgraded receipt is committed over the pending one
 when that happens.
