@@ -1,0 +1,7 @@
+population,predicted,observed,spread,arms,signs
+acs_income_tx_2018_rac1p,HIGH,LOW,39.85,8,----++++
+acs_income_va_2018_rac1p,HIGH,LOW,23.45,7,----+++
+acs_income_oh_2018_rac1p,LOW,LOW,43.63,7,---++++
+acs_income_fl_2018_rac1p,LOW,LOW,15.44,8,----++++
+acs_income_nj_2018_rac1p,HIGH,LOW,4.73,6,----++
+acs_income_il_2018_rac1p,HIGH,LOW,30.75,8,----++++

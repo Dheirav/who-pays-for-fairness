@@ -1,0 +1,23 @@
+{
+  "experiment": "levelling_up",
+  "signature": "constraintdemographic_parity_eps0.01_modellogistic_regression@0.305_seeds0-4",
+  "params": {
+    "dataset": "acs:FL:RAC1P",
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "eps": 0.01,
+    "constraint": "demographic_parity",
+    "model": "logistic_regression@0.305"
+  },
+  "files": [
+    "levelling_up_runs__constraintdemographic_parity_eps0.01_modellogistic_regression@0.305_seeds0-4.csv",
+    "levelling_up_runs.csv",
+    "levelling_up_summary__constraintdemographic_parity_eps0.01_modellogistic_regression@0.305_seeds0-4.csv",
+    "levelling_up_summary.csv"
+  ]
+}
