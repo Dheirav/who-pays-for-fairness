@@ -8,6 +8,8 @@ re-seal, and the route-divergence mechanism).
 
 **Standing rule.** Anything whose outcome could go either way gets its predictions, its
 numerical thresholds **and the naive baseline it must beat** committed to git *before* the run.
+After document 56, a corollary: **no hypothesis born from a campaign's data may be sealed
+against arms measured the same day** — its test set must postdate it.
 Re-analysis of existing results is labelled post-hoc. Both are fine; mislabelling is not. The
 rule exists because a derivation of ours cleared every stated bar and was then beaten by a
 constant (document 26). After document 49: a seal that predicts *signs* must also pre-state a

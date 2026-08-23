@@ -29,9 +29,14 @@ document 54 loses its proposed mechanism along with its forward predictions.
 
 **The misses are not noise; they all point the same way.** Every anomalous sex-arm shape
 (U, all-positive) reverts to classic under race, and every race arm's effect dwarfs its
-sex sibling's. What differs between the arms is the size of the disparity being corrected:
-these states' sex gaps at the natural point run 0.07–0.12 and shrink toward the exclusion
-floor across much of the sweep window, while their race gaps are far larger everywhere.
+sex sibling's. ~~What differs between the arms is the size of the disparity being
+corrected: these states' sex gaps at the natural point run 0.07–0.12 and shrink toward the
+exclusion floor across much of the sweep window, while their race gaps are far larger
+everywhere.~~ **Correction, same day
+([document 56](56-the-gap-hypothesis-dies-before-its-seal.md)): the struck sentence is
+false.** Measured, the race gaps are *not* larger — TX-race's natural gap is 0.066 against
+TX-sex's 0.114 — and gap size in both its population and arm forms fails to separate
+classic from anomalous. The gap hypothesis died in its pre-seal check.
 
 ## The hypothesis this puts on the table — post-hoc, and treated as such
 
