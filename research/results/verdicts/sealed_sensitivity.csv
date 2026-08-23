@@ -1,0 +1,9 @@
+cohort,gap_floor,retained,correct,constant,beats_constant
+sealed (doc 47),0.02,8,4,4,False
+sealed (doc 47),0.05,5,3,3,False
+sealed (doc 47),0.08,3,2,2,False
+sealed (doc 47),0.1,2,2,1,True
+re-sealed (doc 49),0.02,8,7,5,True
+re-sealed (doc 49),0.05,8,7,5,True
+re-sealed (doc 49),0.08,5,4,4,False
+re-sealed (doc 49),0.1,2,2,2,False

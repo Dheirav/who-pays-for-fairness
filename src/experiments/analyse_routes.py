@@ -119,6 +119,21 @@ PROBE_ARMS = [
     ("compas", 0.775, "down"), ("lawschool", 0.995, "down (void)"),
 ]
 
+# Natural arms for the same probe: no threshold knob, the model's own 0.5 boundary. The
+# review council's objection was that the lottery signature had only been exhibited on
+# deep-tail arms the paper elsewhere calls unreliable; these are the natural operating
+# points, spanning both directions, with the direction read from the stored runs rather
+# than asserted here. FL/VA/MA level up at natural rates (document 52); the rest cut.
+NATURAL_ARMS = [
+    ("adult", "adult"),
+    ("acs:AL", "acs_income_al_2018"),
+    ("acs:OR", "acs_income_or_2018"),
+    ("dutch", "dutch_2001_sex"),
+    ("acs:FL", "acs_income_fl_2018"),
+    ("acs:VA", "acs_income_va_2018"),
+    ("acs:MA", "acs_income_ma_2018"),
+]
+
 
 def probe_geometry(seeds: int = 5) -> pd.DataFrame:
     """The two geometry candidates for the lift-or-cut selector, both of which fail.
@@ -212,6 +227,67 @@ def probe_mixture(seeds: int = 5) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def probe_natural(seeds: int = 5) -> pd.DataFrame:
+    """The mixture probe of ``probe_mixture``, run at the natural operating point.
+
+    Same quantities, but the boundary is the model's own 0.5 rather than a sweep
+    threshold, so nothing here lives in the deep-tail region the limitations call
+    unreliable. Each ExpGrad fit is timed, because the audit's cost had never been
+    measured and the probe is fitting them anyway.
+    """
+    import time
+
+    import numpy as np
+
+    from ..datasets import build as build_dataset
+    from ..mitigation import fit_exponentiated_gradient
+    from ..models import build as build_model
+    from ..preprocessing import prepare
+
+    tau = 0.5
+    rows = []
+    for spec, stem in NATURAL_ARMS:
+        runs = read_runs(f"{stem}_levelling_up")
+        if runs is None:
+            continue
+        dpool = float(runs[runs["arm"] == "expgrad_dp"]["positives_pct_change"].mean())
+        dataset = build_dataset(spec).load()
+        graded, keep, corr, fit_s = [], [], [], []
+        n_train = 0
+        for seed in range(seeds):
+            split = prepare(dataset, random_state=seed)
+            n_train = int(len(split.y_train))
+            base = build_model("logistic_regression", random_state=seed)
+            base.fit(split.X_train, split.y_train)
+            s = base.predict_proba(split.X_test)[:, 1]
+            start = time.perf_counter()
+            mitigated = fit_exponentiated_gradient(
+                build_model("logistic_regression", random_state=seed),
+                split.X_train, split.y_train, split.a_train,
+                constraint="demographic_parity", eps=0.01)
+            fit_s.append(time.perf_counter() - start)
+            p1 = np.asarray(mitigated._pmf_predict(split.X_test))[:, 1]
+            below = (s >= tau - 0.05) & (s < tau)
+            above = s >= tau
+            if below.any():
+                graded.append(float(p1[below].mean()))
+            if above.sum() > 2:
+                keep.append(float(p1[above].mean()))
+                with np.errstate(invalid="ignore"):
+                    c = float(np.corrcoef(p1[above], s[above])[0, 1])
+                corr.append(0.0 if np.isnan(c) else c)
+        rows.append({"arm": f"{spec}@natural", "observed": "up" if dpool > 0 else "down",
+                     "dpool": round(dpool, 2),
+                     "graded_below": float(np.mean(graded)),
+                     "keep_above": float(np.mean(keep)),
+                     "corr_above": float(np.mean(corr)),
+                     "n_train": n_train,
+                     "fit_seconds": float(np.mean(fit_s))})
+        print(pd.DataFrame(rows[-1:]).round(4).to_string(index=False, header=(len(rows) == 1)),
+              flush=True)
+    return pd.DataFrame(rows)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dataset", default=None,
@@ -224,7 +300,18 @@ def main() -> None:
     parser.add_argument("--probe-mixture", action="store_true",
                         help="refit ExpGrad on the deep-tail arms and profile what the "
                              "mixture grants: a graded tilt or a lottery")
+    parser.add_argument("--probe-natural", action="store_true",
+                        help="the mixture probe at the natural operating point, both "
+                             "directions, with per-fit wall-clock recorded")
     args = parser.parse_args()
+
+    if args.probe_natural:
+        probe = probe_natural()
+        print(probe.round(4).to_string(index=False))
+        OUT = research_dir("routes")
+        probe.round(6).to_csv(OUT / "routes_natural_probe.csv", index=False)
+        print(f"\nwrote {OUT}/routes_natural_probe.csv")
+        return
 
     if args.probe_geometry:
         probe = probe_geometry()

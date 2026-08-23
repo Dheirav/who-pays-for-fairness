@@ -23,3 +23,9 @@ torch>=2.0
 # ACS Income, the modern Adult replacement (Ding et al. 2021). Downloads ACS PUMS
 # microdata per state on first use.
 folktables>=0.0.12
+
+# The test runner. tests/ holds 55 checks across five suites, 28 of which re-derive
+# documented figures from stored results; two review rounds found the runner missing
+# from both this file and the venv, which made every "the checks pass" claim
+# unverifiable from a clean clone.
+pytest>=8.0

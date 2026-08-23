@@ -114,6 +114,24 @@ that after the run cannot excuse the miss.
 - [ ] **Magnitude.** Ordered within a population (ρ up to +0.96), no pooled slope (+0.487,
       failed). A better model is possible; the current concession is honest without one.
 
+## The third council (ten panelists, 25 Aug) — done, fixes applied (document 58)
+
+Ten fresh lenses (HCI, examiner, EU law, sociology, ML systems, Goodhart, pedagogy,
+replication lab, forecasting, hostile skeptic): 6 minor / 4 major, no rejects. All
+text-only fixes and the cheap-compute batch are in the paper (14 pp, builds clean, 55
+checks green + pytest now runnable, 65 pass). Three new committed analyses:
+`analyse_verdicts.py` (verdict distribution 27/6/10/1/1 over 45 swept pairs, 27/27
+consistent; `--sealed-sensitivity`: re-seal keeps 7 of 8 vs constant 5 at the frozen
+floor), `--probe-natural` in `analyse_routes.py` (**no lottery at any of 7 natural
+arms** — severe-operating-point phenomenon; per-fit timing became the cost paragraph).
+Algorithm 1 gained INDETERMINATE, the 0.10 advisory rule and the lottery probe; the
+paired sign test (p ≈ 0.19) stands beside the binomial; all eleven seal→score hash pairs
+are pinned in the paper, orderings re-verified. Still owed from this round: worked
+end-to-end trace; domains table at all four floors; the derandomization test (does the
+direction survive extracting a deterministic classifier — examiner's Reg B point);
+multi-market HMDA (blocked on more HMDA states); external timestamp anchoring for the
+third cohort's seal (committed to in the paper).
+
 ## The second council (eight panelists, 24 Aug) — synthesis and state
 
 Verdicts: major ×5, minor ×2, **accept-with-conditions** (meta-reviewer: "top decile on
@@ -135,7 +153,8 @@ the paper. The load-bearing outcomes:
   *models* under-express a sex gap the labels still carry (`analyse_weights.py` side-fact).
   Post-hoc, for IPUMS only: the base-rate boundary would have called the real-anchored
   2022 shapes correctly.
-* **Repro packaging**: pushed; lockfile added; data-URL pinning + checksums still owed.
+* **Repro packaging**: pushed; lockfile added; checksums done 25 Aug
+  (`research/data-manifest.csv`, 59 files); retrieval-recipe URLs still owed.
 * **Philosopher/economist items**: normative baseline, Broome/Stone, welfare-vocabulary,
   survey conventions — all in the paper as of `55dd84e`. HMDA applicant-selection
   paragraph still owed if the lending contrast is ever asserted harder.

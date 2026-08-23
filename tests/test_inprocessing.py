@@ -37,6 +37,32 @@ def _fixture():
     return dataset, split, n
 
 
+# The tests take (dataset, split, n) positionally so ``main()`` below can drive them
+# without a test runner; these fixtures hand pytest the same values. Module scope,
+# because the Adult load-and-split is identical for all four and dwarfs the assertions.
+import pytest
+
+
+@pytest.fixture(scope="module", name="_shared")
+def _shared_fixture():
+    return _fixture()
+
+
+@pytest.fixture(name="dataset")
+def _dataset(_shared):
+    return _shared[0]
+
+
+@pytest.fixture(name="split")
+def _split(_shared):
+    return _shared[1]
+
+
+@pytest.fixture(name="n")
+def _n(_shared):
+    return _shared[2]
+
+
 def test_prejudice_remover_eta_zero_matches_per_group_logistic(dataset, split, n) -> None:
     """eta=0 removes the penalty, leaving independent per-group logistic regressions."""
     pr = PrejudiceRemover(eta=0.0, l2=1e-4, max_iter=800, lr=0.05, random_state=0)
