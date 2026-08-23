@@ -25,7 +25,7 @@ defines every term the others use.
 > These fairness fixes make two groups equal either by approving more from the group being
 > turned down, or by rejecting more from the group getting through — and the certifying
 > score cannot tell which happened. Theory published in March 2026 proves it can go either
-> way. **I measured which way, across 47 populations: it depends on how generous the system
+> way. **I measured which way, across 57 populations: it depends on how generous the system
 > already is, with a tipping point each population owns** — and a rule committed to git
 > before the test data existed called 9 of 10 never-measured populations correctly. The
 > domains these tools are deployed in sit at opposite ends of that scale — CV screening

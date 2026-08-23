@@ -9,6 +9,16 @@
 > (located values 0.28–0.65), which narrowed the claim honestly rather than breaking it.
 > The fork below is unchanged — if anything, the sealed pass strengthens the "stands on
 > its own" branch.
+>
+> **Further update, 25 August.** Now 57 populations. The paper has since been through
+> three adversarial review panels — twenty-four independent reviews, no rejects — and
+> every cheap fix they converged on is applied: the deployable (deterministic) form of
+> the mitigation preserves the predicted direction on 10 of 10 populations, the "lottery"
+> finding is bounded to severe operating points, a 2022 anomaly was traced to the nominal
+> income label sliding under inflation and resolved, and all eleven registered tests now
+> have their registration and scoring commits pinned in the paper. The paper is 15 pages
+> pending your page-limit answer, which gates the planned compression. The fork below
+> still stands as written.
 
 ## The question
 

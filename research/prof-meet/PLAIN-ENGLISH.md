@@ -260,6 +260,39 @@ test it on new data. It passed the test that was set for it, and then a much stu
 is that we know when it flips but we do not know why, and that failure is written into the
 paper rather than left out.
 
+## What has happened since: the work got audited, hard
+
+I put the paper through three panels of independent reviewers and told them to be harsh.
+Twenty-four reviews came back. None said reject. The harshest reviewer, briefed to argue
+the whole thing is trivial, ended up conceding the core point: an effect that disappears
+when you switch how the fix is applied cannot be simple arithmetic.
+
+Four things came out of answering them, and each one made the work better.
+
+First, a mystery got solved. Four states measured on 2022 data behaved backwards, unlike
+every earlier year. The cause turned out to be embarrassingly ordinary: the definition of
+a good outcome was "earns over $50,000", fixed in dollars, and by 2022 inflation had
+quietly moved that line down the income ladder. The test had changed under us. Measured
+at 2022's equivalent of the old line, about $60,000, the states behave normally again.
+The lesson is now in the paper: anchor your definitions to real value, or you are running
+a different experiment every year without knowing it.
+
+Second, the checking tool now grades itself. Run over every population we ever swept, it
+gives a clear answer six times out of ten and refuses the rest, and it says so instead of
+guessing. When it does give an answer, that answer has never disagreed with what the
+fairness fix actually did.
+
+Third, the lottery finding got a boundary. The alarming discovery that a fix can close
+the gap by discarding approvals at random turns out to happen only when a system is
+pushed to extreme settings. At normal settings, in every population I checked, the fix
+still uses people's actual scores. So the lottery is a warning sign you can test for,
+not the standard price of fairness.
+
+Fourth, the result survives the version a bank would actually ship. Real lenders cannot
+deploy a model that flips coins, so I tested the coin-free version that they would be
+forced to extract from it. It moves in the predicted direction in all ten populations
+tested, and the fairness improvement survives too.
+
 ## The one number that is worth remembering, with its health warning
 
 **About 0.54, call it roughly half.** Below that approval rate these fairness tools

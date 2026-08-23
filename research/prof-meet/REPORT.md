@@ -1,9 +1,14 @@
-# The project, complete — 22 August 2026
+# The project, complete — 25 August 2026
 
 This is the whole project in a few pages, written so it can be read instead of the paper.
-The paper (10 pages, IEEE format) exists and is current; everything here points at a result
-that is committed in the repository, and every number below is re-derived from stored
-results by an automated check before it is allowed to appear in a document.
+The paper (15 pages, IEEE format, before the planned compression pass that waits on your
+page-limit answer) exists and is current; everything here points at a result that is
+committed in the repository, and every number below is re-derived from stored results by
+an automated check before it is allowed to appear in a document. Since the previous
+version of this report: the paper has been through three adversarial review panels
+(twenty-four independent reviews in total, no reject verdicts), every cheap fix they
+converged on is applied, and an apparent 2022 anomaly has been traced to its mechanism
+and resolved.
 
 ## The question, and why it matters
 
@@ -69,15 +74,23 @@ a scorecard.
 | Post-processing transfer | r = −0.024 — fail | the rule stops working the moment the model may read the protected attribute — and that turned out to be the boundary the theory predicts |
 | Selection-rate derivation | beaten by a constant — fail | we cannot explain **why** the rule works; the paper claims only that it does |
 | Sealed rule, refined | 4 of 8 — fail | the extra clause we had added from early data was wrong, and is withdrawn |
-| Attribute-aware replication | 9 of 9 — **holds** | where the attribute is readable, the disadvantaged group always gains — as the theory says, predicted in advance |
+| Attribute-aware consistency | 9 of 9 — **holds** | where the attribute is readable, the disadvantaged group always gains; a consistency check with the theorem, which had already made this outcome near-certain — counted as confirmation, not as forecasting skill |
 | Re-seal, unrefined rule | 9 of 10, constant 6 — **holds** | the simple rule predicts populations it has never seen, from the approval rate alone |
+| Crossover-residual test | 3 located vs floor 6 — underpowered | what predicts the switch point's *location* stays unjudged; a third of large states have no switch point to locate |
+| Sealed magnitude model | MAE 4.50 vs 0.77 — fail | the effect's *size* cannot be predicted from what we tried; the direction-only concession is earned |
+| Sealed shape boundary | 4 of 6 — fail | the base-rate boundary called every 2014 shape and both predicted flips; the 2022 curves misbehaved for a reason found later (below) |
+| Sealed attribute-independence | 2 of 6 — fail | a population's curve shape is not a property of its label alone; the race arms behave differently from the sex arms |
 
-Five failures are reported uncorrected, which removes the usual way lucky results reach
-print: selective reporting. And the passes are unlikely to be luck on their own terms — 9
-of 10 against a guesser as good as the best constant happens about one time in twenty by
-chance, the arms were deliberately spread so no constant strategy could score well, and
-the refined rule, which looked equally convincing in-sample, was given the same sealed
-test and failed it.
+Eight of the eleven rows are failures or refusals, reported uncorrected, which removes
+the usual way lucky results reach print: selective reporting. The passes carry their own
+health warnings, stated in the paper where the claims are made. The one-in-twenty chance
+figure for the 9 of 10 is against an independent guesser; the stricter paired comparison
+— did the rule beat the best constant on the same ten arms — comes down to the five calls
+they disagree on, of which the rule wins four, about one in five by chance. And the
+sealed cohort has a design confound the paper states next to the score: every arm reaches
+its approval rate through the income cutoff, so a rule reading only the cutoff would
+score identically there. The experiment that separates them is designed, committed, and
+waiting on data (the census extract below).
 
 ## The relationship to the 2026 theory paper
 
@@ -106,28 +119,76 @@ Adding a one-line floor to the objective — "do not shrink the pool" — drops 
 rate to 0.88 across nineteen arms at a cost of about 0.12 accuracy points, so the harm is
 optional once you know to ask for it. Knowing when to ask is what the crossover rule is for.
 
+## A 2022 anomaly, diagnosed to its mechanism and resolved
+
+Four 2022 state-years initially appeared to *invert* the relationship — the opposite
+pattern to every earlier vintage — and for two days that stood as the project's most
+worrying open item. Three candidate mechanisms were then run to ground. Pandemic-era
+survey weighting: exculpated (applying the Census Bureau's person weights moves 2022's
+rates and gaps no more than 2018's). A recoded survey column: acquitted (2019 files carry
+the recode and behave classically). The third candidate is confirmed as the substantial
+cause: the $50,000 income label, fixed in nominal terms, had slid down an
+inflation-compressed earnings distribution — the task had changed under the label.
+Re-measured at $60,000, the 2022 real-equivalent of 2018's $50,000, Ohio returns to a
+clean crossing at its old location and the inverted patterns disappear. Measured at
+constant real value there is no detected change in the phenomenon from 2014 through 2022.
+The practical lesson made it into the paper's abstract: a fixed nominal outcome
+definition is a different task each year, so labels should be anchored in real terms and
+teams should audit their own current data.
+
+## Three rounds of adversarial review, and what they changed
+
+The paper was put through three review panels of independent reviewers with instructions
+to be harsh: six, then eight, then ten reviewers, the last round spanning lenses from a
+bank examiner and an EU regulator to a hostile senior skeptic told to argue the work is
+trivial. Twenty-four reviews, no reject verdicts; the skeptic conceded the
+trivial-arithmetic reading fails (an effect that vanishes under post-processing cannot be
+rate arithmetic). Every converged fix is applied. The ones that produced new results:
+
+* **The audit's own totals.** Run over all 45 swept population-label pairs, the
+  procedure returns a usable direction on 27 (never contradicting what the constraint
+  actually did), declares no-crossover on 6, and refuses on the rest — it answers six
+  times in ten, with the refusals counted rather than hidden.
+* **The "lottery" is bounded.** The earlier finding that a constraint can close the gap
+  by discarding approvals at random, under an unchanged certificate, was probed at
+  normal operating points as a control: it does not appear there in any of seven
+  populations. It is a severe-operating-point phenomenon — a checkable red flag, not
+  the ordinary cost of fairness.
+* **The deployable form preserves the verdict.** A regulated lender cannot deploy a
+  randomized model, so the deterministic extraction was tested directly: it agrees with
+  the randomized version's direction on 10 of 10 populations, with the fairness repair
+  intact. The examiner's objection is answered with data.
+* **The seeds tell the miss's story.** 16 of the 19 sealed arms are unanimous across
+  random seeds; the three that split are exactly the near-zero effects — and the one
+  sealed miss (Minnesota, −0.04%) splits 3-of-5 *identically* to an arm that scored
+  correct (+0.04%). The audit now refuses such arms as indeterminate instead of scoring
+  them.
+* **Verifiability.** All eleven registered tests now have their registration and scoring
+  commits pinned in the paper (each ordering re-verified), a checksum manifest pins the
+  exact input files, and the paper states plainly that the chronology currently rests on
+  our own clock — the next sealed test will be anchored with an external timestamp.
+
 ## Scale, and the discipline behind the numbers
 
 The record holds **57 independent populations** across seven data sources (UCI Adult, ACS
 states, HMDA mortgages, COMPAS, LSAC, the Dutch census, Taiwanese credit-card default),
-six decision domains, three countries and two decades. The last ten arrived through a
-pre-registered sweep whose verdicts landed the same day this report was finished, and both
-went against us in instructive ways: the test of what predicts the crossover's location
+six decision domains, three countries and two decades. The later campaigns mostly went
+against us, in instructive ways: the test of what predicts the crossover's location
 returned **underpowered** (three located against a floor of six), a sealed model of the
 effect's *size* lost outright to predicting zero, and the three crossovers that did locate
 **broke the cluster** — Florida at 0.284 and Pennsylvania at 0.652, far outside the
 0.43–0.58 band, on the same instrument that built it. Several of the largest states turn
 out to have no crossover at all, and the fixed 0.54 prior scores 5 of 10 on their natural
-arms, each miss agreeing with that state's own measured crossover. So the within-population
-claim survived the week's hardest test, while the transferable prior narrowed to "usually,
-not always" — and every one of those sentences comes from a prediction committed before the
-data existed.
+arms, each miss agreeing with that state's own measured crossover. So the
+within-population claim survived the campaign's hardest tests, while the transferable
+prior narrowed to "usually, not always" — and every one of those sentences comes from a
+prediction committed before the data existed.
 
 Three pieces of discipline are worth naming because they caught real errors:
 
 * **55 automated checks** re-derive every documented figure from stored results; one of
   them caught the paper's population count going stale within minutes of new results
-  landing today.
+  landing, more than once.
 * **Population counts are recomputed, never quoted** — three counts in the project's own
   history turned out to be arm counts masquerading as population counts, and the paper now
   carries a table saying exactly which populations enter which analysis.
@@ -143,7 +204,9 @@ Three pieces of discipline are worth naming because they caught real errors:
   constraint is U-shaped or positive throughout, which is itself the newest open question.
 * **Breadth.** The sealed 9-of-10 is ten US census populations — depth, not breadth. A
   non-Western census extract (Brazil 2000/2010, Mexico 2015/2020) is requested and pending
-  approval, which would allow the first crossover located outside the West.
+  approval, which would allow the first crossover located outside the West -- and it
+  carries the one experiment the reviews agree matters most: the sealed cohort that
+  separates the approval rate from the income cutoff, its design already committed.
 * **Mechanism.** At extreme operating points the constraint closes the gap by two
   qualitatively different solutions — lifting the disadvantaged versus discarding
   approvals — and what selects between them is measured to be none of six candidate
@@ -151,8 +214,10 @@ Three pieces of discipline are worth naming because they caught real errors:
 
 ## What I am asking
 
-1. **Venue and page limit.** The paper is 10 pages in IEEE conference format; FAccT or
-   AIES would want roughly 10, IEEE conferences 8. This decides what gets cut.
+1. **Venue and page limit.** The paper is 15 pages in IEEE conference format after the
+   review rounds' additions; a compression pass with its cut list already written brings
+   it to roughly 9-10 without losing any number, and your venue answer (FAccT/AIES ~10,
+   IEEE conferences ~8) decides how deep it goes.
 2. **Does the empirical half stand as a paper, given the theory paper exists?** My
    position: their theorem is uncomputable on data and this project supplies the
    measurement, the boundary verification and a sealed predictive rule — but this is the
