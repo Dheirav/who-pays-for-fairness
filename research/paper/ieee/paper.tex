@@ -43,9 +43,12 @@ post-hoc on a second cohort of larger states, every miss agreeing with that popu
 own crossover. The sealed cohort's rule, populations and pass mark were committed to
 version control before any run; an earlier sealed attempt that carried an in-sample
 refinement \textbf{failed at four of eight}, and we report both outcomes because the
-difference between them is what a sealed test exists to expose. All claims are bounded by
-data vintage: four 2022 populations invert the relationship for reasons not yet
-identified, so nothing here should be applied to 2020s-era data unmeasured. The relationship survives
+difference between them is what a sealed test exists to expose. A caution that generalises
+beyond this paper: four 2022 populations initially appeared to \emph{invert} the
+relationship, and diagnosis traced this substantially to the fixed nominal \$50{,}000
+label sliding down an inflated income distribution --- a fixed nominal outcome definition
+is a different task each year, so labels should be real-anchored and any deployment should
+measure its own current data rather than transport results across vintages. The relationship survives
 a change in how the rate is varied, a twenty-five-fold range of constraint tolerance, a
 boosted-tree learner and a protected attribute swapped from sex to race, but it disappears
 under post-processing ($r = -0.024$ against $+0.585$), which reads the protected attribute at
@@ -1082,16 +1085,21 @@ pre-registered at 9 of 9, but it confirms a published theorem rather than establ
 \textbf{The remedy is a variant}, not a discovery. \textbf{And every claim carries a data
 vintage}: all populations predate 2019 except four 2022 state-years, and those four
 \emph{invert} the within-population relationship --- positive at low rates, negative at
-high, a shape absent from every earlier vintage. Two 2019 diagnostics acquit the one
-pipeline suspect (the survey's recoded relationship column: 2019 carries it and behaves
-classically, Ohio's 2019 crossover sitting between its 2018 value and its 2022 inversion),
-so what remains is an \emph{unattributed distribution shift} between 2019 and 2022 ---
-``vintage'' names the calendar, not the mechanism. Three testable candidates are under
-diagnosis: the ACS's documented pandemic-era nonresponse bias, whose corrections live in
-the sampling weights this paper's convention omits; the fixed nominal \$50{,}000 label
-sliding down a post-2021 earnings distribution compressed at the bottom; and sample
-composition shift separable by reweighting 2022 rows to earlier covariates. Until one is
-confirmed or all excluded, no claim here should be applied to 2020s-era data unmeasured.
+high, a shape absent from every earlier vintage. Diagnosis then ran three candidate
+mechanisms to ground. The survey's recoded relationship column is acquitted by two 2019
+sweeps that carry it and behave classically; pandemic-era nonresponse weighting is
+acquitted at label level, since applying the Bureau's \texttt{PERWT} corrections moves
+2022's rates and gaps no more than 2018's; and the third candidate is \textbf{confirmed as
+the substantial cause}: re-sweeping the four states with the label at \$60{,}000 --- the
+real-equivalent of 2018's \$50{,}000, landing their base rates exactly on the 2018 values
+--- restores Ohio to a clean classic crossing at its old location and removes Alabama's
+and South Carolina's inverted limbs entirely, leaving only Nevada as a below-guard
+residual. The ``inversion'' was therefore substantially the fixed nominal label sliding
+down an inflated, bottom-compressed earnings distribution: the task changed under the
+label, and measured at constant real value the relationship shows no detected
+time-dependence from 2014 through 2022. The lesson replaces the caveat: fixed nominal
+outcome definitions are a different task each vintage, so labels should be real-anchored
+and deployments should audit their own current data.
 
 \section{Discussion}
 
@@ -1099,10 +1107,11 @@ The finding a practitioner can use is small and specific: \textbf{run the audit 
 Section~\ref{sec:procedure} on your own current data --- it will locate your crossover, or
 tell you that your system has none --- and where it returns a direction, the rate predicts
 whether a parity constraint is about to give or to take.} The sweep itself is the vintage
-test: the 2022 inversion means no prior fitted here, including 0.54, substitutes for
-measuring one's own recent data, and an inverted or non-monotone sweep is a finding about
-your system, not a failed audit. Re-run it whenever the model or the population it scores
-is refit. We do not claim that the selection rate \emph{causes} the direction; we claim
+test: the 2022 episode --- an apparent inversion traced to a nominal label sliding down an
+inflated income distribution --- shows that no prior fitted elsewhere, including 0.54,
+substitutes for measuring one's own current data, and an inverted or non-monotone sweep is
+a finding about your system, often about your \emph{label}, not a failed audit. Re-run it
+whenever the model, the population, or the real value of the outcome definition changes. We do not claim that the selection rate \emph{causes} the direction; we claim
 that it predicts it, within a population, in the attribute-blind regime, and with the
 boundaries of Section~\ref{sec:boundaries} attached.
 
