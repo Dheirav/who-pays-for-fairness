@@ -115,6 +115,29 @@ that after the run cannot excuse the miss.
 - [ ] **Magnitude.** Ordered within a population (ρ up to +0.96), no pooled slope (+0.487,
       failed). A better model is possible; the current concession is honest without one.
 
+## The second council (eight panelists, 24 Aug) — synthesis and state
+
+Verdicts: major ×5, minor ×2, **accept-with-conditions** (meta-reviewer: "top decile on
+rigor and honesty"). Textual batch landed at `55dd84e`; history pushed, seal hashes now in
+the paper. The load-bearing outcomes:
+
+* **The red team broke the 9/10's strong reading**: all label-route arms, mid-band
+  unsampled, so the pass cannot discriminate rate from label rarity nor 0.54 from any
+  mid-band prior — admitted in the paper where the claim is made. **Third-cohort spec
+  (binding, for IPUMS):** off-instrument, rates concentrated in [0.40, 0.65], both routes
+  mixed, scored head-to-head against the cutoff-only and 0.5-prior nulls, with the
+  minimum-magnitude guard and exclusions frozen in the seal.
+* **The inversion's three candidate mechanisms**: (1) pandemic nonresponse weighting —
+  **tested 24 Aug, exculpated at label level** (weighting moves 2022 no more than 2018;
+  `weight_audit.py` scratch); notable side-fact: label sex gaps are stable across years
+  while 2022 *models'* gaps sit at the floor — the models under-express a gap the labels
+  carry. (2) real-threshold drift — **sweeping now**: the four 2022 states at $60,000,
+  whose base rates land exactly on 2018's. (3) composition reweighting — queued behind 2.
+* **Repro packaging**: pushed; lockfile added; data-URL pinning + checksums still owed.
+* **Philosopher/economist items**: normative baseline, Broome/Stone, welfare-vocabulary,
+  survey conventions — all in the paper as of `55dd84e`. HMDA applicant-selection
+  paragraph still owed if the lending contrast is ever asserted harder.
+
 ## The review council's remaining items (textual batch landed at `2e5432d`)
 
 Six-panel review, 24 Aug; verdict major-revision 4–2; all converged textual fixes applied.
