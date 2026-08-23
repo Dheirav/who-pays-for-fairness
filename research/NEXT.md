@@ -115,6 +115,24 @@ that after the run cannot excuse the miss.
 - [ ] **Magnitude.** Ordered within a population (ρ up to +0.96), no pooled slope (+0.487,
       failed). A better model is possible; the current concession is honest without one.
 
+## The review council's remaining items (textual batch landed at `2e5432d`)
+
+Six-panel review, 24 Aug; verdict major-revision 4–2; all converged textual fixes applied.
+Still open, by kind:
+
+* **Structural** — the compression Pass 3 (already planned) now also carries the council's
+  merge: sealed narrative unified with the ledger, surviving claim promoted to a titled
+  destination, intersectional relocated. Venue answer decides the depth of the cut.
+* **Analyses, cheap** — seed-level sign-stability table for every sealed arm; headline
+  correlations reported at all four exclusion thresholds; relaxed-ζ ordering scored
+  head-to-head against the rate on the two sealed cohorts.
+* **Analyses, compute** — the two-threshold blind-mixture comparison that would settle
+  whether the lottery is suboptimal within its own class; nested bootstrap (rows × seeds)
+  for the crossover intervals.
+* **The third sealed cohort** the statistician demands is IPUMS, already pending.
+* **Supervisor-level** — title revision to the bounded claim (area chair's #1), and
+  whether the lottery is promoted to a headline contribution.
+
 ## Screened and viable, waiting on a loader and a seal
 
 * **ACSEmployment and ACSPublicCoverage, 23 Aug** (scratch `screen_tasks.py`). Employment
