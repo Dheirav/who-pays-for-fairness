@@ -29,3 +29,8 @@ folktables>=0.0.12
 # from both this file and the venv, which made every "the checks pass" claim
 # unverifiable from a clean clone.
 pytest>=8.0
+
+# External timestamping for sealed protocols. The replication panel's point: seal
+# ordering rested on our own clock. `ots stamp` anchors a seal commit's hash in the
+# Bitcoin blockchain via public calendars; receipts live in research/seals/.
+opentimestamps-client>=0.7

@@ -20,7 +20,8 @@ from .base import DatasetLoader, FairnessDataset
 __all__ = ["DatasetLoader", "FairnessDataset", "build", "AVAILABLE"]
 
 AVAILABLE = ("adult", "acs[:STATE[,STATE...]][:ATTRIBUTE]", "hmda[:STATE:ATTRIBUTE[:PURPOSE]]",
-             "compas[:race|sex]", "lawschool[:race|male]", "dutch", "taiwan")
+             "compas[:race|sex]", "lawschool[:race|male]", "dutch", "taiwan",
+             "ipums:COUNTRY:YEAR:SEX:THRESHOLD")
 
 
 def build(name: str) -> DatasetLoader:
@@ -85,6 +86,21 @@ def build(name: str) -> DatasetLoader:
         from .lawschool import RACE as LAW_RACE, LawSchoolLoader
 
         return LawSchoolLoader(protected=argument.strip() or LAW_RACE)
+
+    if key == "ipums":
+        # Lazily imported like ACS and HMDA: individual work, excluded from the
+        # submission bundle, and the course code must neither import nor need it.
+        from .ipums import IPUMSIncomeLoader
+
+        country, _, rest = argument.partition(":")
+        year, _, rest = rest.partition(":")
+        attribute, _, threshold = rest.partition(":")
+        return IPUMSIncomeLoader(
+            country.strip().upper(),
+            year.strip(),
+            protected=attribute.strip().upper() or "SEX",
+            threshold=int(threshold) if threshold.strip() else None,
+        )
 
     if key == "taiwan":
         from .taiwan import TaiwanCreditLoader

@@ -175,7 +175,19 @@ Still open, by kind:
 * **Analyses, compute** — the two-threshold blind-mixture comparison that would settle
   whether the lottery is suboptimal within its own class; nested bootstrap (rows × seeds)
   for the crossover intervals.
-* **The third sealed cohort** the statistician demands is IPUMS, already pending.
+* **The third sealed cohort** the statistician demands is IPUMS — **stage A of its
+  two-stage seal is committed** (25 Aug): `src/datasets/ipums.py` (chunked loader,
+  quantile-only thresholds, sentinel handling, verified end-to-end on a synthetic
+  extract) and `src/experiments/analyse_ipums_sealed.py` (the full protocol: 4
+  populations, labels at income quantiles 0.45/0.60/0.75, op arms at target rates
+  0.42–0.60, S1 prior-vs-both-nulls with the ≥1.0-point magnitude guard and floor 12,
+  S2 within-population ρ ≥ 0.70, S3 real-anchored shape boundary, all bars fixed).
+  **Arrival-day ceremony, in order:** place the extract in `data/ipums/` → `--verify`
+  (schema + row counts) → `--measure` (quantile thresholds + seed-0 op points) → paste
+  into `THRESHOLDS_STAGE_B`, commit → `ots stamp` that commit's hash and commit the
+  receipt to `research/seals/` → only then run the arms (~40 arms × 5 seeds,
+  sequentially — the 8 GB VM) → `--score`. OpenTimestamps client is in the venv and
+  requirements; the dry-run stamped against four public calendars.
 * **Supervisor-level** — title revision to the bounded claim (area chair's #1), and
   whether the lottery is promoted to a headline contribution.
 
