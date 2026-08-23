@@ -127,12 +127,15 @@ the paper. The load-bearing outcomes:
   (binding, for IPUMS):** off-instrument, rates concentrated in [0.40, 0.65], both routes
   mixed, scored head-to-head against the cutoff-only and 0.5-prior nulls, with the
   minimum-magnitude guard and exclusions frozen in the seal.
-* **The inversion's three candidate mechanisms**: (1) pandemic nonresponse weighting —
-  **tested 24 Aug, exculpated at label level** (weighting moves 2022 no more than 2018;
-  `weight_audit.py` scratch); notable side-fact: label sex gaps are stable across years
-  while 2022 *models'* gaps sit at the floor — the models under-express a gap the labels
-  carry. (2) real-threshold drift — **sweeping now**: the four 2022 states at $60,000,
-  whose base rates land exactly on 2018's. (3) composition reweighting — queued behind 2.
+* **The inversion is RESOLVED (document 57)**: (1) weighting exculpated at label level;
+  (2) **real-threshold drift confirmed as the substantial cause** — at $60k Ohio is
+  cleanly classic at its old crossover, AL/SC lose their inverted limbs, NV stays
+  below-guard noise; (3) composition reweighting recorded unnecessary. No detected
+  time-dependence 2014–2022 at constant real value; doc 54 superseded; the paper's
+  vintage caveat replaced by the real-anchor-your-labels lesson. Open lead kept: 2022
+  *models* under-express a sex gap the labels still carry (`weight_audit.py` side-fact).
+  Post-hoc, for IPUMS only: the base-rate boundary would have called the real-anchored
+  2022 shapes correctly.
 * **Repro packaging**: pushed; lockfile added; data-URL pinning + checksums still owed.
 * **Philosopher/economist items**: normative baseline, Broome/Stone, welfare-vocabulary,
   survey conventions — all in the paper as of `55dd84e`. HMDA applicant-selection
