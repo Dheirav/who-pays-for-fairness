@@ -506,6 +506,13 @@ The oldest competing account is that the \emph{gap between groups} drives the di
 Dutch census has a gap of 0.298, roughly twice Adult's, making it the population where that
 explanation should win. It gives $r = +0.915$ across all six arms, none excluded.
 
+Because the parity-gap floor was tuned in-sample (Section~III), every row of
+Table~\ref{tab:domains} was re-scored at floors 0.02/0.05/0.08/0.10: each correlation
+stays between $+0.80$ and $+0.92$ with no sign change at any floor (HMDA is
+floor-invariant outright; Alabama thins to two arms only at 0.10). The floor dependence
+that Table~\ref{tab:sensitivity} reports for the exploratory states does not reach the
+domain table.
+
 \subsection{Robustness}
 
 \begin{table}[t]
@@ -865,6 +872,13 @@ Colorado, 0.002 away in rate, moved $+0.63\%$ and was called correctly. The regi
 did not anticipate near-zero magnitudes away from the boundary; a future seal should state a
 minimum-magnitude guard in advance, and this one is charged the miss for not having done so.
 
+A seed-level accounting sharpens the lesson: 16 of the 19 sealed arms (both cohorts) are
+unanimous in sign across their five seeds, and the three that split are exactly the
+near-zero effects. Minnesota, the miss, splits 3 of 5 --- and Iowa, at $+0.04\%$,
+splits 3 of 5 identically \emph{and scored correct}: two statistically indistinguishable
+arms, one counted for the rule and one against it, which is what scoring near-zero
+magnitudes means and why Algorithm~1 now refuses them as \textsc{indeterminate}.
+
 One post-hoc robustness check, run because the exclusion rules were tuned in-sample
 (Section~III) and the sealed cohorts are where their choice must not matter: the sealed
 scoring used no parity-gap exclusion by design, and re-scoring under the audit's own
@@ -1009,6 +1023,22 @@ whatever the verdict, including refusals, the deployed system's measured pool ch
 who-pays decomposition (Section~\ref{sec:whopays}) should be reported after the fact ---
 the verdict is falsifiable at deployment, and Section~\ref{sec:discussion} makes this a
 requirement rather than advice.
+
+\textbf{The direction survives the extraction a deployer must apply.} Every direction
+result above is measured on the randomized mixture, but a lender under
+adverse-action-notice duties deploys a \emph{deterministic} model, so we tested the
+extraction directly: thresholding the mixture's per-person probability at $0.5$ on the
+natural arms of ten populations spanning both directions. The extracted model agrees
+with the mixture's pool direction on \textbf{10 of 10}, with the parity repair largely
+intact (extracted gaps $0.009$--$0.034$ against baseline gaps $0.08$--$0.19$). One
+deployment fact surfaced on the way: an extraction that instead tries to reproduce the
+mixture's own operating point cannot generally do so, because the mixture's probability
+takes few discrete values and the ties force the deterministic threshold off the target
+rate --- on three cutting populations far enough off to flip the sign of the measured
+pool change. Thresholding at $0.5$ is the well-defined extraction, and it is the one
+that preserves the verdict. The caveat composes with Section~\ref{sec:lottery}: these
+are natural arms, where the mixture is graded; a flat-lottery arm has no
+score-respecting extraction, and derandomizing it undoes the parity it bought.
 
 \begin{algorithm}[t]
 \caption{Directional audit: decide whether the predictor applies at all; if it does, locate
@@ -1306,6 +1336,28 @@ intervention's effect is determined and always favourable to the disadvantaged g
 lottery live. The deontic, process-based rationale for blindness is untouched by any
 outcome measurement; what these measurements show is narrower and still worth saying:
 blindness is not outcome-neutral.
+
+\section*{Appendix: Two Worked Traces of Algorithm 1}
+
+\textbf{Oregon 2018, sex, to a verdict.} Demographic parity constrains selection rates:
+in scope (line 1). Trivial-predictor accuracy $\pi = 0.636$ (line 4); the viable band
+clears the 0.40 span bar, so the sweep proceeds (lines 6--9). The stored sweep holds 18
+arms; the guards discard 2 on the parity-gap floor and 2 as worse than doing nothing,
+leaving 14 spanning rates $0.111$--$0.653$, none below the 0.10 advisory boundary
+(lines 11--15). Their pool changes span 7.14 points, clearing the void guard (line 16).
+The signs, sorted by rate, are
+\texttt{-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}+++}: one rising change, so the landscape is
+monotone-crossing (lines 20--25) and the bracket is $c = (0.528, 0.589)$ (line 26). The
+deployed model's rate is $r_0 = 0.353$ --- below $\min c$, outside seed noise: verdict
+\textsc{withdrawal}, add a floor (line 32). What the constraint in fact does at Oregon's
+natural arm: $-3.0\%$ of the pool.
+
+\textbf{LSAC bar passage, to a refusal.} Trivial-predictor accuracy $\pi = 0.890$ ---
+almost everyone passes. The viable band spans $0.056$, far under $0.40$: verdict
+\textsc{unsweepable} at line 8, before a single constraint is fitted. Had the guard been
+ignored, the stored sweep shows what awaited: five of seven arms fall below the trivial
+predictor and the two survivors are too few to read --- \textsc{void}. Both endings
+refuse; neither manufactures a direction.
 
 \section*{Reproducibility}
 

@@ -1,0 +1,17 @@
+population,gap_floor,retained,r
+ACS Alabama (label route),0.02,6,0.837613
+ACS Alabama (label route),0.05,4,0.800998
+ACS Alabama (label route),0.08,3,0.819633
+ACS Alabama (label route),0.1,2,
+HMDA MS+LA pooled,0.02,4,0.857932
+HMDA MS+LA pooled,0.05,4,0.857932
+HMDA MS+LA pooled,0.08,4,0.857932
+HMDA MS+LA pooled,0.1,4,0.857932
+COMPAS race,0.02,6,0.850279
+COMPAS race,0.05,5,0.86962
+COMPAS race,0.08,5,0.86962
+COMPAS race,0.1,5,0.86962
+Dutch sex,0.02,6,0.914924
+Dutch sex,0.05,6,0.914924
+Dutch sex,0.08,4,0.882319
+Dutch sex,0.1,4,0.882319

@@ -126,11 +126,13 @@ floor), `--probe-natural` in `analyse_routes.py` (**no lottery at any of 7 natur
 arms** — severe-operating-point phenomenon; per-fit timing became the cost paragraph).
 Algorithm 1 gained INDETERMINATE, the 0.10 advisory rule and the lottery probe; the
 paired sign test (p ≈ 0.19) stands beside the binomial; all eleven seal→score hash pairs
-are pinned in the paper, orderings re-verified. Still owed from this round: worked
-end-to-end trace; domains table at all four floors; the derandomization test (does the
-direction survive extracting a deterministic classifier — examiner's Reg B point);
-multi-market HMDA (blocked on more HMDA states); external timestamp anchoring for the
-third cohort's seal (committed to in the paper).
+are pinned in the paper, orderings re-verified. **The follow-up batch landed as document
+59** (25 Aug): derandomization 10/10 (`analyse_derandomized.py`), domain table
+floor-invariant (`analyse_floor_sensitivity.py`), seed stability 16/19 unanimous with
+the splits exactly the near-zero arms (`--seed-stability`), and two worked traces in the
+paper's appendix. Still owed from this round: multi-market HMDA (blocked on more HMDA
+state downloads) and external timestamp anchoring for the third cohort's seal (committed
+to in the paper).
 
 ## The second council (eight panelists, 24 Aug) — synthesis and state
 

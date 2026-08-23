@@ -174,6 +174,31 @@ def classify(stem: str) -> dict:
     return {**row, "verdict": verdict, "agrees": agree}
 
 
+def seed_stability() -> pd.DataFrame:
+    """Per-seed sign agreement for every sealed direction arm.
+
+    The second council asked for it: a seed-mean sign hides how many seeds voted for
+    it. For each arm of both sealed cohorts, the five seeds' pool-change signs and the
+    count agreeing with the seed-mean's sign.
+    """
+    rows = []
+    for cohort, path in (("sealed", "sealed/sealed.csv"),
+                         ("re-sealed", "resealed/resealed.csv")):
+        frame = pd.read_csv(RESEARCH_RESULTS_DIR / path)
+        for _, arm in frame.iterrows():
+            runs = pd.read_csv(RESEARCH_RESULTS_DIR / f"{arm['population']}_levelling_up"
+                               / "levelling_up_runs.csv")
+            pies = runs[runs["arm"] == "expgrad_dp"]["positives_pct_change"]
+            mean = float(pies.mean())
+            agree = int((pies > 0).sum() if mean > 0 else (pies <= 0).sum())
+            rows.append({"cohort": cohort, "population": arm["population"],
+                         "mean_pie": round(mean, 2),
+                         "seeds": len(pies), "seeds_agreeing": agree,
+                         "signs": "".join("+" if x > 0 else "-" for x in pies),
+                         "correct": bool(arm["correct"])})
+    return pd.DataFrame(rows)
+
+
 def sealed_sensitivity() -> pd.DataFrame:
     """The sealed direction cohorts, re-scored at four parity-gap floors."""
     rows = []
@@ -209,8 +234,19 @@ def main() -> None:
     parser.add_argument("--sealed-sensitivity", action="store_true",
                         help="re-score the sealed direction cohorts at four "
                              "parity-gap floors instead")
+    parser.add_argument("--seed-stability", action="store_true",
+                        help="per-seed sign agreement for every sealed arm instead")
     args = parser.parse_args()
     OUT = research_dir("verdicts")
+
+    if args.seed_stability:
+        table = seed_stability()
+        print(table.to_string(index=False))
+        solid = int((table["seeds_agreeing"] == table["seeds"]).sum())
+        print(f"\nunanimous across seeds: {solid}/{len(table)} arms")
+        table.to_csv(OUT / "seed_stability.csv", index=False)
+        print(f"\nwrote {OUT}/seed_stability.csv")
+        return
 
     if args.sealed_sensitivity:
         table = sealed_sensitivity()
