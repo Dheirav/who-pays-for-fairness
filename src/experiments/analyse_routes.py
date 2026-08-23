@@ -288,6 +288,55 @@ def probe_natural(seeds: int = 5) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def probe_diff(seeds: int = 5) -> pd.DataFrame:
+    """Document 50's last cheap step: diff one lift arm against one cut arm.
+
+    Oregon at 0.87 lifts; Dutch at 0.965 cuts. For each, the mitigated mixture's
+    granted probability is tabulated by score decile and group, against the baseline
+    threshold's own grant, so the table shows *where in the score distribution and in
+    which group* the optimiser actually moved probability. Whatever selects lift over
+    cut, it must live in this table's difference somewhere; six summary candidates
+    are already dead (documents 50--51).
+    """
+    import numpy as np
+
+    from ..datasets import build as build_dataset
+    from ..mitigation import fit_exponentiated_gradient
+    from ..models import build as build_model
+    from ..preprocessing import prepare
+
+    rows = []
+    for spec, tau, direction in [("acs:OR", 0.87, "lift"), ("dutch", 0.965, "cut")]:
+        dataset = build_dataset(spec).load()
+        for seed in range(seeds):
+            split = prepare(dataset, random_state=seed)
+            priv = np.asarray(split.a_test == dataset.privileged_value)
+            base = build_model("logistic_regression", random_state=seed)
+            base.fit(split.X_train, split.y_train)
+            s = base.predict_proba(split.X_test)[:, 1]
+            mitigated = fit_exponentiated_gradient(
+                build_model(f"logistic_regression@{tau}", random_state=seed),
+                split.X_train, split.y_train, split.a_train,
+                constraint="demographic_parity", eps=0.01)
+            p1 = np.asarray(mitigated._pmf_predict(split.X_test))[:, 1]
+            decile = np.clip((np.argsort(np.argsort(s)) * 10) // len(s), 0, 9)
+            for d in range(10):
+                for group, mask in (("priv", priv), ("unpriv", ~priv)):
+                    cell = (decile == d) & mask
+                    if not cell.any():
+                        continue
+                    rows.append({
+                        "arm": f"{spec}@{tau:g}", "direction": direction,
+                        "seed": seed, "decile": d, "group": group,
+                        "n": int(cell.sum()),
+                        "base_grant": float((s[cell] > tau).mean()),
+                        "mitigated_grant": float(p1[cell].mean()),
+                    })
+    frame = pd.DataFrame(rows)
+    frame["moved"] = frame["mitigated_grant"] - frame["base_grant"]
+    return frame
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dataset", default=None,
@@ -303,7 +352,20 @@ def main() -> None:
     parser.add_argument("--probe-natural", action="store_true",
                         help="the mixture probe at the natural operating point, both "
                              "directions, with per-fit wall-clock recorded")
+    parser.add_argument("--probe-diff", action="store_true",
+                        help="decile-by-group grant tables for one lift arm and one "
+                             "cut arm: where the optimiser actually moved probability")
     args = parser.parse_args()
+
+    if args.probe_diff:
+        probe = probe_diff()
+        summary = (probe.groupby(["arm", "direction", "decile", "group"])
+                   [["base_grant", "mitigated_grant", "moved"]].mean().round(4))
+        print(summary.to_string())
+        OUT = research_dir("routes")
+        probe.round(6).to_csv(OUT / "routes_diff_probe.csv", index=False)
+        print(f"\nwrote {OUT}/routes_diff_probe.csv")
+        return
 
     if args.probe_natural:
         probe = probe_natural()
