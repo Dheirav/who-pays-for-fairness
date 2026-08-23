@@ -42,7 +42,7 @@ PREREGISTERED = {
     "analyse_sealed.py", "analyse_attribute_aware.py", "analyse_dense.py",
     "analyse_magnitude.py", "analyse_uncertainty_crossover.py", "make_figures.py",
     "analyse_resealed.py", "analyse_residual.py", "analyse_sealed_magnitude.py",
-    "analyse_shapes.py",
+    "analyse_shapes.py", "analyse_race_shapes.py",
 }
 
 
