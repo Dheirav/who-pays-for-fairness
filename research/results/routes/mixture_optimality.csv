@@ -1,0 +1,3 @@
+arm,seeds_with_alternative,lottery_accuracy,alt_accuracy,alt_beats_or_ties,alt_corr_above
+dutch@0.965,0,0.5553,,0,
+compas@0.775,0,0.4788,,0,

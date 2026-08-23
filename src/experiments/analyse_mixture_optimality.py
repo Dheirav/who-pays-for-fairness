@@ -42,7 +42,11 @@ import pandas as pd
 from ..results_io import research_dir
 
 ARMS = [("dutch", 0.965), ("compas", 0.775)]
-QUANTILES = np.linspace(0.02, 0.98, 49)
+# The lottery arms operate near the score distribution's tail, so the threshold grid
+# must reach into it: an emptiness verdict from a grid that stops at the 0.98 quantile
+# would be an artifact of the grid, not of the class.
+QUANTILES = np.unique(np.concatenate([
+    np.linspace(0.02, 0.98, 49), [0.985, 0.99, 0.9925, 0.995, 0.9975]]))
 RATE_TOLERANCE = 0.005
 SEEDS = 5
 

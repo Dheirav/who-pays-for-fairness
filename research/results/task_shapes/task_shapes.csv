@@ -1,0 +1,7 @@
+population,p,predicted,observed,spread,arms,signs
+acs_employment_al_2018_rac1p,0.41,HIGH,LOW,20.39,6,----++
+acs_employment_oh_2018_rac1p,0.461,HIGH,flat,5.19,3,--+
+acs_employment_pa_2018_rac1p,0.467,HIGH,flat,1.67,2,-+
+acs_coverage_oh_2018_rac1p,0.333,LOW,HIGH,16.55,5,---+-
+acs_coverage_pa_2018_rac1p,0.306,LOW,HIGH,11.47,4,--+-
+acs_coverage_ny_2018_rac1p,0.401,HIGH,LOW,8.59,5,-----
