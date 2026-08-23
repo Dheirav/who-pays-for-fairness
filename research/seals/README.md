@@ -17,3 +17,4 @@ immediately after it is pushed.
 | seal | commit | stamped |
 |---|---|---|
 | IPUMS third cohort, stage A (protocol) | `50d467f` | 25 Aug 2026, pending upgrade |
+| Cross-task shape seal (employment/coverage race arms) | `d8bfae8` | 24 Aug 2026, pending upgrade |
