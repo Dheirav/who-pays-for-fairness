@@ -1147,6 +1147,13 @@ def test_paper_draft_population_count_is_recomputed() -> None:
 
     def population(stem: str) -> str:
         stem = purpose.sub("", _re.sub(r"_t\d+", "", stem))
+        # The employment and coverage task arms draw from the same PUMS person
+        # samples as the income arms of the same state-year (an employment row set
+        # contains the income row set's workers), so by the paper's definition ---
+        # independent means disjoint person samples --- they are new *arms* of
+        # already-counted populations, never new populations (doc 60's accounting
+        # note, stated in the paper's accounting table).
+        stem = _re.sub(r"^acs_(employment|coverage)_", "acs_income_", stem)
         return _re.sub(r"_(rac1p|race|sex)$", "", stem)
 
     pops = {population(n) for n in names}

@@ -310,6 +310,7 @@ Sealed magnitude (failed) & NY + TX (16 arms) \\
 Cross-year shape seal (failed) & 8 fresh state-years (70 runs) \\
 Attr.-independence seal (failed) & 6 race arms (48 runs) \\
 Selection-rate floor & 10 pops.\ (19 arms) \\
+Cross-task shape seal (failed) & 6 task arms, 4 states' persons; not indep. \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -676,7 +677,17 @@ HMDA refinance & mortgages & 0.758 & --- \\
 
 Table~\ref{tab:crossover} tells the honest history in three blocks. The first four
 populations, across three domains and two countries, have overlapping intervals, and
-carrying those intervals gave a cluster spanning roughly 0.43--0.58. A sealed sweep campaign
+carrying those intervals gave a cluster spanning roughly 0.43--0.58. Because the
+table's original intervals resample seeds only --- an anti-conservative choice the
+Setup section concedes --- the four located rows were re-run under a nested
+rows-by-seeds bootstrap (five refitted seeds $\times$ 200 row resamples of the test
+split, arms rebuilt per seed at fixed target rates). Three survive: COMPAS, South
+Carolina and Oregon's published locations sit inside their nested 95\% intervals
+(medians 0.457, 0.525, 0.532), with a crossing bracketed in over 97\% of resamples.
+\textbf{The Dutch row does not}: under the denser view its mid-band signs interleave
+and no (seed, resample) pair brackets a crossing at all, so its 0.576 is downgraded to
+a property of the six arms that produced it, consistent with the non-monotone verdict
+the audit itself returns on that population. A sealed sweep campaign
 across ten further states was then run to test what predicts the location, and the three
 crossovers it located break the cluster: Ohio lands inside it, while \textbf{Florida sits at
 0.284 and Pennsylvania at 0.652}, both with tight brackets and every guard passed, on the
@@ -934,9 +945,16 @@ Three delineations keep this claim its right size. In the \emph{attribute-aware}
 the optimal randomized fair classifier is characterized as randomizing at group-specific
 decision boundaries \cite{agarwal2022}; the attribute-blind analogue is not characterized,
 and a flat keep-probability is what any two-member blind mixture produces by construction
---- so the lottery differs in form from the aware-regime optimum, while whether it is
-suboptimal \emph{within} the blind constrained class is an open computation, not a claim
-we make. The known
+--- so the lottery differs in form from the aware-regime optimum. Whether it is
+suboptimal \emph{within} the blind constrained class was an open computation; we ran
+it. Searching the minimal richer class --- two-threshold blind mixtures, with the
+parity weight in closed form and the threshold grid extended into the 0.9975 score
+quantile to rule out a grid-edge artifact --- \textbf{the feasible set is empty on all
+ten seed-arm pairs}: no score-informed blind mixture of that form attains the
+lottery's parity gap and pool size at either signature arm. The lottery is therefore
+not an optimiser failure a vendor could be expected to avoid; at those operating
+points the constraint itself admits no informed blind solution of that size, which is
+exactly why the honest charge is the missing announcement, not the randomization. The known
 arbitrariness of fair models is \emph{across} retrained models \cite{long2023}; this is
 deliberate randomization inside one fitted model. And randomness itself has been advocated
 as a fairness device \cite{grgic2017}, and the philosophical literature holds that a
@@ -1144,6 +1162,9 @@ phenomenon under diagnosis \\
 Sealed attribute-independence & scored$-$1 + beat const.; 2 of 6 --- fail & shape is not a
 label-side property: every race arm is classic at tenfold the sex arms' signal, pointing
 at gap size as the governing variable \\
+Sealed cross-task shape & scored$-$1 + beat const.; 0 of 4 --- fail & the base-rate
+boundary is a property of the income question: on two new tasks every scored call
+inverts, while the direction rule's expectation held at every natural arm \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1205,7 +1226,8 @@ and there is nothing left to predict.
 
 \section{Limitations}
 
-\textbf{The sealed record is two failures, one pass, and one underpowered test.} The first
+\textbf{The sealed record is five failures, one pass, and one underpowered test}
+(plus the attribute-aware consistency check). The first
 sealed test (Section~\ref{sec:sealed}) failed at four of eight, carrying an in-sample
 refinement; the re-seal of the unrefined rule (Section~\ref{sec:resealed}) passed at nine of
 ten, beating the constant at six; a sealed magnitude model then failed outright, and the
@@ -1374,7 +1396,10 @@ transfer \texttt{bf36db0} $\to$ \texttt{c097dba}; derivation \texttt{a859d16} $\
 \texttt{6660b06} $\to$ \texttt{7b3609a}; re-seal \texttt{356bfa5} $\to$ \texttt{f1eed99};
 crossover residual \texttt{93c3446} and magnitude \texttt{f0f8056}, both scored in
 \texttt{7b6764f}; cross-year shape \texttt{391cd17} $\to$ \texttt{e6cdb68}; attribute
-independence \texttt{aa6532b} $\to$ \texttt{d3bcb54} --- each seal a committed analyser
+independence \texttt{aa6532b} $\to$ \texttt{d3bcb54}; cross-task shape
+\texttt{d8bfae8} $\to$ \texttt{aa8d43a}, the first seal whose hash is also anchored
+externally (an OpenTimestamps receipt committed in \texttt{research/seals/} before any
+of its arms ran) --- each seal a committed analyser
 whose population lists an isolation guard forbids changing. An honest limit of this
 apparatus: the ordering rests on git commit timestamps from the authors' machine, which
 an outsider must take on trust; the third sealed cohort will anchor its seal externally

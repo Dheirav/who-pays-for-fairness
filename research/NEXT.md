@@ -130,9 +130,11 @@ are pinned in the paper, orderings re-verified. **The follow-up batch landed as 
 59** (25 Aug): derandomization 10/10 (`analyse_derandomized.py`), domain table
 floor-invariant (`analyse_floor_sensitivity.py`), seed stability 16/19 unanimous with
 the splits exactly the near-zero arms (`--seed-stability`), and two worked traces in the
-paper's appendix. Still owed from this round: multi-market HMDA (blocked on more HMDA
-state downloads) and external timestamp anchoring for the third cohort's seal (committed
-to in the paper).
+paper's appendix. Still owed from this round: multi-market HMDA sweeps — **the downloads are done**
+(24 Aug: AL, SC, TN, GA, NC, OH joined MS, LA; 663 MB, checksummed in the manifest), so
+what remains is screen → seal → sweep, roughly a day's chain. External timestamping is
+now practice: both live seals (IPUMS stage A `50d467f`, cross-task `d8bfae8`) carry
+receipts in `research/seals/`, and the cross-task pair is scored (doc 60).
 
 ## The second council (eight panelists, 24 Aug) — synthesis and state
 
