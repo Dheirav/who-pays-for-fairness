@@ -193,14 +193,16 @@ Still open, by kind:
 
 ## Screened and viable, waiting on a loader and a seal
 
-* **ACSEmployment and ACSPublicCoverage, 23 Aug** (scratch `screen_tasks.py`). Employment
-  passes every gate on AL, OH, PA (p 0.41–0.47, spans 0.75–0.86); the richer states fail
-  its gap floor (NY +0.031, NJ +0.035). Coverage passes on OH, PA, NY (p 0.31–0.40, spans
-  0.43–0.65; note the direction inverts — women are the higher-rate group). Together: six
-  populations, two tasks, sealed-boundary predictions on **both** sides (employment all
-  HIGH-family, coverage OH/PA LOW, NY HIGH) — the cross-task test of the shape boundary,
-  one rung below cross-instrument. Needs: two loaders in `acs.py`'s style, then the usual
-  seal-then-sweep. Decide after the cross-year verdict lands.
+* **ACSEmployment and ACSPublicCoverage — sealed 24 Aug** (`analyse_task_shapes.py`).
+  The 23 Aug scratch screen's sex-arm claims did **not** survive re-measurement: every
+  coverage-by-sex arm fails the 0.05 gap floor (0.028–0.047) and men, not women, are the
+  higher-rate group — that note was wrong and is corrected here. The committed design is
+  the **race arms of both tasks**: employment AL/OH/PA (p 0.410/0.461/0.467, gaps
+  0.056–0.079, all HIGH calls) and coverage OH/PA/NY (p 0.333/0.306/0.401, gaps
+  0.131–0.151, LOW/LOW/HIGH — and Non-White is the higher-rate group on coverage, the
+  designed inversion). Six sweeps at seed-0-fixed thresholds, doc-54 rubric (scored−1 +
+  beat constant 4/6, MIN_SCORED 4), the cross-task test of the shape boundary one rung
+  below cross-instrument.
 
 ## Screened and refused, so nobody screens them twice
 

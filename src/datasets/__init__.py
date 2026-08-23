@@ -21,7 +21,7 @@ __all__ = ["DatasetLoader", "FairnessDataset", "build", "AVAILABLE"]
 
 AVAILABLE = ("adult", "acs[:STATE[,STATE...]][:ATTRIBUTE]", "hmda[:STATE:ATTRIBUTE[:PURPOSE]]",
              "compas[:race|sex]", "lawschool[:race|male]", "dutch", "taiwan",
-             "ipums:COUNTRY:YEAR:SEX:THRESHOLD")
+             "ipums:COUNTRY:YEAR:SEX:THRESHOLD", "acsemp:STATE", "acscov:STATE")
 
 
 def build(name: str) -> DatasetLoader:
@@ -86,6 +86,19 @@ def build(name: str) -> DatasetLoader:
         from .lawschool import RACE as LAW_RACE, LawSchoolLoader
 
         return LawSchoolLoader(protected=argument.strip() or LAW_RACE)
+
+    if key in ("acsemp", "acscov"):
+        # Lazily imported like the other individual-work loaders.
+        from .acs_tasks import ACSTaskLoader
+
+        state, _, rest = argument.partition(":")
+        attribute, _, year = rest.partition(":")
+        return ACSTaskLoader(
+            "employment" if key == "acsemp" else "coverage",
+            state.strip().upper() or "AL",
+            year=year.strip() or "2018",
+            protected=attribute.strip().upper() or "SEX",
+        )
 
     if key == "ipums":
         # Lazily imported like ACS and HMDA: individual work, excluded from the
