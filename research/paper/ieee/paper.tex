@@ -31,7 +31,7 @@ can be pulled down. Both outcomes satisfy the constraint, and the metric that ce
 reports the same number in each case, which means a deployment team cannot tell from its own
 dashboard which of the two it is about to cause. We show that the direction is predictable in
 advance from a quantity every deploying organisation already has: the rate at which its
-current model says yes, read against that population's crossover. Across 55 independent
+current model says yes, read against that population's crossover. Across 57 independent
 populations covering six decision domains and seven data sources, an attribute-blind parity
 constraint withdraws favourable decisions when the baseline selection rate sits below a
 crossover, and extends them when it sits above; on UCI Adult six in-processing methods each
@@ -95,7 +95,7 @@ finding but as the boundary the theory draws, and we verify it from both sides.
 Contemporaneous theory \cite{backfire2026} establishes that in the attribute-blind regime the
 direction is distribution-dependent. It contains no experiments and its conditions are ordering
 relations on score regions rather than measurable quantities. We supply the measurement across
-37 populations and six domains, and find its stated conditions --- which are \emph{sufficient,
+57 populations and six domains, and find its stated conditions --- which are \emph{sufficient,
 not necessary} --- cannot be evaluated on any of 26 real arms, for a structural reason given in
 Section~\ref{sec:regime}. A relaxed form of the same ordering agrees with the measured
 direction on 24 of 26. The direction rule itself is \emph{sealed}: committed before ten
@@ -173,9 +173,9 @@ instrument.
 
 \section{Setup and Method}
 
-\textbf{Data.} Fifty-five independent populations across seven data sources: UCI Adult
-(45{,}222 rows); ACS Income \cite{ding2021} across forty US states, eight further
-state-years (2014 and 2022) and two protected attributes; HMDA mortgage records for two states, by race and sex and split by loan purpose;
+\textbf{Data.} Fifty-seven independent populations across seven data sources: UCI Adult
+(45{,}222 rows); ACS Income \cite{ding2021} across forty US states, ten further
+state-years (2014, 2019 and 2022) and two protected attributes; HMDA mortgage records for two states, by race and sex and split by loan purpose;
 COMPAS \cite{propublica2016} (5{,}278 rows on the race arm after ProPublica's documented
 filter); LSAC bar passage (20{,}798 rows); the Dutch national census of 2001 (60{,}420
 rows); and Taiwanese credit-card default records of 2005 (30{,}000 rows). A

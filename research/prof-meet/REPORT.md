@@ -108,7 +108,7 @@ optional once you know to ask for it. Knowing when to ask is what the crossover 
 
 ## Scale, and the discipline behind the numbers
 
-The record holds **47 independent populations** across seven data sources (UCI Adult, ACS
+The record holds **57 independent populations** across seven data sources (UCI Adult, ACS
 states, HMDA mortgages, COMPAS, LSAC, the Dutch census, Taiwanese credit-card default),
 six decision domains, three countries and two decades. The last ten arrived through a
 pre-registered sweep whose verdicts landed the same day this report was finished, and both

@@ -84,11 +84,13 @@ agree at 0.93 — independent theory and independent measurement converging.
 
 ## Scale
 
-47 independent populations · 7 data sources · 6 kinds of decision · 3 countries · 5 repeats
+57 independent populations · 7 data sources · 6 kinds of decision · 3 countries · 5 repeats
 of everything, 12 or 20 where the effects were small enough to need them · 55 automated
 checks that re-derive every documented figure from stored results
 
-Nine tests written down and committed before their data existed: six failed, one returned
-underpowered, two passed — including the central one, the direction rule at **9 of 10** on
-populations never previously measured, against a best lucky guesser's 6. Every failure is
-in the paper, uncorrected; the passes are what survive that map.
+Eleven tests written down and committed before their data existed: eight failed, one
+returned underpowered, two passed — including the central one, the direction rule at
+**9 of 10** on populations never previously measured, against a best lucky guesser's 6.
+Every failure is in the paper, uncorrected; each one drew a boundary, and the passes are
+what survive that map. One further hypothesis died in its pre-seal check before costing
+any compute, which is the same system working earlier.

@@ -218,8 +218,8 @@ worth knowing that the missed state's true effect was about four hundredths of a
 and flipped sign between random re-runs, which means there may have been nothing there to
 predict in either direction.
 
-One more thing matters for reading this project's record. Seven of these
-written-down-in-advance tests were run in total, and five failed. That is not a bad score,
+One more thing matters for reading this project's record. Eleven of these
+written-down-in-advance tests were run in total, and eight failed. That is not a bad score,
 because they were not seven attempts at the same thing. Each failure tested a bigger claim
 than the one that survives, and each one drew a boundary: the rule does not extend to a
 second definition of fairness, it does not survive into the see-the-attribute world, and it
@@ -356,4 +356,4 @@ the standard benchmark, *ACS* is its modern replacement available per state, and
 a public record of real US mortgage applications with the lender's actual decision.
 
 **Population.** One dataset, such as a state, a cohort or a census, counted once no matter
-how many experiments run on it. Forty-seven have been measured.
+how many experiments run on it. Fifty-seven have been measured.
