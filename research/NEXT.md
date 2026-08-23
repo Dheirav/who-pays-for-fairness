@@ -133,7 +133,7 @@ the paper. The load-bearing outcomes:
   below-guard noise; (3) composition reweighting recorded unnecessary. No detected
   time-dependence 2014–2022 at constant real value; doc 54 superseded; the paper's
   vintage caveat replaced by the real-anchor-your-labels lesson. Open lead kept: 2022
-  *models* under-express a sex gap the labels still carry (`weight_audit.py` side-fact).
+  *models* under-express a sex gap the labels still carry (`analyse_weights.py` side-fact).
   Post-hoc, for IPUMS only: the base-rate boundary would have called the real-anchored
   2022 shapes correctly.
 * **Repro packaging**: pushed; lockfile added; data-URL pinning + checksums still owed.

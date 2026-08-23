@@ -2,7 +2,7 @@
 
 **Individual work, beyond the course submission. Post-hoc diagnostic, labelled as such.**
 Second of the three candidate mechanisms from the review council; the first (pandemic
-nonresponse weighting) was exculpated at label level the same day (`weight_audit.py`:
+nonresponse weighting) was exculpated at label level the same day (`src/experiments/analyse_weights.py`:
 PERWT moves 2022's rates and gaps no more than 2018's). Sweeps in
 `research/results/acs_income_*_2022_t60000_levelling_up*`.
 
