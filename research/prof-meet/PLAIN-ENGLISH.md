@@ -293,6 +293,27 @@ deploy a model that flips coins, so I tested the coin-free version that they wou
 forced to extract from it. It moves in the predicted direction in all ten populations
 tested, and the fairness improvement survives too.
 
+## One more night of trying to break it
+
+After the reviews I spent one more overnight run attacking our own numbers, and three
+things gave way, which is the point of attacking them.
+
+A side rule I liked is dead. I had a rule that guessed the whole shape of a
+population's response curve from how common the good outcome is. Tested on two brand
+new kinds of question, employment and public health coverage, it got every single call
+backwards. Written down as the twelfth registered test, failed like the rest that
+failed. The useful part: the main rule about direction still worked on all six of
+those new arms.
+
+One of our four switch point numbers did not survive a harder resampling test and has
+been demoted in the paper. The other three passed the same test, which makes them more
+trustworthy than before, not less.
+
+And the lottery question closed. It turns out that where the lottery happens, no
+fairer alternative of the same kind exists at all. So it is not a bug someone should
+have caught. It is what the constraint itself forces there, and the only honest
+complaint is that nobody is told it is happening.
+
 ## The one number that is worth remembering, with its health warning
 
 **About 0.54, call it roughly half.** Below that approval rate these fairness tools

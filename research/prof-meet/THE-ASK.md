@@ -17,8 +17,11 @@
 > finding is bounded to severe operating points, a 2022 anomaly was traced to the nominal
 > income label sliding under inflation and resolved, and all eleven registered tests now
 > have their registration and scoring commits pinned in the paper. The paper is 15 pages
-> pending your page-limit answer, which gates the planned compression. The fork below
-> still stands as written.
+> pending your page-limit answer, which gates the planned compression. An overnight
+> self-audit then added a twelfth registered test (failed, informatively: the
+> curve-shape boundary belongs to the income task only), downgraded one published
+> crossover, and closed the lottery's open question (no in-class alternative exists).
+> The fork below still stands as written.
 
 ## The question
 

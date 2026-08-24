@@ -7,8 +7,10 @@ committed in the repository, and every number below is re-derived from stored re
 an automated check before it is allowed to appear in a document. Since the previous
 version of this report: the paper has been through three adversarial review panels
 (twenty-four independent reviews in total, no reject verdicts), every cheap fix they
-converged on is applied, and an apparent 2022 anomaly has been traced to its mechanism
-and resolved.
+converged on is applied, an apparent 2022 anomaly has been traced to its mechanism and
+resolved, and an overnight self-audit then re-tested our own numbers — killing one more
+hypothesis, downgrading one published number, and closing one open question, all
+recorded below.
 
 ## The question, and why it matters
 
@@ -80,8 +82,9 @@ a scorecard.
 | Sealed magnitude model | MAE 4.50 vs 0.77 — fail | the effect's *size* cannot be predicted from what we tried; the direction-only concession is earned |
 | Sealed shape boundary | 4 of 6 — fail | the base-rate boundary called every 2014 shape and both predicted flips; the 2022 curves misbehaved for a reason found later (below) |
 | Sealed attribute-independence | 2 of 6 — fail | a population's curve shape is not a property of its label alone; the race arms behave differently from the sex arms |
+| Sealed cross-task shape | 0 of 4 — fail | on two brand-new prediction tasks every scored call inverted: the shape boundary is a property of the income question itself, and only there |
 
-Eight of the eleven rows are failures or refusals, reported uncorrected, which removes
+Nine of the twelve rows are failures or refusals, reported uncorrected, which removes
 the usual way lucky results reach print: selective reporting. The passes carry their own
 health warnings, stated in the paper where the claims are made. The one-in-twenty chance
 figure for the 9 of 10 is against an independent guesser; the stricter paired comparison
@@ -168,6 +171,32 @@ rate arithmetic). Every converged fix is applied. The ones that produced new res
   exact input files, and the paper states plainly that the chronology currently rests on
   our own clock — the next sealed test will be anchored with an external timestamp.
 
+## The overnight self-audit, and what it subtracted
+
+After the review rounds, four of our own numbers were put under load in one sealed and
+three post-hoc tests (24 Aug):
+
+* **A twelfth registered test, and a clean kill.** The curve-shape boundary — base rate
+  below 0.365 means one family, above means the other — was sealed against six arms of
+  two prediction tasks this project had never run, with an external (Bitcoin-anchored)
+  timestamp on the seal itself. It scored **0 of 4, every call inverted**: after failing
+  across years and across attributes, it has now failed across tasks, so the boundary
+  belongs to the income question specifically. Meanwhile the *direction* rule's
+  expectation held at all six new arms — including one where the advantaged group
+  inverts — so the central claim came through untouched.
+* **One published number downgraded.** Re-testing the four located crossovers under a
+  nested bootstrap (refitted models × resampled test rows), three survive — but the
+  Dutch census's 0.576 never brackets a crossing at all, in 1,000 of 1,000 resamples.
+  It was a property of the six arms that produced it, and the paper now says so.
+* **One open question closed, in the softer direction.** Whether the "lottery" is an
+  optimiser mistake a vendor could avoid: no — at those operating points *no*
+  score-informed blind alternative of the same size exists at all. The wrong is exactly
+  and only that the lottery happens unannounced under a clean certificate.
+* **The lift-versus-cut mechanism made visible.** A decile-by-group table shows the
+  optimiser either grades probability into the disadvantaged group's mid-scores, or
+  grants nothing below the top decile and cuts by lottery — the open selector question
+  now has a concrete object to explain.
+
 ## Scale, and the discipline behind the numbers
 
 The record holds **57 independent populations** across seven data sources (UCI Adult, ACS
@@ -198,10 +227,14 @@ Three pieces of discipline are worth naming because they caught real errors:
 
 ## What is open, honestly
 
-* **Why the crossover sits where it sits.** Located values now span 0.28–0.65 and nothing
-  predicts the location; the sealed test built to answer this returned underpowered, partly
-  because a third of the large states have no crossover to locate — their response to the
-  constraint is U-shaped or positive throughout, which is itself the newest open question.
+* **Why the crossover sits where it sits.** Located values span 0.28–0.65 and nothing
+  predicts the location; the sealed test built to answer this returned underpowered, a
+  third of the large states have no crossover to locate, and the nested bootstrap just
+  reduced the solidly located non-lending crossovers from four to three. What governs a
+  population's curve *shape* is the sharpest form of this question, and we now know
+  three things it is **not**: the survey year (that was the label sliding), the
+  attribute alone, and — as of the twelfth registered test — the label's base rate
+  independent of the task.
 * **Breadth.** The sealed 9-of-10 is ten US census populations — depth, not breadth. A
   non-Western census extract (Brazil 2000/2010, Mexico 2015/2020) is requested and pending
   approval, which would allow the first crossover located outside the West -- and it
