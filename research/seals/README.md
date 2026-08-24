@@ -21,3 +21,4 @@ immediately after it is pushed.
 | Cross-task shape seal (employment/coverage race arms) | `d8bfae8` | Bitcoin-attested; scored in `aa8d43a` (doc 60) |
 | Regime deconfounding cell (attribute-aware in-processing) | `66bc4d5` | stamped 25 Aug, pending upgrade |
 | Six-market lending seal (M1 crossover elevation, M2 protocol) | `08b27fa` | stamped 25 Aug, pending upgrade |
+| IPUMS third cohort, stage B (thresholds, op points, 60k subsample) | `a624cf5` | stamped 25 Aug, pending upgrade |
