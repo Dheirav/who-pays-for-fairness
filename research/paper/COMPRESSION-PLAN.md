@@ -129,3 +129,28 @@ Also two robustness fixes to the checking itself:
 surviving-claim box, the vintage caveat, the abstract (venue-pending), citations.
 
 Expected outcome: ~9 pages ± a quarter, all 169 manifest lines accounted for.
+
+## Addendum, 24 Aug (after the third council and the night chain)
+
+The paper grew from 12 to 15 pages absorbing rounds 2–3 and documents 58–61. New
+primary claims Pass 4 must also account for, with their homes:
+
+| claim | grep-key | primary home |
+|---|---|---|
+| paired sign test p ≈ 0.19 beside the binomial 0.046 | `0.19` | §resealed |
+| re-seal under frozen floor: 7 of 8 vs constant 5; IA/NE sub-floor gaps | `7 correct` | §resealed |
+| seed stability 16/19 unanimous; MN and IA both split 3/5 | `16 of the 19` | §resealed |
+| verdict distribution 27/6/10/1/1 over 45; 27/27 consistent | `27 directional` | §procedure |
+| audit cost: 2–10 s/fit at 15k–69k rows; relaxed-ζ pre-screen | `2--10 seconds` | §procedure |
+| derandomization 10/10; extracted gaps 0.009–0.034; ties break rate-matching | `10 of 10` | §procedure |
+| natural-arm lottery control: 7/7 graded, 0.17–0.43 vs 0.00–0.07, +0.37..+0.73 | `0.17--0.43` | §lottery |
+| lottery in-class necessity: feasible set empty on 10/10, deep-tail grid | `feasible set is empty` | §lottery |
+| domains floor-invariant: +0.80..+0.92 at all four floors | `+0.80` | §V-D |
+| nested bootstrap: 0.457/0.525/0.532 medians; Dutch 100% no-crossing | `0.457` | §crossover-history |
+| cross-task seal 0 of 4, every call inverted | (ledger row) | tab:registered |
+| eleven+one seal→score hash pairs; external anchoring | `d8bfae8` | Repro |
+| worked traces: OR floor 0.636, 14 kept arms, bracket 0.528–0.589; LSAC 0.056 | `0.636` | Appendix |
+| EU split: AI Act Art. 10(5) permits training-time bias-correction use | `10(5)` | §scope + Discussion |
+
+Pass 3's rulings stand; the sealed-narrative merge now also absorbs the INDETERMINATE
+paragraph and the seed-stability sentence rather than duplicating them.

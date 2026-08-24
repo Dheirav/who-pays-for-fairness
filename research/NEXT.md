@@ -1,7 +1,7 @@
 # What to do next, and what will bite you
 
 Live handover. Read this first, then `research/README.md` for the document index. Documents
-11–57 are the research record; the paper is `research/paper/ieee/paper.tex`. The checklist this
+11–61 are the research record; the paper is `research/paper/ieee/paper.tex`. The checklist this
 replaced, with the original reasoning behind each completed item, is in
 [`NEXT-archive.md`](NEXT-archive.md), including the two items completed on 22 Aug (the
 re-seal, and the route-divergence mechanism).
@@ -22,8 +22,10 @@ that after the run cannot excuse the miss.
 ## Where the work stands
 
 * **57 independent populations**, 6 domains, 7 data sources, 3 countries, 2 decades
-  (including ten cross-year state-years). ("5
-  instruments" was stale once Taiwan and Adult were counted; the paper now says 7 sources.)
+  (including ten cross-year state-years), plus six cross-task arms (employment/coverage)
+  that share persons with counted populations and are deliberately **not** new
+  populations — the count guard now enforces this. ("5 instruments" was stale once
+  Taiwan and Adult were counted; the paper says 7 sources.)
 * **After document 52 the claim carries a sharper scope.** The sealed 9/10 stands, but the
   ten large states swept that night score the fixed 0.54 prior at 5/10 post-hoc, each miss
   consistent with its own state's sweep: the within-population relationship survives, the
@@ -34,11 +36,13 @@ that after the run cannot excuse the miss.
   the magnitude nor a pooled slope transfers between populations. The crossover is ~0.54 as a
   **prior for auditing, not a constant** — and the direction claim is now **sealed**: 9 of 10
   on never-measured states, bar 9, constant 6, committed first (document 49).
-* **The paper** is 12 pages, IEEE format (compression Pass 3 pending the venue answer), builds from `research/paper/ieee/build.sh`.
+* **The paper** is 15 pages, IEEE format (compression Pass 3 pending the venue answer,
+  cut list written in `paper/COMPRESSION-PLAN.md`), builds from `research/paper/ieee/build.sh`.
   `research/paper/draft-v2.md` is **superseded** — do not edit it; the pack copies the typeset
   PDF.
 * **55 automated checks** across five suites re-derive every load-bearing figure from stored
-  results. Run all five before trusting anything:
+  results (pytest additionally runs 65, including the four in-processing tests repaired
+  24 Aug). Run all five before trusting anything:
   `for m in test_documented_claims test_output_isolation test_incidence test_acs_threshold test_new_instruments; do .venv/bin/python -m tests.$m; done`
 
 ### Five results to know before touching anything
@@ -59,7 +63,16 @@ that after the run cannot excuse the miss.
    had been tested and failed.**
 4. **The two routes agree in the middle and diverge at the bottom** (documents 32, 47). Below
    a selection rate of ~0.10 the operating-point route and the label route give opposite signs,
-   and the accuracy rule does not separate them.
+   and the accuracy rule does not separate them. Algorithm 1 now encodes this as the
+   advisory rule, and the decile diff (doc 61) shows the mechanism: lift grades mass into
+   the unprivileged mid-deciles, cut grants nothing below the top decile.
+5. **Curve shape belongs to the question, not the base rate** (documents 54, 55, 60).
+   Three shape seals failed three different ways — cross-year (a label artifact, resolved
+   in 57), cross-attribute, and cross-task (0/4, every call inverted) — so the 0.365
+   boundary is a property of the ACS income task only. Meanwhile the *direction* rule's
+   expectation held at all six task arms' natural points, and Dutch's published crossover
+   was downgraded by the nested bootstrap (doc 61): the solidly located non-lending
+   crossovers are now three, not four.
 
 ---
 
@@ -81,8 +94,11 @@ that after the run cannot excuse the miss.
       and the recode acquitted). What remains open here is the pre-resolution half — why
       TX/FL/NJ/VA/MA level up at their natural rates and what governs curve shape — with
       the post-hoc note that real-anchoring rehabilitates the base-rate boundary as an
-      IPUMS hypothesis. IPUMS (Brazil 2000/2010, Mexico 2015/2020) remains the
-      cross-country test for both.
+      IPUMS hypothesis. **The cross-task seal then failed harder (document 60): 0/4 with
+      every call inverted on employment/coverage**, so the boundary is income-task-local
+      and whatever governs shape involves the task's structure. IPUMS (Brazil 2000/2010,
+      Mexico 2015/2020) remains the cross-country test, in the one domain the boundary
+      has ever worked.
 - [ ] **The crossover residual — still open, and harder** (document 52). The sealed test
       returned UNDERPOWERED (3 new locations against a minimum of 6) because locating a
       crossover assumes a monotone landscape and a third of the large states do not have
@@ -97,20 +113,19 @@ that after the run cannot excuse the miss.
       2017 (randomness *advocated* as a fairness device — the mirror image; the
       indictment is uninformative randomness, not randomness). The lottery is clear to
       promote into the paper.
-- [ ] **The lift-or-cut selector** (document 50's open remainder, now harder). Six candidates
-      are dead: rate, gap-to-rate, reservoir, accuracy clearance, threshold height, and — per
-      the same-day addendum — both simple geometry forms (depth-to-equalise and
-      mass-near-the-line fail on all nine deep-tail arms; `--probe-geometry` recomputes
-      them). The selector is not in the baseline score distribution's summaries. Last cheap
-      step: refit ExpGrad on one lift arm (OR@0.87) and one cut arm (Dutch@0.965) and diff
-      the mitigated models' per-person scores against baseline by group — look at what the
-      optimiser's tilt actually did. Past that, it is a theory question.
+- [ ] **The lift-or-cut selector** (document 50's open remainder). Six summary candidates
+      are dead (rate, gap-to-rate, reservoir, accuracy clearance, threshold height, both
+      geometry forms — `--probe-geometry`). The last cheap step ran 24 Aug
+      (`--probe-diff`, doc 61): the decile table shows lift = graded mass into
+      unprivileged deciles 3–8, cut = nothing below decile 9 — and the mixture-optimality
+      result bounds the question: where the cut happens, **no** two-threshold blind
+      alternative is feasible, so the selector is about when the constraint admits an
+      informed solution at all. Past the decile table, it is a theory question.
 - [ ] **A *sweepable* non-Western population.** Taiwan is non-Western but the viable-band test
-      refused it, as it did LSAC. One that can be swept would be the first crossover located
-      outside the West.
-- [ ] **The crossover residual.** Two candidate predictors are collinear at +0.947 and neither
-      survives four populations (document 44). Needs ~15 populations with located crossovers;
-      there are 4.
+      refused it, as it did LSAC. The IPUMS cohort is the answer, fully prepared and
+      waiting on the extract; it would give the first crossovers located outside the West.
+      (The count of solidly located crossovers fell to three when Dutch was downgraded —
+      doc 61 — so the residual question of document 44 is even further from powered.)
 - [ ] **Magnitude.** Ordered within a population (ρ up to +0.96), no pooled slope (+0.487,
       failed). A better model is possible; the current concession is honest without one.
 
@@ -171,12 +186,11 @@ Still open, by kind:
 * **Structural** — the compression Pass 3 (already planned) now also carries the council's
   merge: sealed narrative unified with the ledger, surviving claim promoted to a titled
   destination, intersectional relocated. Venue answer decides the depth of the cut.
-* **Analyses, cheap** — seed-level sign-stability table for every sealed arm; headline
-  correlations reported at all four exclusion thresholds; relaxed-ζ ordering scored
-  head-to-head against the rate on the two sealed cohorts.
-* **Analyses, compute** — the two-threshold blind-mixture comparison that would settle
-  whether the lottery is suboptimal within its own class; nested bootstrap (rows × seeds)
-  for the crossover intervals.
+* **Analyses** — DONE except one: seed stability and the four-floor correlations landed
+  as document 59; the blind-mixture comparison (feasible set empty — the lottery is
+  in-class necessary) and the nested bootstrap (Dutch downgraded, three rows confirmed)
+  landed as document 61. Still open: the relaxed-ζ ordering scored head-to-head against
+  the rate on the two sealed cohorts.
 * **The third sealed cohort** the statistician demands is IPUMS — **stage A of its
   two-stage seal is committed** (25 Aug): `src/datasets/ipums.py` (chunked loader,
   quantile-only thresholds, sentinel handling, verified end-to-end on a synthetic
@@ -193,9 +207,9 @@ Still open, by kind:
 * **Supervisor-level** — title revision to the bounded claim (area chair's #1), and
   whether the lottery is promoted to a headline contribution.
 
-## Screened and viable, waiting on a loader and a seal
+## Sealed, swept, and scored
 
-* **ACSEmployment and ACSPublicCoverage — sealed 24 Aug** (`analyse_task_shapes.py`).
+* **ACSEmployment and ACSPublicCoverage — sealed and scored 24 Aug** (`analyse_task_shapes.py`).
   The 23 Aug scratch screen's sex-arm claims did **not** survive re-measurement: every
   coverage-by-sex arm fails the 0.05 gap floor (0.028–0.047) and men, not women, are the
   higher-rate group — that note was wrong and is corrected here. The committed design is
@@ -252,8 +266,8 @@ Every one produced a plausible wrong answer without raising an error. They will 
 
 ## Blocked on the supervisor
 
-- [ ] **Venue and page limit** — decides what survives from 37 documents. Paper is 8pp; FAccT
-      or AIES would want ~10.
+- [ ] **Venue and page limit** — decides what survives from 51 documents. Paper is 15pp
+      before the planned compression to ~9–10; FAccT or AIES would want ~10, IEEE ~8.
 - [ ] **Is the empirical half a paper**, given *Backfire* exists? See `prof-meet/03-the-ask.pdf`.
       The position is strong: their conditions are unusable on data, their regime distinction
       holds 27/27, and the selection rate proxies their quantity at r = +0.935.
