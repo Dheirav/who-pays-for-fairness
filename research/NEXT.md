@@ -1,7 +1,7 @@
 # What to do next, and what will bite you
 
 Live handover. Read this first, then `research/README.md` for the document index. Documents
-11–63 are the research record; the paper is `research/paper/ieee/paper.tex`. The checklist this
+11–64 are the research record; the paper is `research/paper/ieee/paper.tex`. The checklist this
 replaced, with the original reasoning behind each completed item, is in
 [`NEXT-archive.md`](NEXT-archive.md), including the two items completed on 22 Aug (the
 re-seal, and the route-divergence mechanism).
@@ -154,9 +154,11 @@ quantile is the anchor** and doc 57 is refined in place; the lottery's degenerat
 support observed member-by-member; no lottery on either HMDA natural arm (9/9);
 the prior recomputed without Dutch changes no call. **The causal major's experiment is DONE (document 63)**: the sealed deconfounding
 cell returned the method reading — blindness is not load-bearing, the regime framing is
-corrected in place. Still queued from the economist: weighted crossover replication
-(PERWT machinery exists), allocation-flag exclusion rerun, household-clustered
-bootstrap for sex arms.
+corrected in place. **The economist's items are DONE (document 64)**: weights shift every
+crossover down 0.03–0.08 but the ordering and outliers hold (the 0.54 prior belongs to
+the unweighted convention, now said in the paper); household-clustered intervals widen
+modestly; allocation is a uniform level effect, acquitted as a 2022 mechanism. Round
+four is fully discharged except what waits on IPUMS.
 
 ## The third council (ten panelists, 25 Aug) — done, fixes applied (document 58)
 

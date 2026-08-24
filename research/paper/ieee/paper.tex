@@ -241,12 +241,21 @@ deliberate and inherited from the folktables benchmark \cite{ding2021}: ACS pers
 are used \emph{unweighted} (no \texttt{PERWT}), incomes are nominal \texttt{PINCP} without
 the \texttt{ADJINC} adjustment, and household clustering is not modelled, so every
 ``selection rate'' here is a property of the unweighted sample rather than a
-design-consistent state estimate, and seed-resampled intervals are anti-conservative.
+design-consistent state estimate. The weighted re-analysis has since run: read under
+PWGTP, every located crossover shifts \emph{down} by 0.03--0.08 in weighted rate units
+while the ordering and the two outliers are unchanged --- so the numeric locations,
+including the 0.54 prior, are properties of this convention, stated as such where they
+appear, while the audit itself needs no weights (a deployer's held-out pool is the
+population of interest). Seed-resampled intervals are anti-conservative, and a
+household-clustered bootstrap widens the sex-arm intervals modestly (South Carolina
+0.470--0.587 against 0.454--0.537 person-resampled) without dislodging any location.
 Two further PUMS facts bound what the labels can mean: state topcodes sit far above
 every cutoff used here, so topcoding is benign; a fifth or more of PUMS incomes are
-hot-deck imputations, a share that rose in pandemic vintages, and no analysis here
-excludes allocation-flagged rows --- an untested candidate contributor to any
-income-label result, noted rather than resolved. A
+hot-deck imputations, a share that rose in pandemic vintages, and the allocation screen
+has since run: excluding flagged rows lifts base rates by about $+0.03$
+\emph{uniformly} --- both vintages, both labels, gaps stable, directions preserved ---
+so imputation is a level effect everywhere and is acquitted as a differential 2022
+mechanism, the fourth candidate cleared. A
 weighted re-analysis is reported as ongoing work.
 
 COMPAS, LSAC and the Dutch census were added to leave the sources the finding was formed
@@ -738,7 +747,11 @@ Carolina and Oregon's published locations sit inside their nested 95\% intervals
 \textbf{The Dutch row does not}: under the denser view its mid-band signs interleave
 and no (seed, resample) pair brackets a crossing at all, so its 0.576 is downgraded to
 a property of the six arms that produced it, consistent with the non-monotone verdict
-the audit itself returns on that population. A sealed sweep campaign
+the audit itself returns on that population. A design-weighted re-reading of the ACS
+rows (models unchanged, evaluation under PWGTP) shifts every bracket down by
+0.03--0.08 while Florida and Pennsylvania remain the outliers --- the located span
+\emph{widens} weighted --- so the ordering is weighting-robust and the numeric
+locations belong to the unweighted convention the Setup declares. A sealed sweep campaign
 across ten further states was then run to test what predicts the location, and the three
 crossovers it located break the cluster: Ohio lands inside it, while \textbf{Florida sits at
 0.284 and Pennsylvania at 0.652}, both with tight brackets and every guard passed, on the
