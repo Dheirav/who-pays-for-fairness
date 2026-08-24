@@ -59,3 +59,17 @@ The abstract's "for reasons not yet identified" becomes the identified mechanism
 limitations' unattributed-shift paragraph is rewritten around nominal-label drift with the
 weighting exculpation noted; and the vintage instruction is replaced by the sharper, more
 useful one: measure your own current data, and anchor labels in real terms.
+
+## Addendum, 25 Aug — the two anchorings disagree (document 62)
+
+The fourth council's economist observed that $60,000 is *base-rate* anchoring, not
+price anchoring (CPI-U 251.107 → 292.655 puts 2018's $50,000 at $58,275), and that
+restoring the base rate and finding the 2018 shape is partly circular given this
+project's own thesis. The separated re-sweep proves the point: **at the CPI-anchored
+label Ohio remains inverted** (`++------`, spread 5.6, all guards passed) while at
+$60,000 it is classic. Real income growth beyond CPI moved even a CPI-fixed label down
+the distribution. This document's conclusion is accordingly refined, not withdrawn: the
+task changed under the label because the label's **quantile** slid; "no detected
+time-dependence at constant real value" is corrected to "at matched base rate"; and the
+lesson strengthens from "real-anchor your labels" to "quantile-anchor your outcome
+definitions" — which the IPUMS stage-A protocol already does.

@@ -132,6 +132,10 @@ NATURAL_ARMS = [
     ("acs:FL", "acs_income_fl_2018"),
     ("acs:VA", "acs_income_va_2018"),
     ("acs:MA", "acs_income_ma_2018"),
+    # The examiner's ask: the adverse-action argument is a lending argument, so the
+    # control must include the lending natural arms.
+    ("hmda:MS:derived_race", "hmda_ms_2018_race"),
+    ("hmda:LA:derived_race", "hmda_la_2018_race"),
 ]
 
 
@@ -288,6 +292,44 @@ def probe_natural(seeds: int = 5) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def probe_support(seeds: int = 5) -> pd.DataFrame:
+    """What the fitted mixtures actually contain, member by member.
+
+    The toolkit panel's point: the strongest and cheapest form of the lottery argument
+    is direct inspection --- if a cut arm's mixture support is literally {a
+    baseline-like member, a member that grants nothing}, the flat keep-probability is
+    observed structure rather than inference. Per signature arm: the members with
+    non-negligible weight, each member's weight and positive rate on the test split.
+    """
+    import numpy as np
+
+    from ..datasets import build as build_dataset
+    from ..mitigation import fit_exponentiated_gradient
+    from ..models import build as build_model
+    from ..preprocessing import prepare
+
+    rows = []
+    for spec, tau, direction in PROBE_ARMS:
+        dataset = build_dataset(spec).load()
+        for seed in range(seeds):
+            split = prepare(dataset, random_state=seed)
+            mitigated = fit_exponentiated_gradient(
+                build_model(f"logistic_regression@{tau}", random_state=seed),
+                split.X_train, split.y_train, split.a_train,
+                constraint="demographic_parity", eps=0.01)
+            weights = np.asarray(mitigated.weights_, dtype=float)
+            members = list(mitigated.predictors_)
+            for index, (weight, member) in enumerate(zip(weights, members)):
+                if weight < 1e-3:
+                    continue
+                rate = float(np.asarray(member.predict(split.X_test)).mean())
+                rows.append({"arm": f"{spec}@{tau:g}", "direction": direction,
+                             "seed": seed, "member": index,
+                             "weight": round(float(weight), 4),
+                             "member_positive_rate": round(rate, 4)})
+    return pd.DataFrame(rows)
+
+
 def probe_diff(seeds: int = 5) -> pd.DataFrame:
     """Document 50's last cheap step: diff one lift arm against one cut arm.
 
@@ -352,10 +394,23 @@ def main() -> None:
     parser.add_argument("--probe-natural", action="store_true",
                         help="the mixture probe at the natural operating point, both "
                              "directions, with per-fit wall-clock recorded")
+    parser.add_argument("--probe-support", action="store_true",
+                        help="inspect the fitted mixtures' members on the signature "
+                             "arms: weights and per-member positive rates")
     parser.add_argument("--probe-diff", action="store_true",
                         help="decile-by-group grant tables for one lift arm and one "
                              "cut arm: where the optimiser actually moved probability")
     args = parser.parse_args()
+
+    if args.probe_support:
+        probe = probe_support()
+        summary = (probe.groupby(["arm", "direction", "member"])
+                   [["weight", "member_positive_rate"]].mean().round(4))
+        print(summary.to_string())
+        OUT = research_dir("routes")
+        probe.to_csv(OUT / "routes_support_probe.csv", index=False)
+        print(f"\nwrote {OUT}/routes_support_probe.csv")
+        return
 
     if args.probe_diff:
         probe = probe_diff()

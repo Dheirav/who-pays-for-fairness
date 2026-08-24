@@ -1,7 +1,7 @@
 # What to do next, and what will bite you
 
 Live handover. Read this first, then `research/README.md` for the document index. Documents
-11–61 are the research record; the paper is `research/paper/ieee/paper.tex`. The checklist this
+11–62 are the research record; the paper is `research/paper/ieee/paper.tex`. The checklist this
 replaced, with the original reasoning behind each completed item, is in
 [`NEXT-archive.md`](NEXT-archive.md), including the two items completed on 22 Aug (the
 re-seal, and the route-divergence mechanism).
@@ -145,9 +145,11 @@ crossover replication owed; PUMS income allocation untested). **Text batch lande
 no-call-changes check verified, cross-task seal restated neutrally in its own subsection
 `sec:crosstask`, lottery claims family-scoped, corrected sequential tail ≈0.09 printed,
 Reg B §1002.15 conditions, anchoring paragraph in present tense, guards provenance,
-five-not-six methods). **Cheap-compute batch running**: mixture supports, natural-arm
-probe extended to HMDA lending arms, CPI-anchored ($58,275) OH sweep + AL/SC/NV
-naturals. **Queued experiments from the two majors**: attribute-aware in-processing on
+five-not-six methods). **Cheap-compute batch DONE (document 62)**: the two anchorings disagree — Ohio stays
+inverted at strict-CPI $58,275 while classic at base-rate-matched $60k, so **the
+quantile is the anchor** and doc 57 is refined in place; the lottery's degenerate
+support observed member-by-member; no lottery on either HMDA natural arm (9/9);
+the prior recomputed without Dutch changes no call. **Queued experiments from the two majors**: attribute-aware in-processing on
 the 17 regime populations (~an evening), weighted crossover replication (PERWT machinery
 exists), allocation-flag exclusion rerun, household-clustered bootstrap for sex arms.
 

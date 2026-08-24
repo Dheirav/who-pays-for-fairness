@@ -52,7 +52,9 @@ difference between them is what a sealed test exists to expose. A caution that g
 beyond this paper: four 2022 populations initially appeared to \emph{invert} the
 relationship, and diagnosis traced this substantially to the fixed nominal \$50{,}000
 label sliding down an inflated income distribution --- a fixed nominal outcome definition
-is a different task each year, so labels should be real-anchored and any deployment should
+is a different task each year --- and a CPI-anchored one still drifts when real incomes
+grow, so outcome definitions should be anchored to the distribution they cut (a
+quantile), and any deployment should
 measure its own current data rather than transport results across vintages. The relationship survives
 a change in how the rate is varied, a twenty-five-fold range of constraint tolerance, a
 boosted-tree learner and a protected attribute swapped from sex to race, but it disappears
@@ -983,15 +985,21 @@ fraction of everyone's approvals at random shrinks it multiplicatively; the cert
 reports the same success either way. A single quantity --- the mean probability granted
 just below the threshold --- separates the two behaviours on all nine deep-tail arms
 tested, including a matched pair that agrees on every aggregate we can compute and moves
-in opposite directions.
+in opposite directions. Direct inspection of the fitted mixtures confirms the structure
+member by member: on the cut arms the dominant-weight members grant almost nothing
+(COMPAS: weights 0.86--0.88 on members whose positive rate is at most $10^{-4}$; LSAC:
+0.876 on a member at $3 \times 10^{-4}$), while every lift arm's members all grant at
+graded rates --- the ``one member grants nothing'' form is observed, not inferred.
 
 Because the nine arms above sit in the region our own limitations call unreliable, the
-same probe was run as a control at the \emph{natural} operating point of seven
-populations spanning both directions --- Adult, three cutting and three extending survey
-populations. \textbf{The lottery does not appear at any of them}: every natural-point
-mixture is graded, granting probability below the boundary (means 0.17--0.43 against
+same probe was run as a control at the \emph{natural} operating point of nine
+populations spanning both directions and both instruments --- Adult, three cutting and
+three extending survey populations, and the two lending markets, since the
+adverse-action implication below is a lending argument. \textbf{The lottery does not
+appear at any of them}: every natural-point
+mixture is graded, granting probability below the boundary (means 0.17--0.63 against
 0.00--0.07 on the deep cut arms) with keep probability rising in the person's own score
-(correlations $+0.37$ to $+0.73$ against $\approx 0$), even on Adult, whose constraint
+(correlations $+0.36$ to $+0.73$ against $\approx 0$), even on Adult, whose constraint
 removes a fifth of the pool. The signature is therefore a property of constraints pushed
 to severe operating points, not of withdrawal as such --- which narrows the hazard and
 sharpens the audit: a flat keep probability in one's own fitted mixture is not the
@@ -1238,7 +1246,7 @@ Sealed magnitude model & beat predict-zero; MAE 4.50 v.\ 0.77 --- fail & size ca
 predicted from distance and band span; the direction-only concession is earned \\
 Sealed shape boundary & scored$-$1 + beat const.; 4 of 6 --- fail & the base-rate boundary
 called every 2014 shape and both sealed flips; the 2022 inversion was since traced to
-the nominal label sliding (see Limitations) \\
+the label's sliding \emph{quantile} (see Limitations) \\
 Sealed attribute-independence & scored$-$1 + beat const.; 2 of 6 --- fail & shape is not a
 label-side property: every race arm is classic at tenfold the sex arms' signal, pointing
 at gap size as the governing variable \\
@@ -1363,10 +1371,21 @@ real-equivalent of 2018's \$50{,}000, landing their base rates exactly on the 20
 and South Carolina's inverted limbs entirely, leaving only Nevada as a below-guard
 residual. The ``inversion'' was therefore substantially the fixed nominal label sliding
 down an inflated, bottom-compressed earnings distribution: the task changed under the
-label, and measured at constant real value the relationship shows no detected
-time-dependence from 2014 through 2022. The lesson replaces the caveat: fixed nominal
-outcome definitions are a different task each vintage, so labels should be real-anchored
-and deployments should audit their own current data.
+label. A review-prompted refinement then sharpened the mechanism: \$60{,}000 matches
+2018's \emph{base rates}, but the strict CPI deflation of 2018's \$50{,}000 is
+\$58{,}275, and re-sweeping Ohio there gives a different answer --- \textbf{at the
+CPI-anchored label Ohio remains inverted} (positive at low rates, negative at high,
+spread 5.6 points, every guard passed) while at the base-rate-matched label it is
+classic. Real incomes grew beyond CPI over 2018--2022, so even a CPI-fixed label slid
+down the distribution; what restoration requires is the label's \emph{quantile}, not
+its real price. Stated at the strength the data support: no detected time-dependence
+from 2014 through 2022 \emph{at matched base rate}, an inversion that persists at
+CPI-constant value --- which is itself the sharpest evidence that the distribution
+position, not the price level, is the operative anchor. The lesson replaces the caveat:
+fixed nominal outcome definitions are a different task each vintage, CPI-anchoring is
+not enough, and outcome definitions should be anchored to the distribution they cut ---
+a quantile --- as the third cohort's committed protocol already does; and deployments
+should audit their own current data.
 
 \section{Discussion}
 \label{sec:discussion}
