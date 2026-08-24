@@ -1135,7 +1135,9 @@ def test_paper_draft_population_count_is_recomputed() -> None:
         return
     text = paper.read_text()
 
-    method = _re.compile(r"_(eo|hgb|eps\d+|op[\d]+|post)$")
+    # `_aware` is the attribute-aware in-processing configuration (doc 63): the same
+    # persons under a different model input, a method suffix like the others here.
+    method = _re.compile(r"_(eo|hgb|eps\d+|op[\d]+|post|aware)$")
     purpose = _re.compile(r"_(purchase|refinance|cashout|improvement|other)$")
     names = set()
     for directory in RESEARCH.glob("*"):
