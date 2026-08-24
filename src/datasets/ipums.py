@@ -60,7 +60,9 @@ SEX_LABELS = {1: "Male", 2: "Female"}
 # the delivered extract are used; the loader records which in ``notes`` and refuses to
 # run if the required core is missing.
 CATEGORICAL = ["MARST", "EDATTAIN", "OCCISCO", "INDGEN", "CLASSWK", "URBAN"]
-NUMERIC = ["AGE", "YRSCHOOL"]
+# YRSCHOOL is absent from Brazil 2010 and its codes 90-99 are categories, not
+# years; EDATTAIN carries education categorically, so age is the one numeric.
+NUMERIC = ["AGE"]
 REQUIRED = ["COUNTRY", "YEAR", "AGE", "SEX"]
 INCOME_CANDIDATES = ["INCEARN", "INCTOT"]
 
@@ -156,8 +158,10 @@ class IPUMSIncomeLoader:
         a = frame["SEX"].map(SEX_LABELS).astype(object)
         a.name = PROTECTED
 
-        categorical = [c for c in CATEGORICAL if c in frame.columns]
-        numeric = [c for c in NUMERIC if c in frame.columns]
+        categorical = [c for c in CATEGORICAL
+                       if c in frame.columns and frame[c].notna().any()]
+        numeric = [c for c in NUMERIC
+                   if c in frame.columns and frame[c].notna().any()]
         features = frame[[*categorical, *numeric]].copy()
         for column in categorical:
             features[column] = features[column].astype(str)
