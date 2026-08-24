@@ -245,13 +245,18 @@ def main() -> None:
     parser.add_argument("--method", default="reduction", choices=sorted(METHOD_CODE),
                         help="postprocess moves per-group thresholds after training and "
                              "reads the protected attribute at prediction time")
+    parser.add_argument("--include-protected", action="store_true",
+                        help="give the model the protected attribute as a feature: the "
+                             "attribute-aware in-processing cell of the regime contrast. "
+                             "Isolated on disk with an _aware suffix.")
     parser.add_argument("--force", action="store_true")
     args = parser.parse_args()
 
     arms = arms_for(args.constraint, args.method)
     plain_arm = arms[1]
 
-    dataset = build_dataset(args.dataset).load()
+    dataset = build_dataset(args.dataset).load(
+        include_protected_in_features=args.include_protected)
     print(f"=== levelling up: {dataset.name} "
           f"[{args.constraint}, {args.model}] ===\n")
 
@@ -302,8 +307,11 @@ def main() -> None:
               f"{plain['lost_per_gained']:.2f}")
     print("=" * 74)
 
-    OUT = output_dir(output_stem(dataset.name, args.constraint, args.model, args.eps,
-                                 args.method))
+    stem = output_stem(dataset.name, args.constraint, args.model, args.eps, args.method)
+    if args.include_protected:
+        # A model that reads the attribute is a different regime, never a re-run.
+        stem = f"{stem}_aware"
+    OUT = output_dir(stem)
     for path in save(OUT, "levelling_up", {"runs": runs, "summary": summary},
                      params=dict(dataset=args.dataset, seeds=args.seeds, eps=args.eps,
                                  constraint=args.constraint, model=args.model),
