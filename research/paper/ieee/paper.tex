@@ -58,10 +58,15 @@ quantile), and any deployment should
 measure its own current data rather than transport results across vintages. The relationship survives
 a change in how the rate is varied, a twenty-five-fold range of constraint tolerance, a
 boosted-tree learner and a protected attribute swapped from sex to race, but it disappears
-under post-processing ($r = -0.024$ against $+0.585$), which reads the protected attribute at
-decision time. That boundary is where contemporaneous theory says the direction stops being
-distributional and becomes determined, and the theory's prediction for that regime holds in
-27 of 27 populations, nine pre-registered. The practical outcome is a procedure: when the
+under post-processing ($r = -0.024$ against $+0.585$). A sealed deconfounding test then
+separated the two things that change at that boundary: giving the \emph{same}
+in-processing optimizer the protected attribute leaves the relationship standing
+($r = +0.672$, eighteen populations), so the boundary is the method family, not
+attribute access --- blindness turns out not to be load-bearing for the pool claim.
+Contemporaneous theory's own group-level prediction --- where the attribute is
+readable, the disadvantaged group gains and the advantaged loses --- holds in every
+attribute-aware cell we have measured: 27 of 27 under post-processing, nine
+pre-registered, and 18 of 18 under aware in-processing. The practical outcome is a procedure: when the
 deployed model's viable operating band is wide enough --- which the procedure itself checks
 first --- a team can locate its own crossover by sweeping that model's threshold, using no
 new data.
@@ -112,9 +117,12 @@ Article~10(5) of the AI Act --- and for race and ethnicity the blind regime is o
 simply factual, because most member states collect no such attribute at all. Second,
 because of that split we motivate the regime as the one systems occupy, not as one any
 law cleanly compels. Under
-post-processing, which does read the attribute, the effect we report disappears
-(Section~\ref{sec:regime}). We treat this not as a weakness of the finding but as the
-boundary the theory draws, and we verify it from both sides.
+post-processing the effect we report disappears, and a sealed deconfounding test shows
+the disappearance belongs to the method, not to the attribute: the same in-processing
+optimizer, given the attribute, preserves the relationship
+(Section~\ref{sec:regime}). The blind regime remains the paper's scope because it is
+where the record was built and where deployed systems sit --- not because blindness is
+what the finding depends on.
 
 \subsection{Contributions}
 
@@ -602,10 +610,10 @@ this analysis is most likely to produce and hardest to notice.
 \section{The Regime Boundary}
 \label{sec:regime}
 
-The last row of Table~\ref{tab:robust} looks like a failure of robustness, but we read it
-differently, because it falls exactly on a line the theory draws. Post-processing reads the
-protected attribute at prediction time while the reduction does not, and that is the
-distinction on which \cite{backfire2026} is built.
+The last row of Table~\ref{tab:robust} looks like a failure of robustness, and for two
+review rounds we read it as falling exactly on the line the theory draws: post-processing
+reads the protected attribute at prediction time while the reduction does not, and that
+is the distinction on which \cite{backfire2026} is built.
 
 Running post-processing at each population's natural operating point across 17 populations
 gives $r = -0.024$, compared with $+0.585$ for the reduction on the same populations. Our
@@ -613,9 +621,30 @@ pre-registered prediction --- that the rule would carry over --- failed, and its
 alternative won outright, which is what pointed us at the regime distinction in the first
 place.
 
-\textbf{In the attribute-aware regime the theory says there is nothing to predict}, because the
-direction is determined. Its prediction for that regime is that the advantaged group loses and
-the disadvantaged gains, always. On our populations that holds in \textbf{18 of 18}, without exception. That check was
+\textbf{That reading was confounded, a reviewer said so, and the deconfounding test
+changed it.} The contrast above moves two things at once --- attribute access \emph{and}
+the optimizer family --- so ``the boundary is attribute access'' and ``the boundary is
+the method'' were observationally equivalent in everything reported so far. The missing
+cell was sealed with both readings' bars committed in advance (theory reading:
+$|r| < 0.30$; method reading: $r \ge +0.40$; a declared dead zone between) and run:
+the \emph{same} reduction, on document~43's eighteen populations, with the protected
+attribute in the feature set. The relationship stands --- $\mathbf{r = +0.672}$ across
+the thirteen natural arms surviving the frozen exclusions, if anything stronger than the
+blind cell's $+0.585$. \textbf{The pool-direction boundary is therefore the method
+family, not attribute access}: blindness is not load-bearing for the claim, the
+$-0.024$ vanishing is a property of threshold re-derivation rather than of reading the
+attribute, and the rule's applicability widens to attribute-aware in-processing --- on
+the strength of one sealed cohort, which is what we can say tonight.
+
+\textbf{What survives untouched --- strengthened, in fact --- is the theory's own
+group-level claim}: where the attribute is readable, the advantaged group loses and the
+disadvantaged gains, always. On our post-processing populations that holds in
+\textbf{18 of 18}, without exception --- and the deconfounding cell extends it: under
+attribute-aware \emph{in-processing} it holds in a further \textbf{18 of 18}. The two
+results separate cleanly: the theorem determines each \emph{group's} direction wherever
+the attribute is readable, while the \emph{pool's} direction --- the sum the theorem
+does not constrain --- remains rate-predictable under in-processing in both regimes and
+unpredictable only under post-processing. That check was
 post-hoc, so we repeated it as a confirmatory test on nine populations never previously
 post-processed, with the bar set at all nine and committed before the runs: it holds \textbf{9
 of 9}. One scoring honesty: the coin-flip tail ($0.5^9 \approx 0.002$) is the wrong null
@@ -1208,7 +1237,7 @@ the deployed system's pool change and who-pays decomposition, with and without t
 Every prediction was registered with its thresholds \emph{and the naive alternative it had to
 beat}, before the data existed. Table~\ref{tab:registered} is the complete ledger --- every
 registered or sealed test this work ran, with its committed bar and its outcome, failures
-included and uncorrected. The rows should not be read as twelve attempts at one claim, of
+included and uncorrected. The rows should not be read as thirteen attempts at one claim, of
 which two succeeded: each test targeted a \emph{different} claim, each failure removed a
 stronger claim than the one that survives, and the last column records what each row
 settled. The failures are boundary measurements; the passes are tests of the claim
@@ -1253,6 +1282,9 @@ at gap size as the governing variable \\
 Sealed cross-task shape & scored$-$1 + beat const.; 0 of 4 --- fail & the boundary does
 not transfer to two non-income tasks; every scored call inverted --- transferred
 structure with a flipped sign, unexplained (Sec.~\ref{sec:crosstask}) \\
+Regime deconfounding & two sealed readings; R1 18/18, $r=+0.672$ --- method reading &
+the pool boundary is the optimizer family, not blindness; the theorem's group
+directions hold in every aware cell (Sec.~\ref{sec:regime}) \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1315,7 +1347,9 @@ and there is nothing left to predict.
 \section{Limitations}
 
 \textbf{The sealed record is five failures, one pass, and one underpowered test}
-(plus the attribute-aware consistency check). The first
+(plus the attribute-aware consistency check, and the regime-deconfounding test, whose
+pre-committed two-reading design returned the method reading --- an outcome, not a
+pass or a fail of ours). The first
 sealed test (Section~\ref{sec:sealed}) failed at four of eight, carrying an in-sample
 refinement; the re-seal of the unrefined rule (Section~\ref{sec:resealed}) passed at nine of
 ten, beating the constant at six; a sealed magnitude model then failed outright, and the

@@ -1,7 +1,7 @@
 # What to do next, and what will bite you
 
 Live handover. Read this first, then `research/README.md` for the document index. Documents
-11–62 are the research record; the paper is `research/paper/ieee/paper.tex`. The checklist this
+11–63 are the research record; the paper is `research/paper/ieee/paper.tex`. The checklist this
 replaced, with the original reasoning behind each completed item, is in
 [`NEXT-archive.md`](NEXT-archive.md), including the two items completed on 22 Aug (the
 re-seal, and the route-divergence mechanism).
@@ -54,9 +54,12 @@ that after the run cannot excuse the miss.
    below 0.54, up above* — re-sealed against ten never-measured states scored **9 of 10, bar
    9, constant 6**. The one miss (MN, 0.699) is flagged by the sealed criterion as against
    the rule, not a boundary call; its effect is seed-noise around zero, noted post-hoc.
-2. **The rule is regime-bound** (documents 43, 47). Under post-processing it vanishes
-   (r = −0.024 against +0.585). That is the theory's regime boundary rather than fragility, and
-   the attribute-aware prediction holds **27 of 27**, nine pre-registered.
+2. **The rule is method-bound, not blindness-bound** (documents 43, 47, **63**). Under
+   post-processing it vanishes (r = −0.024 against +0.585) — but the sealed deconfounding
+   cell shows the same reduction with the attribute readable keeps it (r = +0.672), so
+   the boundary is the optimizer family and blindness is not load-bearing. The theorem's
+   group-level prediction holds in every aware cell: 27/27 post-processing (nine
+   pre-registered) plus 18/18 aware in-processing.
 3. **The theory is silent, not refuted** (document 27). *Backfire*'s conditions are stated over
    extrema of a quantity that diverges on real data, and they are *sufficient, not necessary*.
    A relaxed form tracks the direction on 24 of 26. **Never write "0 of 26" as though datasets
@@ -149,9 +152,11 @@ five-not-six methods). **Cheap-compute batch DONE (document 62)**: the two ancho
 inverted at strict-CPI $58,275 while classic at base-rate-matched $60k, so **the
 quantile is the anchor** and doc 57 is refined in place; the lottery's degenerate
 support observed member-by-member; no lottery on either HMDA natural arm (9/9);
-the prior recomputed without Dutch changes no call. **Queued experiments from the two majors**: attribute-aware in-processing on
-the 17 regime populations (~an evening), weighted crossover replication (PERWT machinery
-exists), allocation-flag exclusion rerun, household-clustered bootstrap for sex arms.
+the prior recomputed without Dutch changes no call. **The causal major's experiment is DONE (document 63)**: the sealed deconfounding
+cell returned the method reading — blindness is not load-bearing, the regime framing is
+corrected in place. Still queued from the economist: weighted crossover replication
+(PERWT machinery exists), allocation-flag exclusion rerun, household-clustered
+bootstrap for sex arms.
 
 ## The third council (ten panelists, 25 Aug) — done, fixes applied (document 58)
 
