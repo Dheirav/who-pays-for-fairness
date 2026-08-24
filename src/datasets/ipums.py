@@ -71,6 +71,13 @@ INCOME_CANDIDATES = ["INCEARN", "INCTOT"]
 INCOME_SENTINEL = 9_999_998
 CHUNK_ROWS = 500_000
 
+# Stage B may fix a per-population subsample (rows drawn once, rng(0), after the
+# filter): the filtered samples run 161k-415k, the record's own populations run
+# 10k-130k, and the noise floor is 2,500 test rows -- scale buys runtime, not power.
+# None means the full filtered sample; a value is part of the sealed stage-B commit
+# and joins the dataset's name so full-size and subsampled runs can never collide.
+SUBSAMPLE_ROWS: int | None = 60_000
+
 
 def extract_files() -> list[Path]:
     return sorted([*DATA_DIR.glob("*.csv"), *DATA_DIR.glob("*.csv.gz")])
@@ -108,7 +115,10 @@ class IPUMSIncomeLoader:
 
     @property
     def name(self) -> str:
-        return f"ipums_income_{self.country.lower()}_{self.year}_t{self.threshold}"
+        stem = f"ipums_income_{self.country.lower()}_{self.year}_t{self.threshold}"
+        if SUBSAMPLE_ROWS is not None:
+            stem = f"{stem}_s{SUBSAMPLE_ROWS // 1000}k"
+        return stem
 
     def _read(self) -> pd.DataFrame:
         files = extract_files()
@@ -153,6 +163,12 @@ class IPUMSIncomeLoader:
             keep &= frame["EMPSTAT"] == 1
         keep &= frame["SEX"].isin([1, 2])
         frame, income = frame[keep].reset_index(drop=True), income[keep].reset_index(drop=True)
+        if SUBSAMPLE_ROWS is not None and len(frame) > SUBSAMPLE_ROWS:
+            chosen = np.random.default_rng(0).choice(len(frame), SUBSAMPLE_ROWS,
+                                                     replace=False)
+            chosen.sort()
+            frame = frame.iloc[chosen].reset_index(drop=True)
+            income = income.iloc[chosen].reset_index(drop=True)
 
         y = pd.Series((income > self.threshold).astype(int), name="income")
         a = frame["SEX"].map(SEX_LABELS).astype(object)

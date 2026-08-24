@@ -109,10 +109,40 @@ S2_RHO, S2_FLOOR = 0.70, 2
 S3_FLOOR = 3
 BOUNDARY = 0.365               # analyse_shapes' sealed boundary, real-anchored here
 
-# Stage B fills this dict, in its own commit, before any constraint run:
-# (country, year) -> {"primary": threshold, "secondary": threshold,
-#                     "shape": threshold or None, "op_points": {rate: tau}}
-THRESHOLDS_STAGE_B: dict = {}
+# Stage B, committed 25 Aug before any constraint run. Thresholds are the measured
+# income quantiles of the FULL filtered samples (BR2000 351k, BR2010 415k, MX2015
+# 161k, MX2020 241k rows); op points are seed-0 baseline score quantiles at the
+# sealed target rates, measured on the full samples. Sealed with them, decided
+# pre-outcome: every arm runs on a fixed 60,000-row subsample (rng(0), drawn after
+# the filter -- ``ipums.SUBSAMPLE_ROWS``), because the noise floor is 2,500 test
+# rows, the record's own populations run 10k-130k, and scale bought runtime, not
+# power. Shape-label op points were measured in the same pre-commit pass after a
+# wiring gap was caught: without them S3 would have been underpowered by
+# construction.
+THRESHOLDS_STAGE_B: dict = {
+    ("BR", "2000"): {
+        "primary": 253, "secondary": 358, "shape": 560,
+        "op_points": {0.42: 0.6438, 0.48: 0.5988, 0.54: 0.5527, 0.60: 0.4985,
+                      0.20: 0.8177, 0.75: 0.3408},
+        "shape_op_points": {0.15: 0.5495, 0.25: 0.3599, 0.35: 0.2533,
+                            0.45: 0.182, 0.55: 0.1392, 0.65: 0.0975},
+    },
+    ("BR", "2010"): {
+        "primary": 600, "secondary": 800,
+        "op_points": {0.42: 0.5906, 0.48: 0.5445, 0.54: 0.4978, 0.60: 0.4509},
+    },
+    ("MX", "2015"): {
+        "primary": 3600, "secondary": 4286,
+        "op_points": {0.42: 0.6227, 0.48: 0.5705, 0.54: 0.5261, 0.60: 0.4811},
+    },
+    ("MX", "2020"): {
+        "primary": 4300, "secondary": 5600, "shape": 7740,
+        "op_points": {0.42: 0.6009, 0.48: 0.5346, 0.54: 0.4973, 0.60: 0.4716,
+                      0.20: 0.7697, 0.75: 0.3783},
+        "shape_op_points": {0.15: 0.4614, 0.25: 0.3043, 0.35: 0.2363,
+                            0.45: 0.1822, 0.55: 0.1474, 0.65: 0.1223},
+    },
+}
 
 
 def verify() -> None:
@@ -210,7 +240,11 @@ def score() -> None:
             threshold = entry.get(kind)
             if threshold is None:
                 continue
+            from ..datasets.ipums import SUBSAMPLE_ROWS
+
             stem = f"ipums_income_{country.lower()}_{year}_t{threshold}"
+            if SUBSAMPLE_ROWS is not None:
+                stem = f"{stem}_s{SUBSAMPLE_ROWS // 1000}k"
             stems[kind] = stem
         p_by_kind = {
             kind: float(build_dataset(
@@ -224,13 +258,17 @@ def score() -> None:
             if natural:
                 arms.append({"population": f"{country}{year}", "kind": kind,
                              "route": "label", "p": p_by_kind[kind], **natural})
-        for rate, tau in entry.get("op_points", {}).items():
-            # "0.49" -> "049", matching run_levelling_up's op-arm directory naming.
-            code = str(tau).replace(".", "")
-            op = _arm(f"{stems['primary']}_levelling_up_op{code}")
-            if op:
-                arms.append({"population": f"{country}{year}", "kind": "primary-op",
-                             "route": "op", "p": p_by_kind["primary"], **op})
+        for kind_key, op_key in (("primary", "op_points"), ("shape", "shape_op_points")):
+            if kind_key not in stems:
+                continue
+            for rate, tau in entry.get(op_key, {}).items():
+                # "0.49" -> "049", matching run_levelling_up's op-arm directory naming.
+                code = str(tau).replace(".", "")
+                op = _arm(f"{stems[kind_key]}_levelling_up_op{code}")
+                if op:
+                    arms.append({"population": f"{country}{year}",
+                                 "kind": f"{kind_key}-op", "route": "op",
+                                 "p": p_by_kind[kind_key], **op})
         frame = pd.DataFrame(arms)
         if frame.empty:
             print(f"{country} {year}: no arms yet")
