@@ -197,6 +197,24 @@ three post-hoc tests (24 Aug):
   grants nothing below the top decile and cuts by lottery — the open selector question
   now has a concrete object to explain.
 
+## A thirteenth registered test, run because a reviewer demanded it
+
+The fourth review round's causal methodologist caught a confound two earlier rounds
+missed: our "the rule stops where the model can read the protected attribute" story
+compared different *optimizers* as well as different attribute access, so the boundary
+could not be located at either. The missing cell was sealed with both readings' bars
+committed in advance and run the same night: the same in-processing optimizer, given
+the attribute, on the same eighteen populations. **The relationship survived —
+r = +0.672, stronger than the blind cell's +0.585 — so the boundary is the method, not
+blindness.** Uncomfortable and clarifying at once: the claim's "attribute-blind"
+scoping turns out not to be load-bearing (the rule's reach widens), the vanishing under
+post-processing belongs to that method, and the theory paper's own group-level
+prediction comes out *stronger* than we had said — the disadvantaged group gained and
+the advantaged lost in every attribute-aware cell measured, 27 of 27 under
+post-processing plus 18 of 18 in this new cell. The paper's regime framing is corrected
+in place, and the correction is reported as what it is: a reviewer finding a real hole,
+and the sealed test that filled it siding against our two-round-old interpretation.
+
 ## Scale, and the discipline behind the numbers
 
 The record holds **57 independent populations** across seven data sources (UCI Adult, ACS
