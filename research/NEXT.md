@@ -129,6 +129,28 @@ that after the run cannot excuse the miss.
 - [ ] **Magnitude.** Ordered within a population (ρ up to +0.96), no pooled slope (+0.487,
       failed). A better model is possible; the current concession is honest without one.
 
+## The fourth council (eight panelists, 25 Aug) — verification round
+
+Four returning lenses (forecasting, examiner, skeptic, replication) all opened
+"prior demands fully/largely implemented" and downgraded major→minor; the replication
+director independently verified all 23 hashes and the Bitcoin receipts end-to-end.
+Four fresh lenses: consistency auditor (8 mechanical bugs, all fixed), toolkit
+maintainer (minor; caught one outright false sentence about two-member mixtures, fixed),
+causal methodologist (**major**: the regime contrast confounds attribute access with
+optimizer family — fix is attribute-aware *in-processing* on the 17 populations, loaders
+already support `include_protected_in_features`), economist (**major**: the $60k
+re-anchoring conflates CPI with base-rate matching and is partly circular; weighted
+crossover replication owed; PUMS income allocation untested). **Text batch landed at
+`0303c01`** (34 edits: Dutch propagated to table/figure/prior-provenance with the
+no-call-changes check verified, cross-task seal restated neutrally in its own subsection
+`sec:crosstask`, lottery claims family-scoped, corrected sequential tail ≈0.09 printed,
+Reg B §1002.15 conditions, anchoring paragraph in present tense, guards provenance,
+five-not-six methods). **Cheap-compute batch running**: mixture supports, natural-arm
+probe extended to HMDA lending arms, CPI-anchored ($58,275) OH sweep + AL/SC/NV
+naturals. **Queued experiments from the two majors**: attribute-aware in-processing on
+the 17 regime populations (~an evening), weighted crossover replication (PERWT machinery
+exists), allocation-flag exclusion rerun, household-clustered bootstrap for sex arms.
+
 ## The third council (ten panelists, 25 Aug) — done, fixes applied (document 58)
 
 Ten fresh lenses (HCI, examiner, EU law, sociology, ML systems, Goodhart, pedagogy,
