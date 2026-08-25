@@ -27,6 +27,8 @@ HERE = Path(__file__).resolve().parent
 
 # (source, output stem, title, subtitle)
 DOCUMENTS = [
+    (HERE / "PREP-NOTES.md", "08-prep-notes", "Prep Notes",
+     "Private: every question they can ask, with the answers and the reasons"),
     (HERE / "HANDOUT.md", "07-handout", "What I Did, What I Found, What I Need",
      "The printout: the project from zero, the evidence, and four decisions"),
     (HERE / "PLAIN-ENGLISH.md", "00-plain-english", "The Whole Thing, In Plain Words",
