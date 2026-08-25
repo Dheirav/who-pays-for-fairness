@@ -250,7 +250,7 @@ PREAMBLE = r"""\documentclass[11pt,a4paper]{article}
 \sloppy
 \setlength{\emergencystretch}{3em}
 \title{\textbf{TITLE}\\[2mm]\large SUBTITLE}
-\author{Dheirav}
+\author{AUTHOR}
 \date{\today}
 \begin{document}
 \maketitle
@@ -262,7 +262,11 @@ def build(source: Path, stem: str, title: str, subtitle: str) -> bool:
     # SUBTITLE before TITLE: replacing TITLE first also hits the TITLE inside SUBTITLE,
     # leaving a literal "SUB" plus the title where the subtitle belongs -- which is exactly
     # what every PDF built before this line shipped with.
+    # The author line prints on the handout only; on every other document it is a
+    # waste of a line, since the handout is the one that introduces who did the work.
+    author = "Dheirav Prakash" if stem == "07-handout" else ""
     tex = (PREAMBLE.replace("SUBTITLE", escape(subtitle)).replace("TITLE", escape(title))
+           .replace("AUTHOR", author)
            + body + "\n\\end{document}\n")
     tex_path = HERE / f"{stem}.tex"
     tex_path.write_text(tex)
