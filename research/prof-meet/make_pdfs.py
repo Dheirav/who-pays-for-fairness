@@ -251,7 +251,7 @@ PREAMBLE = r"""\documentclass[11pt,a4paper]{article}
 \setlength{\emergencystretch}{3em}
 \title{\textbf{TITLE}\\[2mm]\large SUBTITLE}
 \author{AUTHOR}
-\date{\today}
+\date{\vspace{-5ex}}
 \begin{document}
 \maketitle
 """
