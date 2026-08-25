@@ -29,6 +29,8 @@ HERE = Path(__file__).resolve().parent
 DOCUMENTS = [
     (HERE / "PREP-NOTES.md", "08-prep-notes", "Prep Notes",
      "Private: every question they can ask, with the answers and the reasons"),
+    (HERE / "PREP-NOTES.md", "08-prep-notes", "Prep Notes",
+     "Private: the questions they can ask, with answers and the reasons behind them"),
     (HERE / "HANDOUT.md", "07-handout", "What I Did, What I Found, What I Need",
      "The printout: the project from zero, the evidence, and four decisions"),
     (HERE / "PLAIN-ENGLISH.md", "00-plain-english", "The Whole Thing, In Plain Words",
