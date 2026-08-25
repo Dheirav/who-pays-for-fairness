@@ -17,19 +17,19 @@ Everything is a PDF. The `.md` files beside them are the editable sources; run
 | 5 | `05-reading-notes.pdf` | What I checked in each cited paper, and what changed | 10 min |
 | 6 | `02-findings.pdf` | The earlier findings deck (see its update note) | 12 min |
 
-`01-start-here.pdf` is this document. **If any wording is unfamiliar, start at 00** — it
+`01-start-here.pdf` is this document. **If any wording is unfamiliar, start at 00** - it
 defines every term the others use.
 
 ## In one sentence
 
 > These fairness fixes make two groups equal either by approving more from the group being
-> turned down, or by rejecting more from the group getting through — and the certifying
+> turned down, or by rejecting more from the group getting through - and the certifying
 > score cannot tell which happened. Theory published in March 2026 proves it can go either
-> way. **I measured which way, across 57 populations: it depends on how generous the system
-> already is, with a tipping point each population owns** — and a rule committed to git
+> way. **I measured which way, across 67 populations: it depends on how generous the system
+> already is, with a tipping point each population owns** - and a rule committed to git
 > before the test data existed called 9 of 10 never-measured populations correctly. The
-> domains these tools are deployed in sit at opposite ends of that scale — CV screening
-> approves 2–3%, mortgage lending approves 84% — so two organisations can apply the
+> domains these tools are deployed in sit at opposite ends of that scale - CV screening
+> approves 2-3%, mortgage lending approves 84% - so two organisations can apply the
 > identical tool in good faith and get opposite effects, with identical fairness reports.
 > Their conditions hold on none of my datasets; my rule needs only a historical approval
 > rate, and the two agree at 0.93.
@@ -39,12 +39,12 @@ defines every term the others use.
 | file | why it matters |
 |---|---|
 | **01 Mittelstadt et al. (2023)** | **The closest competing work.** Showed these fixes mostly harm rather than help, *and* proposed the remedy I thought was mine. Read section 6. |
-| 02 Corbett-Davies et al. (2017) | Proves what the mathematically best possible fair program looks like — which makes one of my comparisons a ceiling rather than a rival. |
+| 02 Corbett-Davies et al. (2017) | Proves what the mathematically best possible fair program looks like - which makes one of my comparisons a ceiling rather than a rival. |
 | 03 Diana et al. (2021) | The alternative method the field recommends for this problem. I test it and it performs badly. |
 | 04 Kearns et al. (2018) | Showed fixes can look fine per group while failing for combinations of groups. I reproduce this. |
 | **13 Maheshwari et al. (2023)** | The other half of paper 04. Showed that these fixes harm combined groups *more*, and that it "often goes unnoticed in the overall performance". My intersectional finding replicates the two of them together; what is mine is ten populations and the condition that it needs a sizeable minority to appear. |
-| **11 Backfire (2026)** | **The closest work to my main claim.** Proves the effect can go either way when the model cannot see the group — my exact setting. No experiments in it at all. Read the abstract and Theorem 3. |
-| **05 Goethals et al. (2024)** | **The near miss.** Studies the same dimension I do, calls it "overlooked" — and two of its four authors also wrote paper 01. Their setup fixes the number of approvals in advance, so my effect cannot appear in it. |
+| **11 Backfire (2026)** | **The closest work to my main claim.** Proves the effect can go either way when the model cannot see the group - my exact setting. No experiments in it at all. Read the abstract and Theorem 3. |
+| **05 Goethals et al. (2024)** | **The near miss.** Studies the same dimension I do, calls it "overlooked" - and two of its four authors also wrote paper 01. Their setup fixes the number of approvals in advance, so my effect cannot appear in it. |
 | 06 Menon & Williamson (2018) | Supporting theory for paper 02. |
 | 07 Ustun et al. (2019) | Another "avoid harm" method from the literature. |
 | 08 Black et al. (2022) | On models that score equally well but disagree about individuals. Supports one of my cautions. |
@@ -53,13 +53,13 @@ defines every term the others use.
 
 ## Where the underlying work is
 
-- `../docs/11`–`52` — one document per finding, each stating its own limits, failures and
+- `../docs/11`-`52` - one document per finding, each stating its own limits, failures and
   withdrawals recorded in place
-- `../../docs/01`–`10` — the coursework this grew out of
-- `../results/` — every number as a spreadsheet
-- `../../tests/test_documented_claims.py` — regenerates every headline figure and fails if a
+- `../../docs/01`-`10` - the coursework this grew out of
+- `../results/` - every number as a spreadsheet
+- `../../tests/test_documented_claims.py` - regenerates every headline figure and fails if a
   document disagrees with its data
-- `git log` — the full record, including predictions committed before the experiments that
+- `git log` - the full record, including predictions committed before the experiments that
   tested them
 
 ## Three things I would rather say than be asked
@@ -80,16 +80,16 @@ theory paper (paper 11) proves the effect can go either way in exactly my settin
 it by running a novelty check, not before starting. What survives is the empirical half:
 they have no experiments, their conditions hold on **none** of my 26 runs because the
 quantity they use diverges on real data, and my rule needs only an approval rate. The two
-agree at 0.93 — independent theory and independent measurement converging.
+agree at 0.93 - independent theory and independent measurement converging.
 
 ## Scale
 
-57 independent populations · 7 data sources · 6 kinds of decision · 3 countries · 5 repeats
+67 independent populations · 8 data sources · 6 kinds of decision · 5 countries · 5 repeats
 of everything, 12 or 20 where the effects were small enough to need them · 55 automated
 checks that re-derive every documented figure from stored results
 
 Eleven tests written down and committed before their data existed: eight failed, one
-returned underpowered, two passed — including the central one, the direction rule at
+returned underpowered, two passed - including the central one, the direction rule at
 **9 of 10** on populations never previously measured, against a best lucky guesser's 6.
 Every failure is in the paper, uncorrected; each one drew a boundary, and the passes are
 what survive that map. One further hypothesis died in its pre-seal check before costing

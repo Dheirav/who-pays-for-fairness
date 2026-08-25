@@ -235,9 +235,9 @@ used, and I checked where each one sits.
 
 | what is being decided | share who get a "yes" | which way the fix goes |
 |---|---|---|
-| Sifting job applications | **2–3%** | takes opportunities away |
-| Getting into a top university | 4–10% | takes opportunities away |
-| Getting into university generally | 66–73% | hands opportunities out |
+| Sifting job applications | **2-3%** | takes opportunities away |
+| Getting into a top university | 4-10% | takes opportunities away |
+| Getting into university generally | 66-73% | hands opportunities out |
 | Getting a mortgage | **~84%** | hands opportunities out |
 
 They sit at opposite ends, which means two organisations can use exactly the same fairness
@@ -313,6 +313,20 @@ And the lottery question closed. It turns out that where the lottery happens, no
 fairer alternative of the same kind exists at all. So it is not a bug someone should
 have caught. It is what the constraint itself forces there, and the only honest
 complaint is that nobody is told it is happening.
+
+## The last two days, in three sentences
+
+The rule survived being given the one thing we thought it depended on: letting the
+model see race or sex did not break it, so the boundary is the kind of fix, not
+blindness, and the theory paper's own claim came out stronger than we had said. Two
+final pre-registered campaigns went against us and were published that way: our
+measuring procedure stays unreliable on mortgage data (though the direction held in 7
+of 8 markets), and Brazil turned out to have almost no gender gap for the fix to act
+on, so our safety gates refused to produce an answer rather than invent one. Along the
+way we found the first switch point outside America (Mexico, around 0.45), and the one
+question still open, whether it is truly the approval rate doing the predicting, has a
+properly powered test running right now on Brazil's racial gap, which is five times
+larger than its gender one.
 
 ## The one number that is worth remembering, with its health warning
 

@@ -6,12 +6,12 @@
 > committed before the data existed (**9 of 10** never-measured states, best constant 6);
 > the theory's own regime prediction was confirmed 27 of 27, nine pre-registered; and a
 > second sealed campaign then showed the fixed 0.54 tipping point is population-dependent
-> (located values 0.28–0.65), which narrowed the claim honestly rather than breaking it.
-> The fork below is unchanged — if anything, the sealed pass strengthens the "stands on
+> (located values 0.28-0.65), which narrowed the claim honestly rather than breaking it.
+> The fork below is unchanged - if anything, the sealed pass strengthens the "stands on
 > its own" branch.
 >
 > **Further update, 25 August.** Now 57 populations. The paper has since been through
-> three adversarial review panels — twenty-four independent reviews, no rejects — and
+> three adversarial review panels - twenty-four independent reviews, no rejects - and
 > every cheap fix they converged on is applied: the deployable (deterministic) form of
 > the mitigation preserves the predicted direction on 10 of 10 populations, the "lottery"
 > finding is bounded to severe operating points, a 2022 anomaly was traced to the nominal
@@ -21,12 +21,23 @@
 > self-audit then added a twelfth registered test (failed, informatively: the
 > curve-shape boundary belongs to the income task only), downgraded one published
 > crossover, and closed the lottery's open question (no in-class alternative exists).
-> The fork below still stands as written.
+>
+> **Final update, 25 August.** Now 67 populations, 8 sources, 5 countries, sixteen
+> registered tests. A sealed deconfounding experiment overturned our own regime story:
+> the boundary is the kind of method, not attribute blindness, and the theory's
+> group-level claim strengthened to 27/27 plus 18/18. The six-market lending seal
+> failed its protocol test while the direction held on 7 of 8 markets. The
+> Brazil/Mexico cohort was refused by Brazil's absent sex gap (the audit's gates
+> declined to manufacture an answer), banking the first non-US crossover (Mexico,
+> 0.42-0.48) and a new screen-gate rule; the race-arm cohort running now is the
+> powered fourth attempt at the one open confound. The fork below still stands as
+> written, and question 3's answer from a stand-in for the theory authors was: "I do
+> not feel scooped, I feel operationalized." 
 
 ## The question
 
 **A 2026 theory paper proves the effect can go either way, with no experiments in it. I have
-the experiments, a rule you can apply, and — since I last wrote this — a result that says the
+the experiments, a rule you can apply, and - since I last wrote this - a result that says the
 theory is right about one half of its claim and wrong about the other. Is that an empirical
 paper worth publishing, or does it read as a follow-up to someone else's result?**
 
@@ -38,10 +49,10 @@ domains, two countries and two decades; a controlled design that separates the r
 difficulty of the task; and a rule computable from a historical approval rate.
 
 **The strongest thing I have is a two-sided result about their theory.** They split the world
-into two regimes — whether the protected attribute is available when the decision is made.
+into two regimes - whether the protected attribute is available when the decision is made.
 
 * Their **conditions**, the ordering relations their theorem is stated over, **cannot be
-  evaluated on any of my 26 arms** — the quantity diverges on real data, so the two regions'
+  evaluated on any of my 26 arms** - the quantity diverges on real data, so the two regions'
   ranges always overlap. They are *sufficient, not necessary*, so this says their theorem is
   **silent** on real populations, not that it is wrong. A relaxed form of the same ordering
   tracks the direction on 24 of 26.
@@ -54,8 +65,8 @@ contact with data. That is what an empirical paper can settle and a population-l
 cannot.
 
 **If it now reads as derivative**, that is a problem of framing rather than content, but it
-is still a problem. I reached this before knowing their paper existed — provable from dates
-— but a reader encountering both will see theirs first.
+is still a problem. I reached this before knowing their paper existed - provable from dates
+- but a reader encountering both will see theirs first.
 
 ## What I would argue
 
@@ -70,7 +81,7 @@ The "when" is the contribution, and it stands on its own:
    model's scores and group membership. Mine needs last year's approval rate.
 4. **The practical reading is sharper than I first thought, and less comfortable.** I
    originally claimed loans, hiring and admissions are nearly all stingy systems, so the
-   harmful direction is the usual one. **I measured it, and that was wrong** — they span the
+   harmful direction is the usual one. **I measured it, and that was wrong** - they span the
    whole range and sit on both sides of the switch. The real practical claim is better: two
    products in the *same* mortgage market, run through the *same* fairness constraint, move
    in opposite directions, and the fairness report says success in both cases.
@@ -80,7 +91,7 @@ The "when" is the contribution, and it stands on its own:
 That this is now the empirical appendix to someone else's theory paper.
 
 My answer: their conditions fail on every dataset I have, so this is not an application of
-their result — it is a demonstration that their result cannot be applied, plus a substitute
+their result - it is a demonstration that their result cannot be applied, plus a substitute
 that can. But I would rather be told now if that is too fine a distinction to carry a paper.
 
 ## Other questions, if there is time
@@ -91,28 +102,28 @@ that can. But I would rather be told now if that is too fine a distinction to ca
    than a complaint about it.
 2. ~~One missing comparison.~~ **Done, and it failed.** I ran the post-processing version
    across 17 populations: the rule vanishes, r = −0.024 against +0.585 for my own method. That
-   is the regime boundary above rather than fragility — post-processing reads the protected
+   is the regime boundary above rather than fragility - post-processing reads the protected
    attribute, which is the regime where the theory says nothing varies. But it means **every
    claim in the paper is now explicitly about attribute-blind in-processing**, which is where
    almost every deployed system sits, because per-group thresholds are disparate treatment on
    their face. Is narrowing it that way a strength or a weakness in your reading?
-3. **AI assistance.** I used an AI assistant substantially — for writing code, running
+3. **AI assistance.** I used an AI assistant substantially - for writing code, running
    analyses and drafting. What does the department expect me to disclose, and how?
 
 ## What is not in question
 
 The measurements. Every headline number is regenerated from stored results by an automated
-check that fails if a document and its data disagree — 28 such checks at the time of writing.
+check that fails if a document and its data disagree - 28 such checks at the time of writing.
 
 ## What I would want you to press me on
 
 **I withdrew two headline results this week.** My strongest correlations, +0.979 and +0.968,
 came from arms where the model was worse than always predicting the majority label. I found it
 because a dataset where 89% of people pass forced the issue, and the same fix then rescued the
-mortgage result that had been failing. The method that caught it — pre-registering every
-prediction with the naive alternative it has to beat — is the part of this work I would most
+mortgage result that had been failing. The method that caught it - pre-registering every
+prediction with the naive alternative it has to beat - is the part of this work I would most
 like judged, because it is also the part that keeps producing results I did not want.
 
 Three of my own predictions failed and are written up as failures. Two of my own claims were
-withdrawn. I would rather be told the framing is wrong now than find out in review — which
+withdrawn. I would rather be told the framing is wrong now than find out in review - which
 is exactly what happened with the remedy, and why I no longer claim it as new.
