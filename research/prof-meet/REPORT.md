@@ -35,10 +35,11 @@ shrink the pool of favourable decisions. Measured on your own data through the a
 procedure, this holds everywhere the audit returns an answer (27 of 27 consistency
 checks). As a transported shortcut, "below about 0.54 the fix takes, above it gives"
 works often but not always: sealed at 9 of 10 on never-measured states, 5 of 10
-post-hoc on larger states, and the strongest sealed evidence cannot yet separate the
-approval rate from the income cutoff that produced it. The experiment designed to
-separate them is running as this report is written (see the final section). The claim
-covers direction only. Size does not transfer, and a sealed model of size lost to
+post-hoc on larger states. The long-standing worry that this evidence could not
+separate the approval rate from the income cutoff was resolved while this report was
+being written: the screen-gated race cohort beat the cutoff-only reading 8-9 against
+5, so it is the rate that predicts, while the 0.54 value itself earned no special
+status in-band. The claim covers direction only. Size does not transfer, and a sealed model of size lost to
 predicting zero.
 
 ## Who pays, which the metric also hides
@@ -73,7 +74,7 @@ not as attempts at one claim.
 | Sealed cross-task shape | 0 of 4, fail | the shape boundary belongs to the income question; every call inverted, unexplained |
 | Regime deconfounding | two sealed readings; r = +0.672, method reading | the boundary is the optimizer family, not attribute access; see below |
 | Six-market lending seal | M2 2 of 6 fail; M1 underpowered | the sweep stays unreliable on mortgages across six independent markets; the direction held on 7 of 8 |
-| Third cohort (Brazil, Mexico) | underpowered on all components | Brazil's sex gaps sit below the audit's own floor and the gates refused them; the confound stands open |
+| Third cohort (Brazil, Mexico) | underpowered on all components | Brazil's sex gaps sit below the audit's own floor and the gates refused them; the confound passed to the row below |
 | Race-arm cohort (screen-gated) | S1 fails by one arm; S2 holds | the cutoff-only reading is beaten 8-9 vs 5: it is the rate, not label rarity; the 0.54 value holds no in-band privilege; the within-population claim passes off-instrument at rho 0.9-1.0 |
 
 The passes carry their own health warnings, stated where the claims are made. The
