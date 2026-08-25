@@ -74,7 +74,7 @@ not as attempts at one claim.
 | Regime deconfounding | two sealed readings; r = +0.672, method reading | the boundary is the optimizer family, not attribute access; see below |
 | Six-market lending seal | M2 2 of 6 fail; M1 underpowered | the sweep stays unreliable on mortgages across six independent markets; the direction held on 7 of 8 |
 | Third cohort (Brazil, Mexico) | underpowered on all components | Brazil's sex gaps sit below the audit's own floor and the gates refused them; the confound stands open |
-| Race-arm cohort (screen-gated) | running at time of writing | the fourth attempt at the deconfounding question, on gaps three to five times the floor |
+| Race-arm cohort (screen-gated) | S1 fails by one arm; S2 holds | the cutoff-only reading is beaten 8-9 vs 5: it is the rate, not label rarity; the 0.54 value holds no in-band privilege; the within-population claim passes off-instrument at rho 0.9-1.0 |
 
 The passes carry their own health warnings, stated where the claims are made. The
 9-of-10's one-in-twenty binomial tail is against an independent guesser; paired against
@@ -135,7 +135,8 @@ first crossover ever located outside the United States (0.423-0.483, below the U
 cluster), and the standing rule gained a screen gate so no future seal burns compute
 on populations its own exclusions would refuse. The race-arm cohort now running is
 that gate's first use: Brazil's White versus Black-or-Brown gaps measure three to five
-times the floor, so the deconfounding question finally has a powered test.
+times the floor, so the deconfounding question finally had a powered test - and it answered: it is
+the rate (see the ledger's final row).
 
 ## The discipline behind the numbers
 
@@ -149,8 +150,11 @@ coming from reviewers we took seriously enough to run their experiments.
 
 ## What is open, honestly
 
-Whether the approval rate or the label's rarity carries the sealed 9-of-10 (the race
-cohort may answer this within hours of this report). What governs a population's curve
+~~Whether the approval rate or the label's rarity carries the sealed 9-of-10.~~
+Answered while this report was being written: the race cohort broke the confound in
+the rate's favour (the cutoff-only reading scored 5 of 10 against the rate rules'
+8-9). The transported 0.54 value itself showed no in-band privilege over 0.50, so the
+"measure your own crossover" form of the claim is the one the evidence crowns. What governs a population's curve
 shape (three sealed tests say what it is not). Why the crossover sits where it sits
 (locations span 0.28-0.85 including lending, and the located non-lending set is three
 after an honest downgrade). Healthcare, where the one public dataset screened was

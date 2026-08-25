@@ -29,8 +29,10 @@
 > failed its protocol test while the direction held on 7 of 8 markets. The
 > Brazil/Mexico cohort was refused by Brazil's absent sex gap (the audit's gates
 > declined to manufacture an answer), banking the first non-US crossover (Mexico,
-> 0.42-0.48) and a new screen-gate rule; the race-arm cohort running now is the
-> powered fourth attempt at the one open confound. The fork below still stands as
+> 0.42-0.48) and a new screen-gate rule; the race-arm cohort then answered
+> the one open confound: the cutoff-only reading was beaten 8-9 vs 5, so it is the
+> rate that predicts, while the 0.54 value itself showed no in-band privilege - the
+> "measure your own crossover" claim is the one the record crowns. The fork below still stands as
 > written, and question 3's answer from a stand-in for the theory authors was: "I do
 > not feel scooped, I feel operationalized." 
 

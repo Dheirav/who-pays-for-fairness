@@ -1,7 +1,7 @@
 # What to do next, and what will bite you
 
 Live handover. Read this first, then `research/README.md` for the document index. Documents
-11–66 are the research record; the paper is `research/paper/ieee/paper.tex`. The checklist this
+11–67 are the research record; the paper is `research/paper/ieee/paper.tex`. The checklist this
 replaced, with the original reasoning behind each completed item, is in
 [`NEXT-archive.md`](NEXT-archive.md), including the two items completed on 22 Aug (the
 re-seal, and the route-divergence mechanism).

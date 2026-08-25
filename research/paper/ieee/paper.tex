@@ -142,10 +142,14 @@ itself is \emph{sealed}: committed before ten populations this work had never me
 scored 9 of 10 against a best constant of 6 (Section~\ref{sec:resealed}) --- with the
 confound stated where the score is: every arm of that cohort reaches its rate through the
 income cutoff, so the pass does not yet separate the selection rate from label rarity.
-The registered deconfounding cohort (Brazil and Mexico censuses) has since run and
-returned \textsc{underpowered} as pre-registered --- Brazil's conditional sex gaps sit
-below the audit's own disparity floor and its gates refused them --- so the confound
-stands, honestly unresolved. On a second,
+The registered deconfounding cohorts have since run: the sex arms were refused
+(Brazil's conditional sex gaps sit below the audit's own disparity floor), and the
+screen-gated race cohort then ran powered and \textbf{broke the confound in the
+rate's favour} --- on mixed-route sealed arms the cutoff-only reading scored 5 of 10
+against the rate rules' 8--9, so the selection rate, not label rarity, carries the
+prediction --- while the fixed 0.54 \emph{value} failed its own strict bar (a 0.50
+prior edged it by one arm in-band): the prior stays fallible and population-specific,
+and the within-population claim passed sealed off-instrument. On a second,
 post-hoc cohort of larger states the fixed prior scored 5 of 10, each miss agreeing with
 that population's own measured crossover.
 
@@ -986,9 +990,18 @@ labels (0.005--0.039) fall below the 0.05 disparity floor, so the audit's own fi
 gate refused most of the cohort, off-instrument and off-continent, exactly as it
 refused the diabetes screen. On the seven surviving in-band arms, recorded without a
 verdict, the rule scores 5 of 7 and the cutoff-only null 6 of 7. The confound is
-therefore \emph{open}, not resolved, and one positive is banked: Mexico 2015 brackets
-a crossover at 0.423--0.483, the first located outside the United States, below the US
-survey cluster. The prediction used
+therefore resolved by the follow-on cohort rather than left open. A race-arm cohort,
+screened first under the gate that failure created (Brazilian White vs Black-or-Brown
+gaps of 0.13--0.17), ran powered: the cutoff-only null scored \textbf{5 of 10}
+against the rate rules' 8--9 on mixed-route arms where the label's rarity was held
+constant --- \textbf{it is the rate}. The sealed S1 nonetheless FAILS by its own
+letter, because a 0.50 prior edged the 0.54 prior 9 to 8: in-band, on Brazil, the
+specific value holds no privilege, and Brazil's own crossovers (0.481--0.539 and
+0.539--0.598) straddle both priors --- the population-specific picture this paper has
+claimed throughout. The within-population component holds sealed, $\rho = 1.0$ and
+$0.9$, classic crossings, effects to $-47\%$. Three crossovers are now located
+outside the United States: the two Brazilian brackets and Mexico 2015 at
+0.423--0.483, below the US survey cluster. The prediction used
 the baseline selection rate and the fixed 0.54 prior alone --- no sweep, no per-population
 characterisation. Below 0.10, where the refuted refinement said up, Nebraska at 0.014 moved
 down by 6.35\%, as the unrefined rule predicts.
@@ -1277,7 +1290,7 @@ the deployed system's pool change and who-pays decomposition, with and without t
 Every prediction was registered with its thresholds \emph{and the naive alternative it had to
 beat}, before the data existed. Table~\ref{tab:registered} is the complete ledger --- every
 registered or sealed test this work ran, with its committed bar and its outcome, failures
-included and uncorrected. The rows should not be read as fifteen attempts at one claim, of
+included and uncorrected. The rows should not be read as sixteen attempts at one claim, of
 which two succeeded: each test targeted a \emph{different} claim, each failure removed a
 stronger claim than the one that survives, and the last column records what each row
 settled. The failures are boundary measurements; the passes are tests of the claim
@@ -1330,8 +1343,11 @@ underpow. & the sweep is unreliable on mortgage data on six independent markets;
 natural-arm direction holds 7 of 8; both located midpoints sit at 0.80--0.85 \\
 Third cohort (deconfounding) & S1 floor 12: 7 --- underpow.; S2 floor 2: 1; S3 floor
 3: 0 & Brazil's sex gaps sit below the audit's own floor and the gates refused them;
-the label-rarity confound stands open; Mexico 2015 brackets the first non-US
-crossover, 0.423--0.483 \\
+Mexico 2015 brackets the first non-US crossover \\
+Race cohort (screen-gated) & S1: 8/10, but 0.5-null 9 --- fail; S2 --- holds & the
+cutoff null is beaten 8--9 vs 5: \textbf{it is the rate}, not label rarity; the 0.54
+value holds no in-band privilege; within-population passes off-instrument at
+$\rho \ge 0.9$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1587,8 +1603,8 @@ crossover residual \texttt{93c3446} and magnitude \texttt{f0f8056}, both scored 
 independence \texttt{aa6532b} $\to$ \texttt{d3bcb54}; cross-task shape
 \texttt{d8bfae8} $\to$ \texttt{aa8d43a}; regime deconfounding \texttt{66bc4d5}
 $\to$ \texttt{28e4a19}; six-market lending \texttt{08b27fa} $\to$ \texttt{5870b9c};
-third cohort \texttt{50d467f}/\texttt{a624cf5} (two-stage) $\to$ \texttt{5870b9c},
-the recent five anchored
+third cohort \texttt{50d467f}/\texttt{a624cf5} (two-stage) $\to$ \texttt{5870b9c};
+race cohort \texttt{2f16cda} $\to$ \texttt{e3e3478}, the recent six anchored
 externally (an OpenTimestamps receipt committed in \texttt{research/seals/} before any
 of its arms ran) --- each seal a committed analyser
 whose population lists an isolation guard forbids changing. An honest limit of this

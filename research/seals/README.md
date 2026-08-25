@@ -22,4 +22,4 @@ immediately after it is pushed.
 | Regime deconfounding cell (attribute-aware in-processing) | `66bc4d5` | stamped 25 Aug, pending upgrade |
 | Six-market lending seal (M1 crossover elevation, M2 protocol) | `08b27fa` | scored in `5870b9c` (doc 65): M2 fails 2/6, M1 underpowered |
 | IPUMS third cohort, stage B (thresholds, op points, 60k subsample) | `a624cf5` | scored in `5870b9c` (doc 66): underpowered on all components |
-| Race-arm cohort (screen-gated, Brazil White vs Black-or-Brown) | `2f16cda` | stamped 25 Aug, pending upgrade |
+| Race-arm cohort (screen-gated, Brazil White vs Black-or-Brown) | `2f16cda` | scored in `e3e3478` (doc 67): it is the rate; S2 holds |

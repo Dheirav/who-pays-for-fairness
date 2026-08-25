@@ -323,10 +323,12 @@ final pre-registered campaigns went against us and were published that way: our
 measuring procedure stays unreliable on mortgage data (though the direction held in 7
 of 8 markets), and Brazil turned out to have almost no gender gap for the fix to act
 on, so our safety gates refused to produce an answer rather than invent one. Along the
-way we found the first switch point outside America (Mexico, around 0.45), and the one
-question still open, whether it is truly the approval rate doing the predicting, has a
-properly powered test running right now on Brazil's racial gap, which is five times
-larger than its gender one.
+way we found the first switch point outside America (Mexico, around 0.45), and the last
+open question got its answer: tested on Brazil's racial gap, five times larger than
+its gender one, the boring rival explanation scored five out of ten while the approval
+rate scored eight or nine, so it really is the approval rate doing the predicting.
+The magic number 0.54 itself earned no special status, which is fine, because the
+honest advice was always to measure your own switch point rather than borrow ours.
 
 ## The one number that is worth remembering, with its health warning
 
