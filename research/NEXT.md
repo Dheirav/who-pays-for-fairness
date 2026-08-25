@@ -1,7 +1,7 @@
 # What to do next, and what will bite you
 
 Live handover. Read this first, then `research/README.md` for the document index. Documents
-11–64 are the research record; the paper is `research/paper/ieee/paper.tex`. The checklist this
+11–66 are the research record; the paper is `research/paper/ieee/paper.tex`. The checklist this
 replaced, with the original reasoning behind each completed item, is in
 [`NEXT-archive.md`](NEXT-archive.md), including the two items completed on 22 Aug (the
 re-seal, and the route-divergence mechanism).
@@ -15,17 +15,21 @@ rule exists because a derivation of ours cleared every stated bar and was then b
 constant (document 26). After document 49: a seal that predicts *signs* must also pre-state a
 minimum-magnitude guard, because its one miss was an arm whose true effect is
 indistinguishable from zero — a sign prediction has nothing to grip there, and discovering
-that after the run cannot excuse the miss.
+that after the run cannot excuse the miss. After document 66: a two-stage seal carries a
+**screen gate** between stage B and the runs — measure the baseline gaps, record which
+populations the frozen exclusions refuse, and run only the survivors; a pre-data seal
+cannot pre-screen, and Brazil's absent sex gap cost a day of compute that a seed-0
+screen would have caught.
 
 ---
 
 ## Where the work stands
 
-* **57 independent populations**, 6 domains, 7 data sources, 3 countries, 2 decades
-  (including ten cross-year state-years), plus six cross-task arms (employment/coverage)
-  that share persons with counted populations and are deliberately **not** new
-  populations — the count guard now enforces this. ("5 instruments" was stale once
-  Taiwan and Adult were counted; the paper says 7 sources.)
+* **67 independent populations**, 6 domains, 8 data sources, 5 countries, 2 decades:
+  the six-market lending seal added six HMDA states and the third cohort added Brazil
+  2000/2010 and Mexico 2015/2020 (IPUMS, the 8th source). Cross-task and aware arms
+  share persons with counted populations and are **not** new populations — the count
+  guard enforces both rules.
 * **After document 52 the claim carries a sharper scope.** The sealed 9/10 stands, but the
   ten large states swept that night score the fixed 0.54 prior at 5/10 post-hoc, each miss
   consistent with its own state's sweep: the within-population relationship survives, the

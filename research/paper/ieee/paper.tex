@@ -31,8 +31,8 @@ can be pulled down. Both outcomes satisfy the constraint, and the metric that ce
 reports the same number in each case, which means a deployment team cannot tell from its own
 dashboard which of the two it is about to cause. We show that the direction is predictable in
 advance from a quantity every deploying organisation already has: the rate at which its
-current model says yes, read against that population's crossover. Across 57 independent
-populations covering six decision domains and seven data sources, an attribute-blind parity
+current model says yes, read against that population's crossover. Across 67 independent
+populations covering six decision domains and eight data sources on five countries, an attribute-blind parity
 constraint withdraws favourable decisions when the baseline selection rate sits below a
 crossover, and extends them when it sits above; on UCI Adult five in-processing methods each
 shrink the pool by 7.9--22.1\%, while on mortgage lending --- one two-state market,
@@ -131,16 +131,21 @@ what the finding depends on.
 Contemporaneous theory \cite{backfire2026} establishes that in the attribute-blind regime the
 direction is distribution-dependent. It contains no experiments and its conditions are ordering
 relations on score regions rather than measurable quantities. We supply the measurement across
-57 populations and six domains, and find that under our probe estimator its stated
-conditions --- which are \emph{sufficient, not necessary} --- could not be certified on any
-of 26 real arms (Section~\ref{sec:regime}), while a relaxed form of the same ordering
-agrees with the measured direction on 24 of 26 and correlates with our predictor at
-$r = +0.935$: the selection rate operationalizes the theory's quantity. The direction rule
+57 populations and six domains, and find that a percentile-relaxed form of the
+theory's ordering agrees with the measured direction on 24 of 26 arms and correlates
+with our predictor at $r = +0.935$: the selection rate operationalizes the theory's
+quantity. The exact conditions --- \emph{sufficient, not necessary} --- were certified
+on zero of the 26 by our logistic-probe plug-in, whose ratio diverges in the
+$\hat\nu$ tail: an estimator pathology, not a property of the conditions, and we
+tried no other estimator (Section~\ref{sec:regime}). The direction rule
 itself is \emph{sealed}: committed before ten populations this work had never measured, it
 scored 9 of 10 against a best constant of 6 (Section~\ref{sec:resealed}) --- with the
 confound stated where the score is: every arm of that cohort reaches its rate through the
-income cutoff, so the pass does not yet separate the selection rate from label rarity,
-and the deconfounding cohort is specified in the same section. On a second,
+income cutoff, so the pass does not yet separate the selection rate from label rarity.
+The registered deconfounding cohort (Brazil and Mexico censuses) has since run and
+returned \textsc{underpowered} as pre-registered --- Brazil's conditional sex gaps sit
+below the audit's own disparity floor and its gates refused them --- so the confound
+stands, honestly unresolved. On a second,
 post-hoc cohort of larger states the fixed prior scored 5 of 10, each miss agreeing with
 that population's own measured crossover.
 
@@ -219,23 +224,27 @@ instrument.
 
 \section{Setup and Method}
 
-\textbf{Data.} Fifty-seven independent populations across seven data sources: UCI Adult
+\textbf{Data.} Sixty-seven independent populations across eight data sources: UCI Adult
 (45{,}222 rows); ACS Income \cite{ding2021} across forty US states, ten further
 state-years (2014, 2019 and 2022) and two protected attributes; HMDA 2018 mortgage
-filings for Mississippi and Louisiana (79{,}104 and 123{,}843 records), where the outcome
+filings for eight states (Mississippi and Louisiana throughout the record, with
+Alabama, South Carolina, Tennessee, Georgia, North Carolina and Ohio added for the
+six-market seal; 79{,}104--305{,}593 records each), where the outcome
 is the \emph{lender's} approval --- action-taken codes 1 (originated) and 2 (approved,
 not accepted) against 3 (denied), with withdrawn, incomplete, purchased and preapproval
 records excluded as not being a completed approve-or-deny --- features restricted by
 allow-list to what exists when the application is filed, the race arm White vs.\ Black
 applicants, the sex arm Male vs.\ Female (joint applications excluded), and loan purposes
-as sub-populations;
+as sub-populations; IPUMS International census extracts for Brazil (2000, 2010) and
+Mexico (2015, 2020), sex arms, labels set by income quantile with the loader's filter
+and 60{,}000-row sealed subsamples per population (Section~\ref{sec:resealed});
 COMPAS \cite{propublica2016} (5{,}278 rows on the race arm after ProPublica's documented
 filter); LSAC bar passage (20{,}798 rows); the Dutch national census of 2001 (60{,}420
 rows); and Taiwanese credit-card default records of 2005 (30{,}000 rows). A
 \emph{population} here is one such unit --- a state, cohort or census --- and
 \emph{independent} means disjoint person samples: no person appears in two of them, and
 arms within a population share people, so however many arms a population contributes, it
-is counted once (Table~\ref{tab:accounting}); the seven data sources remain the honest
+is counted once (Table~\ref{tab:accounting}); the eight data sources remain the honest
 count of independent \emph{instruments}. Three survey-methodology conventions are
 deliberate and inherited from the folktables benchmark \cite{ding2021}: ACS person records
 are used \emph{unweighted} (no \texttt{PERWT}), incomes are nominal \texttt{PINCP} without
@@ -642,8 +651,8 @@ the thirteen natural arms surviving the frozen exclusions, if anything stronger 
 blind cell's $+0.585$. \textbf{The pool-direction boundary is therefore the method
 family, not attribute access}: blindness is not load-bearing for the claim, the
 $-0.024$ vanishing is a property of threshold re-derivation rather than of reading the
-attribute, and the rule's applicability widens to attribute-aware in-processing --- on
-the strength of one sealed cohort, which is what we can say tonight.
+attribute, and the rule's applicability widens to attribute-aware in-processing, on
+the strength of one sealed cohort.
 
 \textbf{What survives untouched --- strengthened, in fact --- is the theory's own
 group-level claim}: where the attribute is readable, the advantaged group loses and the
@@ -970,7 +979,16 @@ prior in that interval --- a rule reading only the income cutoff scores identica
 What the pass establishes is that a mid-band rule predicts direction on unseen
 ACS-instrument populations; the adequately powered third cohort must therefore be
 off-instrument, concentrate rates near the crossover, mix both routes, and score against
-the cutoff-only and 0.5-prior nulls, and it is future work. The prediction used
+the cutoff-only and 0.5-prior nulls. That cohort has since run, two-stage sealed and
+externally anchored, on the Brazilian and Mexican censuses --- and returned
+\textsc{underpowered} on every component: Brazil's baseline sex gaps at the sealed
+labels (0.005--0.039) fall below the 0.05 disparity floor, so the audit's own first
+gate refused most of the cohort, off-instrument and off-continent, exactly as it
+refused the diabetes screen. On the seven surviving in-band arms, recorded without a
+verdict, the rule scores 5 of 7 and the cutoff-only null 6 of 7. The confound is
+therefore \emph{open}, not resolved, and one positive is banked: Mexico 2015 brackets
+a crossover at 0.423--0.483, the first located outside the United States, below the US
+survey cluster. The prediction used
 the baseline selection rate and the fixed 0.54 prior alone --- no sweep, no per-population
 characterisation. Below 0.10, where the refuted refinement said up, Nebraska at 0.014 moved
 down by 6.35\%, as the unrefined rule predicts.
@@ -1135,6 +1153,15 @@ algorithm inherits the lesson.
 effect within a population, so a team can rank its own segments; but no slope transfers between
 populations, so lines 32 and 34 return a direction and stop there.
 
+\textbf{What it is for, and what it is not.} The audit applies where the pool of
+favourable decisions can actually change size. Where the allocation is
+capacity-pinned --- a fixed number of seats, beds, or slots --- the total is constant
+by construction, the directional quantity this paper measures cannot arise, and the
+audit is out of scope from line~0; this is the fixed-resource regime of
+\cite{goethals2024}, and clinical triage and admission commonly live there. No
+natural operating point below 0.13 has been probed in this record, so deployed rates
+below that carry an untested-region caution on top of every verdict.
+
 \textbf{What it needs, and what it costs.} The audit requires a held-out sample carrying
 the protected attribute: audit-time access to $a$, which is legally and practically
 distinct from decision-time use and is the regime bias-testing provisions contemplate
@@ -1250,7 +1277,7 @@ the deployed system's pool change and who-pays decomposition, with and without t
 Every prediction was registered with its thresholds \emph{and the naive alternative it had to
 beat}, before the data existed. Table~\ref{tab:registered} is the complete ledger --- every
 registered or sealed test this work ran, with its committed bar and its outcome, failures
-included and uncorrected. The rows should not be read as thirteen attempts at one claim, of
+included and uncorrected. The rows should not be read as fifteen attempts at one claim, of
 which two succeeded: each test targeted a \emph{different} claim, each failure removed a
 stronger claim than the one that survives, and the last column records what each row
 settled. The failures are boundary measurements; the passes are tests of the claim
@@ -1298,6 +1325,13 @@ structure with a flipped sign, unexplained (Sec.~\ref{sec:crosstask}) \\
 Regime deconfounding & two sealed readings; R1 18/18, $r=+0.672$ --- method reading &
 the pool boundary is the optimizer family, not blindness; the theorem's group
 directions hold in every aware cell (Sec.~\ref{sec:regime}) \\
+Six-market lending seal & M2: scored$-$1; 2 of 6 --- fail. M1: floor 4; 2 located ---
+underpow. & the sweep is unreliable on mortgage data on six independent markets; the
+natural-arm direction holds 7 of 8; both located midpoints sit at 0.80--0.85 \\
+Third cohort (deconfounding) & S1 floor 12: 7 --- underpow.; S2 floor 2: 1; S3 floor
+3: 0 & Brazil's sex gaps sit below the audit's own floor and the gates refused them;
+the label-rarity confound stands open; Mexico 2015 brackets the first non-US
+crossover, 0.423--0.483 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1353,9 +1387,11 @@ misses each agree with their own measured crossovers. The boundaries, equally pa
 claim: located crossovers span 0.28--0.65 and nothing yet predicts the location; some large
 populations have no crossover at all, sweeping U-shaped or levelling up throughout;
 magnitude does not transfer across populations and a sealed model of it failed; the
-deepest-tail arms of a threshold sweep are unreliable in direction; and in the
-attribute-aware regime the direction is determined by theorem, the rate predicts nothing,
-and there is nothing left to predict.
+deepest-tail arms of a threshold sweep are unreliable in direction; and wherever the
+attribute is readable, each \emph{group's} direction is determined by theorem (the
+disadvantaged group gains, in every aware cell measured), while the \emph{pool's}
+direction --- the sum the theorem does not constrain --- remains rate-predictable under
+in-processing in both regimes and unpredictable only under post-processing.
 
 \section{Limitations}
 
@@ -1384,7 +1420,7 @@ rate, the gap, the qualified reservoir, or the threshold height, and remains ope
 the relationship across the transition, on the label route and natural sub-populations.
 
 \textbf{Most of the evidence is about predicted labels, not allocations.} In five of the
-seven data sources no one receives anything: ``favourable decisions'' are a classifier's
+eight data sources no one receives anything: ``favourable decisions'' are a classifier's
 labels over people whose incomes, occupations or bar results already exist, so the pool
 being given and taken is a pool of predictions. HMDA is the one source recording real
 allocative decisions --- and it is also where the direction reverses and where our sweep
@@ -1399,9 +1435,10 @@ property of a (population, real-anchored label) pair, not of a state's name.
 model of it lost to predicting zero. \textbf{The crossover's location is unexplained and
 wider than it looked}: located values span 0.28--0.65, the sealed test of the two candidate
 predictors returned underpowered at three locations, and some populations have no crossover
-to locate. \textbf{Coverage} is seven data sources, three
-countries and two decades; Taiwan is the only non-Western population, and one population is
-not coverage. The only EU population is the 2001 Dutch census, which by this paper's own
+to locate. \textbf{Coverage} is eight data sources, five
+countries and two decades; Taiwan, Brazil and Mexico are the non-Western and
+Latin-American populations, and the latter two arrived late enough that most of the
+record predates them. The only EU population is the 2001 Dutch census, which by this paper's own
 vintage standard grounds no claim about current EU deployments. \textbf{The regime result} was post-hoc at 18 of 18 and has since been confirmed
 pre-registered at 9 of 9, but it confirms a published theorem rather than establishing one.
 \textbf{The remedy is a variant}, not a discovery. \textbf{And every claim carries a data
@@ -1549,7 +1586,9 @@ crossover residual \texttt{93c3446} and magnitude \texttt{f0f8056}, both scored 
 \texttt{7b6764f}; cross-year shape \texttt{391cd17} $\to$ \texttt{e6cdb68}; attribute
 independence \texttt{aa6532b} $\to$ \texttt{d3bcb54}; cross-task shape
 \texttt{d8bfae8} $\to$ \texttt{aa8d43a}; regime deconfounding \texttt{66bc4d5}
-$\to$ \texttt{28e4a19}, both anchored
+$\to$ \texttt{28e4a19}; six-market lending \texttt{08b27fa} $\to$ \texttt{5870b9c};
+third cohort \texttt{50d467f}/\texttt{a624cf5} (two-stage) $\to$ \texttt{5870b9c},
+the recent five anchored
 externally (an OpenTimestamps receipt committed in \texttt{research/seals/} before any
 of its arms ran) --- each seal a committed analyser
 whose population lists an isolation guard forbids changing. An honest limit of this
@@ -1565,7 +1604,8 @@ from stage~A onward is anchored at sealing time. A checksum manifest of every in
 because ACS PUMS files are revised in place and the 2022 episode is this paper's own
 evidence that a different vintage is a different task.
 Experiments ran on Python 3.12 with scikit-learn and Fairlearn per the repository's pinned
-requirements; all seven data sources are public.
+requirements; all eight data sources are public (the IPUMS extract requires a free
+registered account; its checksums are in the manifest).
 
 \begin{thebibliography}{00}
 
