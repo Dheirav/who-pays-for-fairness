@@ -44,6 +44,7 @@ PREREGISTERED = {
     "analyse_resealed.py", "analyse_residual.py", "analyse_sealed_magnitude.py",
     "analyse_shapes.py", "analyse_race_shapes.py", "analyse_ipums_sealed.py",
     "analyse_task_shapes.py", "analyse_regime_aware.py", "analyse_hmda_markets.py",
+    "analyse_ipums_race.py",
 }
 
 

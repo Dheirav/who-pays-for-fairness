@@ -56,6 +56,14 @@ PROTECTED = "SEX"
 PRIVILEGED, UNPRIVILEGED = "Male", "Female"
 SEX_LABELS = {1: "Male", 2: "Female"}
 
+# Brazil's RACE variable (absent from the Mexican samples). The arm follows the
+# standard IBGE contrast: branco against preto+pardo (White vs Black-or-Brown),
+# restricting to those groups the way the HMDA arms restrict to two, because every
+# metric in this project is defined over two groups. Indigenous, Asian, other and
+# unknown rows leave the arm rather than being pooled into either side.
+RACE_WHITE = {10}
+RACE_BLACK_BROWN = {20, 21, 22, 23, 24, 51, 53}
+
 # Harmonized names, split by how they enter the model. Only columns actually present in
 # the delivered extract are used; the loader records which in ``notes`` and refuses to
 # run if the required core is missing.
@@ -100,8 +108,10 @@ class IPUMSIncomeLoader:
                  protected: str = PROTECTED, threshold: int | None = None) -> None:
         if country.upper() not in COUNTRIES:
             raise KeyError(f"unknown IPUMS country '{country}'; have {sorted(COUNTRIES)}")
-        if protected != PROTECTED:
-            raise KeyError("only SEX is supported on the IPUMS cohort")
+        if protected not in (PROTECTED, "RACE"):
+            raise KeyError("only SEX and RACE are supported on the IPUMS cohort")
+        if protected == "RACE" and country.upper() != "BR":
+            raise KeyError("RACE is only carried by the Brazilian samples")
         if threshold is None:
             raise ValueError(
                 "an IPUMS spec must carry an explicit income threshold "
@@ -115,7 +125,10 @@ class IPUMSIncomeLoader:
 
     @property
     def name(self) -> str:
-        stem = f"ipums_income_{self.country.lower()}_{self.year}_t{self.threshold}"
+        stem = f"ipums_income_{self.country.lower()}_{self.year}"
+        if self.protected != PROTECTED:
+            stem = f"{stem}_race"
+        stem = f"{stem}_t{self.threshold}"
         if SUBSAMPLE_ROWS is not None:
             stem = f"{stem}_s{SUBSAMPLE_ROWS // 1000}k"
         return stem
@@ -129,7 +142,7 @@ class IPUMSIncomeLoader:
             )
         code, year = COUNTRIES[self.country], int(self.year)
         wanted = [*REQUIRED, *INCOME_CANDIDATES, *CATEGORICAL, *NUMERIC, "EMPSTAT",
-                  "PERWT"]
+                  "PERWT", "RACE"]
         chunks = []
         for path in files:
             header = pd.read_csv(path, nrows=0)
@@ -162,6 +175,8 @@ class IPUMSIncomeLoader:
         if "EMPSTAT" in frame.columns:
             keep &= frame["EMPSTAT"] == 1
         keep &= frame["SEX"].isin([1, 2])
+        if self.protected == "RACE":
+            keep &= frame["RACE"].isin(RACE_WHITE | RACE_BLACK_BROWN)
         frame, income = frame[keep].reset_index(drop=True), income[keep].reset_index(drop=True)
         if SUBSAMPLE_ROWS is not None and len(frame) > SUBSAMPLE_ROWS:
             chosen = np.random.default_rng(0).choice(len(frame), SUBSAMPLE_ROWS,
@@ -171,8 +186,14 @@ class IPUMSIncomeLoader:
             income = income.iloc[chosen].reset_index(drop=True)
 
         y = pd.Series((income > self.threshold).astype(int), name="income")
-        a = frame["SEX"].map(SEX_LABELS).astype(object)
-        a.name = PROTECTED
+        if self.protected == "RACE":
+            a = pd.Series(np.where(frame["RACE"].isin(RACE_WHITE),
+                                   "White", "Black-or-Brown"), dtype=object)
+            privileged, unprivileged = "White", "Black-or-Brown"
+        else:
+            a = frame["SEX"].map(SEX_LABELS).astype(object)
+            privileged, unprivileged = PRIVILEGED, UNPRIVILEGED
+        a.name = self.protected
 
         categorical = [c for c in CATEGORICAL
                        if c in frame.columns and frame[c].notna().any()]
@@ -191,9 +212,9 @@ class IPUMSIncomeLoader:
             X=features[[*categorical, *numeric]],
             y=y,
             a=a,
-            protected_attribute=PROTECTED,
-            privileged_value=PRIVILEGED,
-            unprivileged_value=UNPRIVILEGED,
+            protected_attribute=self.protected,
+            privileged_value=privileged,
+            unprivileged_value=unprivileged,
             categorical_features=categorical,
             numeric_features=numeric,
             secondary_attribute=None,
