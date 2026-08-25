@@ -1,131 +1,86 @@
 # The decision I need
 
-> **Update, 23 August.** This document's argument stands, but its numbers are from an
-> earlier stage; `06-status-report.pdf` carries the current ones. Since this was written:
-> the population count went from 18 to 47; the direction rule passed a sealed test
-> committed before the data existed (**9 of 10** never-measured states, best constant 6);
-> the theory's own regime prediction was confirmed 27 of 27, nine pre-registered; and a
-> second sealed campaign then showed the fixed 0.54 tipping point is population-dependent
-> (located values 0.28-0.65), which narrowed the claim honestly rather than breaking it.
-> The fork below is unchanged - if anything, the sealed pass strengthens the "stands on
-> its own" branch.
->
-> **Further update, 25 August.** Now 57 populations. The paper has since been through
-> three adversarial review panels - twenty-four independent reviews, no rejects - and
-> every cheap fix they converged on is applied: the deployable (deterministic) form of
-> the mitigation preserves the predicted direction on 10 of 10 populations, the "lottery"
-> finding is bounded to severe operating points, a 2022 anomaly was traced to the nominal
-> income label sliding under inflation and resolved, and all eleven registered tests now
-> have their registration and scoring commits pinned in the paper. The paper is 15 pages
-> pending your page-limit answer, which gates the planned compression. An overnight
-> self-audit then added a twelfth registered test (failed, informatively: the
-> curve-shape boundary belongs to the income task only), downgraded one published
-> crossover, and closed the lottery's open question (no in-class alternative exists).
->
-> **Final update, 25 August.** Now 67 populations, 8 sources, 5 countries, sixteen
-> registered tests. A sealed deconfounding experiment overturned our own regime story:
-> the boundary is the kind of method, not attribute blindness, and the theory's
-> group-level claim strengthened to 27/27 plus 18/18. The six-market lending seal
-> failed its protocol test while the direction held on 7 of 8 markets. The
-> Brazil/Mexico cohort was refused by Brazil's absent sex gap (the audit's gates
-> declined to manufacture an answer), banking the first non-US crossover (Mexico,
-> 0.42-0.48) and a new screen-gate rule; the race-arm cohort then answered
-> the one open confound: the cutoff-only reading was beaten 8-9 vs 5, so it is the
-> rate that predicts, while the 0.54 value itself showed no in-band privilege - the
-> "measure your own crossover" claim is the one the record crowns. The fork below still stands as
-> written, and question 3's answer from a stand-in for the theory authors was: "I do
-> not feel scooped, I feel operationalized." 
+Status, one line: 67 populations, 8 data sources, 5 countries, sixteen registered
+tests with ten failures published uncorrected, an 18-page draft, and the one standing
+confound resolved this week in the finding's favour. The full picture is in the
+handout and the status report; this document argues the single question I most need
+answered.
 
 ## The question
 
-**A 2026 theory paper proves the effect can go either way, with no experiments in it. I have
-the experiments, a rule you can apply, and - since I last wrote this - a result that says the
-theory is right about one half of its claim and wrong about the other. Is that an empirical
-paper worth publishing, or does it read as a follow-up to someone else's result?**
+A March 2026 theory paper proves the effect I study can go either way, with no
+experiments in it. I have the experiments, a rule a practitioner can apply, and
+results that say the theory is right about one half of its claim while its boundary
+needed correcting on the other. **Is that an empirical paper worth publishing, or does
+it read as a follow-up to someone else's result?**
 
 ## Why it is a genuine fork
 
-**If the empirical half stands on its own**, the paper is close to ready. Their paper proves
-the possibility and contains zero experiments. Mine has 18 independent populations across five
-domains, two countries and two decades; a controlled design that separates the rate from the
-difficulty of the task; and a rule computable from a historical approval rate.
+If the empirical half stands on its own, the paper is close to ready. Their paper
+proves the possibility and contains zero experiments. Mine has 67 populations across
+six kinds of decision, a controlled design that separates the approval rate from the
+difficulty of the task, a sealed prediction record, and a rule computable from a
+number every deployed system already has.
 
-**The strongest thing I have is a two-sided result about their theory.** They split the world
-into two regimes - whether the protected attribute is available when the decision is made.
+The strongest thing I have is a two-sided result about their theory:
 
-* Their **conditions**, the ordering relations their theorem is stated over, **cannot be
-  evaluated on any of my 26 arms** - the quantity diverges on real data, so the two regions'
-  ranges always overlap. They are *sufficient, not necessary*, so this says their theorem is
-  **silent** on real populations, not that it is wrong. A relaxed form of the same ordering
-  tracks the direction on 24 of 26.
-* Their **regime distinction** holds on **18 of 18**. In the attribute-aware regime they predict
-  the direction is determined rather than variable, and it is: the advantaged group loses and
-  the disadvantaged gains in every population, with no exceptions.
+* Their conditions, the orderings their theorem is stated over, could not be evaluated
+  on any of 26 real datasets under either of two estimators I tried. They are
+  sufficient rather than necessary, so this says their theorem is silent on real data,
+  not that it is wrong. A relaxed form of the same ordering tracks the observed
+  direction almost everywhere, and my approval rate tracks their quantity at 0.85
+  across 150 populations.
+* Their group-level prediction, that the disadvantaged group gains wherever the
+  attribute is readable, held in every one of the 45 populations I measured that way.
+  My sealed deconfounding test also corrected where their regime boundary bites in
+  practice: it is the kind of method, not attribute blindness.
 
-So I am not applying their theory and not simply refuting it. I am showing which half survives
-contact with data. That is what an empirical paper can settle and a population-level argument
-cannot.
+So I am not applying their theory and not refuting it. I am showing which half
+survives contact with data, correcting where its line falls, and supplying the
+instrument it lacks. That is what an empirical paper can settle and a proof cannot.
 
-**If it now reads as derivative**, that is a problem of framing rather than content, but it
-is still a problem. I reached this before knowing their paper existed - provable from dates
-- but a reader encountering both will see theirs first.
+If it instead reads as derivative, that is a framing problem rather than a content
+problem, but it is still a problem. I reached the finding before knowing their paper
+existed, which is provable from dates, but a reader encountering both will see theirs
+first.
 
 ## What I would argue
 
-The "when" is the contribution, and it stands on its own:
-
-1. **Theory says it *can* go either way. Only measurement says *when*.** That is the gap,
-   and it is the gap a practitioner is standing in.
-2. **Their conditions do not work on data.** Zero of 26. That is a finding only someone with
-   the experiments could have produced, and it is a contribution against the theory rather
-   than an application of it.
-3. **My rule is computable and theirs is not.** Theirs needs the joint distribution of the
-   model's scores and group membership. Mine needs last year's approval rate.
-4. **The practical reading is sharper than I first thought, and less comfortable.** I
-   originally claimed loans, hiring and admissions are nearly all stingy systems, so the
-   harmful direction is the usual one. **I measured it, and that was wrong** - they span the
-   whole range and sit on both sides of the switch. The real practical claim is better: two
-   products in the *same* mortgage market, run through the *same* fairness constraint, move
-   in opposite directions, and the fairness report says success in both cases.
+1. Theory says it can go either way. Only measurement says when, and the "when" is
+   what a practitioner is standing in.
+2. Their conditions do not work on data; mine needs last year's approval rate. That
+   difference is the contribution.
+3. The direction question the whole record kept asking, whether it is truly the rate
+   or an artifact of how I varied it, was answered this week by a sealed test on
+   Brazilian census data: the artifact reading scored 5 of 10, the rate scored 8.
+4. The practical claim is sharper than it sounds: two products in the same mortgage
+   market, run through the same fairness constraint, move in opposite directions, and
+   the fairness report says success in both cases.
 
 ## The objection I expect
 
-That this is now the empirical appendix to someone else's theory paper.
+That this is the empirical appendix to someone else's theory paper.
 
-My answer: their conditions fail on every dataset I have, so this is not an application of
-their result - it is a demonstration that their result cannot be applied, plus a substitute
-that can. But I would rather be told now if that is too fine a distinction to carry a paper.
-
-## Other questions, if there is time
-
-1. **Which venue, and when?** The deadline decides the page limit, which decides how much of
-   **34 research documents** survives into the paper. My default is FAccT or AIES; there is no
-   new algorithm here and the theory content is thin, which is a description of the work rather
-   than a complaint about it.
-2. ~~One missing comparison.~~ **Done, and it failed.** I ran the post-processing version
-   across 17 populations: the rule vanishes, r = −0.024 against +0.585 for my own method. That
-   is the regime boundary above rather than fragility - post-processing reads the protected
-   attribute, which is the regime where the theory says nothing varies. But it means **every
-   claim in the paper is now explicitly about attribute-blind in-processing**, which is where
-   almost every deployed system sits, because per-group thresholds are disparate treatment on
-   their face. Is narrowing it that way a strength or a weakness in your reading?
-3. **AI assistance.** I used an AI assistant substantially - for writing code, running
-   analyses and drafting. What does the department expect me to disclose, and how?
+My answer: their result cannot be applied to data at all, so this is not an
+application of it. It is a demonstration that it cannot be applied, plus a substitute
+that can, plus a correction their side must absorb. But I would rather be told now if
+that distinction is too fine to carry a paper.
 
 ## What is not in question
 
-The measurements. Every headline number is regenerated from stored results by an automated
-check that fails if a document and its data disagree - 28 such checks at the time of writing.
+The measurements. Every headline number is regenerated from stored results by
+automated checks that fail if a document and its data disagree, and every sealed
+prediction's timing is verifiable from the public repository, the recent ones anchored
+in the Bitcoin blockchain.
 
 ## What I would want you to press me on
 
-**I withdrew two headline results this week.** My strongest correlations, +0.979 and +0.968,
-came from arms where the model was worse than always predicting the majority label. I found it
-because a dataset where 89% of people pass forced the issue, and the same fix then rescued the
-mortgage result that had been failing. The method that caught it - pre-registering every
-prediction with the naive alternative it has to beat - is the part of this work I would most
-like judged, because it is also the part that keeps producing results I did not want.
+I withdrew two headline results when a guard I added showed their arms were worse than
+doing nothing, and my strongest sealed pass carries its own health warning in print:
+paired against the best lucky constant it is suggestive rather than significant. The
+method that produced those admissions, registering every prediction with the naive
+alternative it must beat, is the part of this work I would most like judged, because
+it kept producing results I did not want and published them anyway.
 
-Three of my own predictions failed and are written up as failures. Two of my own claims were
-withdrawn. I would rather be told the framing is wrong now than find out in review - which
-is exactly what happened with the remedy, and why I no longer claim it as new.
+The remaining smaller decisions, venue, title, and whether to contact the theory
+paper's authors, are listed on the handout's last page.
