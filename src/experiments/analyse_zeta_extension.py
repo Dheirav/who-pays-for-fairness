@@ -101,8 +101,10 @@ def measure(spec: str, stem: str, seed: int, probe_kind: str, q: float) -> dict 
     if "expgrad_dp" not in grouped.index:
         return None
     pie = float(grouped.loc["expgrad_dp", "positives_pct_change"])
-    rate = float(grouped.loc["baseline", "positives"]
-                 / grouped.loc["baseline", "n_test"])
+    # The rate comes from this seed's own fitted model rather than storage, because
+    # arms predating the n_test column have no stored denominator -- the trap the
+    # handover documents, met once more.
+    rate = float((eta > 0.5).mean())
     return {"population": stem, "rate": rate, "pie": pie,
             "sep": float(np.quantile(above, 1 - q) - np.quantile(below, 1 - q))}
 
