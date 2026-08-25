@@ -1,0 +1,11 @@
+population,route,rate,pie,actual,rule,null_half,null_cutoff
+BR2000-race,label,0.558,2.22,up,True,True,False
+BR2000-race,op,0.417,-47.33,down,True,True,True
+BR2000-race,op,0.479,-25.66,down,True,True,True
+BR2000-race,op,0.539,-4.29,down,True,False,True
+BR2000-race,op,0.598,22.55,up,True,True,False
+BR2010-race,label,0.538,8.55,up,False,True,False
+BR2010-race,op,0.421,-32.29,down,True,True,True
+BR2010-race,op,0.481,-11.04,down,True,True,True
+BR2010-race,op,0.539,8.43,up,False,True,False
+BR2010-race,op,0.596,20.86,up,True,True,False
