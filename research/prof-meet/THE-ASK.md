@@ -9,7 +9,7 @@ result?**
 
 **Side by side.**
 
-| | Fairness May Backfire (theirs) | This work (mine) |
+| | The theory paper (theirs) | This work (mine) |
 |---|---|---|
 | What it is | A proof; zero experiments, zero datasets | Measurement across 67 populations, 8 sources, 5 countries |
 | The claim | The direction of a fairness fix depends on the data; it can go either way | Which way, readable in advance from the baseline approval rate against a measured crossover |
