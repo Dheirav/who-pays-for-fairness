@@ -1,7 +1,7 @@
 # What to do next, and what will bite you
 
 Live handover. Read this first, then `research/README.md` for the document index. Documents
-11–67 are the research record; the paper is `research/paper/ieee/paper.tex`. The checklist this
+11–68 are the research record; the paper is `research/paper/ieee/paper.tex`. The checklist this
 replaced, with the original reasoning behind each completed item, is in
 [`NEXT-archive.md`](NEXT-archive.md), including the two items completed on 22 Aug (the
 re-seal, and the route-divergence mechanism).
@@ -224,8 +224,10 @@ Still open, by kind:
 * **Analyses** — DONE except one: seed stability and the four-floor correlations landed
   as document 59; the blind-mixture comparison (feasible set empty — the lottery is
   in-class necessary) and the nested bootstrap (Dutch downgraded, three rows confirmed)
-  landed as document 61. Still open: the relaxed-ζ ordering scored head-to-head against
-  the rate on the two sealed cohorts.
+  landed as document 61. The relaxed-ζ head-to-head is now DONE too
+  (document 68: rate 18/19 vs ζ 17/19 on the sealed cohorts; the proxy holds on 150
+  populations with an interval and a second probe). **No analysis or compute item
+  remains open anywhere in the project**; everything left is human-gated.
 * **The third sealed cohort** the statistician demands is IPUMS — **stage A of its
   two-stage seal is committed** (25 Aug): `src/datasets/ipums.py` (chunked loader,
   quantile-only thresholds, sentinel handling, verified end-to-end on a synthetic
