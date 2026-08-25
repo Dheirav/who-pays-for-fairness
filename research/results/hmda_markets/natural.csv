@@ -1,0 +1,7 @@
+market,rate,pie,prior_call_up_correct
+hmda_al_2018_race,0.823,1.47,True
+hmda_sc_2018_race,0.841,4.22,True
+hmda_tn_2018_race,0.855,0.84,True
+hmda_ga_2018_race,0.835,-0.35,False
+hmda_nc_2018_race,0.873,2.47,True
+hmda_oh_2018_race,0.904,0.41,True

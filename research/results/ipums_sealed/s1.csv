@@ -1,0 +1,8 @@
+population,route,rate,pie,unanimous,actual,rule,null_half,null_cutoff
+MX2015,label,0.58,4.08,True,up,True,True,True
+MX2015,op,0.423,-2.18,True,down,True,True,False
+MX2015,op,0.483,1.51,True,up,False,False,True
+MX2015,op,0.546,2.81,True,up,True,True,True
+MX2015,op,0.604,2.55,True,up,True,True,True
+MX2020,label,0.546,3.6,True,up,True,True,True
+MX2020,op,0.485,7.98,True,up,False,False,True
