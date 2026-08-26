@@ -1,0 +1,8 @@
+cohort,baseline,n,rule,null,margin,lo,hi,discordant,rule_wins,sign_p
+"Re-seal, unrefined rule",constant 'down',10,9,6,3,-1.0,5.0,5,4,0.1875
+"Seal 1, refined rule",constant 'down',8,4,4,0,-5.0,2.0,6,3,0.6562
+Cross-task shape seal,constant 'HIGH',4,0,2,-2,-4.0,-2.0,2,0,1.0
+Race cohort S1 (screen-gated),cutoff-only null,10,8,5,3,0.0,6.0,3,3,0.125
+Race cohort S1 (screen-gated),0.5-prior null,10,8,9,-1,-4.0,2.0,3,1,0.875
+"Third cohort S1 (in-band, no verdict)",cutoff-only null,7,5,6,-1,-4.0,2.0,3,1,0.875
+"Third cohort S1 (in-band, no verdict)",0.5-prior null,7,5,5,0,0.0,0.0,0,0,

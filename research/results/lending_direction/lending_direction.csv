@@ -1,0 +1,17 @@
+spec,population,rate,pie,predicted,null_purpose,null_survey,actual,indeterminate
+hmda:NY:derived_race:improvement,hmda_ny_2018_race_improvement,0.653272,0.194324,down,down,up,up,True
+hmda:NY:derived_race:refinance,hmda_ny_2018_race_refinance,0.828922,0.295997,up,up,up,up,True
+hmda:IL:derived_race:improvement,hmda_il_2018_race_improvement,0.680488,2.147673,up,down,up,up,False
+hmda:IL:derived_race:refinance,hmda_il_2018_race_refinance,0.833795,1.589075,up,up,up,up,False
+hmda:MA:derived_race:improvement,hmda_ma_2018_race_improvement,0.764619,0.053164,up,down,up,up,True
+hmda:MA:derived_race:refinance,hmda_ma_2018_race_refinance,0.839695,0.874786,up,up,up,up,True
+hmda:MD:derived_race:improvement,hmda_md_2018_race_improvement,0.667738,-0.230145,up,down,up,down,True
+hmda:MD:derived_race:refinance,hmda_md_2018_race_refinance,0.831357,1.726293,up,up,up,up,False
+hmda:MN:derived_race:improvement,hmda_mn_2018_race_improvement,0.85829,1.013262,up,down,up,up,False
+hmda:MN:derived_race:refinance,hmda_mn_2018_race_refinance,0.87382,2.301597,up,up,up,up,False
+hmda:WI:derived_race:improvement,hmda_wi_2018_race_improvement,0.901328,1.112791,up,down,up,up,False
+hmda:WI:derived_race:refinance,hmda_wi_2018_race_refinance,0.892335,1.258941,up,up,up,up,False
+hmda:IN:derived_race:improvement,hmda_in_2018_race_improvement,0.822728,-0.959411,up,down,up,down,True
+hmda:IN:derived_race:refinance,hmda_in_2018_race_refinance,0.87871,1.101213,up,up,up,up,False
+hmda:KY:derived_race:improvement,hmda_ky_2018_race_improvement,0.868474,0.273166,up,down,up,up,True
+hmda:KY:derived_race:refinance,hmda_ky_2018_race_refinance,0.894278,0.659804,up,up,up,up,True
