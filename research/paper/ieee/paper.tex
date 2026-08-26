@@ -4,7 +4,6 @@
 \usepackage{amsmath,amssymb}
 \usepackage{booktabs}
 \usepackage{graphicx}
-\usepackage{url}
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage[T1]{fontenc}
@@ -14,8 +13,8 @@
 
 \begin{document}
 
-\title{Which Way Does Fairness Go? The Selection Rate Predicts\\
-Whether an Attribute-Blind Constraint Gives or Takes}
+\title{How Generous You Already Are Predicts\\
+Whether Fairness Gives or Takes}
 
 \author{\IEEEauthorblockN{Dheirav}
 \IEEEauthorblockA{\textit{Responsible AI} \\
@@ -31,46 +30,32 @@ can be pulled down. Both outcomes satisfy the constraint, and the metric that ce
 reports the same number in each case, which means a deployment team cannot tell from its own
 dashboard which of the two it is about to cause. We show that the direction is predictable in
 advance from a quantity every deploying organisation already has: the rate at which its
-current model says yes, read against that population's crossover. Across 67 independent
-populations covering six decision domains and eight data sources on five countries, an attribute-blind parity
-constraint withdraws favourable decisions when the baseline selection rate sits below a
-crossover, and extends them when it sits above; on UCI Adult five in-processing methods each
-shrink the pool by 7.9--22.1\%, while on mortgage lending --- one two-state market,
-measured three overlapping ways --- the identical constraint grows it.
-The crossover's location is population-specific --- located values span 0.28 to 0.65, and
-the fixed 0.54 prior is a fallible substitute for measuring one's own: sealed at
-\textbf{9 of 10} on one cohort of never-measured populations (best constant 6; binomial
-tail 0.046 against a guesser, but only $p \approx 0.19$ paired against the constant
-itself) --- a
-cohort whose arms all reach their rates through the income cutoff --- a confound a
-screen-gated Brazilian race cohort has since resolved in the rate's favour, the
-cutoff-only reading scoring 5 of 10 against the rate rules' 8--9 --- and 5 of 10
-post-hoc on a second cohort of larger states, every miss agreeing with that population's
-own crossover. The sealed cohort's rule, populations and pass mark were committed to
-version control before any run; an earlier sealed attempt that carried an in-sample
-refinement \textbf{failed at four of eight}, and we report both outcomes because the
-difference between them is what a sealed test exists to expose. A caution that generalises
-beyond this paper: four 2022 populations initially appeared to \emph{invert} the
-relationship, and diagnosis traced this substantially to the fixed nominal \$50{,}000
-label sliding down an inflated income distribution --- a fixed nominal outcome definition
-is a different task each year --- and a CPI-anchored one still drifts when real incomes
-grow, so outcome definitions should be anchored to the distribution they cut (a
-quantile), and any deployment should
-measure its own current data rather than transport results across vintages. The relationship survives
-a change in how the rate is varied, a twenty-five-fold range of constraint tolerance, a
-boosted-tree learner and a protected attribute swapped from sex to race, but it disappears
-under post-processing ($r = -0.024$ against $+0.585$). A sealed deconfounding test then
-separated the two things that change at that boundary: giving the \emph{same}
-in-processing optimizer the protected attribute leaves the relationship standing
-($r = +0.672$, eighteen populations), so the boundary is the method family, not
-attribute access --- blindness turns out not to be load-bearing for the pool claim.
-Contemporaneous theory's own group-level prediction --- where the attribute is
-readable, the disadvantaged group gains and the advantaged loses --- holds in every
-attribute-aware cell we have measured: 27 of 27 under post-processing, nine
-pre-registered, and 18 of 18 under aware in-processing. The practical outcome is a procedure: when the
-deployed model's viable operating band is wide enough --- which the procedure itself checks
-first --- a team can locate its own crossover by sweeping that model's threshold, using no
-new data.
+current model says yes, read against that population's crossover. Across 107 disjoint
+population samples covering six decision domains and eight data sources on five countries, an
+attribute-blind parity constraint withdraws favourable decisions when the baseline selection
+rate sits below a crossover and extends them when it sits above; on UCI Adult five
+in-processing methods each shrink the pool by 7.9--22.1\%, while on mortgage lending the
+identical constraint grows it.
+
+The claim is deliberately narrow, and sealed tests made it so. \textbf{Direction is
+predictable within a population; magnitude is not}, and a sealed model of it lost to
+predicting zero. Crossovers are population-specific --- located values span 0.28 to 0.65 ---
+so the fixed 0.54 prior is a fallible substitute for measuring one's own: sealed at
+\textbf{9 of 10} on never-measured populations (best constant 6; binomial tail 0.046 against
+a guesser, but only $p \approx 0.19$ paired against the constant itself), and 5 of 10 post-hoc
+on a second cohort. Of nine sealed or registered direction tests, one passed; we report the
+failures because each removed a stronger claim than the one that survives, and because a
+cohort built to strengthen that paired statistic showed the attempt is self-defeating --- the
+magnitude guard such a test requires deletes the near-crossover arms it needs. A screen-gated
+Brazilian race cohort separates the selection rate from label rarity in the rate's favour.
+The relationship survives a change of route, a twenty-five-fold tolerance range, a
+boosted-tree learner and a protected attribute swapped from sex to race, but disappears under
+post-processing --- and a sealed deconfounding test locates that boundary at the optimizer
+family, not attribute access. One scope limit belongs here: \textbf{in five of the eight
+sources the favourable decisions are predicted labels rather than allocations}, and HMDA, the
+one source recording real approvals, is where our sweep protocol failed its held-out test.
+The practical outcome is a procedure that locates a team's own crossover from its deployed
+model, and refuses when it cannot.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -132,12 +117,14 @@ what the finding depends on.
 Contemporaneous theory \cite{backfire2026} establishes that in the attribute-blind regime the
 direction is distribution-dependent. It contains no experiments and its conditions are ordering
 relations on score regions rather than measurable quantities. We supply the measurement across
-57 populations and six domains, and find that a percentile-relaxed form of the
+67 populations and six domains, and find that a percentile-relaxed form of the
 theory's ordering agrees with the measured direction on 24 of 26 arms and correlates
 with our predictor at $r = +0.935$: the selection rate operationalizes the theory's
 quantity. That correspondence has since been stress-tested: it holds across 150
-populations ($r = +0.850$, bootstrap 95\% interval $+0.813$ to $+0.892$), is invariant
-to the trim percentile, survives a gradient-boosted second probe ($r = +0.946$), and on
+\emph{arms} --- population-label pairs in the sense of Section~\ref{sec:setup}, not
+independent populations, several of which contribute an arm at more than one cutoff ---
+with $r = +0.850$ (population-clustered bootstrap 95\% interval $+0.813$ to $+0.892$), is
+invariant to the trim percentile, survives a gradient-boosted second probe ($r = +0.946$), and on
 the sealed cohorts head-to-head the rate calls 18 of 19 to the relaxed ordering's 17. The exact conditions --- \emph{sufficient, not necessary} --- were certified
 on zero of the 26 by our logistic-probe plug-in, whose ratio diverges in the
 $\hat\nu$ tail: an estimator pathology, not a property of the conditions, and we
@@ -231,24 +218,22 @@ populations and then find that is \emph{not sufficient}, because they share one 
 instrument.
 
 \section{Setup and Method}
+\label{sec:setup}
 
-\textbf{Data.} Sixty-seven independent populations across eight data sources: UCI Adult
-(45{,}222 rows); ACS Income \cite{ding2021} across forty US states, ten further
-state-years (2014, 2019 and 2022) and two protected attributes; HMDA 2018 mortgage
-filings for eight states (Mississippi and Louisiana throughout the record, with
-Alabama, South Carolina, Tennessee, Georgia, North Carolina and Ohio added for the
-six-market seal; 79{,}104--305{,}593 records each), where the outcome
-is the \emph{lender's} approval --- action-taken codes 1 (originated) and 2 (approved,
-not accepted) against 3 (denied), with withdrawn, incomplete, purchased and preapproval
-records excluded as not being a completed approve-or-deny --- features restricted by
-allow-list to what exists when the application is filed, the race arm White vs.\ Black
-applicants, the sex arm Male vs.\ Female (joint applications excluded), and loan purposes
-as sub-populations; IPUMS International census extracts for Brazil (2000, 2010) and
-Mexico (2015, 2020), sex arms, labels set by income quantile with the loader's filter
-and 60{,}000-row sealed subsamples per population (Section~\ref{sec:resealed});
-COMPAS \cite{propublica2016} (5{,}278 rows on the race arm after ProPublica's documented
-filter); LSAC bar passage (20{,}798 rows); the Dutch national census of 2001 (60{,}420
-rows); and Taiwanese credit-card default records of 2005 (30{,}000 rows). A
+\textbf{Data.} 107 independent populations across eight data sources.
+Two are US surveys: UCI Adult (45{,}222 rows), and ACS Income \cite{ding2021} across forty
+US states at 2018, thirty-four further state-years (sixteen at 2014, fourteen at 2019, four
+at 2022) and two protected attributes. One records real allocations: HMDA 2018 mortgage
+filings for twenty-four states (Mississippi and Louisiana throughout the record; Alabama,
+South Carolina, Tennessee, Georgia, North Carolina and Ohio added for the six-market seal;
+eight more for the sealed lending cohort of Section~\ref{sec:failures} and eight scored
+post-hoc beside it; 30{,}000--305{,}593 records each). The remaining five are
+IPUMS International census extracts for Brazil (2000, 2010) and Mexico (2015, 2020), sex
+arms, labels set by income quantile with the loader's filter and 60{,}000-row sealed
+subsamples per population (Section~\ref{sec:resealed}); COMPAS \cite{propublica2016}
+(5{,}278 rows on the race arm after ProPublica's documented filter); LSAC bar passage
+(20{,}798 rows); the Dutch national census of 2001 (60{,}420 rows); and Taiwanese
+credit-card default records of 2005 (30{,}000 rows). A
 \emph{population} here is one such unit --- a state, cohort or census --- and
 \emph{independent} means disjoint person samples: no person appears in two of them, and
 arms within a population share people, so however many arms a population contributes, it
@@ -272,8 +257,14 @@ hot-deck imputations, a share that rose in pandemic vintages, and the allocation
 has since run: excluding flagged rows lifts base rates by about $+0.03$
 \emph{uniformly} --- both vintages, both labels, gaps stable, directions preserved ---
 so imputation is a level effect everywhere and is acquitted as a differential 2022
-mechanism, the fourth candidate cleared. A
-weighted re-analysis is reported as ongoing work.
+mechanism, the fourth candidate cleared.
+
+\textbf{The lending outcome, defined.} On HMDA the outcome is the \emph{lender's}
+approval: action-taken codes 1 (originated) and 2 (approved, not accepted) against 3
+(denied), with withdrawn, incomplete, purchased and preapproval records excluded as not being
+a completed approve-or-deny. Features are restricted by allow-list to what exists when the
+application is filed. The race arm is White vs.\ Black applicants, the sex arm Male vs.\
+Female (joint applications excluded), and loan purposes are sub-populations.
 
 COMPAS, LSAC and the Dutch census were added to leave the sources the finding was formed
 in. The Dutch census
@@ -358,6 +349,8 @@ Cross-year shape seal (failed) & 8 fresh state-years (70 runs) \\
 Attr.-independence seal (failed) & 6 race arms (48 runs) \\
 Selection-rate floor & 10 pops.\ (19 arms) \\
 Cross-task shape seal (failed) & 6 task arms, 4 states' persons; not indep. \\
+Third direction cohort (failed) & 24 fresh state-years, 2014 + 2019 \\
+Sealed lending cohort (failed) & 8 fresh markets (16 arms, 2 purposes each) \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -462,13 +455,10 @@ decisions, and 0.010 on the one that created more than it destroyed.
 \caption{Every retained arm from every densely swept population. Within a population the
 change in the pool rises with the baseline selection rate and crosses zero; the two that
 reverse are marked, and both are sweeps whose viable band confines them below the crossover.
-Panels are deliberately \emph{not} pooled: across populations a single slope reaches only
-$r=+0.487$ and fails its pre-registered bar, so one scatter would assert a common curve the
-data rejects. Vertical band: the 0.511--0.576 cluster of point estimates from
-Table~\ref{tab:crossover}, drawn as first published; its upper anchor (Dutch, 0.576) was
-later downgraded by the nested bootstrap (Sec.~\ref{sec:boundaries}), leaving 0.511--0.558
-standing. Carrying the table's bootstrap intervals widens the band to roughly
-0.43--0.58.}
+Panels are deliberately \emph{not} pooled: no pooled slope survives its pre-registered bar,
+so one scatter would assert a common curve the data reject. Vertical band: the point-estimate
+cluster of Table~\ref{tab:crossover}, drawn as first published;
+Section~\ref{sec:boundaries} gives its later history.}
 \label{fig:crossover}
 \end{figure*}
 
@@ -518,7 +508,7 @@ explanations which predict everything observed so far.
 We separate them by holding the task completely fixed --- same rows, features, groups and
 \emph{fitted scores} --- and moving only where the model draws its line. The relationship
 reproduces, and so does the crossover's location: on Oregon the two routes give 0.362--0.653
-and 0.353--0.637. \textbf{Task difficulty is not doing the work.}
+and 0.353--0.637 (Fig.~\ref{fig:tworoutes}). \textbf{Task difficulty is not doing the work.}
 
 With twelve points chosen from each population's viable band, the relationship holds on the
 Dutch census ($+0.946$), South Carolina ($+0.905$) and COMPAS ($+0.844$). Alabama and Kentucky
@@ -530,29 +520,41 @@ any claim that it holds within the low-rate region alone.}
 \subsection{Five domains, and the group-gap alternative}
 
 \begin{table}[t]
-\caption{The relationship across instruments. Each $r$ is computed within one population of
-that instrument, over the retained arms counted in the last column --- not pooled across the
-instrument, for the reason Fig.~\ref{fig:crossover} does not pool.}
+\caption{The relationship across instruments, not pooled across them, for the reason
+Fig.~\ref{fig:crossover} does not pool. This table's job is \emph{breadth} --- one population
+per instrument, on whatever arms that population naturally supplies --- so the four-to-six-arm
+correlations are descriptive, exactly as Section~\ref{sec:tworoutes-note} concedes for Alabama.
+The dense-sweep columns carry the statistical weight where a viable band allows twelve points:
+those are the same populations at $n = 12$, where the relationship is significant at
+$p < 0.001$. The pre-registered alternative is refuted on the dense columns, not the sparse
+ones.}
 \label{tab:domains}
 \centering
-\footnotesize
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{@{}lllcc@{}}
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{@{}lllcccc@{}}
 \toprule
-\textbf{Instrument} & \textbf{Domain} & \textbf{Population} & \textbf{$r$} & \textbf{Arms} \\
+& & & \multicolumn{2}{c}{\textbf{natural arms}} & \multicolumn{2}{c}{\textbf{dense sweep}} \\
+\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+\textbf{Instrument} & \textbf{Domain} & \textbf{Population} & \textbf{$r$} & \textbf{n} &
+\textbf{$r$} & \textbf{n} \\
 \midrule
-ACS Income & income & Alabama & $+0.801$ & 4 \\
-HMDA & mortgages & MS+LA pooled & $+0.858$ & 4 \\
-COMPAS & crim. justice & race arm & $+0.870$ & 5 \\
-Dutch census & occupation & sex arm & $+0.915$ & 6 \\
-LSAC & legal educ. & --- & unsweepable & --- \\
+ACS Income & income & Alabama & $+0.801$ & 4 & --- & --- \\
+ACS Income & income & S. Carolina & --- & --- & $+0.905$ & 12 \\
+HMDA & mortgages & MS+LA pooled & $+0.858$ & 4 & --- & --- \\
+COMPAS & crim. justice & race arm & $+0.870$ & 5 & $+0.844$ & 12 \\
+Dutch census & occupation & sex arm & $+0.915$ & 6 & $+0.946$ & 12 \\
+LSAC & legal educ. & --- & unsweepable & --- & --- & --- \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Fig.~\ref{fig:crossover} shows every arm, and Table~\ref{tab:domains} the summary. The pre-registered alternative --- ``this is a
-property of income prediction and American mortgage lending'', requiring $|r| < 0.30$ --- loses
-on both new instruments.
+Fig.~\ref{fig:crossover} shows every arm, and Table~\ref{tab:domains} the summary. The
+pre-registered alternative --- ``this is a property of income prediction and American mortgage
+lending'', requiring $|r| < 0.30$ --- is refuted on both new instruments, and refuted on their
+\emph{densely swept} arms rather than their sparse ones: COMPAS gives $+0.844$ and the Dutch
+census $+0.946$ over twelve points each, both significant at $p < 0.001$. The four- and
+five-arm rows are reported for breadth and carry no inferential weight on their own.
 
 The oldest competing account is that the \emph{gap between groups} drives the direction. The
 Dutch census has a gap of 0.298, roughly twice Adult's, making it the population where that
@@ -592,7 +594,6 @@ population's own crossover gives $\rho$ of $+0.96$, $+0.95$ and $+0.78$ in three
 populations, but a pooled slope reaches only $r = +0.487$ against a pre-registered $+0.70$ bar.
 
 \section{A Constraint on One Attribute Leaves Subgroups Behind}
-\label{sec:intersectional}
 
 \begin{table}[t]
 \caption{UCI Adult. Constraining sex to 0.020 leaves the worst \emph{Sex}$\times$\emph{Race}
@@ -612,9 +613,9 @@ Constrained on both & 0.016 & 0.048 & F$\times$White \\
 \end{tabular}
 \end{table}
 
-A constraint is imposed on the attribute someone chose to name. Kearns \emph{et al.}
-\cite{kearns2018} showed that marginal constraints can be satisfied while structured subgroups
-are badly treated. Table~\ref{tab:intersectional} is that failure mode measured on Adult.
+A constraint is imposed on the attribute someone chose to name.
+Table~\ref{tab:intersectional} is the gerrymandering failure of Kearns \emph{et al.}
+\cite{kearns2018} measured on Adult.
 
 Constraining sex drives its gap from 0.190 to 0.020 --- a success by the certifying metric.
 The worst \emph{Sex}$\times$\emph{Race} subgroup gap falls only from 0.315 to 0.178, which is
@@ -872,7 +873,8 @@ score; the ninth, Taiwan, was sealed alongside them but registered as reported s
 because a single non-Western population can carry no claim on its own (it was predicted
 correctly: rate 0.885, observed $+0.68\%$).
 
-\textbf{It failed. Four of eight, against a bar of seven, not beating a constant.}
+\textbf{It failed. Four of eight, against a bar of seven, not beating a constant}
+(Table~\ref{tab:sealed}).
 
 \begin{table}[t]
 \caption{The sealed prediction. Populations never previously measured; predictions committed
@@ -1019,6 +1021,17 @@ Colorado, 0.002 away in rate, moved $+0.63\%$ and was called correctly. The regi
 did not anticipate near-zero magnitudes away from the boundary; a future seal should state a
 minimum-magnitude guard in advance, and this one is charged the miss for not having done so.
 
+A third cohort, built after this one to give the paired statistic more discordant arms,
+failed for a reason worth stating here: a pre-committed magnitude guard removed ten of its
+twenty-four arms, and it removed them near the crossover, because effect size grows with
+distance from it ($r = +0.648$). Four discordant arms survived, the rule won all four, and
+four of four is $p = 0.0625$ --- the bar was unreachable. Both of that cohort's named nulls,
+the cutoff-only reading and a 0.50 prior, then scored identically to the rule on every
+scored arm, with \emph{zero} discordant arms between them: like the cohort below, it
+separates neither the rate from the cutoff nor 0.54 from 0.50. The guard and the
+discordance a paired test needs are anti-correlated by construction, so this weakness does
+not yield to a larger balanced cohort.
+
 A seed-level accounting sharpens the lesson: 16 of the 19 sealed arms (both cohorts) are
 unanimous in sign across their five seeds, and the three that split are exactly the
 near-zero effects. Minnesota, the miss, splits 3 of 5 --- and Iowa, at $+0.04\%$,
@@ -1123,8 +1136,8 @@ because each is a place where a plausible-looking run returns a meaningless answ
 
 \textbf{It can refuse.} Lines 6--8 compute the viable band and exit before any constraint is
 fitted, if no threshold reaches a low selection rate with a model still beating the trivial
-predictor. On LSAC that band spans 0.056 and the procedure declines, rather than returning arms
-that would be discarded later.
+predictor. On LSAC that band is too narrow to sweep (Section~\ref{sec:boundaries}) and the procedure
+declines, rather than returning arms that would be discarded later.
 
 \textbf{It can return \textsc{void}.} Line 16 requires enough arms to survive the guards
 and the pool to have moved at all. A
@@ -1161,10 +1174,17 @@ line 28 is the 1.0-point magnitude guard that protocol states.
 \textbf{It can return \textsc{indeterminate}.} Lines 28--29 refuse a sign call when the
 deployed rate sits inside the located bracket, or when the nearest arms' effects are
 within seed noise --- precisely the two conditions under which this project's own record
-shows a sign call has nothing to grip: Maryland missed at $0.508$ at the cluster's edge, and
-Minnesota's miss was an effect of $-0.04\%$ that flips sign across seeds. The registered
+shows a sign call has nothing to grip: Maryland's miss sat at the cluster's edge
+(Section~\ref{sec:sealed}), and Minnesota's was an effect of $-0.04\%$ that flips sign
+across seeds. The registered
 rubric of the re-seal did not have this verdict and was charged a miss for it; the
 algorithm inherits the lesson.
+
+\textbf{The magnitude guard is measured, not assumed.} Line 28's refusal rests on the
+claim that a near-zero effect has no sign to predict. Two sealed cohorts run after this
+algorithm was written put a number on it: across their forty arms the rule is correct on
+\textbf{21 of 22} arms whose effect exceeds one point and on \textbf{11 of 18} below it ---
+95\% against 61\%, which is a coin flip. The threshold is doing what it claims.
 
 \textbf{It returns a sign, never a size.} The distance from the crossover \emph{orders} the
 effect within a population, so a team can rank its own segments; but no slope transfers between
@@ -1194,17 +1214,24 @@ sequence of learner refits. A cheap pre-screen exists: the relaxed-$\zeta$ order
 Section~\ref{sec:regime} needs no constraint fits and correlates with the predictor at
 $r=+0.935$.
 
-\textbf{What it actually returns, totalled.} Run over the 45 population-label pairs with
-stored sweeps in this project (populations never swept cannot enter), the distribution
-is: 27 directional verdicts (20 \textsc{withdrawal}, 7 \textsc{extension}), 6
-\textsc{non-monotone}, 10 \textsc{void}, one refusal at the noise floor (COMPAS), and
-one bracket with no natural arm to read against. Every one of the 27 directional
+\textbf{What it actually returns, totalled.} Run over the 52 population-label pairs whose
+stored sweeps resolve to a dataset spec --- fourteen further IPUMS sweeps are stored but
+unmapped, and are excluded rather than guessed at --- the distribution
+is: 29 directional verdicts (20 \textsc{withdrawal}, 9 \textsc{extension}), 8
+\textsc{non-monotone}, 13 \textsc{void}, one refusal at the noise floor (COMPAS), and
+one bracket with no natural arm to read against. Every one of the 29 directional
 verdicts matches what the fitted constraint did at that population's natural operating
 point --- a consistency check on the audit's reading of its own sweep, not independent
-validation, since the natural arm is part of the curve being read. The honest summary:
-on this project's own data the audit answers six times in ten, and refuses or reports
-non-monotonicity the rest --- a procedure that mostly answers, with its refusals
-totalled rather than hidden. Finally, an ex-ante verdict earns trust only if checked:
+validation, since the natural arm is part of the curve being read. The refusals are not
+silences. A \textsc{void} arm is one whose pool change spans under two points across the
+entire viable band --- median 1.47 --- which tells a deployer that the direction question is
+\emph{moot} on their system, not that it is unanswerable; a \textsc{non-monotone} verdict
+says the rule does not apply here, which is a finding about the system; and the noise-floor
+refusal says the population is too small to audit at all. Counted that way, 48 of the 52
+return something a team can act on and four return nothing --- three sweeps too thin to read
+and one bracket with no natural arm. The honest summary: the audit gives a \emph{direction}
+a little under six times in ten, tells a team the question is moot or the rule inapplicable
+in most of the remainder, and is silent on four of fifty-two. Finally, an ex-ante verdict earns trust only if checked:
 whatever the verdict, including refusals, the deployed system's measured pool change and
 who-pays decomposition (Section~\ref{sec:whopays}) should be reported after the fact ---
 the verdict is falsifiable at deployment, and Section~\ref{sec:discussion} makes this a
@@ -1348,6 +1375,15 @@ natural-arm direction holds 7 of 8; both located midpoints sit at 0.80--0.85 \\
 Third cohort (deconfounding) & S1 floor 12: 7 --- underpow.; S2 floor 2: 1; S3 floor
 3: 0 & Brazil's sex gaps sit below the audit's own floor and the gates refused them;
 Mexico 2015 brackets the first non-US crossover \\
+Third direction cohort & 13/14 + beat const.\ + paired $p<0.05$; got 13, const 9,
+$p=0.062$ --- fail & the paired statistic is not fixable by a balanced cohort: the
+pre-stated magnitude guard deletes the near-crossover arms that discriminate
+($r = +0.648$ between distance from the crossover and effect size), leaving four
+discordant arms where four of four is already $p = 0.0625$ \\
+Sealed lending cohort & 8/8 + beat const.\ + paired $p<0.05$; const.\ also 8/8 --- fail &
+the purpose-only null is beaten 8 vs 5: the loan product does not carry the prediction, the
+measured rate does --- the first sealed evidence of this on real approvals rather than
+predicted labels \\
 Race cohort (screen-gated) & S1: 8/10, but 0.5-null 9 --- fail; S2 --- holds & the
 cutoff null is beaten 8--9 vs 5: \textbf{it is the rate}, not label rarity; the 0.54
 value holds no in-band privilege; within-population passes off-instrument at
@@ -1543,7 +1579,10 @@ no doctrinal commitment, and one with an immediate home: for credit and employme
 systems the EU AI Act already requires documented bias examination, accuracy and
 robustness documentation, and post-market monitoring, and the audit's verdicts ---
 including its refusals --- are exactly the kind of artefact those files are meant to
-hold. For notice obligations: a flat-lottery model
+hold. One limit belongs with that suggestion rather than in a later section: our only
+EU population is the Dutch census of 2001, which by this paper's own vintage standard
+grounds no claim about any current EU deployment. What we offer there is a reporting
+format, not evidence about European systems. For notice obligations: a flat-lottery model
 (Section~\ref{sec:lottery}) cannot generate truthful individualized reasons for a denial,
 since the individual's own score played no role in it, which sits uneasily with
 adverse-action-notice duties wherever they apply --- in the EU, a decision randomized
@@ -1591,13 +1630,13 @@ refuse; neither manufactures a direction.
 \section*{Reproducibility}
 
 Every load-bearing figure is re-derived from stored results by an automated check that fails if
-a document and its data disagree; 55 checks across five suites accompany this work, 28 of them
+a document and its data disagree; 62 checks across six suites accompany this work, 30 of them
 of that document-against-data form, runnable as
 \texttt{python -m tests.\emph{suite}} (or \texttt{python -m pytest tests/}) from the
 repository:
 \texttt{github.com/Dheirav/who-pays-for-fairness}. Pre-registrations are committed before
 the runs they govern, and every row of Table~\ref{tab:registered} has a registration and a
-scoring commit, listed here as (sealed $\to$ scored): HMDA sweep \texttt{e23841b} $\to$
+scoring commit. Listed as (sealed $\to$ scored): HMDA sweep \texttt{e23841b} $\to$
 \texttt{4f9f715}; EO transfer \texttt{e658ed1} $\to$ \texttt{3baa054}; post-processing
 transfer \texttt{bf36db0} $\to$ \texttt{c097dba}; derivation \texttt{a859d16} $\to$
 \texttt{2b66a97}; refined rule \texttt{f64d9a7} $\to$ \texttt{16e2470}; attribute-aware
@@ -1608,10 +1647,10 @@ independence \texttt{aa6532b} $\to$ \texttt{d3bcb54}; cross-task shape
 \texttt{d8bfae8} $\to$ \texttt{aa8d43a}; regime deconfounding \texttt{66bc4d5}
 $\to$ \texttt{28e4a19}; six-market lending \texttt{08b27fa} $\to$ \texttt{5870b9c};
 third cohort \texttt{50d467f}/\texttt{a624cf5} (two-stage) $\to$ \texttt{5870b9c};
-race cohort \texttt{2f16cda} $\to$ \texttt{e3e3478}, the recent six anchored
-externally (an OpenTimestamps receipt committed in \texttt{research/seals/} before any
-of its arms ran) --- each seal a committed analyser
-whose population lists an isolation guard forbids changing. An honest limit of this
+race cohort \texttt{2f16cda} $\to$ \texttt{e3e3478}. The recent six are anchored
+externally, by an OpenTimestamps receipt committed in \texttt{research/seals/} before any of
+their arms ran, and each seal is a committed analyser whose population lists an isolation
+guard forbids changing. An honest limit of this
 apparatus: the ordering rests on git commit timestamps from the authors' machine, which
 an outsider must take on trust. Two seals no longer do: the cross-task seal
 (\texttt{d8bfae8}) and the third cohort's stage-A protocol (\texttt{50d467f}) each carry
