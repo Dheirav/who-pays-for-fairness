@@ -811,6 +811,22 @@ consistency observation and no more. The boundary's remaining live test is the I
 cohort's S3, on income tasks, real-anchored --- the only domain where it has ever
 called anything correctly.
 
+\textbf{The transported prior carries a dead band, and the procedure did not previously
+say so.} Pooling every arm from all four sealed direction cohorts and scoring each against
+its own cohort's crossover gives a calibration: the rule is correct on 19 of 19 arms more
+than 0.30 from the crossover, 23 of 27 between 0.15 and 0.30, 5 of 6 between 0.05 and 0.15
+--- and \textbf{1 of 6 within 0.05}. The last figure is not significant on six arms, but its
+arms are informative: Maryland at 0.508 moved up where the prior said down, while Indiana
+and Missouri at 0.553 and 0.555 moved down where it said up. A prior that was simply
+misplaced would push every miss the same way; these point in both directions, so what the
+band exposes is not a shifted crossover but the prior's \emph{lack of resolution} --- which
+is what one should expect of a fixed value when located crossovers span 0.28 to 0.65.
+Algorithm~\ref{alg:locate} refuses inside a \emph{located} bracket, but a team using the
+transported prior without sweeping has no bracket and so met no refusal; on this evidence
+the prior should not be read within $\pm 0.05$ of itself. Whether those six sit on the far
+side of their own crossovers is untested --- none has a stored sweep --- and it is the
+cheapest open experiment here.
+
 \textbf{We therefore treat a crossover near 0.54 as an empirical prior with a measured
 failure rate, not a constant.} It predicted 9 of 10 sealed populations in advance
 (Section~\ref{sec:resealed}); scored post-hoc on the campaign's ten natural arms it manages

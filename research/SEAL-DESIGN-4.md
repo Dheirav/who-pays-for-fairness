@@ -37,10 +37,27 @@ Two things to take from this, and the second is uncomfortable.
 1's INDETERMINATE verdict already assumes and what document 69 measured as 95% against 61%.
 
 **Within 0.05 of the crossover the rule scores 1 of 6 — worse than a coin.** On n = 6 that
-is not significant, and it may be noise. But if it is real it is not a failure of the rule:
-it would mean the transported crossover is systematically misplaced for those populations,
-which is testable and is the sharpest open question this table raises. **The fourth seal
-should register it as a named hypothesis rather than letting it pass as noise.**
+is not significant. But inspecting the arms rules out the first explanation that comes to
+mind, and points at a better one:
+
+| arm | rate | side of prior | predicted | actual |
+|---|---|---|---|---|
+| MD 2018 | 0.508 | below | down | **up** |
+| IN 2014 | 0.553 | above | up | **down** |
+| MO 2014 | 0.555 | above | up | **down** |
+| NY improvement | 0.653 | below | down | **up** |
+| MD improvement | 0.668 | above | up | **down** |
+
+A *systematically misplaced* prior would push every miss the same way. These go both ways:
+Maryland needs a crossover below 0.508, Indiana and Missouri need one above 0.555. So the
+prior is not shifted — it has **no resolution at this scale**, which is what one should
+expect when located crossovers span 0.28 to 0.65. Being within 0.05 of 0.54 tells you almost
+nothing about which side of your *own* crossover you sit.
+
+That reading is consistent with the data but **not confirmed by it**: none of these six
+populations has a stored sweep, so their own crossovers are unknown. Sweeping those six
+would test it directly and is the cheapest open experiment this project has — see
+"What to test first" below.
 
 ## The protocol to commit
 
@@ -77,6 +94,22 @@ third cohort, where 24 registered became 14 scored and 4 informative.
 ACS has 50 states at each of 2014 and 2019; 16 and 14 respectively are now measured, leaving
 roughly 70 unmeasured state-years — comfortably more than 40. 2022 stays excluded until
 labels are quantile-anchored, per the vintage finding.
+
+## What to test first, and it is cheap
+
+Sweep the six near-boundary arms above to locate their own crossovers, then ask whether each
+miss is explained by the arm sitting on the other side of its own crossover than the prior
+implied. Six populations, twelve points each, on data already downloaded — one to two hours.
+
+Two outcomes, both useful. If the misses are explained, the boundary behaviour is the
+transported prior's resolution limit and nothing more, which is a clean quantification of a
+weakness the paper already concedes qualitatively. If they are **not** explained — if a
+population sits on the side of its own measured crossover that the rule predicted, and still
+moves the other way — then something is wrong with the within-population claim at small
+effect sizes, and that is a far more serious finding than a fallible prior.
+
+**Run this before sealing the fourth cohort**, because the answer changes what the fourth
+cohort should commit within 0.05 of the prior.
 
 ## What this cannot fix
 
