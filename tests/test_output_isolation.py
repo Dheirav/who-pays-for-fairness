@@ -45,6 +45,13 @@ PREREGISTERED = {
     "analyse_shapes.py", "analyse_race_shapes.py", "analyse_ipums_sealed.py",
     "analyse_task_shapes.py", "analyse_regime_aware.py", "analyse_hmda_markets.py",
     "analyse_ipums_race.py",
+    # Reads the sealed cohorts' stored outputs, so its populations are whatever those
+    # seals fixed -- there is nothing for --dataset to point at.
+    "analyse_skill.py",
+    # Both are seals: the population list, the cutoffs and the bar were committed and
+    # externally timestamped before any of their arms existed. Making either configurable
+    # would let a later caller change what was predicted, which is the whole point of a seal.
+    "analyse_third_direction.py", "analyse_lending_direction.py",
 }
 
 

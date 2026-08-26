@@ -1117,6 +1117,59 @@ def test_doc41_postprocessing_arm_is_void() -> None:
     print(f"  post-processed output constant at {positives[0]:.0f} across all six points")
 
 
+def test_paper_verdict_distribution_matches_the_audit() -> None:
+    """Section IX's verdict totals must follow from verdicts.csv.
+
+    This figure drifts silently: every new sweep changes it, and nothing in the paper
+    recomputes it. It was already stale once --- the text claimed 27 directional verdicts
+    over 45 pairs while the audit returned 29 over 52, because the IPUMS and six-market
+    sweeps landed after the paragraph was written. A reader cannot tell a stale total from a
+    current one, and the refusal rate is a load-bearing claim about what the procedure is
+    worth, so it is asserted rather than trusted.
+    """
+    path = RESEARCH / "verdicts" / "verdicts.csv"
+    paper = ROOT / "research" / "paper" / "ieee" / "paper.tex"
+    if not path.exists() or not paper.exists():
+        print("  verdicts.csv or paper.tex absent; skipping")
+        return
+    frame = pd.read_csv(path)
+    text = " ".join(paper.read_text().split())      # newline-insensitive matching
+
+    mapped = frame[frame["verdict"] != "UNMAPPED"]
+    n_withdrawal = int((mapped["verdict"] == "WITHDRAWAL").sum())
+    n_extension = int((mapped["verdict"] == "EXTENSION").sum())
+    counts = {
+        "mapped pairs": len(mapped),
+        "withdrawal": n_withdrawal,
+        "extension": n_extension,
+        "directional": n_withdrawal + n_extension,
+        "non-monotone": int((mapped["verdict"] == "NON-MONOTONE").sum()),
+        "void": int(mapped["verdict"].str.startswith("VOID").sum()),
+    }
+
+    # Anchored to their actual sites. An earlier version asserted the bare phrase
+    # "N directional verdicts", which the paper contains *twice* -- so changing one of them
+    # left the other satisfying the assertion, and the guard passed on a stale paper. Each
+    # entry below is pinned to surrounding text that occurs once.
+    required = [
+        (f"the {counts['mapped pairs']} population-label pairs", "mapped-pair count"),
+        (f"distribution is: {counts['directional']} directional verdicts "
+         f"({counts['withdrawal']} \\textsc{{withdrawal}}, {counts['extension']} "
+         f"\\textsc{{extension}}), {counts['non-monotone']} \\textsc{{non-monotone}}, "
+         f"{counts['void']} \\textsc{{void}}", "the distribution sentence"),
+        (f"Every one of the {counts['directional']} directional verdicts matches",
+         "consistency-check total"),
+    ]
+    for phrase, what in required:
+        assert phrase in text, (
+            f"the paper's {what} disagrees with verdicts.csv; expected {phrase!r}. "
+            f"Re-run  python -m src.experiments.analyse_verdicts  and update Section IX."
+        )
+    print(f"  {counts['directional']} directional ({counts['withdrawal']}W/"
+          f"{counts['extension']}E), {counts['non-monotone']} non-monotone, "
+          f"{counts['void']} void, over {counts['mapped pairs']} mapped pairs")
+
+
 def test_paper_draft_population_count_is_recomputed() -> None:
     """The paper's own scale claim must match the results on disk.
 
@@ -1319,6 +1372,7 @@ def main() -> None:
         test_doc41_postprocessing_arm_is_void,
         test_doc42_and_43_dense_and_regime,
         test_doc44_magnitude_and_crossover_prior,
+        test_paper_verdict_distribution_matches_the_audit,
         test_paper_draft_population_count_is_recomputed,
         test_course_documents_still_match_their_results,
     ]

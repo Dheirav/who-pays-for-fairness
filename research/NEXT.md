@@ -19,17 +19,36 @@ that after the run cannot excuse the miss. After document 66: a two-stage seal c
 **screen gate** between stage B and the runs — measure the baseline gaps, record which
 populations the frozen exclusions refuse, and run only the survivors; a pre-data seal
 cannot pre-screen, and Brazil's absent sex gap cost a day of compute that a seed-0
-screen would have caught.
+screen would have caught. After documents 69 and 70, two more, and they are the ones
+most likely to be forgotten:
+
+**State the expected yield and the minimum n before sealing, not after.** Four tests have
+now returned UNDERPOWERED and a fifth failed on an unreachable bar — the third
+direction cohort needed p < 0.05 on its discordant arms and its own magnitude guard left it
+four, where four of four is already 0.0625. Every one of those was predictable from stored
+results in five minutes. A seal that does not state how many scored arms it expects, and
+what it will do if it gets fewer, is not finished.
+
+**A magnitude guard and discordance are anti-correlated; a seal cannot maximise both.**
+Effect size grows with distance from the crossover (r = +0.648), and the arms that
+discriminate a rule from its null are the near-crossover ones. So the guard document 49
+requires deletes exactly the evidence a paired test needs, and scaling the cohort scales
+both sides. The way out is not a bigger cohort: it is to stop scoring signs. A seal that
+commits a *probability* per arm and scores with `brier_skill()` (`src/skill.py`) weights
+near-zero arms down instead of deleting them, and keeps their information. **No seal has
+used it yet, and the next direction seal should.**
 
 ---
 
 ## Where the work stands
 
-* **67 independent populations**, 6 domains, 8 data sources, 5 countries, 2 decades:
-  the six-market lending seal added six HMDA states and the third cohort added Brazil
-  2000/2010 and Mexico 2015/2020 (IPUMS, the 8th source). Cross-task and aware arms
-  share persons with counted populations and are **not** new populations — the count
-  guard enforces both rules.
+* **107 independent populations**, 6 domains, 8 data sources, 5 countries, 2 decades:
+  the six-market lending seal added six HMDA states, the third cohort added Brazil
+  2000/2010 and Mexico 2015/2020 (IPUMS, the 8th source), and 26 Aug added 24 fresh ACS
+  state-years (16 at 2014, 14 at 2019) plus 16 HMDA markets — 8 sealed, 8 post-hoc.
+  Cross-task and aware arms share persons with counted populations and are **not** new
+  populations, and `hmda_ms_la` pools two markets already counted — the count guard
+  enforces all three rules and is the authority on the number.
 * **After document 52 the claim carries a sharper scope.** The sealed 9/10 stands, but the
   ten large states swept that night score the fixed 0.54 prior at 5/10 post-hoc, each miss
   consistent with its own state's sweep: the within-population relationship survives, the
@@ -44,10 +63,15 @@ screen would have caught.
   cut list written in `paper/COMPRESSION-PLAN.md`), builds from `research/paper/ieee/build.sh`.
   `research/paper/draft-v2.md` is **superseded** — do not edit it; the pack copies the typeset
   PDF.
-* **55 automated checks** across five suites re-derive every load-bearing figure from stored
-  results (pytest additionally runs 65, including the four in-processing tests repaired
-  24 Aug). Run all five before trusting anything:
-  `for m in test_documented_claims test_output_isolation test_incidence test_acs_threshold test_new_instruments; do .venv/bin/python -m tests.$m; done`
+* **63 automated checks** across six suites re-derive every load-bearing figure from stored
+  results. `test_skill` (26 Aug) pins the skill-margin arithmetic and re-derives the re-seal's
+  reported statistics; `test_documented_claims` gained a guard on the paper's verdict
+  distribution, which had already drifted once. Run all six before trusting anything:
+  `for m in test_documented_claims test_output_isolation test_incidence test_acs_threshold test_new_instruments test_skill; do .venv/bin/python -m tests.$m; done`
+
+  **Only 3 of the paper's 268 decimal figures are guarded.** The verdict totals were stale
+  (27/45 in the text against 29/52 in the data) and nothing caught it. Guarding the ~15
+  load-bearing figures is the outstanding hygiene job.
 
 ### Five results to know before touching anything
 
