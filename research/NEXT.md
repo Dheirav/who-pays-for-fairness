@@ -36,7 +36,13 @@ requires deletes exactly the evidence a paired test needs, and scaling the cohor
 both sides. The way out is not a bigger cohort: it is to stop scoring signs. A seal that
 commits a *probability* per arm and scores with `brier_skill()` (`src/skill.py`) weights
 near-zero arms down instead of deleting them, and keeps their information. **No seal has
-used it yet, and the next direction seal should.**
+used it yet, and the next direction seal should.** Its protocol, calibration and power
+analysis are worked out in [`SEAL-DESIGN-4.md`](SEAL-DESIGN-4.md): commit a probability per
+arm, score with `brier_skill`, no magnitude guard, **40 arms with a floor of 30** for 97%
+power. Note the finding that design turned up: across all 58 sealed arms ever run, the rule
+scores **1 of 6 within 0.05 of the crossover** — worse than a coin, on n = 6. Noise or a
+systematically misplaced prior, and the next seal should name it as a hypothesis rather than
+let it pass.
 
 ---
 

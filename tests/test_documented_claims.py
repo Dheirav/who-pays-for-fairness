@@ -1117,6 +1117,142 @@ def test_doc41_postprocessing_arm_is_void() -> None:
     print(f"  post-processed output constant at {positives[0]:.0f} across all six points")
 
 
+def _paper_text() -> str | None:
+    path = ROOT / "research" / "paper" / "ieee" / "paper.tex"
+    return " ".join(path.read_text().split()) if path.exists() else None
+
+
+def test_paper_ablation_table_matches_results() -> None:
+    """tab:ablation is the paper's opening evidence; every cell must follow from Adult.
+
+    Tolerance rather than rounding: two cells sit exactly on a half (0.8265, 0.8365) where
+    the paper rounds half up and Python's round() rounds half to even, so an equality test
+    on round(x, 3) reports a disagreement that is not there.
+    """
+    text = _paper_text()
+    path = COURSE / "ablation_summary.csv"
+    if text is None or not path.exists():
+        print("  ablation summary or paper absent; skipping")
+        return
+    means = pd.read_csv(path, header=[0, 1], index_col=0).xs("mean", axis=1, level=1)
+    documented = {
+        "baseline": (0.847, 0.186), "expgrad_dp": (0.828, 0.018),
+        "gridsearch_dp": (0.827, 0.015), "adversarial_debiasing": (0.826, 0.020),
+        "prejudice_remover": (0.837, 0.065), "expgrad_eo": (0.836, 0.107),
+    }
+    for method, (acc, dp) in documented.items():
+        got_acc = float(means.loc[method, "accuracy"])
+        got_dp = float(means.loc[method, "demographic_parity_diff"])
+        assert abs(got_acc - acc) < 0.001, f"{method}: paper {acc}, data {got_acc:.4f}"
+        assert abs(got_dp - dp) < 0.001, f"{method}: paper DP {dp}, data {got_dp:.4f}"
+        assert f"${acc:.3f}$" in text or f" {acc:.3f} " in text, \
+            f"the paper no longer states {method}'s accuracy {acc}"
+    print(f"  {len(documented)} methods re-derived from ablation_summary")
+
+
+def test_paper_who_pays_figures_match_results() -> None:
+    """The rate/people divergence and the exchange rate, which carry Section IV-A."""
+    text = _paper_text()
+    path = COURSE / "who_pays_summary.csv"
+    if text is None or not path.exists():
+        print("  who-pays summary or paper absent; skipping")
+        return
+    frame = pd.read_csv(path).set_index("method")
+    rate = frame["dp_share_levelling_down"]
+    people = frame["people_share_levelling_down"]
+    pool = frame["positives_pct_change"].abs()
+
+    # The paper states these as ranges rounded to two places -- "0.50 to 0.58" is the
+    # rounding of 0.498 to 0.575 -- so they are checked to that precision, not tighter.
+    assert abs(rate.min() - 0.50) < 0.01 and abs(rate.max() - 0.58) < 0.01, \
+        f"rate shares now {rate.min():.3f}-{rate.max():.3f}, paper rounds them to 0.50-0.58"
+    assert abs(people.min() - 0.66) < 0.01 and abs(people.max() - 0.74) < 0.01, \
+        f"people shares now {people.min():.3f}-{people.max():.3f}, paper rounds them to 0.66-0.74"
+    assert abs(pool.min() - 7.9) < 0.1 and abs(pool.max() - 22.1) < 0.1, \
+        f"pool shrink range now {pool.min():.1f}-{pool.max():.1f}, paper says 7.9--22.1"
+    assert "7.9--22.1" in text, "the paper no longer states the 7.9--22.1% pool range"
+
+    exchange = float(frame.loc["expgrad_dp", "lost_per_gained"])
+    assert abs(exchange - 2.68) < 0.005, f"ExpGrad-DP exchange rate is {exchange:.3f}, paper says 2.68"
+    assert "2.68" in text, "the paper no longer states the 2.68 exchange rate"
+    print(f"  shares {rate.min():.2f}-{rate.max():.2f} (rates) vs {people.min():.2f}-{people.max():.2f} "
+          f"(people); exchange {exchange:.2f}")
+
+
+def test_paper_sealed_cohort_scores_match_results() -> None:
+    """Every sealed cohort's score, re-counted from its own stored arms.
+
+    These are the numbers a reader weighs the paper by, and they are exactly the numbers
+    that go stale when a cohort is re-run or extended.
+    """
+    text = _paper_text()
+    if text is None:
+        print("  paper absent; skipping")
+        return
+    checks = []
+
+    reseal = RESEARCH / "resealed" / "resealed.csv"
+    if reseal.exists():
+        f = pd.read_csv(reseal)
+        correct = int((f["predicted"] == f["actual"]).sum())
+        constant = max(int((f["actual"] == v).sum()) for v in f["actual"].unique())
+        checks.append(("re-seal", correct, len(f), constant, "9 of 10"))
+        assert (correct, constant) == (9, 6), f"re-seal now {correct}/{len(f)}, constant {constant}"
+
+    seal1 = RESEARCH / "sealed" / "sealed.csv"
+    if seal1.exists():
+        f = pd.read_csv(seal1)
+        f = f[f["held_out"]]
+        correct = int((f["predicted"] == f["actual"]).sum())
+        checks.append(("seal 1", correct, len(f), None, "four of eight"))
+        assert correct == 4 and len(f) == 8, f"seal 1 now {correct}/{len(f)}"
+
+    third = RESEARCH / "third_direction" / "third_direction.csv"
+    if third.exists():
+        f = pd.read_csv(third)
+        s = f[~f["indeterminate"]]
+        correct = int((s["predicted"] == s["actual"]).sum())
+        constant = max(int((s["actual"] == v).sum()) for v in s["actual"].unique())
+        checks.append(("third direction", correct, len(s), constant, "13"))
+        assert (correct, len(s), constant) == (13, 14, 9), \
+            f"third direction now {correct}/{len(s)}, constant {constant}"
+
+    lending = RESEARCH / "lending_direction" / "lending_direction.csv"
+    if lending.exists():
+        f = pd.read_csv(lending)
+        s = f[~f["indeterminate"]]
+        correct = int((s["predicted"] == s["actual"]).sum())
+        null = int((s["null_purpose"] == s["actual"]).sum())
+        checks.append(("lending", correct, len(s), null, "8 vs 5"))
+        assert (correct, null, len(s)) == (8, 5, 8), \
+            f"lending now {correct}/{len(s)}, purpose-only null {null}"
+
+    for label, correct, n, other, phrase in checks:
+        assert phrase in text, f"the paper no longer states {label}'s score ({phrase!r})"
+    print("  " + "; ".join(f"{l} {c}/{n}" for l, c, n, _, _ in checks))
+
+
+def test_paper_effect_size_split_matches_results() -> None:
+    """The 95%/61% split, which turned Algorithm 1's magnitude threshold from assumed to measured."""
+    text = _paper_text()
+    a = RESEARCH / "third_direction" / "third_direction.csv"
+    b = RESEARCH / "lending_direction" / "lending_direction.csv"
+    if text is None or not (a.exists() and b.exists()):
+        print("  cohorts or paper absent; skipping")
+        return
+    frame = pd.concat([pd.read_csv(a), pd.read_csv(b)])
+    frame["correct"] = frame["predicted"] == frame["actual"]
+    above = frame[~frame["indeterminate"]]
+    below = frame[frame["indeterminate"]]
+    hi = (int(above["correct"].sum()), len(above))
+    lo = (int(below["correct"].sum()), len(below))
+    assert hi == (21, 22), f"above the guard now {hi[0]}/{hi[1]}, paper says 21 of 22"
+    assert lo == (11, 18), f"below the guard now {lo[0]}/{lo[1]}, paper says 11 of 18"
+    assert "21 of 22" in text and "11 of 18" in text, \
+        "the paper no longer states the effect-size split"
+    print(f"  above 1.0 pt: {hi[0]}/{hi[1]}; below: {lo[0]}/{lo[1]}")
+
+
 def test_paper_verdict_distribution_matches_the_audit() -> None:
     """Section IX's verdict totals must follow from verdicts.csv.
 
@@ -1372,6 +1508,10 @@ def main() -> None:
         test_doc41_postprocessing_arm_is_void,
         test_doc42_and_43_dense_and_regime,
         test_doc44_magnitude_and_crossover_prior,
+        test_paper_ablation_table_matches_results,
+        test_paper_who_pays_figures_match_results,
+        test_paper_sealed_cohort_scores_match_results,
+        test_paper_effect_size_split_matches_results,
         test_paper_verdict_distribution_matches_the_audit,
         test_paper_draft_population_count_is_recomputed,
         test_course_documents_still_match_their_results,
