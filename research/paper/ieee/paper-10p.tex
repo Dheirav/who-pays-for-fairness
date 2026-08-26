@@ -805,6 +805,11 @@ at both window edges and negative between, while New Jersey and Virginia level \
 across their entire windows. The monotone within-population picture, which held on every
 population swept before, is therefore itself population-dependent.
 
+A mechanism for those failures has since turned up. All three home-improvement sweeps run
+on fresh markets return the same non-monotone \mbox{$+\,\ldots\,-\,\ldots\,+$} shape, so a
+bracketing step that assumes one rising crossing cannot read them --- which is what a sweep
+scored 2 of 4, and later 2 of 6, was failing to do.
+
 Every lending estimate sits above every non-lending one, but those come from a \emph{single}
 market measured three overlapping ways, so ``lending is different'' remains a hypothesis
 --- and selection into that market's sample is the leading alternative reading: an HMDA
@@ -840,16 +845,20 @@ say so.} Pooling every arm from all four sealed direction cohorts and scoring ea
 its own cohort's crossover gives a calibration: the rule is correct on 19 of 19 arms more
 than 0.30 from the crossover, 23 of 27 between 0.15 and 0.30, 5 of 6 between 0.05 and 0.15
 --- and \textbf{1 of 6 within 0.05}. The last figure is not significant on six arms, but its
-arms are informative: Maryland at 0.508 moved up where the prior said down, while Indiana
-and Missouri at 0.553 and 0.555 moved down where it said up. A prior that was simply
-misplaced would push every miss the same way; these point in both directions, so what the
-band exposes is not a shifted crossover but the prior's \emph{lack of resolution} --- which
-is what one should expect of a fixed value when located crossovers span 0.28 to 0.65.
-Algorithm~\ref{alg:locate} refuses inside a \emph{located} bracket, but a team using the
-transported prior without sweeping has no bracket and so met no refusal; on this evidence
-the prior should not be read within $\pm 0.05$ of itself. Whether those six sit on the far
-side of their own crossovers is untested --- none has a stored sweep --- and it is the
-cheapest open experiment here.
+arms have since been swept, and the answer is not the one we first proposed. Maryland's own
+crossover sits at 0.15--0.29, so its natural rate of 0.508 is far above it, the rule read
+against \emph{its own} crossover says up, and it went up: that miss is the transported
+prior's want of resolution, exactly as one would expect of a fixed value when located
+crossovers span 0.28 to 0.65. \textbf{The other five are not misplaced crossovers at all.}
+Their sweeps have no single rising sign change --- four are non-monotone and Missouri is
+outright inverted --- so no directional rule applies to them, and
+Algorithm~\ref{alg:locate} returns \textsc{non-monotone} on every one. The sixth is the
+control: it is the arm the rule got \emph{right}, its landscape is non-monotone too, and so
+its correctness was luck rather than skill. \textbf{What the dead band exposes is therefore
+not a failure of the rule but a blind spot of the prior}: detecting a non-monotone landscape
+requires the sweep that transporting a prior exists to avoid, so a team reading 0.54 off a
+dashboard cannot know the rule does not apply to them. The procedure was never exposed here;
+only the prior was.
 
 \textbf{We therefore treat a crossover near 0.54 as an empirical prior with a measured
 failure rate, not a constant.} It predicted 9 of 10 sealed populations in advance
@@ -1561,7 +1570,12 @@ down the distribution; what restoration requires is the label's \emph{quantile},
 its real price. Stated at the strength the data support: no detected time-dependence
 from 2014 through 2022 \emph{at matched base rate}, an inversion that persists at
 CPI-constant value --- which is itself the sharpest evidence that the distribution
-position, not the price level, is the operative anchor. The lesson replaces the caveat:
+position, not the price level, is the operative anchor. One boundary on that diagnosis, found after it was written: sweeping Missouri's 2014 arm at
+a \$30{,}000 cutoff returns an \emph{inverted} response --- positive at low rates, negative
+at high --- in a vintage this paper otherwise treats as clean. The 2022 account explains the
+2022 inversions; it is not the only route to one, and inversion should be treated as a
+landscape property the sweep detects rather than a vintage artifact the label explains.
+The lesson replaces the caveat:
 fixed nominal outcome definitions are a different task each vintage, CPI-anchoring is
 not enough, and outcome definitions should be anchored to the distribution they cut ---
 a quantile --- as the third cohort's committed protocol already does; and deployments

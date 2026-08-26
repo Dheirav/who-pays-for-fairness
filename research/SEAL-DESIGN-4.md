@@ -1,5 +1,24 @@
 # Design for the fourth direction seal — probabilities, not signs
 
+> **SUPERSEDED, 26 Aug, by the fork of document 71 — do not seal against this.**
+>
+> The calibration table below pools populations whose landscapes do not support a
+> directional rule with populations whose do. Of the six near-boundary arms it treats as a
+> single "within 0.05" bucket, five turned out to be non-monotone or inverted, **including
+> the one the rule scored correct**. Every row of that table is therefore a mixture, and the
+> "19 of 19 beyond 0.30" row in particular is not a clean measurement of anything.
+>
+> The power analysis inherits the flaw: it simulates from those band accuracies, so its
+> "40 arms, 97% power" is power to detect a mixture, not power to test the rule.
+>
+> What survives: the argument that a proper scoring rule beats sign-scoring (documents 69
+> and 70), and the requirement that a seal state expected yield before running. What does
+> not: the calibration, the committed probabilities, and the sample size.
+>
+> A fourth seal, if there is one, must first decide whether it is testing the
+> transported-prior claim or the sweep-conditional one. Document 71 argues those are now
+> very different tests, and that the second is the one worth sealing.
+
 **Not a seal.** This is the protocol a fourth direction seal should commit. Nothing here is
 registered until it is written into an analyser and committed before its arms exist.
 
