@@ -91,14 +91,38 @@ content parity asserted.
 
 | | | |
 |---|---|---|
-| 4.1 | **The circularity objection.** If locating the crossover requires sweeping the constraint, what has prediction bought over simply fitting once and measuring? | J |
+| 4.1 | **The circularity objection** — answered with measurement, `docs/74` | done |
 | 4.2 | **Guard provenance.** Distinguish exploratory design, confirmatory validation, and retrospective integration of the audit's thresholds | J |
 | 4.3 | **The 1.0-point guard is operational, not natural** — say so rather than letting it read as a discovered constant | M |
 
-4.1 is the strongest objection raised so far and the paper does not address it directly.
-The honest answer is that the sweep buys the *shape* — whether you are near a boundary,
-whether the direction is stable, whether a floor helps, whether the rule applies at all —
-but the paper asserts this rather than showing it.
+**4.1, done.** The objection — *if locating the crossover requires sweeping the constraint,
+what has prediction bought over fitting once and measuring?* — now has a demonstrated answer
+in the audit section, backed by `src/experiments/analyse_circularity.py` and `docs/74`.
+
+The answer is **narrower than the assertion it replaces**, which is the point. The sweep does
+not buy a better estimate of what the constraint does at today's threshold; repeated fits at
+one operating point buy that. It buys *shape*:
+
+- **One fit's answer does not travel.** 69 of 639 adjacent arm pairs (11%) disagree on the
+  sign, with both effects above the 1.0-point guard. The direction a single fit reports is
+  not reliably a property of the population rather than of the threshold it used.
+- **Populations sit close to their own boundary.** Of 21 disjoint person samples with both a
+  located crossover and a natural arm, 11 are within 0.10 and 6 within 0.05; Florida 2018 is
+  0.004 away. For those teams the direction is a threshold they control, and one fit reports
+  the withdrawal without reporting the lever.
+- **There is no constant to look up.** Florida 2018 crosses at 0.284 read by sex and 0.439
+  read by race — the same people, two boundaries.
+
+**Conceded in the same paragraph**, because it is true: 5 of 21 samples sit beyond 0.20 and
+would have reached the same decision from one fit. That 24% over-states the waste, since
+every sample in the set already passed the monotonicity screen and the 22% of populations
+admitting no rule never enter it. The third leg (seed stability near the crossover;
+sub-1.0-point arms unanimous only 55% of the time) is reported and **explicitly discounted**
+— repeated fits at one point would expose it too, so it is not something only a sweep sees.
+
+Guarded by `test_paper_circularity_answer_matches_the_sweeps`, negative-tested both ways.
+
+**Cost:** paper 20 → 21 pages, 0 overfull, 79 pytest checks / 35 documented-claims checks.
 
 ---
 

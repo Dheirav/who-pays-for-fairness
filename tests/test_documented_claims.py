@@ -1532,6 +1532,68 @@ def test_doc44_magnitude_and_crossover_prior() -> None:
           f"{float(non_lending.std()):.4f}; C2 predictors collinear {collinear:+.3f}")
 
 
+def test_paper_circularity_answer_matches_the_sweeps() -> None:
+    """The reply to the circularity objection must stay a measurement, not an assertion.
+
+    This is the only objection the paper answers with numbers it computed for that purpose,
+    so the numbers are the answer. If a re-run moves them, the paragraph in the audit
+    section is wrong before anyone notices the prose still reads well.
+    """
+    from src.experiments.analyse_circularity import (
+        distances, load_sweeps, locality, stability, MIN_MAGNITUDE)
+    from scripts.independence import population
+
+    text = _paper_text()
+    doc = _doc(74)
+    sweeps = load_sweeps()
+
+    pairs = locality(sweeps)
+    flipped = int(pairs.flipped.sum())
+    share = flipped / len(pairs)
+    assert (len(pairs), flipped) == (639, 69), (
+        f"the paper reports 69 of 639 adjacent pairs flipping sign; recomputed "
+        f"{flipped} of {len(pairs)}")
+    assert 0.105 <= share <= 0.115, f"the paper rounds that to 11%; it is {share:.1%}"
+
+    d = distances(sweeps)
+    samples = d.loc[d.gap.abs().groupby(d["sample"]).idxmin()]
+    within = {lim: int((samples.gap.abs() <= lim).sum()) for lim in (0.05, 0.10, 0.20)}
+    assert len(samples) == 21, (
+        f"the paper reports 21 disjoint person samples with both a located crossover and "
+        f"a natural arm; recomputed {len(samples)}")
+    assert within[0.10] == 11 and within[0.05] == 6, (
+        f"the paper reports 11 samples within 0.10 of their crossover and 6 within 0.05; "
+        f"recomputed {within[0.10]} and {within[0.05]}")
+    assert len(samples) - within[0.20] == 5, (
+        "the paper concedes 5 of 21 samples sit beyond 0.20 and would not have needed the "
+        f"sweep; recomputed {len(samples) - within[0.20]}")
+
+    closest = float(d.gap.abs().min())
+    assert abs(closest - 0.004) < 0.0005, (
+        f"the paper names Florida 2018 as 0.004 from its own crossover; it is {closest:.4f}")
+
+    # Florida's two attributes must keep disagreeing -- it is the paper's evidence that a
+    # crossover cannot be looked up rather than measured, and one number would kill it.
+    fl = d[d["sample"] == population("acs_income_fl_2018_levelling_up")]
+    assert len(fl) == 2, f"the paper reads Florida 2018 twice, once per attribute; got {len(fl)}"
+    assert {round(v, 3) for v in fl.crossover} == {0.284, 0.439}, (
+        f"the paper quotes Florida's two crossovers as 0.284 and 0.439; they are "
+        f"{sorted(round(v, 3) for v in fl.crossover)}")
+
+    small = stability(sweeps)
+    small = small[small.pie.abs() < MIN_MAGNITUDE]
+    unanimous = float(small.unanimous.mean())
+    assert 0.53 <= unanimous <= 0.57, (
+        f"the paper concedes sub-{MIN_MAGNITUDE}-point arms agree on their sign across "
+        f"seeds only 55% of the time; recomputed {unanimous:.0%}")
+
+    for value in ("639", "11\\%", "0.284", "0.439", "0.004", "55\\%"):
+        assert value in text, f"the paper's circularity paragraph no longer quotes {value}"
+    _quotes(doc, "639", "11%", "0.284", "0.439", "52%", "55%")
+    print(f"  {flipped}/{len(pairs)} pairs flip ({share:.0%}); {within[0.10]}/{len(samples)} "
+          f"samples within 0.10; sub-point unanimity {unanimous:.0%}")
+
+
 def main() -> None:
     tests = [
         test_doc11_cross_flow_correlations,
@@ -1567,6 +1629,7 @@ def main() -> None:
         test_paper_denominator_table_matches_computed_independence,
         test_paper_verdict_distribution_matches_the_audit,
         test_paper_draft_population_count_is_recomputed,
+        test_paper_circularity_answer_matches_the_sweeps,
         test_course_documents_still_match_their_results,
     ]
     failures = 0
