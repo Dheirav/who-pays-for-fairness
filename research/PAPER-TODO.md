@@ -572,3 +572,56 @@ summary layers over a 10,500-word body. It would cut Figure 4 on merit (forty po
 conveying two fractions the text states three times), shrink Figures 2 and 3 to single
 column, and keep Figures 1 and 5. And it warns that §VII and §III need redrafting from
 blank rather than trimming clause by clause, "or they will come back at 1,800 words each".
+
+
+## Restorations, and the floor presented properly
+
+**Five concessions restored** to both papers, all from the record:
+
+- *"That seven is post-hoc and we do not claim it; what was sealed scored four."*
+- **Iowa** — splits 3-of-5 across seeds *identically* to the Minnesota miss and scored
+  **correct**. One of the headline nine was luck, and the paper says so again.
+- The race cohort's **leave-one-out drop from 8 of 10 to 60%**, in the body at length and in
+  the contributions in short form — a contributions list that hides it is the flattering
+  summary the audit objected to.
+- The **dead-band calibration**: 19 of 19 beyond 0.30 from the crossover, 23 of 27, 5 of 6,
+  and **1 of 6 within 0.05**. This is the quantitative motivation for `INDETERMINATE` and it
+  had been cut down to its conclusion.
+- The **three survey conventions** — unweighted, nominal, no household clustering — with the
+  measured consequence that **every located crossover shifts 0.03–0.08 under weighting**,
+  which is the same order as the 0.54-against-0.50 argument. Stated as a reason to read the
+  value as convention-relative and the *ordering* as the finding.
+
+### The floor, measured instead of asserted — `analyse_floor.py`
+
+It was the paper's practical recommendation and its least-evidenced claim: one sentence,
+"about 0.12 accuracy points", "1.47 to 0.88", no denominator a reader could check. Two
+referees said so independently.
+
+Measured on the branch Algorithm 1 actually sends it to — natural arms only, both audit gates
+applied, and only where the plain constraint withdraws: **86 arms over 70 populations.**
+
+| | plain | with floor |
+|---|---|---|
+| Exchange rate | 1.33 | **0.94** |
+| At or below one-for-one | 0 of 86 | **70 of 86** |
+| Change in the pool | −2.94% | **+0.98%** |
+| Accuracy cost | — | 0.05 pts |
+
+**The numbers are better than the ones that were asserted** — the floor is four times cheaper
+than claimed, and on the median withdrawing arm it does not soften the withdrawal but
+*reverses* it. Two decisions changed the answer and both are stated in the module: natural
+arms only (1,400 arms carry a floor variant, but most are at rates no deployer occupies), and
+only the withdrawal branch (averaging over arms it extends flatters a remedy prescribed for
+the other case).
+
+**One quantity is deliberately not reported.** The benefit-scaling-with-damage correlation of
+*r ≈ −0.99* is withdrawn: benefit is damage minus remainder, so the two share a term and the
+correlation is arithmetic. A referee flagged it; it would have been a headline number that
+means nothing.
+
+Guarded by `test_paper_floor_table_matches_results`, which also asserts the old unsourced
+figures have not returned.
+
+**Cost:** record 24 pages, cut 16, both zero overfull, 84 checks. The cut grew because
+restoring honesty costs words — the redrafts of §VII and §III are where the pages come back.

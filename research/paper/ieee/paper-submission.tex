@@ -195,7 +195,8 @@ dashboard reading.
 \textbf{The predictor, identified by elimination rather than asserted.} Holding the task fixed
 and moving only the decision rule separates the rate from task difficulty. A screen-gated
 Brazilian race cohort --- ten arms from two person-samples, so the confound breaks
-\emph{within} populations --- beat a cutoff-only null 8--9 to 5; a sealed lending cohort beat a
+\emph{within} populations, though leaving either out drops the rule to 60\% --- beat a
+cutoff-only null 8--9 to 5; a sealed lending cohort beat a
 loan-purpose null 8 to 5 on real approvals; a five-domain comparison rules out the group gap.
 We say \emph{predicts}, never \emph{causes}: no pooled slope transfers.
 
@@ -286,6 +287,20 @@ of 2005. A \emph{population} is one such unit --- a state, cohort or census --- 
 \emph{independent} means disjoint person samples: no person appears in two, and arms within a
 population share people, so however many arms a population contributes it is counted once.
 Ratios here are over populations unless they say otherwise.
+
+\textbf{Three survey conventions, because every crossover in this paper depends on them.}
+Inherited from the folktables benchmark \cite{ding2021}: ACS person records are used
+unweighted, incomes are nominal without the inflation adjustment, and household clustering is
+not modelled. So every selection rate here is a property of the unweighted sample rather than
+a design-consistent state estimate, and the numeric locations --- including the 0.54 prior
+this paper argues about --- are properties of that convention. The weighted re-analysis has
+run: read under person weights, \textbf{every located crossover shifts down by 0.03--0.08} in
+weighted rate units, without changing any population's ordering or any direction call. That
+shift is the same order as the 0.54-against-0.50 distinction of
+Section~\ref{sec:resealed}, which is a reason to read the value as a convention-relative
+landmark and the \emph{ordering} as the finding. Seed-resampled intervals are
+anti-conservative for the same reason, and a household-clustered bootstrap widens them
+modestly.
 
 \textbf{What a favourable decision is, and mostly is not.} This belongs here rather than in
 Limitations, because it bounds everything that follows. \textbf{In five of the eight sources
@@ -1047,9 +1062,12 @@ different'' remains a hypothesis rather than a finding.
 That history is the case for measuring rather than transporting, and it is made by the prior's
 own failures rather than against them. Sweeping the arms where a fixed 0.54 fails shows they
 are populations with no directional rule to get right --- non-monotone or outright inverted,
-including one the rule scored \emph{correct}, whose correctness was therefore luck. A prior
-read off a dashboard cannot detect that, because detecting it requires the sweep the prior
-exists to avoid. The audit refuses all of them; only the prior is exposed.
+including one the rule scored \emph{correct}, whose correctness was therefore luck. Pooling every arm from all four sealed cohorts against its own cohort's crossover gives the
+calibration that motivates the \textsc{indeterminate} verdict: the rule is correct on
+\textbf{19 of 19 arms more than 0.30 from the crossover, 23 of 27 between 0.15 and 0.30, 5 of
+6 between 0.05 and 0.15 --- and 1 of 6 within 0.05}. The last figure is not significant on six
+arms, but a prior read off a dashboard cannot detect any of it, because detecting it requires
+the sweep the prior exists to avoid. The audit refuses all of them; only the prior is exposed.
 
 \subsection{A sealed prediction, and what it cost}
 \label{sec:sealed}
@@ -1103,9 +1121,10 @@ Taiwan 2005 & 0.885 & $+0.68\%$ & up & up \\
 The first sealed direction test failed: 4 of 8 against a bar of 7, not beating a constant
 (Table~\ref{tab:sealed}). What failed is a \emph{refinement}, not the rule. Two hours before
 sealing we added a low-rate clause drawn from four in-sample populations --- internally
-consistent, backed by a twenty-seed replication --- and it is the clause that lost: the
-unrefined rule scores 7 of 8 on the same arms, missing only the population sitting at the
-boundary. The clause was route-specific: its own arms reach a low rate by thresholding one fixed score
+consistent, backed by a twenty-seed replication --- and it is the clause that lost: scored on the same eight arms, the unrefined rule we held
+before the refinement gives seven of eight, its only miss being Maryland at 0.508, within
+0.032 of the crossover on an effect of $+0.78\%$. \textbf{That seven is post-hoc and we do not
+claim it; what was sealed scored four.} The clause was route-specific: its own arms reach a low rate by thresholding one fixed score
 vector, while the sealed arms reach it with a genuinely rarer label, and at that rate the two
 routes disagree completely --- the clause held where it was fitted and failed on every
 label-route arm it was sealed against. Nothing in the in-sample data could have shown that. It is withdrawn, the unrefined rule was re-sealed on ten fresh
@@ -1159,6 +1178,14 @@ and the tail is near $0.09$; read as this paper's own abstract counts them --- n
 registered direction tests --- it is a factor of nine and the tail is $0.41$. Across the
 conventional line either way, and not close to it on the wider reading.
 
+\textbf{One of the nine was luck, and the seed-level accounting says which.} Sixteen of the
+nineteen sealed arms across both cohorts are unanimous in sign across their five seeds, and
+the three that split are exactly the near-zero effects. Minnesota, the miss, splits 3 of 5 ---
+and \textbf{Iowa, at $+0.04\%$, splits 3 of 5 identically and scored correct}. Two
+statistically indistinguishable arms, one counted for the rule and one against it, which is
+what scoring near-zero magnitudes means and why Algorithm~1 now refuses them as
+\textsc{indeterminate}.
+
 \textbf{What the pass cannot establish, stated where the score is.} Every arm reaches its rate
 by the income-cutoff route, and the achieved rates leave the interior of $(0.30, 0.70)$
 unsampled --- the nearest sit at $0.297$, $0.699$ and $0.701$. So the pass cannot separate the
@@ -1166,8 +1193,11 @@ selection rate from label rarity as the operative variable, nor the value $0.54$
 prior in that interval: \textbf{a rule reading only the income cutoff scores identically
 here}. The screen-gated race cohort was registered to break exactly this confound and did, on
 mixed-route arms off-instrument and off-continent, where the cutoff-only null scored 5 of 10
-against the rate rules' 8--9 --- ten arms from two person-samples, so the confound breaks
-within populations rather than across them. Its sealed S1 nonetheless \emph{fails} by its own
+against the rate rules' 8--9. Ten arms from two person-samples is not ten independent tests:
+the confound breaks \emph{within} populations rather than across them, two clusters admit no
+usable bootstrap, and \textbf{leaving either population out drops the rate rule from 8 of 10
+to 60\%}. The result is real and its effects are large --- to $-47\%$ --- and its replication
+rests on two person-samples and should be read that way. Its sealed S1 nonetheless \emph{fails} by its own
 letter, because a $0.50$ prior edged the $0.54$ prior 9 to 8: the rate carries the prediction
 and the specific value does not.
 
@@ -1318,17 +1348,48 @@ deployments.
 \textbf{What a practitioner can use.} Run the audit on your own data. It will locate your
 crossover, tell you your system admits no directional rule, or tell you the question is moot
 because the pool barely moves across your whole viable band --- and each of those is an
-answer. Where it returns a direction and that direction is withdrawal, a selection-rate floor
-is the remedy: not a new method, but a linear moment constraint inside the reductions
-framework \cite{agarwal2018} and a variant of the minimum-rate constraints of
-\cite{mittelstadt2023}. It costs about 0.12 accuracy points and moves the exchange rate from
-1.47 destroyed per created to 0.88. Two honest consequences follow. Because the floor is that
+answer. Where it returns a direction and that direction is withdrawal, a selection-rate floor is the
+remedy: not a new method, but a linear moment constraint inside the reductions framework
+\cite{agarwal2018} and a variant of the minimum-rate constraints of \cite{mittelstadt2023}.
+Table~\ref{tab:floor} is what it buys, measured on the branch the audit actually sends it to
+--- the \textbf{86 natural arms across 70 populations} that clear both of the audit's gates
+and on which the plain constraint withdraws. It costs \textbf{0.05 accuracy points} on
+average, moves the median exchange rate from 1.33 destroyed per created to 0.94, and brings
+\textbf{70 of the 86} below one-for-one, none of which were below it already. On the median
+arm it does not merely soften the withdrawal but reverses it, from $-2.94\%$ to $+0.98\%$.
+
+Three things that should be said with those numbers rather than after them. The count is over
+arms and the populations are 70, so the ratio is not 86 independent trials. Sub-1.0 is a
+descriptive count of predicted labels and not a welfare verdict, per Section~\ref{sec:whopays}
+--- the group-conditional flows are what a weighted reading would use. And earlier versions of
+this paper reported the floor's benefit as scaling with the damage at $r \approx -0.99$; we
+withdraw that, because the benefit is the damage minus the remainder and the two share a term,
+so the correlation is arithmetic rather than a finding. Two honest consequences follow. Because the floor is that
 cheap, a team that expects withdrawal and does not want to sweep should simply apply it; what
 the audit adds is the ability to tell in advance whether it is needed, how far the operating
 point sits from the sign change, and whether the population admits an answer at all. And
 whatever the audit returns, the deployed system's pool change and who-pays decomposition
 should be measured afterwards and reported beside the parity number --- so that escaping the
 ex-ante audit buys no escape from the accounting.
+
+\begin{table}[!t]
+\caption{What the selection-rate floor buys, on the 86 natural arms over 70 populations that
+clear the audit's noise and parity gates and on which the plain constraint withdraws.
+Medians except where stated; every figure recomputed from stored arms.}
+\label{tab:floor}
+\centering
+\small
+\begin{tabular}{@{}lcc@{}}
+\toprule
+& \textbf{plain} & \textbf{with floor} \\
+\midrule
+Exchange rate (destroyed per created) & 1.33 & \textbf{0.94} \\
+Arms at or below one-for-one & 0 of 86 & \textbf{70 of 86} \\
+Change in the pool & $-2.94\%$ & $\mathbf{+0.98\%}$ \\
+Accuracy, mean cost of the floor & --- & $0.05$ pts \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \textbf{What to report.} The parity difference alone certifies both outcomes this paper
 distinguishes. A report that adds the pool change and the group-conditional flows costs

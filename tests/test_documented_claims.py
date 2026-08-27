@@ -1810,6 +1810,44 @@ def test_paper_two_answer_rates_stay_distinguished() -> None:
           f"audit 29/52 = 56% on all gates; {samples} disjoint samples")
 
 
+def test_paper_floor_table_matches_results() -> None:
+    """The remedy was the paper's least-evidenced claim; now it has a table, so guard it.
+
+    Two referees independently observed that the selection-rate floor -- the paper's actual
+    practical recommendation -- rested on one sentence with no denominator, no method and
+    numbers ("0.12 accuracy points", "1.47 to 0.88") that appeared nowhere else. The
+    recomputed figures differ from those, and are better, which is exactly why they need a
+    guard rather than a footnote.
+    """
+    from src.experiments.analyse_floor import load, summarise, withdrawing
+
+    text = _paper_text()
+    w = withdrawing(load())
+    s = summarise(w)
+
+    assert (s["arms"], s["populations"]) == (86, 70), (
+        f"the floor now measures over {s['arms']} arms and {s['populations']} populations; "
+        f"the paper's table says 86 over 70")
+    assert round(s["exchange_plain"], 2) == 1.33 and round(s["exchange_floor"], 2) == 0.94
+    assert (s["below_one_plain"], s["below_one_floor"]) == (0, 70), (
+        f"the paper says none of the 86 was at or below one-for-one before the floor and 70 "
+        f"after; recomputed {s['below_one_plain']} and {s['below_one_floor']}")
+    assert round(s["pool_plain"], 2) == -2.94 and round(s["pool_floor"], 2) == 0.98, (
+        "the paper's claim that the floor reverses the median withdrawing arm no longer holds")
+    assert abs(s["accuracy_cost"] - 0.05) < 0.005
+
+    for value in ("1.33", "0.94", "70 of 86", "$-2.94\\%$", "0.05 accuracy points"):
+        assert value in text, f"the floor table no longer carries {value!r}"
+    # The coupled correlation must stay withdrawn: benefit = damage - remainder.
+    assert "$r \\approx -0.99$" in text and "arithmetic rather than a finding" in text, \
+        "the paper no longer withdraws the mathematically coupled benefit-vs-damage r"
+    assert "0.12 accuracy points" not in text and "1.47 destroyed" not in text, \
+        "the old unsourced floor figures have returned"
+    print(f"  floor: {s['arms']} arms / {s['populations']} pops, "
+          f"{s['exchange_plain']:.2f}->{s['exchange_floor']:.2f}, "
+          f"{s['accuracy_cost']:.2f} pts")
+
+
 def main() -> None:
     tests = [
         test_doc11_cross_flow_correlations,
@@ -1850,6 +1888,7 @@ def main() -> None:
         test_paper_ledger_and_coverage_counts_are_derived_not_narrated,
         test_paper_block1_claims_stay_narrowed,
         test_paper_two_answer_rates_stay_distinguished,
+        test_paper_floor_table_matches_results,
         test_course_documents_still_match_their_results,
     ]
     failures = 0

@@ -1687,12 +1687,19 @@ fairness constraint $C$
 
 The floor is \textbf{not a new method}: a selection-rate floor is a linear moment constraint
 inside the framework of \cite{agarwal2018}, and a variant of the minimum rate constraints of
-\cite{mittelstadt2023}. It costs about 0.12 accuracy points and moves the exchange rate from
-1.47 favourable decisions destroyed per one created to 0.88 across nineteen arms, landing below
-1.0 in sixteen of them, with the benefit scaling with the damage at $r \approx -0.99$ ---
-sub-1.0 being a descriptive count of predicted labels, not a welfare verdict, per the
-accounting caveat of Section~\ref{sec:whopays}; the group-conditional flows are what a
-welfare reading would weigh. And because magnitude does not transfer across populations,
+\cite{mittelstadt2023}. Table~\ref{tab:floor} is what it buys, measured on the branch Algorithm~1 actually sends it
+to: the \textbf{86 natural arms across 70 populations} that clear the audit's noise and parity
+gates and on which the plain constraint withdraws. It costs \textbf{0.05 accuracy points} on
+average, moves the median exchange rate from 1.33 destroyed per created to 0.94, and brings
+\textbf{70 of 86} below one-for-one, none of which were below it already. On the median arm it
+reverses the withdrawal outright, from $-2.94\%$ to $+0.98\%$. Three things belong with those
+numbers rather than after them: the count is over arms and the populations are 70, so it is
+not 86 independent trials; sub-1.0 is a descriptive count of predicted labels and not a
+welfare verdict, per the accounting caveat of Section~\ref{sec:whopays}, and the
+group-conditional flows are what a weighted reading would use; and earlier versions of this
+paper reported the benefit scaling with the damage at $r \approx -0.99$, which we withdraw ---
+the benefit is the damage minus the remainder, so the two share a term and the correlation is
+arithmetic rather than a finding. And because magnitude does not transfer across populations,
 the floor is issued provisionally: the ex-post measurement the Discussion requires ---
 the deployed system's pool change and who-pays decomposition, with and without the floor
 --- is part of the prescription, not an optional follow-up.
@@ -1841,6 +1848,26 @@ attribute is readable, each \emph{group's} direction is determined by theorem (t
 disadvantaged group gains, in every aware cell measured), while the \emph{pool's}
 direction --- the sum the theorem does not constrain --- remains rate-predictable under
 in-processing in both regimes and unpredictable only under post-processing.
+
+\begin{table}[!t]
+\caption{What the selection-rate floor buys, on the 86 natural arms over 70 populations that
+clear the audit's noise and parity gates and on which the plain constraint withdraws. Medians
+except where stated; every figure recomputed from stored arms by
+\texttt{analyse\_floor}.}
+\label{tab:floor}
+\centering
+\small
+\begin{tabular}{@{}lcc@{}}
+\toprule
+& \textbf{plain} & \textbf{with floor} \\
+\midrule
+Exchange rate (destroyed per created) & 1.33 & \textbf{0.94} \\
+Arms at or below one-for-one & 0 of 86 & \textbf{70 of 86} \\
+Change in the pool & $-2.94\%$ & $\mathbf{+0.98\%}$ \\
+Accuracy, mean cost of the floor & --- & $0.05$ pts \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \section{Limitations}
 
