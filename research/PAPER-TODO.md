@@ -329,3 +329,54 @@ these defects in the first place.
 **Cost of this pass:** 21 → 22 pages, 0 overfull, 81 pytest checks. Variants retuned to
 7.65pt and 6.9pt, which is the last time that is honest — the type is now small enough that
 §5's cuts are the only real fix.
+
+---
+
+## Block 2 — the restructure, in progress
+
+`paper.tex` is untouched and stays the **complete record** — 22 pages, every result, every
+failed seal. It is what the doc-guards check and where a number should be looked up.
+`paper-submission.tex` is the cut. Content that leaves the cut has not been withdrawn.
+
+**22 pages / 21,762 words → 15 pages / 14,363 words** so far. Target is ~10 pages (~9,700).
+
+### Done
+
+| | | |
+|---|---|---|
+| Deleted | Cross-task shape subsection (adjudicates a hypothesis the paper never advances), the intersectional section (self-disclaimed as replication), the denominator table (an accounting of the accounting) | −1,224 |
+| Contributions | Six numbered items restating the abstract → six short paragraphs | 990 → 563 |
+| Re-seal subsection | The longest block in the paper, one undivided run of ten topics → the table, the two statistics, the sequential correction, the design limit, the paired-test ceiling | 1,550 → 646 |
+| Lottery | **Cut to four sentences** plus Algorithm 1's line 19, on its own control experiment: the signature does not appear at any natural operating point, which is where every reader of this paper sits. Publish separately | 829 → 168 |
+| Crossover history | The chronology goes; what constrains the claim stays | 1,132 → 511 |
+| Abstract | Its second half pre-empted reviewers before the reader knew what was being caveated | 486 → 319 |
+| Intro opening | Restated the abstract clause for clause | 150 → 103 |
+| Circularity answer | 470 words of rebuttal → the two facts and the concession | 482 → 333 |
+| Regime boundary, Reproducibility, Limitations, Discussion, failures, related work | | −3,900 |
+
+### Two near-misses worth recording
+
+**The cutting tool deleted the bibliography.** A section with no following section fell back
+to `\end{document}` as its boundary, which swallowed all 29 references — and the result
+compiled to 17 clean pages with no error. Only a citation-undefined warning caught it. The
+tool now ends a block at the next heading *or the bibliography*, never at `\end{document}`,
+and says so in the docstring. This is the second time on this paper that a bounded-looking
+cut has overreached and still compiled.
+
+**Three dangling references** (`tab:denominators`, `sec:crosstask`, `sec:lottery`,
+`sec:discussion`) were left by cuts and caught by the build rather than by reading.
+
+### Remaining
+
+- **The Audit section, 2,774 words** — the largest block left, and the one the editor says
+  should be *promoted* to third. It deserves a careful pass rather than a fast one.
+- **Setup and Method, 1,445** — compress the survey-methodology block to two sentences.
+- **The reorder**, which is the single change the editor rated highest: audit third, regime
+  boundary after the predictor, Algorithm 1 and the ledger into the body from after the
+  references, predicted-labels-not-allocations into Setup where the reader first meets the
+  eight sources.
+- **Split the ledger three ways** — 8 claim-constraining rows in the body, the rest to the
+  supplement.
+- **Figure 1: eight panels → four**, and trim two long table captions.
+- The submission version has **no guards of its own yet**. The record's 82 checks still pass;
+  the cut needs its own once the content settles.
