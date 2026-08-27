@@ -757,36 +757,44 @@ population-level argument cannot.
 \subsection{The crossover clustered, until more states were measured}
 
 \begin{table}[t]
-\caption{Crossover location with bootstrap intervals over seeds (2{,}000 resamples).
-``Located'' is the fraction of resamples in which a sign change could be bracketed at all.
-$^\dagger$Downgraded: under the nested rows-by-seeds bootstrap no resample brackets a
-crossing for the Dutch census; its row is kept as the record of the original estimate.
-The rates are not one economic object: survey rows are predicted-status rates over
-sampled persons, lending rows are approval rates conditional on having applied, and
-COMPAS inverts a risk score --- comparisons across blocks carry that caveat.}
+\caption{Crossover locations, with the existence of a crossing separated from its
+location. \textbf{P(crossing)} is the share of nested rows-by-seeds resamples in which a sign
+change can be bracketed at all; \textbf{crossover} is the median location \emph{conditional}
+on one existing. Separating them is not pedantry: read under seeds only, the Dutch census
+appeared to cross at 0.576 with a 95\% interval of 0.572--0.580 --- an apparently precise
+estimate --- while under the nested bootstrap \emph{no} resample brackets a crossing, and the
+published figure was a property of the six arms that produced it. An interval conditioned on
+an event that may not occur cannot be read as an interval. The bracket-only rows assume a
+crossing rather than estimating whether there is one, and the lending rows are point estimates
+with no resampling; both are labelled as such rather than sharing a column with the nested
+figures. The rates are not one economic object: survey rows are predicted-status rates over
+sampled persons, lending rows are approval rates conditional on having applied, and COMPAS
+inverts a risk score.}
 \label{tab:crossover}
 \centering
-\footnotesize
-\setlength{\tabcolsep}{3pt}
-\begin{tabular}{@{}llcc@{}}
+\scriptsize
+\setlength{\tabcolsep}{2pt}
+\begin{tabular}{@{}llccl@{}}
 \toprule
-\textbf{Population} & \textbf{Domain} & \textbf{Crossover (95\% CI)} & \textbf{Loc.} \\
+\textbf{Population} & \textbf{Domain} & \textbf{P(crossing)} &
+\textbf{Crossover} & \textbf{Uncertainty} \\
+ & & & \textbf{\emph{given} one} & \\
 \midrule
-\multicolumn{4}{@{}l}{\emph{Non-lending}} \\
-COMPAS & crim. justice & 0.511 \,(0.434--0.524) & 83\% \\
-S. Carolina & income & 0.530 \,(0.526--0.533) & 99\% \\
-Oregon & income & 0.558 \,(0.556--0.560) & \textbf{77\%} \\
-Dutch census$^\dagger$ & occupation & 0.576 \,(0.572--0.580) & 100\% \\
+\multicolumn{5}{@{}l}{\emph{Nested rows-by-seeds bootstrap, 1{,}000 pairs}} \\
+COMPAS & crim. justice & 100\% & 0.457 & 0.433--0.539 \\
+S. Carolina & income & 97\% & 0.525 & 0.454--0.537 \\
+Oregon & income & 99\% & 0.532 & 0.514--0.604 \\
+Dutch census & occupation & \textbf{0\%} & --- & none crosses \\
 \midrule
-\multicolumn{4}{@{}l}{\emph{Added by the sealed sweep campaign (bracket, no bootstrap)}} \\
-Florida & income & \textbf{0.284} \,(0.259--0.309) & --- \\
-Ohio & income & 0.556 \,(0.528--0.585) & --- \\
-Pennsylvania & income & \textbf{0.652} \,(0.624--0.681) & --- \\
+\multicolumn{5}{@{}l}{\emph{Bracket only --- crossing assumed, not estimated}} \\
+Florida & income & --- & \textbf{0.284} & 0.259--0.309 \\
+Ohio & income & --- & 0.556 & 0.528--0.585 \\
+Pennsylvania & income & --- & \textbf{0.652} & 0.624--0.681 \\
 \midrule
-\multicolumn{4}{@{}l}{\emph{Lending --- one market, three overlapping estimates}} \\
-HMDA pooled & mortgages & 0.660 & --- \\
-HMDA Louisiana & mortgages & 0.659 & --- \\
-HMDA refinance & mortgages & 0.758 & --- \\
+\multicolumn{5}{@{}l}{\emph{Lending --- one market, three overlapping estimates}} \\
+HMDA pooled & mortgages & --- & 0.660 & point only \\
+HMDA Louisiana & mortgages & --- & 0.659 & point only \\
+HMDA refinance & mortgages & --- & 0.758 & point only \\
 \bottomrule
 \end{tabular}
 \end{table}
