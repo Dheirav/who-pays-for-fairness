@@ -30,7 +30,7 @@ can be pulled down. Both outcomes satisfy the constraint, and the metric that ce
 reports the same number in each case, which means a deployment team cannot tell from its own
 dashboard which of the two it is about to cause. We show that the direction is predictable in
 advance from a quantity every deploying organisation already has: the rate at which its
-current model says yes, read against that population's crossover. Across 107 disjoint
+current model says yes, read against that population's crossover. Across 161 disjoint
 population samples covering six decision domains and eight data sources on five countries, an
 attribute-blind parity constraint withdraws favourable decisions when the baseline selection
 rate sits below a crossover and extends them when it sits above; on UCI Adult five
@@ -75,7 +75,7 @@ to know which they are getting.
 This ambiguity is already well established. Mittelstadt \emph{et al.} \cite{mittelstadt2023}
 made levelling down the centre of a well-known critique; Maheshwari \emph{et al.}
 \cite{maheshwari2023} observe that it ``often goes unnoticed in the overall performance of
-the model''; and Ferry \emph{et al.} \cite{ferry2023} built an auditing framework precisely
+the model''; and Krco \emph{et al.} \cite{ferry2023} built an auditing framework precisely
 because an aggregate score reports neither how many people were affected nor in which
 direction. We take all of that as given.
 
@@ -117,7 +117,7 @@ what the finding depends on.
 Contemporaneous theory \cite{backfire2026} establishes that in the attribute-blind regime the
 direction is distribution-dependent. It contains no experiments and its conditions are ordering
 relations on score regions rather than measurable quantities. We supply the measurement across
-67 populations and six domains, and find that a percentile-relaxed form of the
+161 populations and six domains, and find that a percentile-relaxed form of the
 theory's ordering agrees with the measured direction on 24 of 26 arms and correlates
 with our predictor at $r = +0.935$: the selection rate operationalizes the theory's
 quantity. That correspondence has since been stress-tested: it holds across 150
@@ -192,7 +192,7 @@ condition they do not have; in-processing rather than post-processing, so no mod
 attribute when predicting; a population-level floor stacked \emph{with} parity rather than a
 per-group floor replacing it; and held-out replication where they report training-set results.
 
-\textbf{Auditing individual impact.} Ferry \emph{et al.} \cite{ferry2023} propose a framework
+\textbf{Auditing individual impact.} Krco \emph{et al.} \cite{ferry2023} propose a framework
 whose first three dimensions are impact size, change direction and decision rates. That is the
 decomposition we use throughout, and we claim no part of it. What we add is what those axes
 report at scale: the change-direction dimension is not a property of the method being audited
@@ -1754,8 +1754,8 @@ registered account; its checksums are in the manifest).
 machine learning: Levelling down and strict egalitarianism by default,'' \emph{Michigan
 Technology Law Review}, 2023.
 
-\bibitem{ferry2023} J. Ferry, U. A\"{i}vodji, S. Gambs, M.-J. Huguet, and M. Siala, ``When
-mitigating bias is unfair: A comprehensive study on the impact of bias mitigation algorithms,''
+\bibitem{ferry2023} N. Krco, T. Laugel, V. Grari, J.-M. Loubes, and M. Detyniecki, ``When
+mitigating bias is unfair: Multiplicity and arbitrariness in algorithmic group fairness,''
 arXiv:2302.07185, 2023.
 
 \bibitem{maheshwari2023} G. Maheshwari, A. Bellet, P. Denis, and M. Keller, ``Fair without
