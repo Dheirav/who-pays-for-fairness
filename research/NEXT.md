@@ -48,11 +48,11 @@ let it pass.
 
 ## Where the work stands
 
-* **107 independent populations**, 6 domains, 8 data sources, 5 countries, 2 decades:
+* **161 independent populations**, 6 domains, 8 data sources, 5 countries, 2 decades:
   the six-market lending seal added six HMDA states, the third cohort added Brazil
   2000/2010 and Mexico 2015/2020 (IPUMS, the 8th source), and 26 Aug added 24 fresh ACS
   state-years (16 at 2014, 14 at 2019) plus 16 HMDA markets — 8 sealed, 8 post-hoc.
-  Cross-task and aware arms share persons with counted populations and are **not** new
+  27 Aug added every remaining US mortgage market (lending now covers **all 50 states**, both attributes) and a **random 50-population landscape survey**. Cross-task and aware arms share persons with counted populations and are **not** new
   populations, and `hmda_ms_la` pools two markets already counted — the count guard
   enforces all three rules and is the authority on the number.
 * **After document 52 the claim carries a sharper scope.** The sealed 9/10 stands, but the

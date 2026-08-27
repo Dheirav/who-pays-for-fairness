@@ -220,11 +220,11 @@ instrument.
 \section{Setup and Method}
 \label{sec:setup}
 
-\textbf{Data.} 107 independent populations across eight data sources.
-Two are US surveys: UCI Adult (45{,}222 rows), and ACS Income \cite{ding2021} across forty
-US states at 2018, thirty-four further state-years (sixteen at 2014, fourteen at 2019, four
-at 2022) and two protected attributes. One records real allocations: HMDA 2018 mortgage
-filings for twenty-four states (Mississippi and Louisiana throughout the record; Alabama,
+\textbf{Data.} 161 independent populations across eight data sources.
+Two are US surveys: UCI Adult (45{,}222 rows), and ACS Income \cite{ding2021} across
+102 state-years --- forty-two at 2018, twenty-five at 2014, thirty-one at 2019 and four at
+2022 --- and two protected attributes. One records real allocations: HMDA 2018 mortgage
+filings for \textbf{every state in the country} (Mississippi and Louisiana throughout the record; Alabama,
 South Carolina, Tennessee, Georgia, North Carolina and Ohio added for the six-market seal;
 eight more for the sealed lending cohort of Section~\ref{sec:failures} and eight scored
 post-hoc beside it; 30{,}000--305{,}593 records each). The remaining five are
@@ -351,6 +351,8 @@ Selection-rate floor & 10 pops.\ (19 arms) \\
 Cross-task shape seal (failed) & 6 task arms, 4 states' persons; not indep. \\
 Third direction cohort (failed) & 24 fresh state-years, 2014 + 2019 \\
 Sealed lending cohort (failed) & 8 fresh markets (16 arms, 2 purposes each) \\
+Lending coverage & 50 markets, 2 attrs.\ (66 arms) \\
+Landscape survey & 50 pops.\ at random (660 arms) \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1247,7 +1249,12 @@ is: 29 directional verdicts (20 \textsc{withdrawal}, 9 \textsc{extension}), 8
 one bracket with no natural arm to read against. Every one of the 29 directional
 verdicts matches what the fitted constraint did at that population's natural operating
 point --- a consistency check on the audit's reading of its own sweep, not independent
-validation, since the natural arm is part of the curve being read. The refusals are not
+validation, since the natural arm is part of the curve being read. That distribution is computed over the sweeps this project happened to accumulate, which
+were never randomly chosen; a survey of \textbf{fifty randomly drawn populations}, frame and
+seed committed before any arm ran, puts the honest figure at \textbf{78\% of populations
+admitting a directional rule and 22\% not} (Wilson 95\% interval 13--35\%), of which 64\%
+are classic single-crossing landscapes. The convenience sample was mildly optimistic --- it
+implied 15\% --- and the larger number is the one to quote. The refusals are not
 silences. A \textsc{void} arm is one whose pool change spans under two points across the
 entire viable band --- median 1.47 --- which tells a deployer that the direction question is
 \emph{moot} on their system, not that it is unanswerable; a \textsc{non-monotone} verdict
@@ -1546,7 +1553,9 @@ down the distribution; what restoration requires is the label's \emph{quantile},
 its real price. Stated at the strength the data support: no detected time-dependence
 from 2014 through 2022 \emph{at matched base rate}, an inversion that persists at
 CPI-constant value --- which is itself the sharpest evidence that the distribution
-position, not the price level, is the operative anchor. One boundary on that diagnosis, found after it was written: sweeping Missouri's 2014 arm at
+position, not the price level, is the operative anchor. One boundary on that diagnosis, found after it was written: inversion occurs outside 2022,
+at a low rate. A random survey of fifty populations returns two inverted landscapes (4\%) at
+a fixed \$50{,}000 cutoff in 2018 and 2019, and sweeping Missouri's 2014 arm at
 a \$30{,}000 cutoff returns an \emph{inverted} response --- positive at low rates, negative
 at high --- in a vintage this paper otherwise treats as clean. The 2022 account explains the
 2022 inversions; it is not the only route to one, and inversion should be treated as a

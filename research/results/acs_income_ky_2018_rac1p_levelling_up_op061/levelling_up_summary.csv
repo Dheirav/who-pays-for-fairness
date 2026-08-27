@@ -1,0 +1,4 @@
+arm,accuracy,dp_diff,eo_diff,disparate_impact,positives,positives_pct_change,share_levelling_down,people_share_levelling_down,lost_per_gained
+baseline,0.7863,0.0621,0.0262,0.6636,1177.4,,,,
+expgrad_dp,0.7625,0.0145,0.0659,0.9547,1074.8,-8.7182,0.3891,0.8671,1.9824
+expgrad_dp_floor,0.7678,0.0148,0.0537,0.9649,1442.6,22.5581,-0.7518,0.3257,0.1054
