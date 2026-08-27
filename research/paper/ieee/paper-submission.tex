@@ -614,15 +614,10 @@ any claim that it holds within the low-rate region alone.}
 \subsection{Five domains, and the group-gap alternative}
 
 \begin{table}[!t]
-\caption{The relationship across instruments, not pooled across them, for the reason
-Fig.~\ref{fig:crossover} does not pool. This table's job is \emph{breadth} --- one population
-per instrument, on whatever arms that population naturally supplies --- so the four-to-six-arm
-correlations are descriptive, exactly as Section~\ref{sec:tworoutes-note} concedes for Alabama.
-The dense-sweep columns carry the weight where a viable band allows twelve points, but
-those twelve are thresholds applied to one fitted score vector on one sample and are not
-twelve independent observations, so we quote no $p$-value on them: a Pearson test there
-describes whether a sweep is monotone, not whether the rate predicts across populations. The
-pre-registered alternative is refuted on the dense columns, not the sparse ones.}
+\caption{One population per instrument, on whatever arms that population naturally supplies.
+Correlations are between the baseline selection rate and the change in the pool; $n$ is the
+number of arms. Not pooled across instruments, for the reason Fig.~\ref{fig:crossover} is not
+pooled.}
 \label{tab:domains}
 \centering
 \scriptsize
@@ -645,6 +640,12 @@ LSAC & legal educ. & --- & unsweepable & --- & --- & --- \\
 \end{table}
 
 Fig.~\ref{fig:crossover} shows every arm, and Table~\ref{tab:domains} the summary. The
+table's job is \emph{breadth}, and its two halves carry different weight. The four- and
+five-arm rows are descriptive, exactly as Section~\ref{sec:tworoutes-note} concedes for
+Alabama. The dense-sweep columns carry more, but not as much as a Pearson test would suggest:
+twelve thresholds applied to one fitted score vector over one sample are not twelve
+independent observations, so we quote no $p$-value on them --- such a test describes whether a
+sweep is monotone, not whether the rate predicts across populations. The
 pre-registered alternative --- ``this is a property of income prediction and American mortgage
 lending'', requiring $|r| < 0.30$ --- is refuted on both new instruments, and refuted on their \emph{densely swept} arms rather than their sparse ones: COMPAS gives
 $+0.844$ and the Dutch census $+0.946$ over twelve points each. Earlier versions of this paper
@@ -741,7 +742,11 @@ tail, and we tried no other.
 Algorithm~\ref{alg:locate} states the procedure. Three of its steps are worth drawing out,
 because each is a place where a plausible-looking run returns a meaningless answer.
 
-\textbf{It can refuse.} Lines 6--8 compute the viable band and exit before any constraint is
+\textbf{It can refuse before it fits anything.} On a task generous enough that the trivial
+predictor is already close to the model's accuracy, no deployable classifier can be moved far
+enough to cross anything: LSAC refuses at an accuracy floor of 0.890 against a viable band of
+0.056, and the test is arithmetic on the baseline, needing no constraint fit at all. Lines
+6--8 compute that band and exit before any constraint is
 fitted, if no threshold reaches a low selection rate with a model still beating the trivial
 predictor. On LSAC that band is too narrow to sweep (Section~\ref{sec:boundaries}) and the procedure
 declines, rather than returning arms that would be discarded later.
@@ -828,9 +833,10 @@ attaches to a lender's own voluntary self-test and expects appropriate correctiv
 action, and an analysis of public HMDA records, like this paper's, is not itself a
 privileged self-test. It fits the constraint $12 \times \mathrm{seeds}$ times; with five seeds
 and the linear learners used here, one fit takes 2--10 seconds at $15$k--$69$k training
-rows (measured on a laptop CPU), so a full audit is minutes per population, and its cost
-scales linearly in the base learner's own fit time since each reduction call is a
-sequence of learner refits. A cheap pre-screen exists: the relaxed-$\zeta$ ordering of
+rows (measured on a laptop CPU), so a full audit is minutes per population, scaling linearly in the base learner's own fit
+time since each reduction call is a sequence of learner refits. On a production
+gradient-boosted model over millions of rows that multiplier is the binding cost, and we have
+not measured it there. A cheap pre-screen exists: the relaxed-$\zeta$ ordering of
 Section~\ref{sec:regime} needs no constraint fits and correlates with the predictor at
 $r=+0.935$.
 
@@ -965,32 +971,17 @@ fairness constraint $C$
 \end{algorithmic}
 \end{algorithm}
 
-\textbf{What the audit costs.} It fits the constraint $12 \times$ seeds times; with five
-seeds and the linear learners used here, one fit takes 2--10 seconds at 15k--69k training
-rows, so a full audit is minutes per population, scaling linearly in the base learner's own
-fit time since each reduction call is a sequence of learner refits. On a production
-gradient-boosted model over millions of rows that multiplier is the binding cost, and we have
-not measured it there.
-
 \section{Boundaries}
 \label{sec:boundaries}
 
 \subsection{Where the crossover sits, and what it cost to find out}
 
 \begin{table}[!t]
-\caption{Crossover locations, with the existence of a crossing separated from its
-location. \textbf{P(crossing)} is the share of nested rows-by-seeds resamples in which a sign
-change can be bracketed at all; \textbf{crossover} is the median location \emph{conditional}
-on one existing. Separating them is not pedantry: read under seeds only, the Dutch census
-appeared to cross at 0.576 with a 95\% interval of 0.572--0.580 --- an apparently precise
-estimate --- while under the nested bootstrap \emph{no} resample brackets a crossing, and the
-published figure was a property of the six arms that produced it. An interval conditioned on
-an event that may not occur cannot be read as an interval. The bracket-only rows assume a
-crossing rather than estimating whether there is one, and the lending rows are point estimates
-with no resampling; both are labelled as such rather than sharing a column with the nested
-figures. The rates are not one economic object: survey rows are predicted-status rates over
-sampled persons, lending rows are approval rates conditional on having applied, and COMPAS
-inverts a risk score.}
+\caption{Crossover locations, with the \emph{existence} of a crossing separated from its
+\emph{location}. \textbf{P(crossing)} is the share of nested rows-by-seeds resamples in which
+a sign change can be bracketed at all; \textbf{crossover} is the median location conditional
+on one existing. Bracket-only and lending rows are labelled where they assume rather than
+estimate.}
 \label{tab:crossover}
 \centering
 \scriptsize
@@ -1021,7 +1012,18 @@ HMDA refinance & mortgages & --- & 0.758 & point only \\
 \end{table}
 
 The crossover was first published as a cluster, on four populations of one instrument. It did
-not survive measurement. \textbf{Located crossovers span 0.22 to 0.81} --- 0.22 to 0.65 across
+not survive measurement. Two things about Table~\ref{tab:crossover} before its numbers are
+read. Separating whether a crossing exists from where it sits is not pedantry: read under
+seeds alone the Dutch census appeared to cross at 0.576 with a 95\% interval of 0.572--0.580,
+an apparently precise estimate, while under the nested bootstrap \emph{no} resample brackets a
+crossing at all --- the published figure was a property of the six arms that produced it. An
+interval conditioned on an event that may not occur cannot be read as an interval. And the
+rates in that table are not one economic object: survey rows are predicted-status rates over
+sampled persons, lending rows are approval rates conditional on having applied, and COMPAS
+inverts a risk score, so a crossover is comparable across them only as a position within each
+instrument's own range.
+
+\textbf{Located crossovers span 0.22 to 0.81} --- 0.22 to 0.65 across
 the ACS income sweeps, with the law-school and South Carolina mortgage brackets above 0.80 ---
 so the location is population-specific and only sometimes near the middle. Nothing in this work
 predicts it: the sealed test of the two candidate predictors returned \textsc{underpowered}
@@ -1036,19 +1038,6 @@ are populations with no directional rule to get right --- non-monotone or outrig
 including one the rule scored \emph{correct}, whose correctness was therefore luck. A prior
 read off a dashboard cannot detect that, because detecting it requires the sweep the prior
 exists to avoid. The audit refuses all of them; only the prior is exposed.
-
-\subsection{The procedure is unusable on very generous tasks}
-
-Varying the selection rate by moving a threshold works by \emph{degrading} the classifier. On a
-task where most people already qualify, reaching a low selection rate requires a model that
-refuses qualified people, and past a point that model is worse than a constant. Defining the
-\emph{viable band} as the range of selection rates reachable by a classifier still beating
-$\max(p, 1-p)$: Dutch spans 0.895, COMPAS 0.859, typical ACS $\approx 0.51$, and LSAC only
-\textbf{0.056}. On LSAC, where 89\% pass the bar, no choice of thresholds produces a usable
-sweep. This is computable before running anything.
-
-When the viable band forbids a sweep, the crossover can still be located by comparing natural
-sub-populations --- which is how the mortgage crossover was first found.
 
 \subsection{A sealed prediction, and what it cost}
 \label{sec:sealed}
@@ -1073,17 +1062,6 @@ Kentucky & $-0.590$ & $-0.590$ & $-0.654$ & --- \\
 \bottomrule
 \end{tabular}
 \end{table}
-
-Every result above is a correlation computed after the arms were run, which is the weakest
-support for a claim of the form \emph{you can know in advance}. We therefore ran the strongest
-format available: nine populations whose direction had never been measured, with the rule, the
-populations and the pass mark committed before any of them existed. Eight enter the sealed
-score; the ninth, Taiwan, was sealed alongside them but registered as reported separately,
-because a single non-Western population can carry no claim on its own (it was predicted
-correctly: rate 0.885, observed $+0.68\%$).
-
-\textbf{It failed. Four of eight, against a bar of seven, not beating a constant}
-(Table~\ref{tab:sealed}).
 
 \begin{table}[!t]
 \caption{The sealed prediction. Populations never previously measured; predictions committed
@@ -1110,29 +1088,17 @@ Taiwan 2005 & 0.885 & $+0.68\%$ & up & up \\
 \end{tabular}
 \end{table}
 
-\textbf{What failed is a refinement, not the rule.} Table~\ref{tab:sensitivity} shows the
-exclusion threshold doing real work: South Carolina moves from $+0.905$ to $+0.012$ when it is
-loosened. Investigating that, we found the newly admitted arms are not noise --- at twenty
-seeds they are consistently \emph{positive}, $+8.73$, $+6.85$, $+9.09$, six standard errors
-from zero --- and concluded the relationship turns back up below a selection rate of 0.10. The
-sealed rule carried that refinement.
-
-All three held-out low-rate arms came out strongly \emph{negative}. Scoring the same eight arms
-under the simpler rule we held before the refinement --- down below the crossover, up above it
---- gives \textbf{seven of eight}, its only miss being Maryland at 0.508, within 0.032 of the
-crossover on an effect of $+0.78\%$. That seven is post-hoc and we do not claim it; what was
-sealed scored four.
-
-\textbf{The refinement was route-specific.} Its arms reach a rate near 0.05 by thresholding one
-fixed score vector; the sealed arms reach it with a genuinely rarer label. At that rate the two
-disagree completely, $+8.73$, $+6.85$, $+9.09$ against $-16.48$, $-23.34$, $-23.32$. So
-Section~\ref{sec:tworoutes-note} qualifies: the two routes agree through the middle of the range
-and diverge at the bottom, and the accuracy rule does not catch the divergent arms --- they
-clear the trivial-predictor bar and remain artifacts.
-
-A refinement drawn from four in-sample populations, internally consistent and backed by a
-twenty-seed replication, made the prediction worse than the rule it replaced and no better than
-a constant. Nothing in the in-sample data could have shown that.
+The first sealed direction test failed: 4 of 8 against a bar of 7, not beating a constant
+(Table~\ref{tab:sealed}). What failed is a \emph{refinement}, not the rule. Two hours before
+sealing we added a low-rate clause drawn from four in-sample populations --- internally
+consistent, backed by a twenty-seed replication --- and it is the clause that lost: the
+unrefined rule scores 7 of 8 on the same arms, missing only the population sitting at the
+boundary. The clause was route-specific, holding where a rate is reached by moving the label
+and failing where it is reached by moving the decision threshold, and nothing in the in-sample
+data could have shown that. It is withdrawn, the unrefined rule was re-sealed on ten fresh
+populations, and the low-rate observation survives only in the weaker role of an exclusion
+(Section~\ref{sec:procedure}), where it can refuse an arm but cannot manufacture a correct
+call.
 
 \subsection{The rule re-sealed, and it holds}
 \label{sec:resealed}

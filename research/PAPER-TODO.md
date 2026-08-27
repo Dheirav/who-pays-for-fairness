@@ -472,3 +472,42 @@ in the empty right half. And **three of the fifty draws have no computable opera
 so they cannot be placed on a rate axis at all: the figure was quietly showing 47 while its
 title spoke of fifty. It now says so on the figure rather than leaving the arithmetic to
 fail for a reader who counts the markers.
+
+
+### Captions and the audit/boundaries overlap
+
+**The long captions were a placement problem, not a page saving.** Both carried real
+arguments, so they were moved into the body rather than cut:
+
+- `tab:crossover` (176 → 55 words): the reason for separating whether a crossing exists from
+  where it sits — the Dutch census reads 0.576 with a 95% interval of 0.572–0.580 under seeds
+  alone, and *no* nested resample brackets a crossing at all. Plus the caution that the rates
+  in that table are not one economic object.
+- `tab:domains` (118 → 45): which half of the table carries weight, and why no *p*-value is
+  quoted on the dense sweeps.
+
+**The overlap, and one duplicate that was mine.** The Audit section had *two* cost paragraphs
+— I wrote the second while repairing an orphaned sentence and never checked the section
+already had one. Removed, with the single fact it added (the base-learner multiplier on a
+production model) grafted onto the survivor.
+
+Two real overlaps resolved:
+
+- **UNSWEEPABLE was described twice** — as a verdict in the Audit and again as its own
+  boundary subsection. Merged into the verdict, where the procedure is.
+- **Boundaries was half sealed-test chronology**, which is what made it overlap the Audit's
+  scope material. The failed first seal is compressed from 545 to 310 words: the lesson (a
+  refinement drawn from in-sample data lost to the rule it replaced, and was route-specific)
+  survives, and the ledger row carries the score.
+
+### Where this leaves it
+
+**15 pages, 13,564 words, zero overfull.** Down from 22 and 21,762.
+
+The remaining gap to 10 is now mostly **the three new figures**, which occupy roughly 2.5
+pages of area for 491 words of caption. That is a deliberate trade and it should be made
+explicitly rather than by drift: the figures took evidence coverage from 5% of the record to
+the survey's fifty, all 22 located crossovers and all 40 sealed arms. Reaching 10 pages from
+here means choosing between them and roughly 2,500 further words of text — the Audit at 2,572
+is still the largest block, and Setup at 1,235 has a survey-methodology passage that could go
+to two sentences.
