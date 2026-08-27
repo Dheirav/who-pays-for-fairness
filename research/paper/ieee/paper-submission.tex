@@ -277,108 +277,79 @@ exists.
 \section{Setup and Method}
 \label{sec:setup}
 
-\textbf{Data.} 161 independent populations across eight data sources. Two are US surveys:
-UCI Adult (45{,}222 rows) and ACS Income \cite{ding2021} across 102 state-years and two
-protected attributes. One records real allocations: HMDA 2018 mortgage filings, 66 rate-bearing
-arms over 40 states (30{,}000--305{,}593 records each). The remaining five are IPUMS
-International census extracts for Brazil and Mexico, COMPAS \cite{propublica2016},
-LSAC bar passage, the Dutch national census of 2001 and Taiwanese credit-card default records
-of 2005. A \emph{population} is one such unit --- a state, cohort or census --- and
+\textbf{Data.} 161 independent populations across eight sources. Two are US surveys: UCI Adult
+(45{,}222 rows) and ACS Income \cite{ding2021} over 102 state-years and two protected
+attributes. One records real allocations: HMDA 2018 mortgage filings, 66 rate-bearing arms
+over 40 states. The rest are IPUMS International census extracts for Brazil and Mexico, COMPAS
+\cite{propublica2016}, LSAC bar passage, the Dutch national census of 2001, and Taiwanese
+credit-card default records. The last three were added to leave the sources the finding was
+formed in, and chosen for what they test: the Dutch census carries a between-group gap of
+0.298, roughly twice Adult's, which makes it the hardest case for the standard ``it is really
+the group gap'' alternative; LSAC was chosen because bar passage is naturally generous (base
+rate 0.890) and should therefore be unsweepable.
+
+\textbf{What a favourable decision is, and mostly is not.} This belongs here because it bounds
+everything after it. \textbf{In five of the eight sources no one receives anything}: the
+favourable decisions are a classifier's labels over people whose incomes, occupations or bar
+results already exist, so the pool being given and taken is a pool of predictions. HMDA is the
+one source recording real allocative decisions --- and it is where the direction reverses, and
+where our sweep protocol failed its held-out test. Whether the construct transports from
+status-prediction benchmarks to allocation data is an open question, not an assumption we are
+entitled to. On HMDA the outcome is the \emph{lender's} approval: action-taken codes 1 and 2
+against 3, with withdrawn, incomplete, purchased and preapproval records excluded as not being
+a completed approve-or-deny, and features allow-listed to what exists when the application is
+filed.
+
+\textbf{Definitions.} An \emph{arm} is one population under one configuration --- a decision
+threshold, a label cutoff, a tolerance, a learner. The \emph{selection rate} $r$ is the
+fraction of the test split the baseline marks favourable. The \emph{pool change} $\Delta$pool
+is the percentage change, baseline to mitigated, in the number of favourable decisions;
+\emph{extension} and \emph{withdrawal} name its sign. A population's \emph{crossover} is the
+rate at which that sign changes, reported as the bracket between the highest rate that still
+shrinks the pool and the lowest that grows it. The \emph{viable band} is the span of rates
+over which the baseline stays above the trivial predictor. The \emph{exchange rate} is
+favourable decisions destroyed per favourable decision created, an unweighted descriptive
+count.
+
+\textbf{Protocol and convention.} An L2-regularised logistic regression on a 70/30 split, five
+seeds per arm, with every reported figure a seed mean; the constraint is Fairlearn's
+exponentiated-gradient reduction under demographic parity \cite{agarwal2018} at a tolerance of
+0.01 unless stated. \emph{$y = 1$ is always the favourable outcome.} That required inverting
+COMPAS's recorded target, which encodes recidivism, and declaring \emph{Female} the advantaged
+group on its sex arm, since women in that cohort reoffend less. Both are enforced by automated
+checks, because either error produces every directional result sign-inverted without raising.
+
+\textbf{Exclusion rules, and where they bite.} An arm is discarded if the baseline parity gap
+is below 0.05, or if the baseline accuracy falls below $\max(p, 1-p)$, the accuracy of always
+predicting the more common label. Both were developed \emph{during} the exploratory phase in
+response to failures the ledger records, so exploratory correlations are conditioned on
+in-sample-tuned filters and Table~\ref{tab:sensitivity} reports the dependence. What the
+sealed tests did with them varies, and stating it as uniform would flatter them: the re-seal
+applies \emph{neither} and scores all ten populations raw; the third-direction and lending
+cohorts apply only the magnitude guard their own protocols fix; the screen-gated race cohort
+is the one carrying both, frozen before its extract existed. The sealed record is therefore
+less filtered than an unqualified claim of frozen guards would suggest, which is the direction
+that favours it.
+
+\textbf{Three survey conventions, because every crossover here depends on them.} Inherited
+from the folktables benchmark \cite{ding2021}: ACS records are used unweighted, incomes are
+nominal without the inflation adjustment, and household clustering is not modelled. Every
+selection rate is therefore a property of the unweighted sample rather than a
+design-consistent state estimate, and the numeric locations --- including the 0.54 prior this
+paper argues about --- are properties of that convention. The weighted re-analysis has run:
+under person weights \textbf{every located crossover shifts down by 0.03--0.08}, without
+changing any population's ordering or any direction call. That shift is the same order as the
+0.54-against-0.50 distinction of Section~\ref{sec:resealed}, which is a reason to read the
+\emph{ordering} as the finding and the value as a convention-relative landmark.
+Seed-resampled intervals are anti-conservative for the same reason.
+
+\textbf{Accounting.} A \emph{population} is one unit --- a state, cohort or census --- and
 \emph{independent} means disjoint person samples: no person appears in two, and arms within a
 population share people, so however many arms a population contributes it is counted once.
-Ratios here are over populations unless they say otherwise.
-
-\textbf{Three survey conventions, because every crossover in this paper depends on them.}
-Inherited from the folktables benchmark \cite{ding2021}: ACS person records are used
-unweighted, incomes are nominal without the inflation adjustment, and household clustering is
-not modelled. So every selection rate here is a property of the unweighted sample rather than
-a design-consistent state estimate, and the numeric locations --- including the 0.54 prior
-this paper argues about --- are properties of that convention. The weighted re-analysis has
-run: read under person weights, \textbf{every located crossover shifts down by 0.03--0.08} in
-weighted rate units, without changing any population's ordering or any direction call. That
-shift is the same order as the 0.54-against-0.50 distinction of
-Section~\ref{sec:resealed}, which is a reason to read the value as a convention-relative
-landmark and the \emph{ordering} as the finding. Seed-resampled intervals are
-anti-conservative for the same reason, and a household-clustered bootstrap widens them
-modestly.
-
-\textbf{What a favourable decision is, and mostly is not.} This belongs here rather than in
-Limitations, because it bounds everything that follows. \textbf{In five of the eight sources
-no one receives anything}: the favourable decisions are a classifier's labels over people
-whose incomes, occupations or bar results already exist, so the pool being given and taken is
-a pool of predictions. HMDA is the one source recording real allocative decisions --- and it is
-where the direction reverses, and where our sweep protocol failed its held-out test. Whether
-the construct transports from status-prediction benchmarks to allocation data is an open
-question rather than an assumption we are entitled to.
-
-\textbf{The lending outcome, defined.} On HMDA the outcome is the \emph{lender's}
-approval: action-taken codes 1 (originated) and 2 (approved, not accepted) against 3
-(denied), with withdrawn, incomplete, purchased and preapproval records excluded as not being
-a completed approve-or-deny. Features are restricted by allow-list to what exists when the
-application is filed. The race arm is White vs.\ Black applicants, the sex arm Male vs.\
-Female (joint applications excluded), and loan purposes are sub-populations.
-
-COMPAS, LSAC and the Dutch census were added to leave the sources the finding was formed
-in. The Dutch census
-carries a between-group gap of 0.298, roughly twice Adult's, making it the test of the standard
-alternative explanation. LSAC was chosen because bar passage is naturally generous (base rate
-0.890).
-
-\textbf{Definitions, in one place.} An \emph{arm} is one population under one
-configuration (a decision threshold, a label cutoff, a tolerance, a learner). The
-\emph{selection rate} $r$ is the fraction of the test split the baseline model marks
-favourable. The \emph{pool change} $\Delta$pool is the percentage change, baseline to
-mitigated, in the number of favourable decisions; \emph{up}/\emph{extension} and
-\emph{down}/\emph{withdrawal} name its sign. A population's \emph{crossover} is the rate
-at which its pool change changes sign, reported as the bracket between the highest rate
-that still shrinks the pool and the lowest that grows it. The \emph{viable band} is the
-span of selection rates over which the baseline stays above the trivial predictor. The
-\emph{exchange rate} is favourable decisions destroyed per favourable decision created,
-an unweighted descriptive count.
-
-\textbf{Protocol.} The baseline learner is an L2-regularised logistic regression on
-one-hot-encoded categorical and standardised numeric features; one section swaps in a
-boosted tree and says so. Each arm draws a 70/30 train/test split, stratified on group
-$\times$ label, re-drawn per seed. Five seeds per arm unless stated (the replication
-checks use twenty); every per-arm quantity in this paper is a mean over its arm's seeds,
-and no single-seed number is comparable to the tables.
-
-\textbf{Convention.} $y = 1$ is always the favourable outcome. This required inverting COMPAS's
-recorded target, which encodes recidivism, and declaring \emph{Female} the advantaged group on
-its sex arm, since women in that cohort reoffend less. Both are enforced by automated checks,
-because either error produces every directional result sign-inverted without raising.
-
-\textbf{Mitigation.} \texttt{ExponentiatedGradient} \cite{agarwal2018} at $\varepsilon = 0.01$
-unless stated ($\varepsilon$ is the library default and bounds the \emph{training-time}
-empirical moment violation of the randomized classifier, so held-out gaps such as
-Table~\ref{tab:ablation}'s 0.018 can lawfully exceed it; the tolerance sweep spans
-$0.002$--$0.05$, a $25\times$ range). Fairlearn 0.14.0 throughout, default
-\texttt{ExponentiatedGradient} parameters beyond $\varepsilon$. No model reads the protected attribute at prediction time except where
-post-processing is explicitly under test.
-
-\textbf{Exclusion rules.} An arm is discarded if the baseline demographic-parity gap is below
-0.05, or if the baseline classifier's accuracy falls below $\max(p, 1-p)$ --- the accuracy of
-always predicting the more common label. The second rule matters more than it sounds
-(Section~\ref{sec:failures}). Provenance, because exclusion rules can select on outcomes:
-both rules were developed \emph{during} the exploratory phase, in response to failures the
-ledger records, so retained-arm correlations from that phase are conditioned on
-in-sample-tuned filters and the sensitivity table reports the dependence. What the sealed
-tests then did with the two rules varies, and stating it as uniform would flatter them: the
-re-seal applies \emph{neither} and scores all ten populations raw; the third-direction and
-lending cohorts apply the magnitude guard their own protocols fix, but not these two; and
-the screen-gated race cohort is the one that carries both, frozen before its extract
-existed. The sealed record is therefore less filtered than an unqualified claim of frozen
-guards would suggest, which is the direction that favours it.
-
-\textbf{Accounting.} Table~\ref{tab:accounting} states which populations enter which analysis; the complete
-record gives, per headline ratio, the arms, the disjoint person samples and the instruments it
-is counted over. Four counts in this project's own history turned out to be arm counts
-masquerading as population counts, so a ratio here is a ratio over populations unless it says
-otherwise. The second
-table is computed from the stored results by \texttt{scripts/independence.py} rather than
-maintained by hand, since the counts it reports are exactly the kind that drift. Read
-together they make one distinction unavoidable: \emph{a ratio over arms is not a ratio over
-populations}, and where the two differ this paper says which it means.
+Ratios here are over populations unless they say otherwise. Table~\ref{tab:accounting} states
+which populations enter which analysis; the per-ratio denominators are computed from the
+stored results rather than maintained by hand, since four counts in this project's own history
+turned out to be arm counts masquerading as population counts.
 
 \begin{table}[!t]
 \caption{Which populations enter which analysis. An \emph{arm} is one population under one
@@ -754,199 +725,6 @@ tail, and we tried no other.
 \section{The Audit: Give, Take, or Refuse}
 \label{sec:procedure}
 
-Algorithm~\ref{alg:locate} states the procedure. Three of its steps are worth drawing out,
-because each is a place where a plausible-looking run returns a meaningless answer.
-
-\textbf{It can refuse before it fits anything.} On a task generous enough that the trivial
-predictor is already close to the model's accuracy, no deployable classifier can be moved far
-enough to cross anything: LSAC refuses at an accuracy floor of 0.890 against a viable band of
-0.056, and the test is arithmetic on the baseline, needing no constraint fit at all. Lines
-6--8 compute that band and exit before any constraint is
-fitted, if no threshold reaches a low selection rate with a model still beating the trivial
-predictor. The procedure declines,
-
-\textbf{It can return \textsc{void}.} Line 16 requires enough arms to survive the guards
-and the pool to have moved at all. A
-correlation computed over arms that barely move is fitted to noise: Connecticut returns
-$r=-0.924$ on a spread of a tenth of a percentage point, and without this test that number
-reads as a refutation of the whole finding.
-
-\textbf{It can return \textsc{non-monotone}, and on current data it often will.} Lines
-20--22 exist because the assumption behind bracketing --- one rising sign change --- is
-itself population-dependent: among the ten largest states we swept, three are U-shaped
-and the 2022 vintages at nominal labels invert, so a bracket step that assumed
-monotonicity would return a confident wrong direction precisely there. A
-\textsc{non-monotone} verdict means the directional rule does not apply to this system,
-which is a first-class answer, not a failure of the audit. A sweep whose retained arms
-all share one sign is the opposite case and returns that direction (line 24): the
-constraint moves the pool the same way across the whole viable band, which is what
-``levels up throughout'' means operationally. Two cautions the earlier version of this
-algorithm kept in prose are now steps: arms below a selection rate of $0.10$ are marked
-\emph{advisory} and excluded from the shape call (line 14), because below that boundary
-the two routes to a rate give opposite signs (Section~\ref{sec:boundaries}) and the
-accuracy guard does not catch it; and every fitted arm is probed for the flat
-keep-probability signature (line 19), because a lottery under the certificate is a
-finding the direction verdict alone would hide. The probe's decision rule, stated so it
-can be implemented: flag an arm whose mean granted probability just below the boundary
-is under 0.10 while the keep-probability's correlation with the score above it is
-$\approx 0$ --- the observed separation is wide (0.00--0.07 against 0.17--0.43, and
-$\approx 0$ against $+0.37$ to $+0.73$).
-
-\textbf{Guard provenance.} A guard's provenance belongs to the pair it forms with a result,
-not to the guard. The band span, the parity-gap floor and the threshold grid are exploratory,
-fixed in the threshold sweep's own pre-registration and confirmatory for every seal after it;
-three others are not, and the complete record states for each whether it was fixed before,
-after, or --- in one case, a void guard imported backwards from a later pre-registration that
-moved three arm sets from refutation to \textsc{void} --- applied retrospectively in the
-conjecture's favour, against which the same audit found no arm set that passed on noise.
-
-\textbf{It can return \textsc{indeterminate}.} Lines 28--29 refuse a sign call when the
-deployed rate sits inside the located bracket, or when the nearest arms' effects are
-within seed noise --- precisely the two conditions under which this project's own record
-shows a sign call has nothing to grip: Maryland's miss sat at the cluster's edge
-(Section~\ref{sec:sealed}), and Minnesota's was an effect of $-0.04\%$ that flips sign
-across seeds. The registered
-rubric of the re-seal did not have this verdict and was charged a miss for it; the
-algorithm inherits the lesson.
-
-\textbf{The magnitude guard is measured, not assumed.} Line 28's refusal rests on the
-claim that a near-zero effect has no sign to predict. Two sealed cohorts run after this
-algorithm was written put a number on it: across their forty arms the rule is correct on
-\textbf{21 of 22} arms whose effect exceeds one point and on \textbf{11 of 18} below it ---
-95\% against 61\%, which is a coin flip. Those arms span 19 and 15 disjoint person-samples,
-and clustering on the sample rather than the arm leaves the split intact: 85--100\% above
-the threshold against 37--82\% below, intervals that barely meet.
-
-\textbf{What that measures is the floor's existence, not its location.} The two read alike
-and are not the same claim. Sweeping the guard over the same forty sealed arms, every value
-from 0.25 to 5.00 points separates the reliable arms from the unreliable ones, by between 13
-and 35 percentage points, with the largest separation at 0.25 and the committed 1.0 giving
-$+34$. So the guard's \emph{existence} is measured and its \emph{value} is operational --- a
-round number fixed in a protocol before its arms existed, which the data neither singles out
-nor contradicts.
-
-\textbf{It returns a sign, never a size.} The distance from the crossover \emph{orders} the
-effect within a population, so a team can rank its own segments; but no slope transfers between
-populations, so lines 32 and 34 return a direction and stop there.
-
-\textbf{What it is for, and what it is not.} The audit applies where the pool of
-favourable decisions can actually change size. Where the allocation is
-capacity-pinned --- a fixed number of seats, beds, or slots --- the total is constant
-by construction, the directional quantity this paper measures cannot arise, and the
-audit is out of scope from line~0; this is the fixed-resource regime of
-\cite{goethals2024}, and clinical triage and admission commonly live there. No
-natural operating point below 0.13 has been probed in this record, so deployed rates
-below that carry an untested-region caution on top of every verdict.
-
-\textbf{What it needs, and what it costs.} The audit requires a held-out sample carrying
-the protected attribute: audit-time access to $a$, which is legally and practically
-distinct from decision-time use and is the regime bias-testing provisions contemplate
-(Section~\ref{sec:scope}) --- in US credit, the self-test privilege of Regulation~B
-(12~CFR~\S1002.15) exists for exactly this, though it is conditional: the privilege
-attaches to a lender's own voluntary self-test and expects appropriate corrective
-action, and an analysis of public HMDA records, like this paper's, is not itself a
-privileged self-test. It fits the constraint $12 \times \mathrm{seeds}$ times; with five seeds
-and the linear learners used here, one fit takes 2--10 seconds at $15$k--$69$k training
-rows (measured on a laptop CPU), so a full audit is minutes per population, scaling linearly in the base learner's own fit
-time since each reduction call is a sequence of learner refits. On a production
-gradient-boosted model over millions of rows that multiplier is the binding cost, and we have
-not measured it there. A cheap pre-screen exists: the relaxed-$\zeta$ ordering of
-Section~\ref{sec:regime} needs no constraint fits and correlates with the predictor at
-$r=+0.935$.
-
-\textbf{What the sweep buys that one fit does not.} A team able to run $12 \times$ seeds
-constrained fits could instead run \emph{one}, at the operating point it already uses, and
-read the pool change off it --- so what has prediction bought over measurement? A single fit
-returns a point; the sweep returns a neighbourhood. Two measurements separate them. Across 639
-adjacent arm pairs whose effects both clear the 1.0-point guard, 69 --- 11\% --- disagree on
-the \emph{sign}, so the direction one fit reports is not reliably a property of the population
-rather than of the threshold that fit happened to use. And populations sit close to their own
-boundary: of 21 disjoint person samples carrying both a located crossover and a natural arm,
-11 sit within 0.10 of the crossover and 6 within 0.05, Florida 2018 sitting 0.004 from it. For
-those teams the direction is not a fact to accept or refuse but a threshold they already
-control, and one fit reports the withdrawal without reporting the lever. That the crossover
-cannot be looked up rather than measured shows in the same set: Florida enters twice, once per
-attribute, crossing at 0.284 read by sex and 0.439 read by race --- the same people, two
-boundaries.
-
-The limit belongs with the answer. The sweep does not buy a better estimate of what the
-constraint does at today's threshold; repeated fits at one point buy that. What it buys is
-\emph{shape}. Five of the 21 sit more than 0.20 from their crossover and would have decided
-the same from one fit --- and that 24\% over-states the waste, because every sample in the set
-has already passed the monotonicity screen, and the 22\% admitting no rule never enter it. A
-team cannot learn which group it is in without running the sweep, which is the reply in one
-line: the audit is not circular, because its output is not the quantity a single fit measures.
-
-\textbf{Two rates, and they are not the same rate.} The survey's 78\% and the audit's
-29-of-52 are different measurements and a reader is entitled to be confused by them meeting on
-one page. The 78\% applies \emph{one} gate --- monotonicity --- to fifty populations drawn at
-random, and answers ``how often is a population shaped so that a directional rule could
-apply''. The 29 of 52 applies \emph{every} gate the algorithm states --- the noise floor, the
-two-point void span, monotonicity, and the indeterminate bracket --- to the stored sweeps,
-which are a convenience set rather than a random draw, and answers ``how often does the
-procedure actually return a direction''. The second is the number a deploying team should
-plan against; the first bounds the claim. Neither is the other's denominator, and where the
-survey's fifty draws become forty-eight independent samples it is because two state-years were
-drawn under both protected attributes --- the same people read twice.
-
-\textbf{What it actually returns, totalled.} Run over the 52 population-label pairs whose
-stored sweeps resolve to a dataset spec --- fourteen further IPUMS sweeps are stored but
-unmapped, and are excluded rather than guessed at --- the distribution
-is: 29 directional verdicts (20 \textsc{withdrawal}, 9 \textsc{extension}), 8
-\textsc{non-monotone}, 13 \textsc{void}, one refusal at the noise floor (COMPAS), and
-one bracket with no natural arm to read against. Every one of the 29 directional
-verdicts matches what the fitted constraint did at that population's natural operating
-point --- a consistency check on the audit's reading of its own sweep, not independent
-validation, since the natural arm is part of the curve being read. That distribution is computed over the sweeps this project happened to accumulate, which
-were never randomly chosen, so it answers a question about this project rather than about
-populations. A survey with a pre-committed frame answers the latter.
-
-\textbf{The frame, since ``at random'' means nothing without one.} Every combination of the
-fifty US states, the 2014, 2018 and 2019 ACS vintages, and the two protected attributes, with
-the income cutoff held at \$50{,}000 --- 300 population-label pairs. The 2022 vintage is
-excluded because its inversion is a diagnosed nominal-label artifact, and including it would
-conflate a label problem with a landscape property. Fifty pairs were drawn uniformly at
-random under a fixed seed, and the frame, the seed, the draw and the exclusion were all
-committed to version control before any arm ran; the drawn list is in the repository. The
-draw came out balanced without being forced: 25 of each attribute, and 14, 14 and 22 across
-the three vintages. The fifty pairs span \textbf{48 disjoint person-samples}, two state-years
-having been drawn under both attributes.
-
-The result: \textbf{78\% admit a directional rule and 22\% do not}, of which 64\% are
-classic single-crossing landscapes. Resampling \emph{populations} rather than draws puts the
-directional share at 66--89\%, and leaving each population out in turn never moves it below
-77\%. The convenience sample was mildly optimistic --- it implied 15\% non-monotone --- and
-the larger number is the one to quote. The refusals are not
-silences. A \textsc{void} arm is one whose pool change spans under two points across the
-entire viable band --- median 1.47 --- which tells a deployer that the direction question is
-\emph{moot} on their system, not that it is unanswerable; a \textsc{non-monotone} verdict
-says the rule does not apply here, which is a finding about the system; and the noise-floor
-refusal says the population is too small to audit at all. Counted that way, 48 of the 52
-return something a team can act on and four return nothing --- three sweeps too thin to read
-and one bracket with no natural arm. The honest summary: the audit gives a \emph{direction}
-a little under six times in ten, tells a team the question is moot or the rule inapplicable
-in most of the remainder, and is silent on four of fifty-two. Finally, an ex-ante verdict earns trust only if checked:
-whatever the verdict, including refusals, the deployed system's measured pool change and
-who-pays decomposition (Section~\ref{sec:whopays}) should be reported after the fact ---
-the verdict is falsifiable at deployment, and Section~\ref{sec:discussion} makes this a
-requirement rather than advice.
-
-\textbf{The direction survives the extraction a deployer must apply.} Every direction
-result above is measured on the randomized mixture, but a lender under
-adverse-action-notice duties deploys a \emph{deterministic} model, so we tested the
-extraction directly: thresholding the mixture's per-person probability at $0.5$ on the
-natural arms of ten populations spanning both directions. The extracted model agrees
-with the mixture's pool direction on \textbf{10 of 10}, with the parity repair largely
-intact (extracted gaps $0.009$--$0.034$ against baseline gaps $0.08$--$0.19$). One
-deployment fact surfaced on the way: an extraction that instead tries to reproduce the
-mixture's own operating point cannot generally do so, because the mixture's probability
-takes few discrete values and the ties force the deterministic threshold off the target
-rate --- on three cutting populations far enough off to flip the sign of the measured
-pool change. Thresholding at $0.5$ is the well-defined extraction, and it is the one
-that preserves the verdict. The caveat composes with Section~\ref{sec:lottery}: these
-are natural arms, where the mixture is graded; a flat-lottery arm has no
-score-respecting extraction, and derandomizing it undoes the parity it bought.
-
 \begin{algorithm}[!t]
 \caption{Directional audit: decide whether the predictor applies at all; if it does, locate
 the crossover and decide whether to add a floor}
@@ -996,6 +774,132 @@ fairness constraint $C$
 \ENDIF
 \end{algorithmic}
 \end{algorithm}
+
+Algorithm~\ref{alg:locate} states the procedure. It has three outcomes rather than two, and
+the third is a third of what it does: the constraint will give, it will take, or the
+population admits no answer and the audit says so.
+
+\textbf{Four ways to refuse, and each answers something.} \textsc{unsweepable} (lines 6--8)
+fires before any constraint is fitted. On a task generous enough that the trivial predictor is
+already close to the model's accuracy, no deployable classifier can be moved far enough to
+cross anything: LSAC refuses at an accuracy floor of 0.890 against a viable band of 0.056, and
+the test is arithmetic on the baseline. \textsc{void} (line 16) means the pool change spans
+under two points across the entire viable band --- median 1.47 --- which tells a deployer the
+direction question is moot on their system, not that it is unanswerable, and is arguably the
+most useful verdict here. \textsc{non-monotone} (lines 20--22) exists because bracketing
+assumes one rising sign change and that assumption is population-dependent: among the ten
+largest states swept, three are U-shaped, and a bracket step assuming monotonicity would
+return a confident wrong direction precisely there. And \textsc{indeterminate} (lines 28--29)
+refuses when the deployed rate sits inside the located bracket or the nearest arms' effects
+are within seed noise --- the two conditions under which this project's own record shows a
+sign call has nothing to grip.
+
+Two cautions the earlier version kept in prose are now steps. Arms below a rate of 0.10 are
+marked advisory and excluded from the shape call (line 14), because below that boundary the
+two routes to a rate diverge and the accuracy guard does not catch it. And every fitted arm is
+probed for the flat keep-probability signature (line 19), because a lottery under the
+certificate is a finding the direction verdict alone would hide: flag an arm whose mean
+granted probability just below the boundary is under 0.10 while the keep-probability's
+correlation with the score above it is $\approx 0$, a separation the data makes wide
+(0.00--0.07 against 0.17--0.43).
+
+\textbf{The magnitude guard: existence measured, value operational.} Line 28's refusal rests
+on the claim that a near-zero effect has no sign to predict, and two sealed cohorts put a
+number on it: across forty arms the rule is correct on \textbf{21 of 22} above one point and
+\textbf{11 of 18} below --- 95\% against 61\%, a coin flip --- and clustering on the sample
+rather than the arm leaves the split intact. That measures the floor's \emph{existence}.
+It does not locate it: sweeping the guard over the same arms, every value from 0.25 to 5.00
+points separates by between 13 and 35 percentage points, with the largest separation at 0.25
+and the committed 1.0 giving $+34$. The guard's value is a round number fixed in a protocol
+before its arms existed, which the data neither singles out nor contradicts.
+
+\textbf{What it returns, and what it does not.} A sign, never a size: distance from the
+crossover orders the effect within a population, so a team can rank its own segments, but no
+slope transfers between populations. The audit also applies only where the pool can change
+size --- where the allocation is capacity-pinned, a fixed number of seats or beds or slots,
+the total is constant by construction and the audit is out of scope from line~0, which is the
+fixed-resource regime of \cite{goethals2024}. No natural operating point below 0.13 appears in
+this record, so deployed rates beneath it carry an untested-region caution on top of any
+verdict.
+
+\textbf{What it needs and what it costs.} A held-out sample carrying the protected attribute:
+audit-time access, which is legally and practically distinct from decision-time use and is
+the regime bias-testing provisions contemplate. It fits the constraint $12 \times$ seeds
+times; with five seeds and linear learners, one fit takes 2--10 seconds at 15k--69k training
+rows, so a full audit is minutes per population, scaling linearly in the base learner's own
+fit time since each reduction call is a sequence of learner refits. On a production
+gradient-boosted model over millions of rows that multiplier is the binding cost, and we have
+not measured it there.
+
+\textbf{What the sweep buys that one fit does not.} A team able to run $12 \times$ seeds
+constrained fits could instead run \emph{one}, at the operating point it already uses, and
+read the pool change off it --- so what has prediction bought over measurement? A single fit
+returns a point; the sweep returns a neighbourhood. Across 639 adjacent arm pairs whose
+effects both clear the 1.0-point guard, 69 --- 11\% --- disagree on the \emph{sign}, so the
+direction one fit reports is not reliably a property of the population rather than of the
+threshold that fit used. And populations sit close to their own boundary: of 21 disjoint
+person samples carrying both a located crossover and a natural arm, 11 sit within 0.10 of the
+crossover and 6 within 0.05, Florida 2018 sitting 0.004 from it. For those teams the direction
+is not a fact to accept but a threshold they control, and one fit reports the withdrawal
+without reporting the lever. That the crossover cannot be looked up rather than measured shows
+in the same set: Florida enters twice, once per attribute, at 0.284 by sex and 0.439 by race.
+
+The limit belongs with the answer. The sweep does not buy a better estimate of what the
+constraint does at today's threshold --- repeated fits at one point buy that. It buys
+\emph{shape}. Five of the 21 sit more than 0.20 from their crossover and would have decided
+the same from one fit; that 24\% over-states the waste, because every sample in the set has
+already passed the monotonicity screen and the 22\% admitting no rule never enter it. A team
+cannot learn which group it is in without running the sweep, which is the reply: the audit is
+not circular, because its output is not the quantity a single fit measures.
+
+\textbf{Two rates, and they are not the same rate.} The survey's 78\% and the audit's 29 of 52
+are different measurements and a reader is entitled to be confused by them meeting on one
+page. The 78\% applies \emph{one} gate --- monotonicity --- to fifty populations drawn at
+random, and answers how often a population is shaped so that a directional rule could apply.
+The 29 of 52 applies \emph{every} gate the algorithm states to the stored sweeps, which are a
+convenience set rather than a random draw, and answers how often the procedure returns a
+direction. The second is what a deploying team should plan against; the first bounds the
+claim.
+
+\textbf{The frame, since ``at random'' means nothing without one.} Every combination of the
+fifty US states, the 2014, 2018 and 2019 ACS vintages and the two protected attributes, with
+the income cutoff held at \$50{,}000 --- 300 population-label pairs, from which fifty were
+drawn under a fixed seed. 2022 is excluded, for the diagnosed reason of
+Section~\ref{sec:limitations}. The frame, the seed, the draw and the exclusion were all
+committed to version control before any arm ran. Fifty draws resolve to 48 disjoint person
+samples, because two state-years were drawn under both attributes --- the same people read
+twice.
+
+\textbf{The result: 78\% admit a directional rule and 22\% do not}, of which 64\% are classic
+single-crossing landscapes. Resampling populations rather than draws puts the directional
+share at 66--89\%, and leaving each population out in turn never moves it below 77\%. Run over
+the 52 stored sweeps that resolve to a dataset spec, the audit returns 29 directional
+verdicts, 8 \textsc{non-monotone}, 13 \textsc{void}, one refusal at the noise floor and one
+bracket with no natural arm --- so it gives a direction a little under six times in ten, tells
+a team the question is moot or the rule inapplicable in most of the remainder, and is silent
+on four of 52. Every one of the 29 matches what the fitted constraint did at that population's
+natural operating point, which is a consistency check on the audit's reading of its own sweep
+rather than independent validation, since the natural arm is part of the curve being read.
+
+\textbf{The direction survives the extraction a deployer must apply.} Every direction result
+here is measured on the randomized mixture, but a lender under adverse-action duties deploys a
+\emph{deterministic} model. Thresholding the mixture's per-person probability at 0.5 on the
+natural arms of ten populations spanning both directions, the extracted model agrees with the
+mixture's pool direction on \textbf{10 of 10}, with extracted gaps of 0.009--0.034 against
+baseline gaps of 0.08--0.19. The caveat composes with the lottery: these are natural arms
+where the mixture is graded, and a flat-lottery arm has no score-respecting extraction ---
+derandomising it undoes the parity it bought.
+
+\textbf{Guard provenance.} A guard's provenance belongs to the pair it forms with a result,
+not to the guard. The band span, the parity-gap floor and the threshold grid are exploratory,
+fixed in the threshold sweep's own pre-registration and confirmatory for every seal after it.
+Three are not, and the complete record states which: a void guard written for a later
+pre-registration and imported \emph{backwards}, moving three arm sets from refutation to
+\textsc{void} --- a change in the conjecture's favour, against which the same audit found no
+arm set that passed on noise; an advisory boundary descending from a clause that was sealed,
+scored 4 of 8 and withdrawn, surviving only where it can refuse an arm but not manufacture a
+correct call; and a noise floor this paper's own drafting mis-dated, which is exploratory read
+from its value and retrospective read from the constant now carrying it.
 
 \section{Boundaries}
 \label{sec:boundaries}
@@ -1312,6 +1216,7 @@ $\rho \ge 0.9$ \\
 \end{table}
 
 \section{Limitations}
+\label{sec:limitations}
 
 \textbf{The lending evidence is thinner than its market count suggests.} Forty markets carry a
 rate-bearing arm on each attribute, but every one of the twenty-six sex arms falls below the

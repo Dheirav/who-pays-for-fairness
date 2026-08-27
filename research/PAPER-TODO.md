@@ -625,3 +625,35 @@ figures have not returned.
 
 **Cost:** record 24 pages, cut 16, both zero overfull, 84 checks. The cut grew because
 restoring honesty costs words — the redrafts of §VII and §III are where the pages come back.
+
+
+## The two redrafts, written from blank
+
+The area chair's warning was that §VII and §III would "come back at 1,800 words each" if
+trimmed clause by clause. Given clause-by-clause compression is what produced the thirty
+defects the audit found, I changed method: **enumerate what the section must carry, write it
+fresh against a target, then check the list**.
+
+| | before | after |
+|---|---|---|
+| §III Setup | 1,369 | **1,099** |
+| §VII The Audit | 2,711 | **1,924** |
+
+**The check is the part that was missing last time.** Both redrafts were verified against an
+explicit list of load-bearing items — 23 for Setup, 32 for the Audit — every one confirmed
+present in the redrafted text. Not by reading it back, which is how four bad cuts got through,
+but by asserting each item as a string match.
+
+Also clean, and checked mechanically rather than hoped for: **no dead references, no duplicate
+labels, no dangling cross-references.** All three of those classes bit this session.
+
+**Cut is now 13,291 words / 15 pages, 0 overfull, 84 checks.**
+
+### What is left to reach 10
+
+- **Figure 4** — the area chair would cut it on merit: forty points conveying two fractions
+  the text states three times. ~0.8 page.
+- **Figures 2 and 3 to single column** — ~0.85 page.
+- The remaining summary layers. The abstract, contributions, limitations and discussion are
+  four restatements over the body; the area chair measured ~1,800 words of them.
+- **Anonymisation** — pending the venue, which is not the course.
