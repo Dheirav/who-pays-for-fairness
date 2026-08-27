@@ -42,7 +42,7 @@ VARIANTS = {
     # tighter margins after the 107-population update and the two new ledger rows. Margins
     # were narrowed before the type was, since 7.4pt at 0.32in beats 7.2pt at 0.35in for
     # readability at the same page count.
-    "paper-8p":  dict(limit=8,  font="7.2pt", margin="0.30in", leading="0.88", colsep="0.12in"),
+    "paper-8p":  dict(limit=8,  font="7.2pt", margin="0.28in", leading="0.87", colsep="0.11in"),
 }
 
 PREAMBLE = r"""
