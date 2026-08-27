@@ -13,10 +13,10 @@
 
 
 % ---- density settings, injected by make_variants.py; edit that, not this file ----
-\usepackage[margin=0.35in]{geometry}
-\linespread{0.91}
+\usepackage[margin=0.32in]{geometry}
+\linespread{0.89}
 \setlength{\parskip}{0pt}
-\setlength{\columnsep}{0.14in}
+\setlength{\columnsep}{0.13in}
 \setlength{\textfloatsep}{3pt}
 \setlength{\floatsep}{3pt}
 \setlength{\intextsep}{3pt}
@@ -32,7 +32,7 @@
 \setlist{nosep,leftmargin=*}
 % fontsize rescales the whole ladder -- \small, \footnotesize and the tables with it --
 % which a bare \fontsize does not, and which would leave table text larger than body text.
-\usepackage[fontsize=8.0pt]{fontsize}
+\usepackage[fontsize=7.9pt]{fontsize}
 % ---------------------------------------------------------------------------------
 
 \begin{document}
@@ -50,36 +50,38 @@ Whether Fairness Gives or Takes}
 \begin{abstract}
 A group-fairness constraint requires two groups' selection rates to be close, but it does not
 say how the gap should close: the disadvantaged group can be lifted, or the advantaged group
-can be pulled down. Both outcomes satisfy the constraint, and the metric that certifies it
-reports the same number in each case, which means a deployment team cannot tell from its own
-dashboard which of the two it is about to cause. We show that the direction is predictable in
-advance from a quantity every deploying organisation already has: the rate at which its
-current model says yes, read against that population's crossover. Across 161 disjoint
-population samples covering six decision domains and eight data sources on five countries, an
-attribute-blind parity constraint withdraws favourable decisions when the baseline selection
-rate sits below a crossover and extends them when it sits above; on UCI Adult five
-in-processing methods each shrink the pool by 7.9--22.1\%, while on mortgage lending the
-identical constraint grows it.
+can be pulled down. Both outcomes satisfy the constraint, and the certifying metric is
+content with either --- it reads \textbf{0.018} where the constraint destroyed a fifth of
+the favourable decisions and \textbf{0.010} where it created more than it destroyed, so a
+team cannot tell from its own dashboard which it is about to cause. We show the direction is
+a property of the \emph{population} rather than of the method, predictable in advance from a
+quantity every deploying organisation already has: the rate at which its current model says
+yes, read against that population's crossover. Across 161 disjoint population samples covering six decision domains
+and eight data sources on five countries, an attribute-blind constraint withdraws below a
+population's crossover and extends above it; on UCI Adult five in-processing methods each shrink the pool by
+7.9--22.1\%, while on mortgage lending the identical constraint grows it. The practical output is an
+audit that locates a team's own crossover and \emph{refuses} when it cannot: on fifty
+populations drawn at random, frame and seed fixed in advance, 78\% admit a directional rule
+and 22\% do not, and the procedure returns the latter as unanswerable rather than scoring
+them.
 
 The claim is deliberately narrow, and sealed tests made it so. \textbf{Direction is
 predictable within a population; magnitude is not}, and a sealed model of it lost to
-predicting zero. Crossovers are population-specific --- located values span 0.28 to 0.65 ---
-so the fixed 0.54 prior is a fallible substitute for measuring one's own: sealed at
-\textbf{9 of 10} on never-measured populations (best constant 6; binomial tail 0.046 against
-a guesser, but only $p \approx 0.19$ paired against the constant itself), and 5 of 10 post-hoc
-on a second cohort. Of nine sealed or registered direction tests, one passed; we report the
-failures because each removed a stronger claim than the one that survives, and because a
-cohort built to strengthen that paired statistic showed the attempt is self-defeating --- the
-magnitude guard such a test requires deletes the near-crossover arms it needs. A screen-gated
-Brazilian race cohort separates the selection rate from label rarity in the rate's favour, on two populations.
-The relationship survives a change of route, a twenty-five-fold tolerance range, a
-boosted-tree learner and a protected attribute swapped from sex to race, but disappears under
-post-processing --- and a sealed deconfounding test locates that boundary at the optimizer
-family, not attribute access. One scope limit belongs here: \textbf{in five of the eight
-sources the favourable decisions are predicted labels rather than allocations}, and HMDA, the
-one source recording real approvals, is where our sweep protocol failed its held-out test.
-The practical outcome is a procedure that locates a team's own crossover from its deployed
-model, and refuses when it cannot.
+predicting zero; below one percentage point the direction call is 61\% correct, which is a
+coin flip. Which quantity carries the prediction was settled by elimination under
+seal: a screen-gated Brazilian race cohort separated the rate from label rarity in the
+rate's favour, and a sealed lending cohort beat a loan-purpose null on real approvals. Crossovers are population-specific --- located values span 0.28 to 0.65 ---
+so a fixed prior is a fallible substitute for measuring one's own: the rule sealed at
+\textbf{9 of 10} on never-measured populations (best constant 6; binomial tail 0.046
+against a guesser, but only $p \approx 0.19$ paired against that constant), while the specific
+value 0.54 scored 5 of 10 on a second cohort and holds no privilege over 0.50. Of nine
+sealed or registered direction tests, one passed; we report the failures because each
+removed a stronger claim than the one that survives. The relationship survives changes of
+route, tolerance, base learner and protected attribute, but disappears under post-processing --- a sealed test locating that
+boundary at the optimizer family, not attribute access. One scope limit belongs here:
+\textbf{in five of the eight sources the favourable decisions are predicted labels rather
+than allocations}, and HMDA, the one source recording real approvals, is where our sweep
+protocol failed its held-out test.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -104,9 +106,53 @@ because an aggregate score reports neither how many people were affected nor in 
 direction. We take all of that as given.
 
 What the literature leaves open is the question a deploying team actually faces:
-\textbf{when} does each direction happen? A team cannot act on ``this sometimes occurs'',
-but it can act on a rule that says which way its own system will move before it moves, which
-is what this paper provides and tests.
+\textbf{when} does each direction happen? The question is not academic, because the
+certifying number is not merely silent about the answer --- it is equally content with
+either. On UCI Adult a demographic-parity constraint destroyed roughly a fifth of the
+favourable decisions, and the parity difference it was certified against read
+\textbf{0.018}. On HMDA mortgage data the identical constraint created more favourable
+decisions than it destroyed, and the parity difference read \textbf{0.010}. Both pass. A
+team looking only at its fairness dashboard cannot tell which of the two it has just done.
+
+\textbf{The claim, in one sentence.} Whether a parity constraint hands out more favourable
+decisions or takes them away is a property of the \emph{population} being decided about
+rather than of the fairness method --- and a team can measure which one it is about to
+cause, before it causes it, from the rate at which its current model already says yes.
+
+The audit that follows from it has \emph{three} outcomes rather than two --- the constraint
+will give, it will take, or the population admits no answer and the audit says so
+(Algorithm~\ref{alg:locate}). The third is not a caveat attached to the method; it is a third
+of what the method does.
+
+Four conditions bound the sentence above. Each is measured rather than assumed, and each was
+bought with a test that failed:
+
+\begin{itemize}
+\item \textbf{Direction only, and only above a floor.} A sealed model of magnitude lost to
+predicting zero (MAE 4.50 against 0.77). Effects below one percentage point are called
+correctly 61\% of the time --- a coin flip --- against 95\% above it.
+\item \textbf{About four populations in five.} On fifty populations drawn at random, frame
+and seed fixed before any arm ran, 78\% admit a directional rule and 22\% do not. The
+procedure \emph{refuses} the 22\% rather than guessing at them.
+\item \textbf{In-processing, not post-processing.} Under post-processing the relationship is
+absent ($r = -0.024$), and a sealed deconfounding test locates that boundary at the
+optimizer family rather than at access to the protected attribute
+(Section~\ref{sec:regime}).
+\item \textbf{Mostly predicted labels, not allocations.} In five of the eight data sources
+the favourable decisions are model predictions rather than decisions actually made. HMDA,
+the one source recording real approvals, supports the direction claim on its natural arms
+but is also where our sweep protocol failed its held-out test.
+\end{itemize}
+
+The rule underneath is not surprising once stated: say yes often and the constraint tends to
+give, say yes rarely and it tends to take. What is \emph{not} available without measuring is
+where the boundary falls for a particular population. Located crossovers span 0.28 to 0.65.
+In the one setting where we drew populations at random rather than choosing them --- US
+state-level income prediction, fifty draws --- no population's operating rate reached 0.55,
+and 25 of the 47 with a computable rate sat inside that 0.28--0.65 span, which is precisely
+where an unaided reading of ``often'' against ``rarely'' has nothing to say. A further fifth
+of them follow no directional rule at all; there the intuition still returns a confident
+answer, and the audit declines to.
 
 \subsection{Scope, stated first}
 \label{sec:scope}
@@ -136,66 +182,88 @@ what the finding depends on.
 
 \subsection{Contributions}
 
+The list is ordered by how much weight each item carries. The first two are the paper; the
+rest defend, bound, or record them.
+
 \begin{enumerate}
+\item \textbf{The phenomenon, measured at scale.} An attribute-blind parity constraint
+withdraws favourable decisions on some populations and extends them on others, and the
+certifying metric reports the same kind of number in both cases. On UCI Adult five
+in-processing methods each shrink the pool by 7.9--22.1\%, at an exchange rate of 2.68
+decisions destroyed per one created; on HMDA mortgage lending the identical constraint grows
+it by 4.3\%, at an exchange rate of 0.50. Measured across \textbf{161 disjoint population
+samples} spanning six decision domains, eight data sources and five countries. Rates
+understate this: measured in \emph{people} rather than rates, between 0.66 and 0.74 of those
+whose decision changed are advantaged-group members losing a favourable one, and the
+divergence between the two views is itself predictable ($r = +0.885$).
+
+\item \textbf{An audit that answers for one's own population --- and refuses when it
+cannot.} The same design that produced the record lets a practitioner locate their own
+crossover from their deployed model; three overlapping estimates of the mortgage crossover
+agree, all from one two-state market. The refusal is not a caveat but half the contribution.
+How often a parity constraint's response is even \emph{shaped} so that a directional rule
+can apply had not been measured: on fifty populations drawn at random, frame and seed fixed
+before any arm ran, 78\% admit one and 22\% do not, of which 64\% are classic
+single-crossing landscapes. The procedure returns those 22\% as unanswerable rather than
+scoring them, which is what separates it from reading a number off a dashboard --- detecting
+a non-monotone landscape requires the sweep that transporting a prior exists to avoid
+(Section~\ref{sec:boundaries}).
+
+\item \textbf{The predictor identified by elimination, not by assertion.} Varying the
+selection rate by moving a label threshold cannot alone distinguish ``the rate predicts''
+from ``task difficulty does''; holding the task fixed and moving only the decision rule
+separates them across the mid-range. Three further alternatives were ruled out under seal.
+A screen-gated Brazilian race cohort --- ten arms from two person-samples, so the confound
+is broken \emph{within} populations rather than across them --- \textbf{broke the
+cutoff-versus-rate confound in the rate's favour}: on mixed-route sealed arms the
+cutoff-only reading scored 5 of 10 against the rate rules' 8--9, and the selection rate,
+not label rarity, carries the prediction. A sealed lending cohort beat a purpose-only null
+8 vs 5 on real approvals, so the loan product does not carry it either. A five-domain
+comparison rules out the group gap. We say \emph{predicts}, never \emph{causes}: no pooled
+slope transfers across populations (Section~\ref{sec:boundaries}).
+
 \item \textbf{An empirical characterisation of a conditionality that theory predicts.}
-Contemporaneous theory \cite{backfire2026} establishes that in the attribute-blind regime the
-direction is distribution-dependent. It contains no experiments and its conditions are ordering
-relations on score regions rather than measurable quantities. We supply the measurement across
-161 populations and six domains, and find that a percentile-relaxed form of the
-theory's ordering agrees with the measured direction on 24 of 26 arms and correlates
-with our predictor at $r = +0.935$: the selection rate operationalizes the theory's
-quantity. That correspondence has since been stress-tested: it holds across 150
-\emph{arms} --- population-label pairs in the sense of Section~\ref{sec:setup}, not
-independent populations, several of which contribute an arm at more than one cutoff ---
-with $r = +0.850$ (population-clustered bootstrap 95\% interval $+0.813$ to $+0.892$), is
-invariant to the trim percentile, survives a gradient-boosted second probe ($r = +0.946$), and on
-the sealed cohorts head-to-head the rate calls 18 of 19 to the relaxed ordering's 17. The exact conditions --- \emph{sufficient, not necessary} --- were certified
-on zero of the 26 by our logistic-probe plug-in, whose ratio diverges in the
-$\hat\nu$ tail: an estimator pathology, not a property of the conditions, and we
-tried no other estimator (Section~\ref{sec:regime}). The direction rule
-itself is \emph{sealed}: committed before ten populations this work had never measured, it
-scored 9 of 10 against a best constant of 6 (Section~\ref{sec:resealed}) --- with the
-confound stated where the score is: every arm of that cohort reaches its rate through the
-income cutoff, so the pass does not yet separate the selection rate from label rarity.
-The registered deconfounding cohorts have since run: the sex arms were refused
-(Brazil's conditional sex gaps sit below the audit's own disparity floor), and the
-screen-gated race cohort then ran powered and \textbf{broke the confound in the
-rate's favour} --- on mixed-route sealed arms the cutoff-only reading scored 5 of 10
-against the rate rules' 8--9 --- ten arms from two person-samples, so the confound is
-broken within populations rather than across them --- and the selection rate, not label rarity, carries the
-prediction --- while the fixed 0.54 \emph{value} failed its own strict bar (a 0.50
-prior edged it by one arm in-band): the prior stays fallible and population-specific,
-and the within-population claim passed sealed off-instrument. On a second,
-post-hoc cohort of larger states the fixed prior scored 5 of 10, each miss agreeing with
-that population's own measured crossover.
+Contemporaneous theory \cite{backfire2026} establishes that in the attribute-blind regime
+the direction is distribution-dependent. It contains no experiments and its conditions are
+ordering relations on score regions rather than measurable quantities. We supply the
+measurement, and find that a percentile-relaxed form of the theory's ordering agrees with
+the measured direction on 24 of 26 arms and correlates with our predictor at $r = +0.935$:
+the selection rate operationalizes the theory's quantity. That correspondence has since been
+stress-tested: it holds across 150 \emph{arms} --- population-label pairs in the sense of
+Section~\ref{sec:setup}, not independent populations, several of which contribute an arm at
+more than one cutoff --- with $r = +0.850$ (population-clustered bootstrap 95\% interval
+$+0.813$ to $+0.892$), is invariant to the trim percentile, survives a gradient-boosted
+second probe ($r = +0.946$), and on the sealed cohorts head-to-head the rate calls 18 of 19
+to the relaxed ordering's 17. The exact conditions --- \emph{sufficient, not necessary} ---
+were certified on zero of the 26 by our logistic-probe plug-in, whose ratio diverges in the
+$\hat\nu$ tail: an estimator pathology, not a property of the conditions, and we tried no
+other estimator (Section~\ref{sec:regime}).
 
-\item \textbf{Two predictive claims, distinguished by what they require.} The paper contains
-a \emph{sweep-conditional} claim --- run the audit on your own data and, where the response
-is monotone, the rate against your own measured crossover predicts direction --- and a
-weaker \emph{transported-prior} claim, the only one testable before any measurement, whose
-record is the sealed 9 of 10 followed by 5 of 10. Varying the selection rate by moving a
-label threshold cannot alone distinguish ``the rate predicts'' from ``task difficulty
-does''; holding the task fixed and moving only the decision rule separates them across the
-mid-range, and we say \emph{predicts}, never \emph{causes}: no pooled slope transfers
-across populations (Section~\ref{sec:boundaries}).
-
-\item \textbf{A measured scope, and a reason to prefer measuring over transporting.} How
-often a parity constraint's response is even \emph{shaped} so that a directional rule can
-apply had not been measured. On fifty populations drawn at random --- frame and seed fixed
-before any arm ran --- 78\% admit one and 22\% do not, of which 64\% are classic
-single-crossing landscapes. That bounds every claim here, and it also explains the
-transported prior's worst behaviour: sweeping the arms where a fixed 0.54 fails shows they
-are populations with no directional rule to get right, not populations where the rule got it
-wrong. A prior read off a dashboard cannot detect that, because detecting it requires the
-sweep transporting a prior exists to avoid. The procedure refuses all of them; only the
-prior is exposed (Section~\ref{sec:boundaries}).
-
-\item \textbf{A procedure, not an observation.} The same design lets a practitioner locate
-their own crossover on a deployed model. Three overlapping estimates of the mortgage
-crossover agree, all from one two-state market.
+\item \textbf{Two predictive claims, distinguished by what they require --- and a fixed
+prior demoted to its measured failure rate.} The paper contains a \emph{sweep-conditional}
+claim --- run the audit on your own data and, where the response is monotone, the rate
+against your own measured crossover predicts direction --- and a weaker
+\emph{transported-prior} claim, the only one testable before any measurement. The direction
+rule itself is \emph{sealed}: committed before ten populations this work had never measured,
+it scored 9 of 10 against a best constant of 6 (Section~\ref{sec:resealed}), and the
+within-population claim passed sealed off-instrument on Brazil. The fixed \emph{value} 0.54
+fares worse and we no longer present it as a finding. Crossovers are population-specific,
+located values spanning 0.28 to 0.65; the value failed its own strict bar on the race cohort
+(a 0.50 prior edged it by one arm in-band), and on a second, post-hoc cohort of larger
+states it scored 5 of 10 --- each miss agreeing with that population's own measured
+crossover. It is a fallible substitute for measuring, with a failure rate we can quote, and
+sweeping the arms where it fails shows they are populations with \emph{no} directional rule
+to get right rather than populations where the rule got it wrong. The procedure refuses all
+of them; only the prior is exposed.
 
 \item \textbf{Boundaries stated explicitly rather than left for review to find}, including a
-computable test for when the procedure cannot be used at all.
+computable test for when the procedure cannot be used at all. Of nine sealed or registered
+direction tests, one passed; we report the failures because each removed a stronger claim
+than the one that survives, and because a cohort built to strengthen the paired statistic
+showed the attempt is self-defeating --- the magnitude guard such a test requires deletes
+the near-crossover arms it needs. The relationship survives a change of route, a
+twenty-five-fold tolerance range, a boosted-tree learner and a protected attribute swapped
+from sex to race, but disappears under post-processing.
 \end{enumerate}
 
 \section{Related Work}
@@ -1258,7 +1326,7 @@ to a flat lottery amounts to re-choosing a threshold, which undoes the parity th
 bought; for an auditor, the flat-probability signature itself is the usable part, and it
 is computable from any fitted mitigation.
 
-\section{What to Do About It}
+\section{The Audit: Give, Take, or Refuse}
 \label{sec:procedure}
 
 Algorithm~\ref{alg:locate} states the procedure. Three of its steps are worth drawing out,

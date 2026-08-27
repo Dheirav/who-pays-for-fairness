@@ -42,20 +42,48 @@ independent trials, and several headline ratios read as replication when they ar
 
 ---
 
-## 3. The claim hierarchy — the thing everything waits on
+## 3. The claim hierarchy — DONE
+
+Framing chosen: **phenomenon first, audit second, prediction third.** The full bucketing
+lives in `research/EVIDENCE-MAP.md`, which is the artefact this section produced.
 
 | | | |
 |---|---|---|
-| 3.1 | **Write the single central claim**, short enough to say aloud, with scope conditions listed *beneath* it rather than inside it | J |
-| 3.2 | **Bucket every result**: core / validation / boundary / exploratory history | J |
-| 3.3 | **Demote 0.54** from headline to a transported prior with a measured failure rate | J |
-| 3.4 | **Lead with the certificate inverting** — 0.018 on the population that destroyed a fifth of its approvals, 0.010 on the one that created more than it destroyed | J |
-| 3.5 | **Put the refusal procedure at the centre**, not in §IX | J |
-| 3.6 | **Decide the allocation claim**: narrow it to predicted labels with preliminary lending evidence, *or* run 7.1 | J |
+| 3.1 | Central claim written, scope conditions beneath it — Introduction | done |
+| 3.2 | Every result bucketed core / validation / boundary / history — `EVIDENCE-MAP.md`; Contributions reordered to match | done |
+| 3.3 | 0.54 demoted — out of the abstract's headline and out of Contribution 1; 16 → 15 mentions, all now technical or explicitly framed as a fallible prior | done |
+| 3.4 | Certificate inversion now opens the abstract and appears in the Introduction's third paragraph | done |
+| 3.5 | Refusal promoted: named in the abstract, in the claim block as one of three outcomes, and made Contribution 2; §IX retitled *The Audit: Give, Take, or Refuse* | done |
+| 3.6 | Allocation claim **narrowed**, not re-run | done |
 
-Nothing downstream can be settled before 3.1. Both reviews independently said the paper's
-strongest result is obscured by everything competing with it, and that is a decision about
-what the paper is, not a writing problem.
+**The central claim, as it now stands:**
+
+> Whether a parity constraint hands out more favourable decisions or takes them away is a
+> property of the population being decided about rather than of the fairness method — and a
+> team can measure which one it is about to cause, before it causes it, from the rate at
+> which its current model already says yes.
+
+Four scope conditions sit beneath it, each bought with a failed test: direction only and
+only above one percentage point; about four populations in five; in-processing not
+post-processing; mostly predicted labels rather than allocations.
+
+**3.6, decided.** Narrow rather than run experiment 7.1. The claim is stated as being about
+predicted labels in five of eight sources, with the real-allocation evidence named as what
+it is: HMDA's natural arms plus one sealed lending cohort that beat a loan-purpose null
+8 vs 5 — preliminary, and sitting next to the held-out sweep failure on the same source.
+7.1 remains available and would upgrade this; it is not needed for the claim to be honest.
+
+**Also answered here** (the "someone could do this without the tool" objection): the rule is
+simple, but the boundary is not knowable without measuring. Located crossovers span
+0.28–0.65; in the one setting where populations were drawn at random rather than chosen —
+US state-level income, fifty draws — no operating rate reached 0.55 and 25 of the 47 with a
+computable rate sat inside that span, where an unaided reading of "often" against "rarely"
+has nothing to say. A further fifth admit no rule at all, where the intuition answers
+confidently and the audit declines. In the Introduction.
+
+**Cost:** paper 19 → 20 pages, abstract 431 → 475 words, 0 overfull boxes. The 8- and
+10-page variants were retuned (7.9pt/0.32in and 7.0pt/0.25in) and are back in limit with
+content parity asserted.
 
 ---
 
