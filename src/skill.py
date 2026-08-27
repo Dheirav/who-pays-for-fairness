@@ -250,3 +250,83 @@ def score_pair(rule_correct: Sequence[bool], null_correct: Sequence[bool], name:
     return PairSkill(name=name, n=n, rule_correct=int(a.sum()), null_correct=int(b.sum()),
                      margin=int(a.sum() - b.sum()), lo=lo, hi=hi, conf=conf,
                      discordant=disc, rule_wins=wins, sign_p=float(p))
+
+
+# ---------------------------------------------------------------- clustered inference
+
+@dataclass(frozen=True)
+class Clustered:
+    """An accuracy read three ways, because arms of one population are not independent.
+
+    Both external reviews raised this: a ratio like 21/22 or 8/10 reads as replication, but
+    its arms may come from far fewer person-samples -- the race cohort's ten arms are two.
+    A binomial interval over arms is then anti-conservative, sometimes severely.
+    """
+
+    arms: int
+    arms_correct: int
+    populations: int
+    populations_correct: int          # a population counts as correct on a majority of its arms
+    lo: float                         # cluster bootstrap on arm-level accuracy
+    hi: float
+    conf: float
+    lopo_min: float                   # leave-one-population-out, worst fold
+    lopo_mean: float
+
+    # Below this many clusters a bootstrap has too few distinct resamples to mean anything:
+    # at two populations there are three, and the interval comes out narrow for that reason
+    # rather than because the estimate is precise. Reporting it would mislead.
+    MIN_CLUSTERS = 5
+
+    @property
+    def interval_is_interpretable(self) -> bool:
+        return self.populations >= self.MIN_CLUSTERS
+
+    def line(self) -> str:
+        interval = (f"cluster {self.conf:.0%} CI [{self.lo:.0%}, {self.hi:.0%}]"
+                    if self.interval_is_interpretable
+                    else f"CI uninformative ({self.populations} clusters)")
+        return (f"{self.arms_correct}/{self.arms} arms = {self.arms_correct/self.arms:.0%}"
+                f" | {self.populations_correct}/{self.populations} pops"
+                f" | {interval}"
+                f" | LOPO worst {self.lopo_min:.0%}")
+
+
+def cluster_stats(correct: Sequence[bool], population: Sequence[str], *,
+                  conf: float = 0.95, n_boot: int = N_BOOT, seed: int = SEED) -> Clustered:
+    """Accuracy with the population as the resampling unit, not the arm.
+
+    The bootstrap draws *populations* with replacement and takes all of each one's arms, so
+    a population contributing five correlated arms contributes them together or not at all.
+    That is the only reading under which the interval means what an interval should.
+
+    Leave-one-population-out reports the worst and mean accuracy when each population in
+    turn is removed -- the check for a ratio carried by one lucky sample.
+    """
+    correct = np.asarray(list(correct), dtype=bool)
+    population = np.asarray(list(population), dtype=object)
+    groups = {p: np.flatnonzero(population == p) for p in dict.fromkeys(population)}
+    keys = list(groups)
+
+    pops_correct = sum(correct[idx].mean() > 0.5 for idx in groups.values())
+
+    rng = np.random.default_rng(seed)
+    draws = np.empty(n_boot)
+    for b in range(n_boot):
+        picked = rng.integers(0, len(keys), size=len(keys))
+        idx = np.concatenate([groups[keys[i]] for i in picked])
+        draws[b] = correct[idx].mean()
+    tail = (1.0 - conf) / 2.0
+
+    folds = []
+    for k in keys:
+        keep = np.setdiff1d(np.arange(len(correct)), groups[k])
+        if len(keep):
+            folds.append(correct[keep].mean())
+
+    return Clustered(arms=len(correct), arms_correct=int(correct.sum()),
+                     populations=len(keys), populations_correct=int(pops_correct),
+                     lo=float(np.quantile(draws, tail)), hi=float(np.quantile(draws, 1 - tail)),
+                     conf=conf,
+                     lopo_min=float(min(folds)) if folds else float("nan"),
+                     lopo_mean=float(np.mean(folds)) if folds else float("nan"))

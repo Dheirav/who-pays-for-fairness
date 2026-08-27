@@ -1,0 +1,10 @@
+figure,arms,arm_acc,pops,cluster_lo,cluster_hi,lopo_worst
+"re-seal, unrefined rule",9/10,0.9,9/10,0.7,1.0,0.8889
+"seal 1, refined rule",4/8,0.5,4/8,0.125,0.875,0.4286
+third direction cohort,13/14,0.9286,13/14,0.7857,1.0,0.9231
+sealed lending cohort,8/8,1.0,5/5,1.0,1.0,1.0
+"race cohort S1, rate rule",8/10,0.8,2/2,,,0.6
+"race cohort S1, cutoff null",5/10,0.5,1/2,,,0.4
+"effect-size, above 1 pt",21/22,0.9545,18/19,0.85,1.0,0.95
+"effect-size, below 1 pt",11/18,0.6111,8/15,0.3684,0.8235,0.5625
+"landscape survey, directional",39/50,0.78,37/48,0.66,0.8868,0.7708
