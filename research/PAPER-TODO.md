@@ -366,6 +366,29 @@ cut has overreached and still compiled.
 **Three dangling references** (`tab:denominators`, `sec:crosstask`, `sec:lottery`,
 `sec:discussion`) were left by cuts and caught by the build rather than by reading.
 
+### Second pass
+
+**15 pages / 13,585 words**, down from 22 / 21,762.
+
+| | | |
+|---|---|---|
+| Audit section | Guard provenance to two sentences, the magnitude-floor sweep to its conclusion, the floor-as-remedy block deleted (the Discussion states it better) | 2,774 → 2,498 |
+| Setup | The data paragraph compressed, and **the predicted-labels scope limit moved here from Limitations** — it bounds everything that follows, so it belongs where the reader first meets the eight sources | 1,445 → 1,235 |
+| **Reorder** | The audit now runs third: phenomenon → predictor → regime boundary → **audit** → boundaries. Previously it began around page 15, after seven pages of caveats | — |
+| **Ledger split** | Eight claim-constraining rows in the body; the other ten in the complete record. The caption no longer says "Nothing is omitted", which was false the moment it was cut | 682 → 313 |
+| Float placement | `[!t]` on all 13 floats plus raised float fractions. **The ledger and Algorithm 1 were rendering after the references** while the text walked through their line numbers; nothing lands after them now | — |
+
+### Two more near-misses
+
+**An earlier cut left half a sentence behind.** Deleting the floor-as-remedy block, my code
+searched backwards for the enclosing `\textbf{` and landed *inside* it, leaving `The floor is`
+orphaned. It only became visible when the section swap put `\section{Boundaries}` immediately
+after it. Compiled clean until then.
+
+**A duplicated `sec:boundaries` label** — one on the section, one on a subsection I had
+rewritten earlier. LaTeX resolves silently to the last one, so every cross-reference would
+have pointed at the wrong target. Found by enumerating labels, not by reading.
+
 ### Remaining
 
 - **The Audit section, 2,774 words** — the largest block left, and the one the editor says
