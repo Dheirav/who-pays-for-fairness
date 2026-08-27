@@ -32,7 +32,7 @@
 \setlist{nosep,leftmargin=*}
 % fontsize rescales the whole ladder -- \small, \footnotesize and the tables with it --
 % which a bare \fontsize does not, and which would leave table text larger than body text.
-\usepackage[fontsize=7.4pt]{fontsize}
+\usepackage[fontsize=7.2pt]{fontsize}
 % ---------------------------------------------------------------------------------
 
 \begin{document}
@@ -177,6 +177,17 @@ label threshold cannot alone distinguish ``the rate predicts'' from ``task diffi
 does''; holding the task fixed and moving only the decision rule separates them across the
 mid-range, and we say \emph{predicts}, never \emph{causes}: no pooled slope transfers
 across populations (Section~\ref{sec:boundaries}).
+
+\item \textbf{A measured scope, and a reason to prefer measuring over transporting.} How
+often a parity constraint's response is even \emph{shaped} so that a directional rule can
+apply had not been measured. On fifty populations drawn at random --- frame and seed fixed
+before any arm ran --- 78\% admit one and 22\% do not, of which 64\% are classic
+single-crossing landscapes. That bounds every claim here, and it also explains the
+transported prior's worst behaviour: sweeping the arms where a fixed 0.54 fails shows they
+are populations with no directional rule to get right, not populations where the rule got it
+wrong. A prior read off a dashboard cannot detect that, because detecting it requires the
+sweep transporting a prior exists to avoid. The procedure refuses all of them; only the
+prior is exposed (Section~\ref{sec:boundaries}).
 
 \item \textbf{A procedure, not an observation.} The same design lets a practitioner locate
 their own crossover on a deployed model. Three overlapping estimates of the mortgage
@@ -807,6 +818,22 @@ at both window edges and negative between, while New Jersey and Virginia level \
 across their entire windows. The monotone within-population picture, which held on every
 population swept before, is therefore itself population-dependent.
 
+The natural-arm route has since been run on \textbf{every market in the country}: all fifty
+states, both protected attributes. On race arms the direction rule holds wherever the audit
+will accept the arm at all --- 25 of 31 clearing the parity floor, and \textbf{12 of 12}
+clearing both that floor and the one-point magnitude guard, at rates 0.823--0.898 where the
+rule predicts extension. That supersedes the seven-of-eight this section previously rested
+on, which came from a single pooled market.
+
+\textbf{The sex arms are refused, and the refusal is the finding.} Not one of the twenty-six
+markets carrying a sex arm clears the audit's 0.05 disparity floor: the median baseline gap
+is 0.013 against the race arms' 0.079, the median pool change is 0.02\%, and no arm moves by
+a full point. US mortgage approval carries a substantial race gap and essentially no
+measurable sex gap, so there is nothing for a parity constraint to close and the sign of what
+movement there is carries no information. This is the same refusal Brazil produced in the
+third cohort, on a different continent and a different instrument, and it is a better
+argument for the disparity floor than any reasoning about it.
+
 A mechanism for those failures has since turned up. All three home-improvement sweeps run
 on fresh markets return the same non-monotone \mbox{$+\,\ldots\,-\,\ldots\,+$} shape, so a
 bracketing step that assumes one rising crossing cannot read them --- which is what a sweep
@@ -1427,7 +1454,8 @@ the pool boundary is the optimizer family, not blindness; the theorem's group
 directions hold in every aware cell (Sec.~\ref{sec:regime}) \\
 Six-market lending seal & M2: scored$-$1; 2 of 6 --- fail. M1: floor 4; 2 located ---
 underpow. & the sweep is unreliable on mortgage data on six independent markets; the
-natural-arm direction holds 7 of 8; both located midpoints sit at 0.80--0.85 \\
+natural-arm direction now holds 12 of 12 on all fifty markets' auditable arms; both
+located midpoints sit at 0.80--0.85 \\
 Third cohort (deconfounding) & S1 floor 12: 7 --- underpow.; S2 floor 2: 1; S3 floor
 3: 0 & Brazil's sex gaps sit below the audit's own floor and the gates refused them;
 Mexico 2015 brackets the first non-US crossover \\
@@ -1490,9 +1518,15 @@ baseline. What exposed it was an exchange rate of 0.000.
 
 \textbf{The claim that survives every test above, stated once and in full.} Within a
 population whose response is monotone, in the attribute-blind in-processing regime, across
-the transition: the baseline selection rate, read against \emph{that population's} crossover,
-predicts the direction in which a parity constraint moves the pool of favourable decisions,
-and orders the magnitude within that population. The fixed 0.54 prior is a fallible
+the transition, and where the constraint moves the pool by more than about a point: the
+baseline selection rate, read against \emph{that population's} crossover, predicts the
+direction in which a parity constraint moves the pool of favourable decisions, and orders the
+magnitude within that population. Two of those qualifiers are now measured rather than
+asserted. The magnitude condition: across forty arms of two sealed cohorts the rule is
+correct on 21 of 22 above one point and 11 of 18 below, 95\% against a coin. And the
+monotonicity condition: on fifty populations drawn at random, 78\% admit a directional rule
+and 22\% do not, so the claim is in scope for about four populations in five and the audit
+refuses the rest. The fixed 0.54 prior is a fallible
 substitute for the population's own crossover: sealed at 9 of 10 in advance on one cohort of
 unseen populations, 5 of 10 post-hoc on a second cohort of larger, richer states whose
 misses each agree with their own measured crossovers. The boundaries, equally part of the
@@ -1547,7 +1581,13 @@ property of a (population, real-anchored label) pair, not of a state's name.
 model of it lost to predicting zero. \textbf{The crossover's location is unexplained and
 wider than it looked}: located values span 0.28--0.65, the sealed test of the two candidate
 predictors returned underpowered at three locations, and some populations have no crossover
-to locate. \textbf{Coverage} is eight data sources, five
+to locate. \textbf{The lending evidence covers one attribute, not two.} All fifty markets
+were measured on both, but every one of the twenty-six sex arms falls below the audit's own
+disparity floor --- median baseline gap 0.013 against the race arms' 0.079 --- so the
+allocation result rests entirely on race arms. That is a property of US mortgage approval
+rather than a gap in the method, and the audit refuses those arms correctly; but ``fifty
+markets'' should not be read as fifty markets' worth of evidence on both attributes.
+\textbf{Coverage} is eight data sources, five
 countries and two decades; Taiwan, Brazil and Mexico are the non-Western and
 Latin-American populations, and the latter two arrived late enough that most of the
 record predates them. The only EU population is the 2001 Dutch census, which by this paper's own
