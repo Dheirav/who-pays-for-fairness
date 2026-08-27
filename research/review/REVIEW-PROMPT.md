@@ -3,9 +3,12 @@
 Paste the block below, then attach `research/paper/ieee/paper.pdf` — or paste
 `research/review/paper-plaintext.txt` if the tool will not take a file.
 
-**Deliberately withheld:** our own list of weaknesses. If the reviewer independently finds
-what we already know, that is a signal the list is right. If it finds something else, that
-is worth more than a confirmation. Do not paste our self-assessment alongside this.
+**Deliberately withheld:** our own list of weaknesses, and the list of what changed since
+the last review round. If the reviewer independently finds what we already know, that is a
+signal the list is right. If it finds something else, that is worth more than a
+confirmation. Do not paste our self-assessment, `PAPER-TODO.md`, or `EVIDENCE-MAP.md`
+alongside this — several questions below are tests of whether the paper communicates on its
+own, and naming the intended answer destroys them.
 
 ---
 
@@ -22,6 +25,13 @@ study, a set of pre-registered and externally timestamped predictions including 
 failed, and an audit procedure intended for deployment.
 
 I want a hostile-but-fair review, not encouragement. Specifically:
+
+**0. The one-sentence test, answered first and without re-reading.** Having read the paper
+once, write its single central claim in one sentence, in your own words. Then list, in the
+order you would rank them, what you take to be its three most important supporting results.
+Do this before any of the analysis below, and do not revise it afterwards — if your sentence
+turns out to be wrong, that is the finding, and we would rather have it than a corrected
+version. Say also which parts you found yourself competing for attention with the claim.
 
 **1. The strongest objections.** Give me the three or four arguments most likely to sink this
 at review, ranked. For each, say what would answer it and whether the paper could answer it
@@ -48,8 +58,31 @@ anything it does claim is in fact already known. Name the prior work you have in
 honestly whether this reads as unusual rigour or as a fishing expedition that found little,
 and what would tip a reader either way.
 
-**7. What to cut, what to add.** If it must lose two pages, what goes? If one new experiment
-would most improve it, what is it?
+**7. What to cut, what to reorder, what to add.** This is the live decision, so be concrete
+rather than directional.
+
+* The paper is 21 double-column pages and needs to be closer to 10. Name what goes, in
+  order, with an estimate of pages saved for each. Distinguish material that is *redundant*
+  from material that is *load-bearing but too long* — the second needs compressing, not
+  deleting, and saying which is which is most of the value here.
+* Is the section order right? If you would move a section, say which and where. Pay
+  particular attention to whether anything a reader needs early arrives late.
+* The paper reports a long ledger of pre-registered tests, most of which failed. Should that
+  stay in the main text, move to an appendix, or be split by function? Argue it rather than
+  asserting it — we have had contradictory advice on this and want the reasoning.
+* If one new experiment would most improve the paper, what is it, and is it worth the delay?
+
+**7b. Two things the paper argues rather than reports. Say whether each lands.**
+Both are answers to objections, and we want to know if they read as answers or as evasions.
+Judge them on the evidence in the text, not on whether you find the framing congenial —
+and if either is answering an objection you would not have raised, say that too, because
+then we are defending against a phantom.
+
+* Its reply to the charge that the audit is circular — that running the sweep to locate a
+  crossover cannot be worth more than simply fitting the constrained model once at the
+  operating point you already use, and measuring.
+* Its account of where its own thresholds and exclusion rules came from, and when each was
+  fixed relative to the data it was applied to.
 
 **8. Verdict.** Accept / minor revision / major revision / reject, with the single change
 that would most move your recommendation.
@@ -63,3 +96,8 @@ Constraints on your review:
 * Where you assert a number is wrong, show the arithmetic.
 * Distinguish "this is not supported" from "I disagree with this framing" and label which
   you are doing.
+* Previous reviews of this paper each asserted at least one factual error that turned out
+  not to be one — a misread table, a citation that was actually correct. Before claiming the
+  paper states something, quote the sentence you are reading. If you cannot find the
+  sentence, that itself is worth reporting, but do not attribute a claim the paper does not
+  make and then refute it.
