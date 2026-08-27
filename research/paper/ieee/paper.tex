@@ -1297,15 +1297,25 @@ one bracket with no natural arm to read against. Every one of the 29 directional
 verdicts matches what the fitted constraint did at that population's natural operating
 point --- a consistency check on the audit's reading of its own sweep, not independent
 validation, since the natural arm is part of the curve being read. That distribution is computed over the sweeps this project happened to accumulate, which
-were never randomly chosen; a survey of \textbf{fifty randomly drawn population-label
-pairs} spanning 48 disjoint person-samples --- two state-years were drawn under both
-protected attributes, which the frame permitted --- with frame and
-seed committed before any arm ran, puts the honest figure at \textbf{78\% of populations
-admitting a directional rule and 22\% not}, of which 64\% are classic single-crossing
-landscapes. Resampling \emph{populations} rather than draws --- two state-years were drawn
-under both attributes --- puts the directional share at 66--89\%, and leaving each
-population out in turn never moves it below 77\%. The convenience sample was mildly optimistic --- it
-implied 15\% --- and the larger number is the one to quote. The refusals are not
+were never randomly chosen, so it answers a question about this project rather than about
+populations. A survey with a pre-committed frame answers the latter.
+
+\textbf{The frame, since ``at random'' means nothing without one.} Every combination of the
+fifty US states, the 2014, 2018 and 2019 ACS vintages, and the two protected attributes, with
+the income cutoff held at \$50{,}000 --- 300 population-label pairs. The 2022 vintage is
+excluded because its inversion is a diagnosed nominal-label artifact, and including it would
+conflate a label problem with a landscape property. Fifty pairs were drawn uniformly at
+random under a fixed seed, and the frame, the seed, the draw and the exclusion were all
+committed to version control before any arm ran; the drawn list is in the repository. The
+draw came out balanced without being forced: 25 of each attribute, and 14, 14 and 22 across
+the three vintages. The fifty pairs span \textbf{48 disjoint person-samples}, two state-years
+having been drawn under both attributes.
+
+The result: \textbf{78\% admit a directional rule and 22\% do not}, of which 64\% are
+classic single-crossing landscapes. Resampling \emph{populations} rather than draws puts the
+directional share at 66--89\%, and leaving each population out in turn never moves it below
+77\%. The convenience sample was mildly optimistic --- it implied 15\% non-monotone --- and
+the larger number is the one to quote. The refusals are not
 silences. A \textsc{void} arm is one whose pool change spans under two points across the
 entire viable band --- median 1.47 --- which tells a deployer that the direction question is
 \emph{moot} on their system, not that it is unanswerable; a \textsc{non-monotone} verdict
@@ -1761,7 +1771,9 @@ an OpenTimestamps receipt in \texttt{research/seals/}, committed before their ar
 and since upgraded to Bitcoin block attestations, so their chronology depends on a public
 blockchain rather than our clock. The ten earlier seals predate this practice and rest
 permanently on commit timestamps; that cannot be repaired retroactively, and every seal
-from stage~A onward is anchored at sealing time. A checksum manifest of every input data file
+from stage~A onward is anchored at sealing time. The landscape survey's sampling frame, seed and drawn list are committed in
+\texttt{research/survey-frame.json}, written before any of its arms ran, so the draw can
+be reproduced or disputed rather than taken on trust. A checksum manifest of every input data file
 (\texttt{research/data-manifest.csv}) pins the bytes each result was computed from,
 because ACS PUMS files are revised in place and the 2022 episode is this paper's own
 evidence that a different vintage is a different task.
