@@ -326,9 +326,13 @@ in-sample-tuned filters and the sensitivity table reports the dependence; every 
 from the re-seal onward carried both rules frozen in its pre-committed protocol.
 
 \textbf{Accounting.} Table~\ref{tab:accounting} states which populations enter which
-analysis, because three counts in this project's own history turned out to be arm counts
-masquerading as population counts, and a reader should not have to reconstruct the
-denominators.
+analysis and Table~\ref{tab:denominators} what each headline ratio is counted over, because
+four counts in this project's own history turned out to be arm counts masquerading as
+population counts, and a reader should not have to reconstruct the denominators. The second
+table is computed from the stored results by \texttt{scripts/independence.py} rather than
+maintained by hand, since the counts it reports are exactly the kind that drift. Read
+together they make one distinction unavoidable: \emph{a ratio over arms is not a ratio over
+populations}, and where the two differ this paper says which it means.
 
 \begin{table}[t]
 \caption{Which populations enter which analysis. An \emph{arm} is one population under one
@@ -365,6 +369,37 @@ Third direction cohort (failed) & 24 fresh state-years, 2014 + 2019 \\
 Sealed lending cohort (failed) & 8 fresh markets (16 arms, 2 purposes each) \\
 Lending coverage & 50 markets, 2 attrs.\ (66 arms) \\
 Landscape survey & 50 pops.\ at random (660 arms) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]
+\caption{What each headline ratio is counted over, computed rather than recalled.
+\textbf{Arms} are experimental configurations; \textbf{pops.}\ are disjoint person-samples,
+which is the replication unit; \textbf{src.}\ are independent instruments. The three bolded
+rows are the ones where a ratio over arms reads very differently from a ratio over
+populations, and the race cohort is the sharpest: its ten arms are two person-samples,
+Brazil 2000 and Brazil 2010, contributing five arms each.}
+\label{tab:denominators}
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Figure} & \textbf{Arms} & \textbf{Pops.} & \textbf{Src.} \\
+\midrule
+Re-seal, 9 of 10 & 10 & 10 & 1 \\
+Seal 1, 4 of 8 & 8 & 8 & 1 \\
+Third direction, 13 of 14 & 14 & 14 & 1 \\
+Sealed lending, 8 of 8 & 8 & \textbf{5} & 1 \\
+Race cohort, 8 of 10 & 10 & \textbf{2} & 2 \\
+Effect $>$1 pt, 21 of 22 & 22 & 19 & 2 \\
+Effect $<$1 pt, 11 of 18 & 18 & 15 & 2 \\
+Audit verdicts, 29 of 52 & 52 & 36 & 5 \\
+Relaxed $\zeta$ ordering & 150 & \textbf{67} & 8 \\
+$\zeta$ head-to-head, 18 of 19 & 19 & 19 & 2 \\
+Landscape survey, 78\% & 50 & 48 & 1 \\
+Lending coverage & 70 & 42 & 1 \\
 \bottomrule
 \end{tabular}
 \end{table}

@@ -1253,6 +1253,58 @@ def test_paper_effect_size_split_matches_results() -> None:
     print(f"  above 1.0 pt: {hi[0]}/{hi[1]}; below: {lo[0]}/{lo[1]}")
 
 
+def test_paper_denominator_table_matches_computed_independence() -> None:
+    """tab:denominators must match what scripts/independence.py computes.
+
+    This table exists because four counts in this project turned out to be arm counts
+    presented as population counts. A hand-maintained table of denominators would be the
+    fifth, so it is checked against the computed file rather than trusted.
+    """
+    path = RESEARCH / "independence" / "independence.csv"
+    paper = ROOT / "research" / "paper" / "ieee" / "paper.tex"
+    if not path.exists() or not paper.exists():
+        print("  independence.csv or paper.tex absent; skipping")
+        return
+    frame = pd.read_csv(path)
+    text = " ".join(paper.read_text().split())
+    table = text[text.find("label{tab:denominators}"):]
+    table = table[:table.find("end{tabular}")]
+
+    rows = {
+        "re-seal, unrefined rule": "Re-seal, 9 of 10",
+        "third direction cohort": "Third direction, 13 of 14",
+        "sealed lending cohort": "Sealed lending, 8 of 8",
+        "race cohort S1": "Race cohort, 8 of 10",
+        "audit verdict distribution": "Audit verdicts, 29 of 52",
+        "landscape survey": "Landscape survey, 78\\%",
+    }
+    checked = 0
+    for what, label in rows.items():
+        hit = frame[frame["what"] == what]
+        if hit.empty:
+            continue
+        arms, pops = int(hit.iloc[0]["arms"]), int(hit.iloc[0]["populations"])
+        # Parse the row into cells rather than searching the text. An earlier version
+        # asserted `str(pops) in segment`, which passed on a deliberately wrong population
+        # count because the digit also appeared in the sources column -- a guard that holds
+        # for the wrong reason is worse than none.
+        assert label in table, f"tab:denominators no longer has a row for {what!r}"
+        row = table[table.find(label):]
+        row = row[:row.find("\\\\")]                       # up to the row terminator
+        cells = [c.strip().replace("\\textbf{", "").replace("}", "")
+                 for c in row.split("&")]
+        assert len(cells) >= 4, f"{what}: could not parse four cells from {row!r}"
+        got_arms, got_pops = cells[1], cells[2]
+        assert got_arms == str(arms), (
+            f"{what}: table says {got_arms} arms, independence.csv computes {arms}. "
+            f"Re-run scripts/independence.py and update tab:denominators.")
+        assert got_pops == str(pops), (
+            f"{what}: table says {got_pops} populations, independence.csv computes {pops}.")
+        checked += 1
+    assert checked >= 5, f"only {checked} denominator rows could be checked"
+    print(f"  {checked} denominator rows re-derived from independence.csv")
+
+
 def test_paper_verdict_distribution_matches_the_audit() -> None:
     """Section IX's verdict totals must follow from verdicts.csv.
 
@@ -1512,6 +1564,7 @@ def main() -> None:
         test_paper_who_pays_figures_match_results,
         test_paper_sealed_cohort_scores_match_results,
         test_paper_effect_size_split_matches_results,
+        test_paper_denominator_table_matches_computed_independence,
         test_paper_verdict_distribution_matches_the_audit,
         test_paper_draft_population_count_is_recomputed,
         test_course_documents_still_match_their_results,
