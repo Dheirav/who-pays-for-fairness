@@ -449,3 +449,26 @@ complete record to a page count; at 7.65pt and 6.9pt there is no honest density 
 shrinking further to absorb three figures would make an unreadable document to hit a number.
 `paper-submission.tex` is a genuine cut and is what a page limit should be met with. The
 reason is recorded in `make_variants.py` rather than left as a silent failure.
+
+
+### Encoding, after a second look at the survey figure
+
+Colour alone was carrying four verdict classes, two of which were adjacent oranges. Now:
+
+| verdict | marker | fill | reading |
+|---|---|---|---|
+| classic (30) | circle | filled | a directional rule applies |
+| monotone (7) | square | filled | a directional rule applies |
+| inverted (2) | triangle | open | it does not |
+| non-monotone (8) | cross | open | it does not |
+
+**Filled against open carries the 78/22 split**, so the figure's whole point is legible
+before the legend is read and survives being printed in greyscale. Palette moved to
+Okabe-Ito across all three figures — the previous one paired a red and a green, which is the
+common confusion, and had inverted and non-monotone as two shades of the same orange.
+
+Two things the redraw exposed. The legend was sitting on top of the rising data and is now
+in the empty right half. And **three of the fifty draws have no computable operating rate**,
+so they cannot be placed on a rate axis at all: the figure was quietly showing 47 while its
+title spoke of fifty. It now says so on the figure rather than leaving the arithmetic to
+fail for a reader who counts the markers.

@@ -43,8 +43,17 @@ ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "research" / "paper" / "ieee"
 RES = ROOT / "research" / "results"
 
-SHAPE_COLOUR = {"CLASSIC": "#4C72B0", "MONOTONE": "#55A868",
-                "NON-MONOTONE": "#C44E52", "INVERTED": "#DD8452"}
+# Marker shape carries the thing the figure is about --- whether a directional rule applies
+# at all --- so the 78/22 split is legible before the legend is read, and in greyscale. Colour
+# is the Okabe-Ito palette rather than the default one, whose red/green pair is the common
+# confusion. Filled = a rule applies; open or crossed = it does not.
+#                     colour     marker  filled  admits a rule
+SHAPE_STYLE = {
+    "CLASSIC":      ("#0173B2", "o", True,  True),
+    "MONOTONE":     ("#029E73", "s", True,  True),
+    "INVERTED":     ("#CC78BC", "v", False, False),
+    "NON-MONOTONE": ("#D55E00", "X", False, False),
+}
 
 
 def _style(ax) -> None:
@@ -57,24 +66,45 @@ def survey() -> None:
     """Fifty populations drawn at random: where they sit, and what the audit returns."""
     frame = pd.read_csv(RES / "survey" / "survey_verdicts.csv")
     frame["shape"] = frame["verdict"].str.split(" (", regex=False).str[0]
-    frame = frame.dropna(subset=["nat_rate"]).sort_values("nat_rate").reset_index(drop=True)
+    drawn = frame.dropna(subset=["nat_rate"]).copy()
+    missing = len(frame) - len(drawn)
+    frame = drawn.sort_values("nat_rate").reset_index(drop=True)
 
-    fig, ax = plt.subplots(figsize=(7.2, 2.6))
-    for shape, sub in frame.groupby("shape"):
-        ax.scatter(sub["nat_rate"], sub.index, s=22, label=shape,
-                   color=SHAPE_COLOUR.get(shape, "0.5"), zorder=3)
+    fig, ax = plt.subplots(figsize=(7.2, 2.8))
+    order = ["CLASSIC", "MONOTONE", "INVERTED", "NON-MONOTONE"]
+    for shape in order:
+        sub = frame[frame["shape"] == shape]
+        if sub.empty:
+            continue
+        colour, marker, filled, admits = SHAPE_STYLE.get(shape, ("0.5", "o", True, True))
+        ax.scatter(sub["nat_rate"], sub.index, s=30 if marker == "X" else 26,
+                   marker=marker, zorder=3,
+                   label=f"{shape.lower()}  ({len(sub)})",
+                   facecolors=colour if filled else "none",
+                   edgecolors=colour,
+                   linewidths=1.0 if not filled else 0.4)
     # The band where located crossovers actually fall, which is where an unaided reading of
     # "often" against "rarely" has nothing to say.
     ax.axvspan(0.28, 0.65, color="0.90", zorder=0)
     ax.text(0.465, -3.4, "located crossovers fall in here", ha="center", va="top",
             fontsize=6.5, color="0.35")
+    if missing:
+        ax.text(0.995, -3.4, f"{missing} of the fifty draws have no computable operating\n"
+                f"rate and cannot be placed on this axis", ha="right", va="top",
+                fontsize=6, color="0.45")
     ax.set_ylim(-6, len(frame) + 1)
     inside = int(((frame.nat_rate >= 0.28) & (frame.nat_rate <= 0.65)).sum())
     ax.set_xlabel("baseline selection rate of the deployed model", fontsize=8)
     ax.set_ylabel("populations, sorted", fontsize=8)
     ax.set_xlim(0, 1); ax.set_yticks([])
-    ax.legend(fontsize=6.5, frameon=False, ncol=2, loc="upper left",
-              bbox_to_anchor=(0.015, 0.99))
+    admits = int(frame["shape"].isin([k for k, v in SHAPE_STYLE.items() if v[3]]).sum())
+    leg = ax.legend(fontsize=6.5, frameon=False, ncol=1, loc="center left",
+                    bbox_to_anchor=(0.70, 0.62), handletextpad=0.5, labelspacing=0.55,
+                    title=f"filled: a directional rule applies ({admits})\n"
+                          f"open: it does not ({len(frame) - admits})")
+    leg.get_title().set_fontsize(6.5)
+    leg.get_title().set_color("0.3")
+    leg._legend_box.align = "left"
     _style(ax)
     fig.suptitle(f"Fifty populations drawn at random from a frame fixed in advance: "
                  f"{inside} of {len(frame)} sit where the rate alone cannot be read",
@@ -99,10 +129,10 @@ def crossovers() -> None:
                       .str.replace("hmda_", "HMDA ", regex=False))
 
     fig, ax = plt.subplots(figsize=(7.2, 3.4))
-    ax.axvspan(0.511, 0.576, color="#C44E52", alpha=0.16, zorder=0)
+    ax.axvspan(0.511, 0.576, color="#D55E00", alpha=0.14, zorder=0)
     ax.text(0.5435, len(frame) + 0.3, "the cluster as first published", ha="center",
-            va="bottom", fontsize=6.5, color="#C44E52")
-    ax.scatter(frame["crossover"], frame.index, s=20, color="#4C72B0", zorder=3,
+            va="bottom", fontsize=6.5, color="#D55E00")
+    ax.scatter(frame["crossover"], frame.index, s=22, color="#0173B2", zorder=3,
                label="located crossover")
     ax.scatter(frame["natural"], frame.index, s=14, marker="|", color="0.45", zorder=2,
                label="that population's own operating rate")
@@ -140,8 +170,9 @@ def calibration() -> None:
     fig, ax = plt.subplots(figsize=(7.2, 2.6))
     for ok, sub in frame.groupby("correct"):
         ax.scatter(sub["magnitude"], sub["rate"], s=26, zorder=3,
-                   color="#4C72B0" if ok else "#C44E52",
+                   color="#0173B2" if ok else "#D55E00",
                    marker="o" if ok else "X",
+                   linewidths=0 if ok else 1.2,
                    label="rule correct" if ok else "rule wrong")
     ax.axvline(1.0, color="0.3", lw=0.9, ls="--", zorder=2)
     above = frame[frame.magnitude >= 1.0]; below = frame[frame.magnitude < 1.0]
