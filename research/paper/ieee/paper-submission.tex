@@ -55,7 +55,7 @@ its own dashboard which it has just done. We show the direction is set by the
 \emph{population} rather than by which in-processing method is chosen, and is predictable
 before deployment from the rate at which the current model says yes, read against that
 population's own crossover --- the rate a team already has, the crossover it must measure.
-Across 161 disjoint population samples spanning six decision domains, eight data sources and
+Across 169 disjoint population samples spanning six decision domains, eight data sources and
 five countries, the constraint withdraws below a population's crossover and extends above it:
 on UCI Adult five in-processing methods each shrink the pool by 7.9--22.1\%, while on mortgage
 lending the identical constraint grows it. Committed before ten never-measured populations,
@@ -69,8 +69,7 @@ directional rule and 22\% do not. That is the monotonicity gate alone; run end t
 gate applied, the audit returns a direction on 29 of 52 stored sweeps --- \textbf{a little under
 six times in ten} --- and hands back the rest as unanswerable rather than scoring them. Two scope limits belong here: the relationship disappears under
 post-processing, and in five of the eight sources the favourable decisions are predicted
-labels rather than allocations actually made. Of nine sealed or registered direction tests,
-one passed; we report the failures because each removed a stronger claim than the one that
+labels rather than allocations actually made. Of ten sealed or registered direction tests, one passed; we report the failures because each removed a stronger claim than the one that
 survives.
 \end{abstract}
 
@@ -179,7 +178,7 @@ what the finding depends on.
 on some populations and extends them on others, and the certifying metric reports the same
 kind of number in both cases: on UCI Adult five in-processing methods each shrink the pool by
 7.9--22.1\% at an exchange rate of 2.68 destroyed per created, while on HMDA mortgage lending
-the identical constraint grows it by 4.3\% at 0.50. Measured over \textbf{161 disjoint
+the identical constraint grows it by 4.3\% at 0.50. Measured over \textbf{169 disjoint
 population samples}, six domains, eight sources, five countries. Counted in people rather than
 rates the burden is more lopsided still, and that divergence is itself predictable
 ($r = +0.885$).
@@ -219,8 +218,7 @@ cohort, and on a second post-hoc cohort it scored 5 of 10 --- each miss agreeing
 population's own sweep.
 
 \textbf{Boundaries stated rather than left for review to find}, including a computable test
-for when the procedure cannot be used at all. Of nine sealed or registered direction tests,
-one passed; each failure removed a stronger claim than the one that survives, and one cohort
+for when the procedure cannot be used at all. Of ten sealed or registered direction tests, one passed; each failure removed a stronger claim than the one that survives, and one cohort
 built to strengthen the paired statistic showed the attempt self-defeating by construction.
 The relationship survives changes of route, tolerance, base learner and protected attribute,
 and disappears under post-processing.
@@ -277,7 +275,7 @@ exists.
 \section{Setup and Method}
 \label{sec:setup}
 
-\textbf{Data.} 161 independent populations across eight sources. Two are US surveys: UCI Adult
+\textbf{Data.} 169 independent populations across eight sources. Two are US surveys: UCI Adult
 (45{,}222 rows) and ACS Income \cite{ding2021} over 102 state-years and two protected
 attributes. One records real allocations: HMDA 2018 mortgage filings, 66 rate-bearing arms
 over 40 states. The rest are IPUMS International census extracts for Brazil and Mexico, COMPAS
@@ -1073,8 +1071,7 @@ rule and constant disagree on only five arms, the rule wins four of those five, 
 one-sided sign test on the discordant calls gives $p \approx 0.19$. Nor is this the first
 sealed attempt at a direction rule, so the binomial tail carries a sequential correction whose
 size is a judgement we should not make in our own favour: read narrowly it is a factor of two
-and the tail is near $0.09$; read as this paper's own abstract counts them --- nine sealed or
-registered direction tests --- it is a factor of nine and the tail is $0.41$. Across the
+and the tail is near $0.09$; read as this paper's own abstract counts them --- ten sealed or registered direction tests --- it is a factor of ten and the tail is $0.46$. Across the
 conventional line either way, and not close to it on the wider reading.
 
 \textbf{One of the nine was luck, and the seed-level accounting says which.} Sixteen of the
@@ -1143,11 +1140,11 @@ two-threshold class that returns an empty feasible set, is reported separately.
 \label{sec:failures}
 
 Table~\ref{tab:registered} is the complete ledger --- every registered or sealed test, with its
-committed bar and its outcome, failures included and uncorrected. Counted once and
-consistently it holds \textbf{eighteen} rows: twelve fail, three record a hold (one alongside
+committed bar and its outcome, failures included and uncorrected. Counted once and consistently it holds \textbf{nineteen} rows: thirteen fail, three record a
+hold (one alongside
 a failed first stage), two returned underpowered, and one settled a reading rather than a pass
-or a fail. Of the nine that test a \emph{direction} rule on populations it had not seen, one
-passed. The rows should not be read as eighteen attempts at one claim of which three
+or a fail. Of the \emph{ten} that test a \emph{direction} rule on populations it had not seen, one
+passed. The rows should not be read as nineteen attempts at one claim of which three
 succeeded: each targeted a different claim, each failure removed a stronger claim than the one
 that survives, and the last column records what each row settled. The failures are boundary
 measurements; the passes are tests of the claim \emph{as those boundaries define it}.
@@ -1177,7 +1174,7 @@ crossover was also downgraded by a bootstrap we chose to run against our own res
 
 
 \begin{table}[!t]
-\caption{The eight registered tests that impose a scope condition on the surviving claim. The ledger runs to eighteen rows --- twelve fail, three hold, two underpowered, one a reading rather than a verdict --- and the complete record carries all of them with their registration and scoring commits. Nothing is withdrawn here; ten rows are elsewhere.}
+\caption{The eight registered tests that impose a scope condition on the surviving claim. The ledger runs to nineteen rows --- thirteen fail, three hold, two underpowered, one a reading rather than a verdict --- and the complete record carries all of them with their registration and scoring commits. Nothing is withdrawn here; ten rows are elsewhere.}
 \label{tab:registered}
 \centering
 \scriptsize
@@ -1206,6 +1203,10 @@ Race cohort (screen-gated) & S1: 8/10, but 0.5-null 9 --- fail; S2 --- holds & t
 cutoff null is beaten 8--9 vs 5: \textbf{it is the rate}, not label rarity; the 0.54
 value holds no in-band privilege; within-population passes off-instrument at
 $\rho \ge 0.9$ \\
+Sealed allocation cohort & 12/16 + beat 3 nulls; rule 7/8, constant 7/8 --- fail &
+HMDA 2021 at purpose level, sealed to reach below the crossover: \textbf{0 of 8 arms sit
+below it}, so a constant ties the rule. Third demonstration that US mortgage approval cannot
+test the rule; the rate does beat the purpose-only null 7--6 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1219,8 +1220,16 @@ audit's own disparity floor --- median baseline gap 0.013 against the race arms'
 the allocation result rests entirely on race arms. That is a property of US mortgage approval
 rather than a gap in the method, and the audit refuses those arms correctly. Nor does either
 lending count discriminate: every arm sits at a rate of 0.82 or above, so the rule predicts
-extension on all of them and a constant scores identically. US mortgage approval supplies no
-market whose rate straddles a crossover, so it cannot test the rule at all.
+extension on all of them and a constant scores identically. \textbf{US mortgage approval supplies no market whose rate straddles a crossover, and that
+is now established three ways rather than inferred once.} The state-level arms sit at 0.82 and
+above; the fifty-market coverage sits at 0.82 and above; and a sealed cohort built specifically
+to reach lower --- a reporting year this work had never touched, split by loan purpose because
+purpose is what moves the approval rate --- returned \textbf{0 of 8 arms below the crossover}
+and failed for exactly that reason, the rule scoring 7 of 8 against a constant's 7 of 8
+(Section~\ref{sec:failures}). On real approvals the rule and ``always extend'' are the same
+rule. Testing the direction claim on allocations needs a register whose accept rates reach
+below roughly 0.66, which is a statement about what is publicly available rather than about
+the rule.
 
 \textbf{Magnitude does not transfer} between populations, only within them, and a sealed model
 of it lost to predicting zero. \textbf{The crossover's location is unexplained and wider than
@@ -1235,8 +1244,7 @@ earlier shape requires matching the label's \emph{quantile}, not its real price 
 CPI-anchoring is not enough. Four 2022 populations invert for this reason, and one 2014 state
 inverts at a lower cutoff, so this is a property of nominal labels rather than of a vintage.
 
-\textbf{Coverage} is eight data sources, five countries and two decades, of which 152 of 161
-populations come from two instruments; the eight sources remain the honest count of
+\textbf{Coverage} is eight data sources, five countries and two decades, of which 160 of 169 populations come from two instruments; the eight sources remain the honest count of
 independent instruments. Taiwan, Brazil and Mexico are the non-Western populations and arrived
 late enough that most of the record predates them. The only EU population is the 2001 Dutch
 census, which by this paper's own vintage standard grounds no claim about current EU
@@ -1252,14 +1260,12 @@ answer. Where it returns a direction and that direction is withdrawal, a selecti
 remedy: not a new method, but a linear moment constraint inside the reductions framework
 \cite{agarwal2018} and a variant of the minimum-rate constraints of \cite{mittelstadt2023}.
 Table~\ref{tab:floor} is what it buys, measured on the branch the audit actually sends it to
---- the \textbf{86 natural arms across 70 populations} that clear both of the audit's gates
+--- the \textbf{89 natural arms across 73 populations} that clear both of the audit's gates
 and on which the plain constraint withdraws. It costs \textbf{0.05 accuracy points} on
-average, moves the median exchange rate from 1.33 destroyed per created to 0.94, and brings
-\textbf{70 of the 86} below one-for-one, none of which were below it already. On the median
-arm it does not merely soften the withdrawal but reverses it, from $-2.94\%$ to $+0.98\%$.
+average, moves the median exchange rate from 1.33 destroyed per created to 0.94, and brings \textbf{72 of the 89} below one-for-one, none of which were below it already. On the median
+arm it does not merely soften the withdrawal but reverses it, from $-2.78\%$ to $+0.88\%$.
 
-Three things that should be said with those numbers rather than after them. The count is over
-arms and the populations are 70, so the ratio is not 86 independent trials. Sub-1.0 is a
+Three things that should be said with those numbers rather than after them. The count is over arms and the populations are 73, so the ratio is not 89 independent trials. Sub-1.0 is a
 descriptive count of predicted labels and not a welfare verdict, per Section~\ref{sec:whopays}
 --- the group-conditional flows are what a weighted reading would use. And earlier versions of
 this paper reported the floor's benefit as scaling with the damage at $r \approx -0.99$; we
@@ -1273,7 +1279,7 @@ should be measured afterwards and reported beside the parity number --- so that 
 ex-ante audit buys no escape from the accounting.
 
 \begin{table}[!t]
-\caption{What the selection-rate floor buys, on the 86 natural arms over 70 populations that
+\caption{What the selection-rate floor buys, on the 89 natural arms over 73 populations that
 clear the audit's noise and parity gates and on which the plain constraint withdraws.
 Medians except where stated; every figure recomputed from stored arms.}
 \label{tab:floor}
@@ -1284,8 +1290,8 @@ Medians except where stated; every figure recomputed from stored arms.}
 & \textbf{plain} & \textbf{with floor} \\
 \midrule
 Exchange rate (destroyed per created) & 1.33 & \textbf{0.94} \\
-Arms at or below one-for-one & 0 of 86 & \textbf{70 of 86} \\
-Change in the pool & $-2.94\%$ & $\mathbf{+0.98\%}$ \\
+Arms at or below one-for-one & 0 of 89 & \textbf{72 of 89} \\
+Change in the pool & $-2.78\%$ & $\mathbf{+0.88\%}$ \\
 Accuracy, mean cost of the floor & --- & $0.05$ pts \\
 \bottomrule
 \end{tabular}
@@ -1331,7 +1337,7 @@ refuse; neither manufactures a direction.
 
 Code, stored results and the full document trail are in the accompanying repository, which
 holds the per-test registration and scoring commits, the OpenTimestamps receipts for the seals
-that carry them, and the complete eighteen-row ledger. Every figure here is re-derived from
+that carry them, and the complete nineteen-row ledger. Every figure here is re-derived from
 stored results by a test suite that fails if a documented number and its experiment disagree,
 and counts appearing in more than one place are derived from one source and checked against
 each other --- after an audit found three descriptions of the same table. One limit cannot be

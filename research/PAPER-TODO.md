@@ -702,3 +702,51 @@ swept mechanically rather than by reading.
 3. **Experiment 7.1**, the real-allocation validation, named by three referees as the one new
    experiment that would matter. Only worth it if the allocative claim is wanted at full
    strength rather than narrowed.
+
+
+---
+
+## Experiment 7.1: run, sealed, and failed
+
+Sealed at `4d1909b` with zero arms on disk; scored by the committed analyser. **S1 FAILS.**
+
+| scoring | arms | rule | constant | purpose | survey | verdict |
+|---|---:|---:|---:|---:|---:|---|
+| S1, magnitude guard | 8 | 7 | **7** | 6 | 7 | fail |
+| S2, unguarded | 13 | 10 | **10** | 9 | 10 | fail |
+
+**The rule predicts `down` on 0 of 8 arms.** With no down-calls a constant cannot be beaten,
+so the cohort cannot discriminate however accurate the rule is.
+
+**The design error is mine.** I built the cohort on "the 2018 purpose arms span 0.555–0.901,
+straddling the crossover". The span was real; the density was not — only **2 of 9** improvement
+arms sat below 0.660. Building eight fresh arms on a 2-in-9 base rate was optimistic rather
+than reasoned. Then 2021 moved the instrument away entirely: improvement's median rose from
+0.765 to 0.824 and refinance's from 0.871 to 0.936, so the low tail did not survive the year.
+The second half is a finding; it would not have mattered if the first half had been read
+correctly.
+
+**What the failure establishes, which a pass would not have**
+
+1. **US mortgage approval cannot test this rule — now shown three ways** rather than inferred
+   once: state-level arms at 0.82+, fifty-market coverage at 0.82+, and a cohort built
+   specifically to reach lower returning 0 of 8 below the crossover. The paper's limitation is
+   upgraded from an observation about one table to a measurement across two reporting years
+   and two levels of aggregation.
+2. **The rate beats the loan product in both scorings** (7–6, 10–9). Small and not significant,
+   but purpose is the sharp alternative here since purpose is what moves the rate.
+3. **The instrument moved between vintages**, so "lending is different" may be a property of a
+   period as well as a domain — every lending crossover estimate in the paper comes from 2018.
+4. **The rule was accurate and untested, which are different things.** 7 of 8 is a good
+   absolute score and establishes nothing. Reporting it without the constant beside it would be
+   the exact defect this paper fails other cohorts for.
+
+**Knock-on counts, all recomputed and guarded:** 161 → **169 populations** (8 new disjoint
+person samples), 152 → **160 of 169** from two instruments, ledger 18 → **19 rows** (13 fail),
+direction tests 9 → **10**, sequential correction ×9 → **×10** so the corrected tail is 0.46
+not 0.41, and the floor set 86 → **89 arms over 73 populations** (medians unmoved).
+
+**What would actually test it:** not another HMDA year. A register whose accept rates reach
+below ~0.66 — a non-US mortgage register, a selective credit product, or an allocation domain
+that is not lending. Same conclusion the paper already had; the difference is that it is now
+measured rather than inferred.

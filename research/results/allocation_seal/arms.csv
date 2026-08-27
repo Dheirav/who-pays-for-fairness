@@ -1,0 +1,17 @@
+spec,population,market,purpose,n_test,gap,rate,pie
+hmda:AZ:derived_race:improvement:2021,hmda_az_2021_race_improvement,az,improvement,6415.0,0.025973349126443564,0.8497583787996883,-1.265251526291426
+hmda:AZ:derived_race:refinance:2021,hmda_az_2021_race_refinance,az,refinance,34226.0,0.03426534049596708,0.9448664757786478,1.1374766039553097
+hmda:CO:derived_race:improvement:2021,hmda_co_2021_race_improvement,co,improvement,6301.0,0.10074137726680096,0.9126487859069989,-0.4245974254236421
+hmda:CO:derived_race:refinance:2021,hmda_co_2021_race_refinance,co,refinance,35919.0,0.057894314117446576,0.9500654249839918,0.9313385596033553
+hmda:GA:derived_race:improvement:2021,hmda_ga_2021_race_improvement,ga,improvement,6450.0,0.2617554841668652,0.6815813953488373,-2.548382234322458
+hmda:GA:derived_race:refinance:2021,hmda_ga_2021_race_refinance,ga,refinance,31458.0,0.08922825760158874,0.9150931400597623,2.344801625480555
+hmda:NC:derived_race:improvement:2021,hmda_nc_2021_race_improvement,nc,improvement,7693.0,0.15093957293877,0.814636682698557,0.3129462076689871
+hmda:NC:derived_race:refinance:2021,hmda_nc_2021_race_refinance,nc,refinance,43651.0,0.0716856138088648,0.9334081693431996,1.7268645038497876
+hmda:OH:derived_race:improvement:2021,hmda_oh_2021_race_improvement,oh,improvement,9290.0,0.3074795560646592,0.8325941872981701,1.7857048945573477
+hmda:OH:derived_race:refinance:2021,hmda_oh_2021_race_refinance,oh,refinance,14980.0,0.1005169300846874,0.9351535380507343,1.1193178621464317
+hmda:TN:derived_race:improvement:2021,hmda_tn_2021_race_improvement,tn,improvement,4440.0,0.3155682124933674,0.7476126126126126,3.405471093243057
+hmda:TN:derived_race:refinance:2021,hmda_tn_2021_race_refinance,tn,refinance,22034.0,0.0945271346040122,0.9288009439956431,1.3300598752284052
+hmda:VA:derived_race:improvement:2021,hmda_va_2021_race_improvement,va,improvement,4925.0,0.16294885152161265,0.8086903553299493,0.7892236619092308
+hmda:VA:derived_race:refinance:2021,hmda_va_2021_race_refinance,va,refinance,32448.0,0.07865642545286342,0.9366062623274163,2.6067668027578152
+hmda:WA:derived_race:improvement:2021,hmda_wa_2021_race_improvement,wa,improvement,6947.0,0.16942389865672525,0.8760328199222686,-0.4407287460061905
+hmda:WA:derived_race:refinance:2021,hmda_wa_2021_race_refinance,wa,refinance,32014.0,0.04654763960138848,0.9474729805710002,0.8967315666506815

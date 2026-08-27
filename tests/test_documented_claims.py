@@ -1677,10 +1677,10 @@ def test_paper_ledger_and_coverage_counts_are_derived_not_narrated() -> None:
     body = table[table.find("\\midrule"):table.find("\\bottomrule")]
     rows = [r for r in body.split("\\\\") if "&" in r]
     holds = sum("holds" in r.split("&")[1] for r in rows if len(r.split("&")) > 1)
-    assert len(rows) == 18, f"the ledger has {len(rows)} rows; the paper says eighteen"
+    assert len(rows) == 19, f"the ledger has {len(rows)} rows; the paper says nineteen"
     assert holds == 3, f"{holds} rows record a hold; the paper says three"
-    for phrase in ("holds \\textbf{eighteen} rows", "twelve fail, three",
-                   "nine that test a \\emph{direction} rule"):
+    for phrase in ("holds \\textbf{nineteen} rows", "thirteen fail, three",
+                   "that test a \\emph{direction} rule"):
         assert phrase.replace("\\\\", "\\") in text, \
             f"the ledger's canonical count no longer says {phrase!r}"
     # The stale descriptions must not come back.
@@ -1825,18 +1825,18 @@ def test_paper_floor_table_matches_results() -> None:
     w = withdrawing(load())
     s = summarise(w)
 
-    assert (s["arms"], s["populations"]) == (86, 70), (
+    assert (s["arms"], s["populations"]) == (89, 73), (
         f"the floor now measures over {s['arms']} arms and {s['populations']} populations; "
-        f"the paper's table says 86 over 70")
+        f"the paper's table says 89 over 73")
     assert round(s["exchange_plain"], 2) == 1.33 and round(s["exchange_floor"], 2) == 0.94
-    assert (s["below_one_plain"], s["below_one_floor"]) == (0, 70), (
-        f"the paper says none of the 86 was at or below one-for-one before the floor and 70 "
+    assert (s["below_one_plain"], s["below_one_floor"]) == (0, 72), (
+        f"the paper says none of the 89 was at or below one-for-one before the floor and 72 "
         f"after; recomputed {s['below_one_plain']} and {s['below_one_floor']}")
-    assert round(s["pool_plain"], 2) == -2.94 and round(s["pool_floor"], 2) == 0.98, (
+    assert round(s["pool_plain"], 2) == -2.78 and round(s["pool_floor"], 2) == 0.88, (
         "the paper's claim that the floor reverses the median withdrawing arm no longer holds")
     assert abs(s["accuracy_cost"] - 0.05) < 0.005
 
-    for value in ("1.33", "0.94", "70 of 86", "$-2.94\\%$", "0.05 accuracy points"):
+    for value in ("1.33", "0.94", "72 of 89", "$-2.78\\%$", "0.05 accuracy points"):
         assert value in text, f"the floor table no longer carries {value!r}"
     # The coupled correlation must stay withdrawn: benefit = damage - remainder.
     assert "$r \\approx -0.99$" in text and "arithmetic rather than a finding" in text, \
@@ -1846,6 +1846,40 @@ def test_paper_floor_table_matches_results() -> None:
     print(f"  floor: {s['arms']} arms / {s['populations']} pops, "
           f"{s['exchange_plain']:.2f}->{s['exchange_floor']:.2f}, "
           f"{s['accuracy_cost']:.2f} pts")
+
+
+def test_paper_allocation_seal_matches_results() -> None:
+    """Experiment 7.1, sealed at 4d1909b and failed. The failure is the load-bearing part.
+
+    The rule scores 7 of 8 and a constant scores 7 of 8, because 0 of 8 arms sit below the
+    committed crossover. If a future re-run ever produces a down-call the cohort becomes a
+    real test and this guard should fail loudly rather than let the paper keep describing a
+    non-discriminating result.
+    """
+    from src.experiments.analyse_allocation_seal import SEALED, load, score
+
+    text = _paper_text()
+    frame = load()
+    assert len(frame) == len(SEALED) == 16, (
+        f"the cohort is 16 arms; {len(frame)} of {len(SEALED)} are present")
+
+    s1, s2 = score(frame, guard=True), score(frame, guard=False)
+    assert s1["down_calls"] == 0, (
+        f"the rule now predicts down on {s1['down_calls']} arms, so the cohort discriminates "
+        f"and the paper's account of why it failed is out of date")
+    assert (s1["rule"], s1["constant"], s1["n"]) == (7, 7, 8)
+    assert (s2["rule"], s2["constant"], s2["n"]) == (10, 10, 13)
+    assert s1["rule"] > s1["purpose"] and s2["rule"] > s2["purpose"], \
+        "the paper reports the rate beating the purpose-only null in both scorings"
+    assert s1["rule"] <= s1["constant"], "S1 is reported as a failure; it now passes"
+
+    assert "0 of 8 arms below the crossover" in text, \
+        "the paper no longer states why the sealed allocation cohort could not discriminate"
+    assert "established three ways rather than inferred once" in text, \
+        "the lending limitation no longer carries the third demonstration"
+    _quotes(_doc(76), "7 of 8", "0 of 8", "2 of 9", "0.682", "S1 FAILS")
+    print(f"  7.1: rule {s1['rule']}/{s1['n']} = constant {s1['constant']}/{s1['n']}, "
+          f"{s1['down_calls']} down-calls")
 
 
 def main() -> None:
@@ -1889,6 +1923,7 @@ def main() -> None:
         test_paper_block1_claims_stay_narrowed,
         test_paper_two_answer_rates_stay_distinguished,
         test_paper_floor_table_matches_results,
+        test_paper_allocation_seal_matches_results,
         test_course_documents_still_match_their_results,
     ]
     failures = 0
