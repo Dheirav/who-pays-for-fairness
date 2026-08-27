@@ -296,6 +296,21 @@ mechanism three lines from a published theorem. "We cannot say why" is not defen
 referee finds it. The paper now says what is true: **we failed to extend a known marginal
 argument to the blind randomized case**, which is a different and more honest claim.
 
+### Block 1 — done
+
+| | Was | Now |
+|---|---|---|
+| **Claim sentence** | "a property of the population rather than of the fairness method... from the rate at which its current model already says yes" | Scoped to in-processing, with the two load-bearing words named: the rate is free, **the crossover costs a sweep**. The dashboard-only version is the transported prior, and it is demoted in the same paragraph |
+| **#5** | "each correlation stays between +0.80 and +0.92... the floor dependence does not reach the domain table" | True of the *natural-arm* column only. Table IX's 0.05 column **is** Table V's dense column, and South Carolina reads +0.905 at the committed floor against **+0.012** at 0.02. Conceded, with the earlier claim named as wrong |
+| **#6** | "12 of 12... where the rule predicts extension" | Reports the constant: every arm sits at 0.82+, so the rule predicts up on all of them and **a constant scores 25 of 31 and 12 of 12 identically**. Consistency, not skill — and US mortgage supplies no market that straddles a crossover |
+| **#10** | "+0.844 and +0.946 over twelve points each, both significant at p < 0.001" | Withdrawn. Twelve thresholds on one score vector are not twelve draws. The population-level statistic is given instead: four positive slopes of six, **sign test p = 0.34**, with the two negatives named as a stated exclusion rather than a rescue |
+
+Guarded by `test_paper_block1_claims_stay_narrowed`, which pins the narrowing language rather
+than a number — all four read perfectly well in their overclaimed form, which is why they
+survived three audits. Negative-tested on all four; the first attempt at that negative test
+silently failed because the phrases wrap across lines, which is the same trap that hid two of
+these defects in the first place.
+
 ### Still open
 
 - **The claim sentence** — six readers, same objection. Highest priority.

@@ -53,10 +53,10 @@ say how the gap should close: the disadvantaged group can be lifted, or the adva
 can be pulled down. Both outcomes satisfy the constraint, and the certifying metric is
 content with either --- it reads \textbf{0.018} where the constraint destroyed a fifth of
 the favourable decisions and \textbf{0.010} where it created more than it destroyed, so a
-team cannot tell from its own dashboard which it is about to cause. We show the direction is
-a property of the \emph{population} rather than of the method, predictable in advance from a
-quantity every deploying organisation already has: the rate at which its current model says
-yes, read against that population's crossover. Across 161 disjoint population samples covering six decision domains
+team cannot tell from its own dashboard which it is about to cause. We show the direction is set by the \emph{population} rather than by which in-processing
+method is chosen, and is predictable before deployment from the rate at which the current
+model says yes, read against that population's own crossover --- the rate a team already has,
+the crossover it must measure. Across 161 disjoint population samples covering six decision domains
 and eight data sources on five countries, an attribute-blind constraint withdraws below a
 population's crossover and extends above it; on UCI Adult five in-processing methods each shrink the pool by
 7.9--22.1\%, while on mortgage lending the identical constraint grows it. The practical output is an
@@ -114,9 +114,17 @@ decisions than it destroyed, and the parity difference read \textbf{0.010}. Both
 team looking only at its fairness dashboard cannot tell which of the two it has just done.
 
 \textbf{The claim, in one sentence.} Whether a parity constraint hands out more favourable
-decisions or takes them away is a property of the \emph{population} being decided about
-rather than of the fairness method --- and a team can measure which one it is about to
-cause, before it causes it, from the rate at which its current model already says yes.
+decisions or takes them away is set by the \emph{population} being decided about rather than
+by which in-processing method is chosen --- and a team can find out which, before deploying,
+by locating its own crossover and reading its current selection rate against it.
+
+Two words in that sentence are doing work and we would rather name them than have them found.
+\emph{In-processing}: under post-processing the relationship is absent, so the direction is
+not a population property in general, only within the family of methods studied here.
+\emph{Locating}: the selection rate is a number every deploying organisation already has, and
+the crossover is not --- it costs a sweep. The only version of this claim testable from a
+dashboard alone is a transported prior, whose record is 9 of 10 and then 5 of 10, and which we
+demote accordingly.
 
 The audit that follows from it has \emph{three} outcomes rather than two --- the constraint
 will give, it will take, or the population admits no answer and the audit says so
@@ -709,10 +717,11 @@ any claim that it holds within the low-rate region alone.}
 Fig.~\ref{fig:crossover} does not pool. This table's job is \emph{breadth} --- one population
 per instrument, on whatever arms that population naturally supplies --- so the four-to-six-arm
 correlations are descriptive, exactly as Section~\ref{sec:tworoutes-note} concedes for Alabama.
-The dense-sweep columns carry the statistical weight where a viable band allows twelve points:
-those are the same populations at $n = 12$, where the relationship is significant at
-$p < 0.001$. The pre-registered alternative is refuted on the dense columns, not the sparse
-ones.}
+The dense-sweep columns carry the weight where a viable band allows twelve points, but
+those twelve are thresholds applied to one fitted score vector on one sample and are not
+twelve independent observations, so we quote no $p$-value on them: a Pearson test there
+describes whether a sweep is monotone, not whether the rate predicts across populations. The
+pre-registered alternative is refuted on the dense columns, not the sparse ones.}
 \label{tab:domains}
 \centering
 \scriptsize
@@ -736,21 +745,36 @@ LSAC & legal educ. & --- & unsweepable & --- & --- & --- \\
 
 Fig.~\ref{fig:crossover} shows every arm, and Table~\ref{tab:domains} the summary. The
 pre-registered alternative --- ``this is a property of income prediction and American mortgage
-lending'', requiring $|r| < 0.30$ --- is refuted on both new instruments, and refuted on their
-\emph{densely swept} arms rather than their sparse ones: COMPAS gives $+0.844$ and the Dutch
-census $+0.946$ over twelve points each, both significant at $p < 0.001$. The four- and
-five-arm rows are reported for breadth and carry no inferential weight on their own.
+lending'', requiring $|r| < 0.30$ --- is refuted on both new instruments, and refuted on their \emph{densely swept} arms rather than their sparse ones: COMPAS gives
+$+0.844$ and the Dutch census $+0.946$ over twelve points each. Earlier versions of this paper
+attached $p < 0.001$ to those coefficients; we withdraw it. Twelve thresholds on one fitted
+score vector over one sample are near-deterministic transformations of each other, so the
+Pearson null is the wrong reference and the effective sample size for a claim about
+\emph{populations} is one. The population-level statistic this design supports is much
+weaker: across the six densely swept populations the within-population slope is positive in
+four and negative in two, a sign test at $p = 0.34$. We report it because it is the honest
+number, and note that the two negatives are the sweeps Section~\ref{sec:tworoutes-note}
+withdraws for sitting entirely below their crossover --- which is a stated exclusion, not a
+rescue, and either way the prospective evidence for this paper lives in the sealed forecasts
+and not in these coefficients. The four- and five-arm rows are reported for breadth and carry
+no inferential weight on their own.
 
 The oldest competing account is that the \emph{gap between groups} drives the direction. The
 Dutch census has a gap of 0.298, roughly twice Adult's, making it the population where that
 explanation should win. It gives $r = +0.915$ across all six arms, none excluded.
 
-Because the parity-gap floor was tuned in-sample (Section~III), every row of
-Table~\ref{tab:domains} was re-scored at floors 0.02/0.05/0.08/0.10: each correlation
-stays between $+0.80$ and $+0.92$ with no sign change at any floor (HMDA is
-floor-invariant outright; Alabama thins to two arms only at 0.10). The floor dependence
-that Table~\ref{tab:sensitivity} reports for the exploratory states does not reach the
-domain table.
+Because the parity-gap floor was tuned in-sample (Section~\ref{sec:setup}), the
+\emph{natural-arm} column of Table~\ref{tab:domains} was re-scored at floors
+0.02/0.05/0.08/0.10: each of those correlations stays between $+0.80$ and $+0.92$ with no sign
+change at any floor (HMDA is floor-invariant outright; Alabama thins to two arms only at
+0.10). \textbf{The dense-sweep column is a different matter, and an earlier version of this
+paper claimed otherwise.} Table~\ref{tab:sensitivity}'s 0.05 column \emph{is} that dense-sweep
+column, and one of its three entries is strongly floor-dependent: South Carolina reads
+$+0.905$ at the committed floor and $+0.012$ at 0.02 and 0.01. So the floor is doing real work
+on a number this paper leans on, and the correct statement is the narrower one --- the
+natural-arm evidence is floor-robust, the dense-sweep evidence is not uniformly so, and South
+Carolina's twelve-point correlation should be read as conditional on the exclusion rule rather
+than as independent of it.
 
 \subsection{Robustness}
 
@@ -976,10 +1000,16 @@ The natural-arm route has since been run market by market across the country:
 \textbf{66 arms over 40 states}, forty carrying a race arm with a computable selection rate
 and twenty-six a sex arm. That is not the fifty states this paper previously claimed --- four
 further arms were measured before the test-set denominator was recorded, so they carry a pool
-change but no rate to read it against, and the rest were never extracted. On race arms the direction rule holds wherever the audit
-will accept the arm at all --- 25 of 31 clearing the parity floor, and \textbf{12 of 12}
-clearing both that floor and the one-point magnitude guard, at rates 0.823--0.898 where the
-rule predicts extension. That supersedes the seven-of-eight this section previously rested
+change but no rate to read it against, and the rest were never extracted. On race arms the direction rule is correct on 25 of the 31 arms clearing the parity floor
+and on \textbf{12 of 12} clearing both that floor and the one-point magnitude guard.
+\textbf{Neither count discriminates, and we report the constant beside them because this
+paper fails other cohorts for exactly that reason.} Every arm in both sets sits at a rate of
+0.82 or above, well clear of every located lending crossover, so the rule predicts extension
+on all of them and a constant ``up'' scores 25 of 31 and 12 of 12 identically. What the
+counts establish is that the constraint extends the pool where the rule says it should, on
+real approvals, across 40 markets --- consistency, not skill. Testing the rule on lending
+would need markets whose rates straddle a crossover, and US mortgage approval does not
+supply them: the whole instrument sits high. That supersedes the seven-of-eight this section previously rested
 on, which came from a single pooled market.
 
 \textbf{The sex arms are refused, and the refusal is the finding.} Not one of the twenty-six

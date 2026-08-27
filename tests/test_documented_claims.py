@@ -1715,6 +1715,60 @@ def test_paper_ledger_and_coverage_counts_are_derived_not_narrated() -> None:
           f"crossovers {lo}-{hi}")
 
 
+def test_paper_block1_claims_stay_narrowed() -> None:
+    """Four claims a panel said were stronger than the evidence. They must stay narrowed.
+
+    Each of these reads perfectly well in its overclaimed form -- that is why all four
+    survived three prior audits -- so the guard pins the narrowing language rather than a
+    number, and asserts the withdrawn form has not returned.
+    """
+    from math import comb
+
+    from src.experiments.analyse_lending_coverage import (GAP_FLOOR, MAGNITUDE_GUARD,
+                                                          load_arms)
+
+    text = _paper_text()
+
+    # 1. The central claim is scoped to in-processing and says the crossover costs a sweep.
+    for phrase in ("rather than by which in-processing method is chosen",
+                   "the rate a team already has, the crossover it must measure",
+                   "the crossover is not --- it costs a sweep"):
+        assert phrase in text, f"the central claim no longer says {phrase!r}"
+    assert "rather than of the fairness method ---" not in text, \
+        "the unscoped 'not the fairness method' claim has returned"
+
+    # 2. The floor defence must keep conceding South Carolina's dense sweep.
+    assert "an earlier version of this paper claimed otherwise" in text and "$+0.012$" in text, \
+        "the floor-robustness passage no longer concedes the dense-sweep dependence"
+    assert "does not reach the domain table" not in text, \
+        "the false floor-robustness claim has returned"
+
+    # 3. Both lending counts must be reported with the constant that ties them, and the
+    #    constant must genuinely still tie -- if a future arm went down, the concession
+    #    would be wrong in the other direction and the sentence would need rewriting.
+    arms = load_arms()
+    race = arms[arms.attribute == "race"]
+    floor = race[race.gap.abs() >= GAP_FLOOR]
+    both = floor[floor.pie.abs() >= MAGNITUDE_GUARD]
+    up_floor, up_both = int((floor.pie > 0).sum()), int((both.pie > 0).sum())
+    assert (up_both, len(both)) == (12, 12) and (up_floor, len(floor)) == (25, 31)
+    assert up_both == len(both), (
+        "a lending arm now goes down, so a constant no longer ties the rule and the "
+        "paper's concession is out of date in the paper's favour")
+    assert "a constant ``up'' scores 25 of 31 and 12 of 12 identically" in text, \
+        "the lending counts no longer report the constant that ties them"
+
+    # 4. The within-sweep p-values must stay withdrawn, with the population-level number.
+    assert "$p < 0.001$" not in text.replace("attached $p < 0.001$ to those coefficients", ""), \
+        "a within-sweep p-value has returned outside the sentence withdrawing it"
+    n, k = 6, 4
+    expected = sum(comb(n, i) for i in range(k, n + 1)) / 2 ** n
+    assert abs(expected - 0.34) < 0.005
+    assert "a sign test at $p = 0.34$" in text, \
+        "the population-level sign test is no longer reported"
+    print("  claim scoped; floor conceded; lending constants reported; p-values withdrawn")
+
+
 def main() -> None:
     tests = [
         test_doc11_cross_flow_correlations,
@@ -1753,6 +1807,7 @@ def main() -> None:
         test_paper_circularity_answer_matches_the_sweeps,
         test_paper_guard_provenance_matches_the_code,
         test_paper_ledger_and_coverage_counts_are_derived_not_narrated,
+        test_paper_block1_claims_stay_narrowed,
         test_course_documents_still_match_their_results,
     ]
     failures = 0
