@@ -657,3 +657,48 @@ labels, no dangling cross-references.** All three of those classes bit this sess
 - The remaining summary layers. The abstract, contributions, limitations and discussion are
   four restatements over the body; the area chair measured ~1,800 words of them.
 - **Anonymisation** — pending the venue, which is not the course.
+
+
+---
+
+## Cutting stopped at 15 pages
+
+The 10-page target came from the review panel, not from a venue. Getting the last five pages
+would mean cutting the coverage figures, the summary layers or the boundaries material — all
+real content — and that trade should not be made against a number nobody has confirmed.
+
+**Where the two documents stand**
+
+| | pages | words | overfull |
+|---|---|---|---|
+| `paper.tex` — the complete record | 24 | ~22k | 0 |
+| `paper-submission.tex` — the cut | 15 | 13,321 | 0 |
+
+Both: no dead references, no duplicate labels, no dangling cross-references, 29 bibitems, 84
+checks passing. Those three integrity classes each bit at least once this session and are now
+swept mechanically rather than by reading.
+
+**Closed out in this last pass**
+
+- **Figure 4 restored.** It was cut on a ten-page argument, and removing it moved the page
+  count by nothing while costing the only visual for one of the four headline scope
+  conditions. Its caption now carries what it shows and the fractions do not: the misses are
+  *concentrated* left of the guard rather than scattered, and they are not concentrated at any
+  particular selection rate, so magnitude governs the failures and position does not.
+- **Five dead rows removed from Table I** — Intersectional, Residual campaign, and the
+  cross-year, attribute-independence and cross-task shape seals all named analyses this
+  version no longer reports. The caption now says the table covers what this paper reports and
+  the record carries the rest.
+
+**Open, and none of it is cutting**
+
+1. **The venue.** Determines whether ten pages is the target at all, and whether the paper
+   needs anonymising — it currently carries a name and email, which is a desk-reject risk at a
+   double-blind venue and irrelevant otherwise.
+2. **The intersectional result** was deleted whole when two sentences plus its table would
+   have carried it. The audit's judgement, and I agree: it is the only place the paper measures
+   a *second* way the certifying metric misleads — parity on sex constrained to 0.020 while the
+   worst Sex×Race gap stays at 0.178.
+3. **Experiment 7.1**, the real-allocation validation, named by three referees as the one new
+   experiment that would matter. Only worth it if the allocative claim is wanted at full
+   strength rather than narrowed.
