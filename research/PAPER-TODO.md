@@ -403,3 +403,49 @@ have pointed at the wrong target. Found by enumerating labels, not by reading.
 - **Figure 1: eight panels → four**, and trim two long table captions.
 - The submission version has **no guards of its own yet**. The record's 82 checks still pass;
   the cut needs its own once the content settles.
+
+
+---
+
+## The figures showed 5% of the record
+
+Raised while cutting: the images are stale, and they represent a very small chunk of the data.
+Both true, and the second is the serious one.
+
+| | |
+|---|---|
+| What the figures drew | 8 populations, 72 arms — and one figure drew a single state |
+| What the paper claims | 161 populations, 8 sources, 6 domains, 5 countries |
+| **Coverage** | **5%** |
+
+Worse, they were generated on 22 Aug and the generator still hardcoded `CROSSOVER =
+(0.511, 0.576)` — the four-population cluster the paper has since **withdrawn**. The figure
+was drawing, as a highlighted band, a claim the text retracts nine pages later.
+
+And my plan for them was to cut the small multiples from eight panels to four, which would
+have taken coverage from 5% to 2.5%. That was the wrong instinct and the interruption caught
+it.
+
+### Three figures that draw the record, `src/experiments/make_coverage_figures.py`
+
+- **`fig-survey`** — all fifty populations of the landscape survey, at their operating rate,
+  coloured by verdict. The paper's only randomly sampled evidence and its scope claim, drawn
+  for the first time. It also shows what the sample does *not* contain: nothing above 0.55,
+  and 25 of 47 inside the band where the rate alone cannot be read.
+- **`fig-crossovers`** — all 22 located crossovers against the withdrawn cluster band, which
+  makes the retraction visible instead of textual: the span is 0.22–0.81 and the cluster was
+  an artefact of which populations had been swept. Florida appears twice, at 0.284 by sex and
+  0.439 by race.
+- **`fig-calibration`** — all forty sealed arms by effect size, showing almost every miss to
+  the left of the one-point guard. The 95%-against-61% split had been prose only.
+
+Coverage goes from 5% to the survey's 50, all 22 located crossovers, and all 40 sealed arms.
+Added to **both** papers — the record makes the same claim about scale and had the same
+problem. The small-multiples figure stays in both, with a caption now saying it is drawn for
+shape and not for scale.
+
+**The density variants are now superseded and left over limit.** They existed to compress the
+complete record to a page count; at 7.65pt and 6.9pt there is no honest density left, and
+shrinking further to absorb three figures would make an unreadable document to hit a number.
+`paper-submission.tex` is a genuine cut and is what a page limit should be met with. The
+reason is recorded in `make_variants.py` rather than left as a silent failure.

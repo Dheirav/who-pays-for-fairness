@@ -28,6 +28,7 @@ Run:  python -m src.experiments.make_figures
 from __future__ import annotations
 
 import warnings
+import argparse
 from pathlib import Path
 
 import matplotlib
@@ -41,8 +42,13 @@ warnings.filterwarnings("ignore")
 
 OUT = Path(__file__).resolve().parents[2] / "research" / "paper" / "ieee"
 
-# The crossover cluster from document 44: four populations, three domains, two countries.
+# The crossover cluster as first published, from four populations. It did NOT survive
+# measurement -- located crossovers span 0.22 to 0.81 -- so it is drawn only to be shown as
+# superseded, and `make_coverage_figures.crossovers` is the figure that makes that point.
+# The band is kept on these panels solely to mark which side of the old cluster a sweep could
+# reach, which is what the "cannot reach above/below" notes are computed against.
 CROSSOVER = (0.511, 0.576)
+SUPERSEDED_SPAN = (0.222, 0.809)
 
 # Colour-blind safe, and ordered so the two non-US / non-income instruments stand out.
 LABELS = {
@@ -148,7 +154,8 @@ def figure_one(frame: pd.DataFrame) -> None:
         ax.axvspan(0, low, color="0.86", zorder=0)
         ax.axvspan(high, 1, color="0.86", zorder=0)
         ax.axhline(0, color="0.3", lw=0.9, zorder=1)
-        ax.axvspan(*CROSSOVER, color="#C44E52", alpha=0.14, zorder=0)
+        ax.axvspan(*SUPERSEDED_SPAN, color="#4C72B0", alpha=0.07, zorder=0)
+        ax.axvspan(*CROSSOVER, color="#C44E52", alpha=0.12, zorder=0)
         ax.plot(rows["selection_rate"], rows["pie"], "o-", color=colour,
                 ms=3.4, lw=1.1, zorder=3)
         reverses = float(np.corrcoef(rows["selection_rate"], rows["pie"])[0, 1]) < 0
@@ -185,12 +192,14 @@ def figure_one(frame: pd.DataFrame) -> None:
         f"rises with the selection rate and crosses zero.\nThe {reversing} that reverse are "
         f"marked. Grey = selection rates no deployable classifier can reach on that "
         f"population, which\ncuts some off above the crossover and others below it. "
-        f"Red band = the 0.51\u20130.58 cluster.",
+        f"Red = the 0.51\u20130.58 cluster as first published; blue = the "
+        f"{SUPERSEDED_SPAN[0]:.2f}\u2013{SUPERSEDED_SPAN[1]:.2f} span that superseded it.",
         fontsize=8, y=1.0, ha="center")
     fig.tight_layout(rect=(0.02, 0.03, 1, 0.98))
-    fig.savefig(OUT / "fig-crossover.pdf", bbox_inches="tight")
+    name = "fig-crossover.pdf"
+    fig.savefig(OUT / name, bbox_inches="tight")
     plt.close(fig)
-    print(f"wrote {OUT}/fig-crossover.pdf  ({len(frame)} arms, {len(order)} panels)")
+    print(f"wrote {OUT}/{name}  ({len(frame)} arms, {len(order)} panels)")
 
 
 def figure_two() -> None:
@@ -209,7 +218,8 @@ def figure_two() -> None:
 
     fig, ax = plt.subplots(figsize=(7.0, 3.6))
     ax.axhline(0, color="0.25", lw=1.0, zorder=1)
-    ax.axvspan(*CROSSOVER, color="0.55", alpha=0.16, zorder=0)
+    ax.axvspan(*SUPERSEDED_SPAN, color="0.75", alpha=0.14, zorder=0)
+    ax.axvspan(*CROSSOVER, color="0.45", alpha=0.16, zorder=0)
 
     ax.plot(label.sort_values("selection_rate")["selection_rate"],
             label.sort_values("selection_rate")["pie"],
@@ -238,6 +248,9 @@ def figure_two() -> None:
 
 
 def main() -> None:
+    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    ap.add_argument("--dataset", default=None, help=argparse.SUPPRESS)
+    args = ap.parse_args()
     frame = gather()
     figure_one(frame)
     figure_two()

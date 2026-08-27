@@ -35,6 +35,13 @@ HERE = Path(__file__).resolve().parent
 # The frontier, measured rather than guessed: for each limit, the largest type size that
 # fits it with no overfull boxes. Dropping below these gains nothing; going above overruns.
 VARIANTS = {
+    # SUPERSEDED, and left over-limit deliberately. These variants existed to squeeze the
+    # complete record into a page limit by density alone. Three coverage figures were added
+    # on 27 Aug because the originals drew 5% of the record, and at 7.65pt/6.9pt there is no
+    # honest density left to find -- shrinking further makes an unreadable document to hit a
+    # number. paper-submission.tex is the real short version and is a genuine cut rather than
+    # a compression, so it is what a page limit should be met with. These are kept because
+    # they still do the one thing the cut cannot: carry every word of the record.
     # Retuned again after the claim-hierarchy pass put the central claim and its four
     # scope conditions in the Introduction (~450 words), pushing both variants a page over.
     # Margins narrowed rather than type shrunk as the body grew: 8.0pt at 0.40in and 7.8pt
