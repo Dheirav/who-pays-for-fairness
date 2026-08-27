@@ -1,0 +1,51 @@
+spec,population,swept,kept,verdict,nat_rate
+acs:AL:SEX:50000:2014,acs_income_al_2014,12,10,NON-MONOTONE (2 flips),0.191738
+acs:AL:SEX:50000:2019,acs_income_al_2019,12,11,NON-MONOTONE (2 flips),0.290468
+acs:AR:RAC1P:50000:2018,acs_income_ar_2018_rac1p,12,8,CLASSIC (- to +),0.198947
+acs:AR:RAC1P:50000:2019,acs_income_ar_2019_rac1p,12,8,CLASSIC (- to +),0.213658
+acs:AR:SEX:50000:2019,acs_income_ar_2019,12,9,MONOTONE (one sign),0.210728
+acs:AZ:SEX:50000:2019,acs_income_az_2019,12,8,MONOTONE (one sign),0.335401
+acs:CA:RAC1P:50000:2018,acs_income_ca_2018_rac1p,12,10,CLASSIC (- to +),0.413673
+acs:CA:RAC1P:50000:2019,acs_income_ca_2019_rac1p,12,10,CLASSIC (- to +),0.449413
+acs:FL:RAC1P:50000:2014,acs_income_fl_2014_rac1p,12,9,CLASSIC (- to +),0.221581
+acs:HI:RAC1P:50000:2019,acs_income_hi_2019_rac1p,12,10,NON-MONOTONE (2 flips),0.4
+acs:IA:SEX:50000:2014,acs_income_ia_2014,12,9,MONOTONE (one sign),0.181002
+acs:IA:SEX:50000:2019,acs_income_ia_2019,12,10,INVERTED (+ to -),0.299281
+acs:IL:RAC1P:50000:2019,acs_income_il_2019_rac1p,12,10,CLASSIC (- to +),0.424213
+acs:KS:RAC1P:50000:2018,acs_income_ks_2018_rac1p,12,8,CLASSIC (- to +),0.274594
+acs:KS:SEX:50000:2019,acs_income_ks_2019,12,10,MONOTONE (one sign),0.297172
+acs:KY:SEX:50000:2014,acs_income_ky_2014,12,9,CLASSIC (- to +),0.195913
+acs:KY:RAC1P:50000:2018,acs_income_ky_2018_rac1p,12,8,CLASSIC (- to +),0.263223
+acs:MA:RAC1P:50000:2018,acs_income_ma_2018_rac1p,12,11,CLASSIC (- to +),0.487329
+acs:MA:RAC1P:50000:2019,acs_income_ma_2019_rac1p,12,11,CLASSIC (- to +),0.528757
+acs:MD:SEX:50000:2019,acs_income_md_2019,12,8,NON-MONOTONE (2 flips),0.54572
+acs:ME:RAC1P:50000:2019,acs_income_me_2019_rac1p,12,9,CLASSIC (- to +),0.267917
+acs:MN:SEX:50000:2014,acs_income_mn_2014,12,9,MONOTONE (one sign),0.265616
+acs:MS:RAC1P:50000:2019,acs_income_ms_2019_rac1p,12,9,CLASSIC (- to +),0.221327
+acs:MT:SEX:50000:2019,acs_income_mt_2019,12,7,MONOTONE (one sign),0.260901
+acs:NC:SEX:50000:2018,acs_income_nc_2018,12,10,CLASSIC (- to +),0.288202
+acs:NC:RAC1P:50000:2019,acs_income_nc_2019_rac1p,12,10,CLASSIC (- to +),0.31516
+acs:ND:SEX:50000:2018,acs_income_nd_2018,12,10,NON-MONOTONE (3 flips),
+acs:NH:RAC1P:50000:2014,acs_income_nh_2014_rac1p,12,6,CLASSIC (- to +),0.337356
+acs:NJ:RAC1P:50000:2018,acs_income_nj_2018_rac1p,12,11,CLASSIC (- to +),0.517963
+acs:OH:RAC1P:50000:2018,acs_income_oh_2018_rac1p,12,9,CLASSIC (- to +),0.309372
+acs:OH:SEX:50000:2019,acs_income_oh_2019,12,10,NON-MONOTONE (2 flips),0.336815
+acs:OK:SEX:50000:2019,acs_income_ok_2019,12,10,CLASSIC (- to +),0.250141
+acs:OR:SEX:50000:2014,acs_income_or_2014,12,9,CLASSIC (- to +),0.256294
+acs:OR:SEX:50000:2018,acs_income_or_2018,12,10,CLASSIC (- to +),
+acs:PA:RAC1P:50000:2014,acs_income_pa_2014_rac1p,12,8,CLASSIC (- to +),0.25466
+acs:PA:SEX:50000:2014,acs_income_pa_2014,12,10,CLASSIC (- to +),0.256577
+acs:RI:RAC1P:50000:2018,acs_income_ri_2018_rac1p,12,11,CLASSIC (- to +),0.419837
+acs:SC:SEX:50000:2018,acs_income_sc_2018,12,10,CLASSIC (- to +),
+acs:TN:SEX:50000:2014,acs_income_tn_2014,12,10,CLASSIC (- to +),0.193804
+acs:TN:SEX:50000:2018,acs_income_tn_2018,12,10,CLASSIC (- to +),0.255191
+acs:TX:SEX:50000:2019,acs_income_tx_2019,12,11,NON-MONOTONE (2 flips),0.38628
+acs:UT:RAC1P:50000:2014,acs_income_ut_2014_rac1p,12,10,CLASSIC (- to +),0.264256
+acs:VA:SEX:50000:2019,acs_income_va_2019,12,11,MONOTONE (one sign),0.462777
+acs:VT:RAC1P:50000:2014,acs_income_vt_2014_rac1p,12,7,NON-MONOTONE (2 flips),0.203829
+acs:VT:RAC1P:50000:2019,acs_income_vt_2019_rac1p,12,7,NON-MONOTONE (3 flips),0.322016
+acs:WA:RAC1P:50000:2014,acs_income_wa_2014_rac1p,12,8,CLASSIC (- to +),0.347442
+acs:WI:SEX:50000:2018,acs_income_wi_2018,12,9,INVERTED (+ to -),0.308004
+acs:WI:RAC1P:50000:2019,acs_income_wi_2019_rac1p,12,10,CLASSIC (- to +),0.339158
+acs:WY:RAC1P:50000:2014,acs_income_wy_2014_rac1p,12,9,CLASSIC (- to +),0.277101
+acs:WY:SEX:50000:2019,acs_income_wy_2019,12,10,CLASSIC (- to +),0.332207

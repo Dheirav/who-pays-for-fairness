@@ -71,7 +71,7 @@ on a second cohort. Of nine sealed or registered direction tests, one passed; we
 failures because each removed a stronger claim than the one that survives, and because a
 cohort built to strengthen that paired statistic showed the attempt is self-defeating --- the
 magnitude guard such a test requires deletes the near-crossover arms it needs. A screen-gated
-Brazilian race cohort separates the selection rate from label rarity in the rate's favour.
+Brazilian race cohort separates the selection rate from label rarity in the rate's favour, on two populations.
 The relationship survives a change of route, a twenty-five-fold tolerance range, a
 boosted-tree learner and a protected attribute swapped from sex to race, but disappears under
 post-processing --- and a sealed deconfounding test locates that boundary at the optimizer
@@ -161,7 +161,8 @@ The registered deconfounding cohorts have since run: the sex arms were refused
 (Brazil's conditional sex gaps sit below the audit's own disparity floor), and the
 screen-gated race cohort then ran powered and \textbf{broke the confound in the
 rate's favour} --- on mixed-route sealed arms the cutoff-only reading scored 5 of 10
-against the rate rules' 8--9, so the selection rate, not label rarity, carries the
+against the rate rules' 8--9 --- ten arms from two person-samples, so the confound is
+broken within populations rather than across them --- and the selection rate, not label rarity, carries the
 prediction --- while the fixed 0.54 \emph{value} failed its own strict bar (a 0.50
 prior edged it by one arm in-band): the prior stays fallible and population-specific,
 and the within-population claim passed sealed off-instrument. On a second,
@@ -1078,7 +1079,12 @@ therefore resolved by the follow-on cohort rather than left open. A race-arm coh
 screened first under the gate that failure created (Brazilian White vs Black-or-Brown
 gaps of 0.13--0.17), ran powered: the cutoff-only null scored \textbf{5 of 10}
 against the rate rules' 8--9 on mixed-route arms where the label's rarity was held
-constant --- \textbf{it is the rate}. The sealed S1 nonetheless FAILS by its own
+constant --- \textbf{it is the rate}. Its denominator must be read as what it is: those
+ten arms are \emph{two} person-samples, Brazil 2000 and Brazil 2010, contributing five
+arms each, four of which are operating points on the same people. The comparison is
+within-population by construction and the effects are large --- to $-47\%$ --- but ten
+arms from two samples is not ten independent tests, and the confound is broken on two
+populations rather than on ten. The sealed S1 nonetheless FAILS by its own
 letter, because a 0.50 prior edged the 0.54 prior 9 to 8: in-band, on Brazil, the
 specific value holds no privilege, and Brazil's own crossovers (0.481--0.539 and
 0.539--0.598) straddle both priors --- the population-specific picture this paper has
@@ -1301,7 +1307,9 @@ one bracket with no natural arm to read against. Every one of the 29 directional
 verdicts matches what the fitted constraint did at that population's natural operating
 point --- a consistency check on the audit's reading of its own sweep, not independent
 validation, since the natural arm is part of the curve being read. That distribution is computed over the sweeps this project happened to accumulate, which
-were never randomly chosen; a survey of \textbf{fifty randomly drawn populations}, frame and
+were never randomly chosen; a survey of \textbf{fifty randomly drawn population-label
+pairs} spanning 48 disjoint person-samples --- two state-years were drawn under both
+protected attributes, which the frame permitted --- with frame and
 seed committed before any arm ran, puts the honest figure at \textbf{78\% of populations
 admitting a directional rule and 22\% not} (Wilson 95\% interval 13--35\%), of which 64\%
 are classic single-crossing landscapes. The convenience sample was mildly optimistic --- it
@@ -1464,7 +1472,7 @@ $p=0.062$ --- fail & the paired statistic is not fixable by a balanced cohort: t
 pre-stated magnitude guard deletes the near-crossover arms that discriminate
 ($r = +0.648$ between distance from the crossover and effect size), leaving four
 discordant arms where four of four is already $p = 0.0625$ \\
-Sealed lending cohort & 8/8 + beat const.\ + paired $p<0.05$; const.\ also 8/8 --- fail &
+Sealed lending cohort & 8/8 (5 pops.) + beat const.; const.\ also 8/8 --- fail &
 the purpose-only null is beaten 8 vs 5: the loan product does not carry the prediction, the
 measured rate does --- the first sealed evidence of this on real approvals rather than
 predicted labels \\
