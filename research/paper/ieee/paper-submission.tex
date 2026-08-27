@@ -65,8 +65,9 @@ The claim is narrow and sealed tests made it so. Direction is predictable within
 \textbf{magnitude is not}, and below one percentage point the direction call is a coin flip.
 The practical output is an audit that locates a team's own crossover and \emph{refuses} when
 it cannot: on fifty populations drawn at random, frame and seed fixed in advance, 78\% admit a
-directional rule and 22\% do not, and the procedure returns the latter as unanswerable rather
-than scoring them. Two scope limits belong here: the relationship disappears under
+directional rule and 22\% do not. That is the monotonicity gate alone; run end to end with every
+gate applied, the audit returns a direction on 29 of 52 stored sweeps --- \textbf{a little under
+six times in ten} --- and hands back the rest as unanswerable rather than scoring them. Two scope limits belong here: the relationship disappears under
 post-processing, and in five of the eight sources the favourable decisions are predicted
 labels rather than allocations actually made. Of nine sealed or registered direction tests,
 one passed; we report the failures because each removed a stronger claim than the one that
@@ -230,7 +231,8 @@ and disappears under post-processing.
 a remedy are Mittelstadt \emph{et al.}'s \cite{mittelstadt2023}; the impact decomposition we
 use throughout is Krco \emph{et al.}'s \cite{ferry2023}; fairness gerrymandering is Kearns
 \emph{et al.}'s \cite{kearns2018}; the income-cutoff knob is Ding \emph{et al.}'s
-\cite{ding2021}; the reductions we constrain with are \cite{agarwal2018}. Contemporaneous
+\cite{ding2021}; the reductions we constrain with are \cite{agarwal2018}, and we benchmark against minimax
+group fairness \cite{diana2021} rather than only against the unconstrained reduction. Contemporaneous
 theory \cite{backfire2026} establishes that in the blind regime the direction is
 distribution-dependent, so we do not claim the conditionality itself --- what it contains is
 no experiments and conditions stated as orderings on score regions rather than measurable
@@ -283,8 +285,7 @@ LSAC bar passage, the Dutch national census of 2001 and Taiwanese credit-card de
 of 2005. A \emph{population} is one such unit --- a state, cohort or census --- and
 \emph{independent} means disjoint person samples: no person appears in two, and arms within a
 population share people, so however many arms a population contributes it is counted once.
-Ratios here are over populations unless they say otherwise, because four counts in this
-project's own history turned out to be arm counts wearing population clothes.
+Ratios here are over populations unless they say otherwise.
 
 \textbf{What a favourable decision is, and mostly is not.} This belongs here rather than in
 Limitations, because it bounds everything that follows. \textbf{In five of the eight sources
@@ -718,10 +719,9 @@ in-processing optimizer, the relationship survives at $r = +0.672$ across thirte
 arms --- the method reading, not the blindness reading. Two cautions we would rather state
 than have computed for us: at thirteen arms the interval on that coefficient is wide enough to
 touch the competing reading's region, and its difference from $+0.585$ is not itself a
-difference. What carries more weight than either coefficient is the mechanism the failure
-exposed --- the post-processor re-derives its own thresholds and returned an identical model
-at all six operating points, so the measured effect was a constant divided by a shrinking
-baseline.
+difference. Neither coefficient carries much on its own; what the regime result rests on is the
+positive cell, and on the reduction retaining the relationship where the post-processor does
+not.
 
 \textbf{The theory's group-level claim is untouched.} Where the attribute is readable the
 advantaged group loses and the disadvantaged gains, without exception across our
@@ -748,8 +748,7 @@ enough to cross anything: LSAC refuses at an accuracy floor of 0.890 against a v
 0.056, and the test is arithmetic on the baseline, needing no constraint fit at all. Lines
 6--8 compute that band and exit before any constraint is
 fitted, if no threshold reaches a low selection rate with a model still beating the trivial
-predictor. On LSAC that band is too narrow to sweep (Section~\ref{sec:boundaries}) and the procedure
-declines, rather than returning arms that would be discarded later.
+predictor. The procedure declines,
 
 \textbf{It can return \textsc{void}.} Line 16 requires enough arms to survive the guards
 and the pool to have moved at all. A
@@ -862,6 +861,18 @@ the same from one fit --- and that 24\% over-states the waste, because every sam
 has already passed the monotonicity screen, and the 22\% admitting no rule never enter it. A
 team cannot learn which group it is in without running the sweep, which is the reply in one
 line: the audit is not circular, because its output is not the quantity a single fit measures.
+
+\textbf{Two rates, and they are not the same rate.} The survey's 78\% and the audit's
+29-of-52 are different measurements and a reader is entitled to be confused by them meeting on
+one page. The 78\% applies \emph{one} gate --- monotonicity --- to fifty populations drawn at
+random, and answers ``how often is a population shaped so that a directional rule could
+apply''. The 29 of 52 applies \emph{every} gate the algorithm states --- the noise floor, the
+two-point void span, monotonicity, and the indeterminate bracket --- to the stored sweeps,
+which are a convenience set rather than a random draw, and answers ``how often does the
+procedure actually return a direction''. The second is the number a deploying team should
+plan against; the first bounds the claim. Neither is the other's denominator, and where the
+survey's fifty draws become forty-eight independent samples it is because two state-years were
+drawn under both protected attributes --- the same people read twice.
 
 \textbf{What it actually returns, totalled.} Run over the 52 population-label pairs whose
 stored sweeps resolve to a dataset spec --- fourteen further IPUMS sweeps are stored but
@@ -1011,7 +1022,8 @@ HMDA refinance & mortgages & --- & 0.758 & point only \\
 \end{tabular}
 \end{table}
 
-The crossover was first published as a cluster, on four populations of one instrument. It did
+The crossover was first published as a cluster, on four populations spanning three
+instruments, three domains and two countries. It did
 not survive measurement. Two things about Table~\ref{tab:crossover} before its numbers are
 read. Separating whether a crossing exists from where it sits is not pedantry: read under
 seeds alone the Dutch census appeared to cross at 0.576 with a 95\% interval of 0.572--0.580,
@@ -1093,9 +1105,10 @@ The first sealed direction test failed: 4 of 8 against a bar of 7, not beating a
 sealing we added a low-rate clause drawn from four in-sample populations --- internally
 consistent, backed by a twenty-seed replication --- and it is the clause that lost: the
 unrefined rule scores 7 of 8 on the same arms, missing only the population sitting at the
-boundary. The clause was route-specific, holding where a rate is reached by moving the label
-and failing where it is reached by moving the decision threshold, and nothing in the in-sample
-data could have shown that. It is withdrawn, the unrefined rule was re-sealed on ten fresh
+boundary. The clause was route-specific: its own arms reach a low rate by thresholding one fixed score
+vector, while the sealed arms reach it with a genuinely rarer label, and at that rate the two
+routes disagree completely --- the clause held where it was fitted and failed on every
+label-route arm it was sealed against. Nothing in the in-sample data could have shown that. It is withdrawn, the unrefined rule was re-sealed on ten fresh
 populations, and the low-rate observation survives only in the weaker role of an exclusion
 (Section~\ref{sec:procedure}), where it can refuse an arm but cannot manufacture a correct
 call.
@@ -1184,10 +1197,14 @@ we position it as a caution supported by that literature rather than as a novel 
 At severely cut operating points the fitted mixture stops being a graded adjustment and
 becomes a lottery: nobody below the threshold receives any probability, and every predicted
 positive of both groups is kept at one flat rate --- 0.65 on the Dutch census arm, 0.135 on
-COMPAS --- with keep probability uncorrelated with the person's own score. The gap closes by
-random discard and the certificate is unchanged, which matters because a model that cannot
-generate a truthful individualized reason for a denial sits badly with adverse-action and
-notice duties. \textbf{It is a checkable hazard rather than a cost of parity}: a control at
+COMPAS --- with keep probability uncorrelated with the person's own score. The gap closes by random discard and the certificate is unchanged. The charge here is
+deliberately narrower than ``a lottery occurred'': randomness has been advocated as a fairness
+device \cite{grgic2017}, the optimal aware classifier is itself randomized
+\cite{agarwal2022}, derandomization is a studied problem \cite{cotter2019}, and on a
+claims-based view a lottery among relevantly equal claims can be what fairness requires
+\cite{stone2011}. The charge is that a lottery occurred \emph{unannounced}, under a
+certificate indistinguishable from an informed adjustment, in a setting where individualized
+reasons are owed. \textbf{It is a checkable hazard rather than a cost of parity}: a control at
 each population's natural operating point finds every mixture graded, so the signature belongs
 to constraints pushed to extremes and not to withdrawal as such --- which is why Algorithm~1
 probes for it (line 19) and why the full treatment, including the search of a richer
@@ -1216,10 +1233,16 @@ consistent and backed by a twenty-seed replication, was sealed, scored 4 of 8, a
 prediction worse than the unrefined rule it replaced --- nothing in the in-sample data could
 have shown that, which is the whole argument for sealing.
 
-Two published results of our own are withdrawn here rather than quietly corrected: two
-correlations previously reported at $+0.979$ and $+0.968$ are void, exposed by an exchange
-rate of exactly $0.000$ --- the post-processor had returned an identical model at every
-operating point, so the effect was a constant divided by a shrinking baseline. A published
+Two published results of our own are withdrawn here rather than quietly corrected, and they
+failed for different reasons. Correlations previously reported at $+0.979$ and $+0.968$ are
+void because the operating-point design varies the rate by degrading the classifier and
+nothing bounded how far: excluding arms beaten by the trivial predictor leaves Alabama with
+two arms and LSAC with one. That same exclusion \emph{rescued} mortgage lending, which had
+failed outright --- one rule moving two results in opposite directions, which is why its
+provenance is stated in Section~\ref{sec:setup}. Separately, a post-processing comparison that
+appeared to show a clean reversal was arithmetic: the method re-derives its own thresholds and
+returned an identical model at all six operating points, so the effect was a constant divided
+by a shrinking baseline, and what exposed it was an exchange rate of exactly $0.000$. A published
 crossover was also downgraded by a bootstrap we chose to run against our own result.
 
 
@@ -1259,15 +1282,6 @@ $\rho \ge 0.9$ \\
 \end{table}
 
 \section{Limitations}
-
-\textbf{Most of the evidence is about predicted labels, not allocations.} In five of the eight
-sources no one receives anything: ``favourable decisions'' are a classifier's labels over
-people whose incomes, occupations or bar results already exist. HMDA is the one source
-recording real allocative decisions --- and it is also where the direction reverses and where
-our sweep protocol failed its held-out test, so whether the construct transports from
-status-prediction benchmarks to allocation data is an open question rather than an assumption
-we are entitled to. The practical advice of Section~\ref{sec:procedure} is addressed to teams
-making real allocations, and they should read this paragraph first.
 
 \textbf{The lending evidence is thinner than its market count suggests.} Forty markets carry a
 rate-bearing arm on each attribute, but every one of the twenty-six sex arms falls below the
@@ -1330,15 +1344,6 @@ concrete instance is worth stating: on HMDA a single constraint earns ``extensio
 pooled book while concentrating withdrawal in home improvement, so a segmentation chosen after
 the fact can hide the thing the audit exists to surface.
 
-\textbf{What we are not claiming.} The rule is not surprising once stated --- say yes often and
-the constraint tends to give, say yes rarely and it tends to take. What is not available
-without measuring is where the boundary falls for a particular population, and located
-crossovers span 0.22 to 0.81. In the one setting where we drew populations at random rather
-than choosing them, no population's operating rate reached 0.55 and half of those with a
-computable rate sat inside the band where an unaided reading of ``often'' against ``rarely''
-has nothing to say. A further fifth follow no directional rule at all, and there the intuition
-returns a confident answer while the audit declines to.
-
 \section*{Appendix: Two Worked Traces of Algorithm 1}
 
 \textbf{Oregon 2018, sex, to a verdict.} Demographic parity constrains selection rates:
@@ -1368,7 +1373,7 @@ holds the per-test registration and scoring commits, the OpenTimestamps receipts
 that carry them, and the complete eighteen-row ledger. Every figure here is re-derived from
 stored results by a test suite that fails if a documented number and its experiment disagree,
 and counts appearing in more than one place are derived from one source and checked against
-each other --- after an audit found four descriptions of the same table. One limit cannot be
+each other --- after an audit found three descriptions of the same table. One limit cannot be
 repaired retroactively: for ten of the sixteen seals the ordering rests on git commit
 timestamps from our own machine, which an outsider must take on trust. The later seals carry
 external anchoring; the earlier ones do not.

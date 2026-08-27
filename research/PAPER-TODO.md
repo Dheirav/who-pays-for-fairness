@@ -511,3 +511,64 @@ the survey's fifty, all 22 located crossovers and all 40 sealed arms. Reaching 1
 here means choosing between them and roughly 2,500 further words of text — the Audit at 2,572
 is still the largest block, and Setup at 1,235 has a survey-methodology passage that could go
 to two sentences.
+
+
+---
+
+## Round 4 review: the cutting broke things, and the audit found them
+
+Three referees on the cut, plus an external one. The framing news is good — the external
+reviewer's one-sentence test came back as the intended claim, and both blind readers'
+did too, so §3 and Block 1 landed. But **the cut-versus-record audit found ~30 defects and
+most of them are mine.**
+
+### Flat errors, fixed
+
+| | What was wrong | Fixed |
+|---|---|---|
+| **Route-specificity stated backwards** | I wrote that the withdrawn clause "held where a rate is reached by moving the label and failed where it is reached by moving the decision threshold". The record says the opposite, and the cut's **own Table VIII** lists the failing arms as income cutoffs — label-route arms — so the sentence contradicted a table on the same page | yes |
+| **Two withdrawals welded into one** | I merged the +0.979/+0.968 withdrawal (caused by the trivial-predictor exclusion on Alabama and LSAC) with the post-processing arithmetic artifact, asserting a cause the record contradicts. It also broke Setup's forward reference and lost "the same exclusion *rescued* mortgage lending" — a rule that moved two results in opposite directions | yes |
+| **"Four populations of one instrument"** | Three instruments, three domains, two countries — contradicted by Table VI on the same page | yes |
+| **"Four descriptions of the same table"** | Three. I conflated it with the separate "four counts were arm counts" | yes |
+| **LSAC supplying the headline span** | I "corrected" the crossover span to 0.22–0.81 using a set that includes **the population the audit refuses as its showcase refusal**. Citing its crossover cites a rate no deployer can reach. The span over populations the audit accepts is **0.22–0.80**; `analyse_circularity` now flags refused populations | yes |
+
+### Duplications I created, removed
+
+- A **whole paragraph** duplicated between the Introduction and the Discussion, once with "25 of the 47" and once with "half".
+- The predicted-labels limitation stated **twice** — the copy I moved to Setup says "this belongs here rather than in Limitations", and I left it in Limitations too. Self-refuting on the page.
+- The LSAC refusal in two consecutive sentences; the arm-counts anecdote twice in Setup; "a constant divided by a shrinking baseline" twice.
+
+### Five references went dead, and the fix restored a hedge
+
+Cutting the lottery to four sentences orphaned Grgić-Hlača, Agarwal & Deshpande, Cotter and
+Stone — and with them **the hedge that the charge is not "a lottery occurred" but that it
+occurred unannounced**. Without it the paper was more accusatory than its evidence warrants.
+Restored rather than deleted. Diana et al. lost the "we benchmark against minimax group
+fairness" claim; restored too.
+
+### Still outstanding from this round
+
+- **The selection-rate floor is the least-evidenced claim in the paper** and it is the
+  practical recommendation. "1.47 → 0.88" has no antecedent in the cut, no table, no method.
+  Either present it or remove the remedy.
+- **The survey-methodology convention block** (unweighted, nominal, no household clustering;
+  crossovers shift 0.03–0.08 under weighting) was dropped entirely, and it qualifies every
+  crossover number in the paper — including the 0.54-vs-0.50 argument, which is the same
+  order of magnitude as the shift.
+- **Dropped concessions** that should come back: "that seven is post-hoc and we do not claim
+  it"; Iowa, the arm that split 3-of-5 across seeds identically to the Minnesota miss and
+  scored *correct*; the race cohort's leave-one-out drop from 8/10 to 60%; the dead-band
+  calibration (1 of 6 within 0.05 of the crossover).
+- **Table I rows** pointing at analyses the cut no longer contains, and the intersectional
+  section deleted whole when two sentences would have carried it.
+- **Anonymisation** — the submission carries a name and email on the title page.
+
+### The page decision, answered
+
+The area chair's verdict: **cut the text, not the figures**, and the gap is 5 pages rather
+than 2.5 — neither option alone reaches ten. Its reasoning is measurable: "0.22 to 0.81"
+appears 7 times, "78%" 7 times, "9 of 10" 7 times, and the paper carries four separate
+summary layers over a 10,500-word body. It would cut Figure 4 on merit (forty points
+conveying two fractions the text states three times), shrink Figures 2 and 3 to single
+column, and keep Figures 1 and 5. And it warns that §VII and §III need redrafting from
+blank rather than trimming clause by clause, "or they will come back at 1,800 words each".

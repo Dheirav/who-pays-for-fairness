@@ -1769,6 +1769,47 @@ def test_paper_block1_claims_stay_narrowed() -> None:
     print("  claim scoped; floor conceded; lending constants reported; p-values withdrawn")
 
 
+def test_paper_two_answer_rates_stay_distinguished() -> None:
+    """78% and 29-of-52 measure different things, and two referees confused them.
+
+    The survey's 78% applies one gate to a random draw; the audit's 29 of 52 applies every
+    gate to the stored sweeps. Both are correct and the abstract used to quote only the
+    higher one, which reads as the procedure's answer rate when it is not. This checks that
+    both numbers are still derivable, that they still differ, and that the paper still says
+    which is which in both the record and the cut.
+    """
+    import sys
+
+    import pandas as pd
+
+    sys.path.insert(0, str(ROOT))
+    from scripts.independence import population
+
+    survey = pd.read_csv(RESEARCH / "survey" / "survey_verdicts.csv")
+    shape = survey["verdict"].str.split(" (", regex=False).str[0]
+    admits = int(shape.isin(["CLASSIC", "MONOTONE"]).sum())
+    assert (admits, len(survey)) == (39, 50), (
+        f"the survey's monotonicity gate now passes {admits} of {len(survey)}, "
+        f"not the 39 of 50 the paper quotes as 78%")
+
+    samples = survey["population"].map(lambda x: population(x + "_levelling_up")).nunique()
+    assert samples == 48, (
+        f"the fifty draws now resolve to {samples} disjoint person samples, not 48; the "
+        f"paper explains the gap as two state-years drawn under both attributes")
+
+    for name in ("paper.tex", "paper-submission.tex"):
+        text = " ".join((ROOT / "research" / "paper" / "ieee" / name).read_text().split())
+        assert "Two rates, and they are not the same rate" in text, \
+            f"{name} no longer reconciles the survey rate against the audit's answer rate"
+        assert "a little under\nsix times in ten".replace("\n", " ") in text or \
+               "a little under six times in ten" in text, \
+            f"{name}'s abstract no longer gives the end-to-end answer rate beside the 78%"
+        assert "That is the monotonicity gate alone" in text, \
+            f"{name}'s abstract no longer says which gate the 78% applies"
+    print(f"  survey {admits}/{len(survey)} = {admits/len(survey):.0%} on one gate; "
+          f"audit 29/52 = 56% on all gates; {samples} disjoint samples")
+
+
 def main() -> None:
     tests = [
         test_doc11_cross_flow_correlations,
@@ -1808,6 +1849,7 @@ def main() -> None:
         test_paper_guard_provenance_matches_the_code,
         test_paper_ledger_and_coverage_counts_are_derived_not_narrated,
         test_paper_block1_claims_stay_narrowed,
+        test_paper_two_answer_rates_stay_distinguished,
         test_course_documents_still_match_their_results,
     ]
     failures = 0

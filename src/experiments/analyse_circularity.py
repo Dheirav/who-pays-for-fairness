@@ -106,6 +106,14 @@ def load_sweeps() -> dict[str, pd.DataFrame]:
     return sweeps
 
 
+# Populations the audit refuses at line 8 -- no deployable classifier reaches far enough on
+# them -- can still be swept arithmetically, and one of them (LSAC, viable band 0.056) then
+# supplies the top of any span computed over "every located crossover". Quoting it as part of
+# that span cites a crossover no deployer could operate at, which a referee caught. They are
+# reported separately rather than folded in.
+REFUSED_BY_THE_AUDIT = ("lawschool_race",)
+
+
 def crossover(frame: pd.DataFrame) -> float:
     """Midpoint of the bracket, on the definition of ``analyse_operating_point``."""
     below, above = frame[frame.pie < 0]["rate"], frame[frame.pie > 0]["rate"]
@@ -146,6 +154,7 @@ def distances(sweeps: dict[str, pd.DataFrame]) -> pd.DataFrame:
             rows.append({"pop": pop, "natural": nat, "crossover": c, "gap": nat - c})
     frame = pd.DataFrame(rows)
     frame["sample"] = frame["pop"].map(population)
+    frame["audit_refuses"] = frame["pop"].str.startswith(REFUSED_BY_THE_AUDIT)
     return frame.sort_values("gap", key=abs).reset_index(drop=True)
 
 

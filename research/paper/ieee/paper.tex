@@ -36,10 +36,10 @@ the crossover it must measure. Across 161 disjoint population samples covering s
 and eight data sources on five countries, an attribute-blind constraint withdraws below a
 population's crossover and extends above it; on UCI Adult five in-processing methods each shrink the pool by
 7.9--22.1\%, while on mortgage lending the identical constraint grows it. The practical output is an
-audit that locates a team's own crossover and \emph{refuses} when it cannot: on fifty
-populations drawn at random, frame and seed fixed in advance, 78\% admit a directional rule
-and 22\% do not, and the procedure returns the latter as unanswerable rather than scoring
-them.
+audit that locates a team's own crossover and \emph{refuses} when it cannot: on fifty populations drawn at random, frame and seed fixed in advance, 78\% admit a
+directional rule and 22\% do not. That is the monotonicity gate alone; run end to end with every
+gate applied, the audit returns a direction on 29 of 52 stored sweeps --- \textbf{a little under
+six times in ten} --- and hands back the rest as unanswerable rather than scoring them.
 
 The claim is deliberately narrow, and sealed tests made it so. \textbf{Direction is
 predictable within a population; magnitude is not}, and a sealed model of it lost to
@@ -1564,6 +1564,18 @@ sample in that set has already passed the monotonicity screen, and the 22\% of p
 admitting no directional rule at all never enter it. A team cannot learn which group it is
 in without running the sweep, which is the reply in one line: the audit is not circular,
 because its output is not the quantity a single fit measures.
+
+\textbf{Two rates, and they are not the same rate.} The survey's 78\% and the audit's
+29-of-52 are different measurements and a reader is entitled to be confused by them meeting on
+one page. The 78\% applies \emph{one} gate --- monotonicity --- to fifty populations drawn at
+random, and answers ``how often is a population shaped so that a directional rule could
+apply''. The 29 of 52 applies \emph{every} gate the algorithm states --- the noise floor, the
+two-point void span, monotonicity, and the indeterminate bracket --- to the stored sweeps,
+which are a convenience set rather than a random draw, and answers ``how often does the
+procedure actually return a direction''. The second is the number a deploying team should
+plan against; the first bounds the claim. Neither is the other's denominator, and where the
+survey's fifty draws become forty-eight independent samples it is because two state-years were
+drawn under both protected attributes --- the same people read twice.
 
 \textbf{What it actually returns, totalled.} Run over the 52 population-label pairs whose
 stored sweeps resolve to a dataset spec --- fourteen further IPUMS sweeps are stored but
