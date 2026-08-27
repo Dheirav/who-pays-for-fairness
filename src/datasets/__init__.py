@@ -67,12 +67,19 @@ def build(name: str) -> DatasetLoader:
         # course code must neither import nor need it.
         from .hmda import RACE, HMDALoader
 
+        # Year as an optional fourth segment ("hmda:VT:derived_race:improvement:2021"),
+        # for the same reason the ACS loader takes one: a reporting year is part of the
+        # population's identity, not a variant of it, and the loader's stem already carries
+        # it so results cannot collide across years.
         state_part, _, rest = argument.partition(":")
-        attribute, _, purpose = rest.partition(":")
+        attribute, _, rest = rest.partition(":")
+        purpose, _, year = rest.partition(":")
+        options = {"year": year.strip()} if year.strip() else {}
         return HMDALoader(
             state=state_part.strip().upper() or "MS",
             protected=attribute.strip() or RACE,
             purpose=purpose.strip() or None,
+            **options,
         )
 
     if key == "compas":
