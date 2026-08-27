@@ -227,6 +227,37 @@ def sealed_sensitivity() -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def magnitude_sensitivity() -> pd.DataFrame:
+    """Is 1.0 point a discovered constant or a chosen round number? Sweep it and see.
+
+    Algorithm 1 refuses a sign call when the effect is "within seed noise", and the third
+    cohort's committed protocol fixes that at one percentage point. The paper reports the
+    split the guard produces (21 of 22 above, 11 of 18 below) as evidence the guard is
+    measured rather than assumed. That is evidence a floor exists. It is not evidence that
+    the floor belongs at 1.0, and the two claims read alike unless the sweep is shown.
+
+    Post-hoc, and the label matters: the cohorts were scored at 1.0 as pre-registered, and
+    nothing here re-scores them. This asks only how much the choice of floor mattered.
+    """
+    frame = pd.concat([
+        pd.read_csv(RESEARCH_RESULTS_DIR / "third_direction" / "third_direction.csv"),
+        pd.read_csv(RESEARCH_RESULTS_DIR / "lending_direction" / "lending_direction.csv"),
+    ])
+    frame["correct"] = frame["predicted"] == frame["actual"]
+    frame["magnitude"] = frame["pie"].abs()
+    rows = []
+    for floor in (0.25, 0.50, 0.75, 1.00, 1.25, 1.50, 2.00, 3.00, 5.00):
+        above = frame[frame["magnitude"] >= floor]
+        below = frame[frame["magnitude"] < floor]
+        rows.append({
+            "floor": floor,
+            "above_n": len(above), "above_correct": int(above["correct"].sum()),
+            "below_n": len(below), "below_correct": int(below["correct"].sum()),
+            "separation": float(above["correct"].mean() - below["correct"].mean()),
+        })
+    return pd.DataFrame(rows)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dataset", default=None,
@@ -236,6 +267,9 @@ def main() -> None:
                              "parity-gap floors instead")
     parser.add_argument("--seed-stability", action="store_true",
                         help="per-seed sign agreement for every sealed arm instead")
+    parser.add_argument("--magnitude-sensitivity", action="store_true",
+                        help="sweep Algorithm 1's 1.0-point magnitude guard over the "
+                             "sealed cohorts, to show what the choice of value bought")
     args = parser.parse_args()
     OUT = research_dir("verdicts")
 
@@ -246,6 +280,27 @@ def main() -> None:
         print(f"\nunanimous across seeds: {solid}/{len(table)} arms")
         table.to_csv(OUT / "seed_stability.csv", index=False)
         print(f"\nwrote {OUT}/seed_stability.csv")
+        return
+
+    if args.magnitude_sensitivity:
+        table = magnitude_sensitivity()
+        show = table.assign(
+            above=lambda d: d.above_correct.astype(str) + "/" + d.above_n.astype(str),
+            below=lambda d: d.below_correct.astype(str) + "/" + d.below_n.astype(str))
+        print(show[["floor", "above", "below", "separation"]]
+              .to_string(index=False, float_format=lambda x: f"{x:+.3f}"))
+        best = table.loc[table.separation.idxmax()]
+        at_one = table[table.floor == 1.00].iloc[0]
+        print(f"\n  A floor separates reliable arms from unreliable ones at every value "
+              f"tried: separation\n  runs {table.separation.min():+.0%} to "
+              f"{table.separation.max():+.0%} over 0.25-5.00 points.")
+        print(f"  Best separation is at {best.floor:.2f} ({best.separation:+.0%}); the "
+              f"committed 1.00 gives {at_one.separation:+.0%}.")
+        print("  So the guard's existence is measured and its value is operational -- a "
+              "round number\n  fixed in the protocol, which the data neither singles out "
+              "nor contradicts.")
+        table.to_csv(OUT / "magnitude_sensitivity.csv", index=False)
+        print(f"\nwrote {OUT}/magnitude_sensitivity.csv")
         return
 
     if args.sealed_sensitivity:

@@ -13,10 +13,10 @@
 
 
 % ---- density settings, injected by make_variants.py; edit that, not this file ----
-\usepackage[margin=0.32in]{geometry}
-\linespread{0.89}
+\usepackage[margin=0.30in]{geometry}
+\linespread{0.88}
 \setlength{\parskip}{0pt}
-\setlength{\columnsep}{0.13in}
+\setlength{\columnsep}{0.12in}
 \setlength{\textfloatsep}{3pt}
 \setlength{\floatsep}{3pt}
 \setlength{\intextsep}{3pt}
@@ -32,7 +32,7 @@
 \setlist{nosep,leftmargin=*}
 % fontsize rescales the whole ladder -- \small, \footnotesize and the tables with it --
 % which a bare \fontsize does not, and which would leave table text larger than body text.
-\usepackage[fontsize=7.9pt]{fontsize}
+\usepackage[fontsize=7.8pt]{fontsize}
 % ---------------------------------------------------------------------------------
 
 \begin{document}
@@ -414,8 +414,13 @@ always predicting the more common label. The second rule matters more than it so
 (Section~\ref{sec:failures}). Provenance, because exclusion rules can select on outcomes:
 both rules were developed \emph{during} the exploratory phase, in response to failures the
 ledger records, so retained-arm correlations from that phase are conditioned on
-in-sample-tuned filters and the sensitivity table reports the dependence; every sealed test
-from the re-seal onward carried both rules frozen in its pre-committed protocol.
+in-sample-tuned filters and the sensitivity table reports the dependence. What the sealed
+tests then did with the two rules varies, and stating it as uniform would flatter them: the
+re-seal applies \emph{neither} and scores all ten populations raw; the third-direction and
+lending cohorts apply the magnitude guard their own protocols fix, but not these two; and
+the screen-gated race cohort is the one that carries both, frozen before its extract
+existed. The sealed record is therefore less filtered than an unqualified claim of frozen
+guards would suggest, which is the direction that favours it.
 
 \textbf{Accounting.} Table~\ref{tab:accounting} states which populations enter which
 analysis and Table~\ref{tab:denominators} what each headline ratio is counted over, because
@@ -1362,12 +1367,27 @@ finding the direction verdict alone would hide. The probe's decision rule, state
 can be implemented: flag an arm whose mean granted probability just below the boundary
 is under 0.10 while the keep-probability's correlation with the score above it is
 $\approx 0$ --- the observed separation is wide (0.00--0.07 against 0.17--0.43, and
-$\approx 0$ against $+0.37$ to $+0.73$). Provenance of the remaining guards, since
-tuned constants are where exclusions hide: the 0.40 band span, the 2-point void guard,
-the 12-threshold grid and the 0.10 advisory boundary all come from the exploratory
-phase, like the two exclusion rules whose provenance Section~III discloses; all are
-frozen verbatim in the third cohort's committed protocol, and ``within seed noise'' in
-line 28 is the 1.0-point magnitude guard that protocol states.
+$\approx 0$ against $+0.37$ to $+0.73$). Provenance of the remaining guards, since tuned
+constants are where exclusions hide --- and since a guard's provenance is a property of
+the \emph{pair} it forms with a result, not of the guard. The 0.40 band span, the 0.05
+parity-gap floor and the 12-threshold grid are exploratory, fixed in the threshold sweep's
+own pre-registration and confirmatory for every seal after it. Three are not exploratory,
+and we state each because a reader should not have to reconstruct it. The \textbf{2-point
+void guard} was written for the equalized-odds pre-registration and imported
+\emph{backwards} into the threshold sweep once we noticed the earlier test lacked it; doing
+so moved three Connecticut arm sets from refutation to \textsc{void}, a change in the
+conjecture's favour, and the same audit checked the other direction and found no arm set
+that passed on noise --- three refutations removed, zero confirmations created. The \textbf{0.10
+advisory boundary} postdates the exploratory sweep it is now applied to, and has a lineage
+worth naming: the low-rate observation behind it first appeared as a predictive
+\emph{clause}, which was sealed, scored 4 of 8 and was withdrawn
+(Section~\ref{sec:sealed}); it survives only in the weaker role of an exclusion, where it
+can refuse an arm but cannot manufacture a correct call. The \textbf{2{,}500 noise floor} is
+the one this paper's own drafting got wrong: dated from the constant that carries it today
+it looks retrospective, and dated from its value it is exploratory, fixed before the
+sweeps and frozen in every seal since. Against all of that, the headline
+seal is the clean case: the re-seal's 9 of 10 applies \emph{none} of these guards and scores
+all ten populations raw, so it has nowhere to hide an exclusion.
 
 \textbf{It can return \textsc{indeterminate}.} Lines 28--29 refuse a sign call when the
 deployed rate sits inside the located bracket, or when the nearest arms' effects are
@@ -1384,8 +1404,18 @@ algorithm was written put a number on it: across their forty arms the rule is co
 \textbf{21 of 22} arms whose effect exceeds one point and on \textbf{11 of 18} below it ---
 95\% against 61\%, which is a coin flip. Those arms span 19 and 15 disjoint person-samples,
 and clustering on the sample rather than the arm leaves the split intact: 85--100\% above
-the threshold against 37--82\% below, intervals that barely meet. The threshold is doing
-what it claims.
+the threshold against 37--82\% below, intervals that barely meet.
+
+\textbf{What that measures is the floor's existence, not its location.} The two read alike
+and they are not the same claim, so we separate them. Sweeping the guard over the same forty
+sealed arms, \emph{every} value from 0.25 to 5.00 points separates the reliable arms from the
+unreliable ones, by between 13 and 35 percentage points; the largest separation is at 0.25
+($+35$) and the committed 1.0 gives $+34$. A dip to $+13$ at 0.75 shows the estimate is noisy
+at forty arms, which is the useful part: no value in the range can be argued to be the right
+one. The guard's \emph{existence} is therefore measured, and its \emph{value} is
+operational --- a round number fixed in the third cohort's protocol before its arms existed,
+which the data neither singles out nor contradicts. The cohorts were scored at 1.0 exactly as
+pre-registered; the sweep is post-hoc and re-scores nothing.
 
 \textbf{It returns a sign, never a size.} The distance from the crossover \emph{orders} the
 effect within a population, so a team can rank its own segments; but no slope transfers between

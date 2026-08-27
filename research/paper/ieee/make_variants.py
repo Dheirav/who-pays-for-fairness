@@ -39,7 +39,7 @@ VARIANTS = {
     # scope conditions in the Introduction (~450 words), pushing both variants a page over.
     # Margins narrowed rather than type shrunk as the body grew: 8.0pt at 0.40in and 7.8pt
     # at 0.45in both fit 10 pages, and the larger type reads better.
-    "paper-10p": dict(limit=10, font="7.9pt", margin="0.32in", leading="0.89", colsep="0.13in"),
+    "paper-10p": dict(limit=10, font="7.8pt", margin="0.30in", leading="0.88", colsep="0.12in"),
     # Retuned twice as the body grew: 7.5pt -> 7.4pt after the Setup clarification, then
     # tighter margins after the 107-population update and the two new ledger rows. Margins
     # were narrowed before the type was, since 7.4pt at 0.32in beats 7.2pt at 0.35in for

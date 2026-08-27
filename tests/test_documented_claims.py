@@ -1594,6 +1594,67 @@ def test_paper_circularity_answer_matches_the_sweeps() -> None:
           f"samples within 0.10; sub-point unanimity {unanimous:.0%}")
 
 
+def test_paper_guard_provenance_matches_the_code() -> None:
+    """The provenance claims are about the code, so the code is what checks them.
+
+    Two of them were wrong when first written -- the paper dated the noise floor from the
+    constant that carries it today rather than from its value, and claimed every sealed test
+    from the re-seal onward froze both exclusion rules when three of the four freeze
+    neither. Both are the sort of claim that reads fine forever unless something re-derives
+    it, so this re-derives it.
+    """
+    import inspect
+
+    from src.experiments import (analyse_ipums_race, analyse_lending_direction,
+                                 analyse_resealed, analyse_third_direction)
+    from src.experiments.analyse_verdicts import magnitude_sensitivity
+
+    text = _paper_text()
+
+    # Which sealed analysers actually apply the parity-gap and accuracy exclusions.
+    def applies(module) -> bool:
+        src = inspect.getsource(module)
+        return any(k in src for k in ("GAP_FLOOR", "MIN_BASELINE_GAP", "majority_baseline"))
+
+    assert not applies(analyse_resealed), (
+        "the paper says the re-seal applies neither exclusion rule and scores all ten raw; "
+        "its analyser now references one")
+    assert not applies(analyse_third_direction) and not applies(analyse_lending_direction), (
+        "the paper says the third-direction and lending cohorts apply neither of the two "
+        "exclusion rules; one of them now does")
+    assert applies(analyse_ipums_race), (
+        "the paper names the screen-gated race cohort as the one carrying both rules")
+
+    # The magnitude guard's value must stay operational: if some floor ever separates far
+    # better than its neighbours, "1.0 is a round number" stops being the honest reading.
+    table = magnitude_sensitivity()
+    at_one = float(table.loc[table["floor"] == 1.00, "separation"].iloc[0])
+    assert (table["separation"] > 0).all(), (
+        "the paper claims every floor from 0.25 to 5.00 separates; one no longer does:\n"
+        f"{table.to_string(index=False)}")
+    lo, hi = table["separation"].min(), table["separation"].max()
+    assert 0.12 <= lo <= 0.14 and 0.34 <= hi <= 0.36, (
+        f"the paper quotes the separation running 13% to 35%; it is now "
+        f"{lo:.0%} to {hi:.0%}")
+    assert abs(at_one - 0.343) < 0.005, (
+        f"the paper quotes +34 at the committed 1.0 floor; it is {at_one:+.0%}")
+    assert at_one < hi, (
+        "the paper's concession is that 1.0 is not the best separator. It now is, which "
+        "would make the guard look chosen for the value rather than the round number")
+
+    # Site-anchored, not bare words: "operational" alone also matches "operationalizes"
+    # and "operationally" elsewhere in the paper, so a bare check passes after the sentence
+    # it is meant to protect has been deleted. That failure mode has bitten this file twice.
+    for value in ("every\\emph{value} is operational --- a round number".replace("every", ""),
+                  "from 0.25 to 5.00 points separates",
+                  "by between 13 and 35 percentage points",
+                  "existence} is therefore measured"):
+        assert value in text, f"the paper's magnitude-provenance paragraph no longer says {value!r}"
+    _quotes(_doc(75), "+35%", "+34%", "0.75", "Three Connecticut arm sets", "4 of 8")
+    print(f"  separation {lo:.0%}-{hi:.0%}, committed floor {at_one:+.0%}; "
+          f"exclusion rules applied by 1 of 4 sealed analysers")
+
+
 def main() -> None:
     tests = [
         test_doc11_cross_flow_correlations,
@@ -1630,6 +1691,7 @@ def main() -> None:
         test_paper_verdict_distribution_matches_the_audit,
         test_paper_draft_population_count_is_recomputed,
         test_paper_circularity_answer_matches_the_sweeps,
+        test_paper_guard_provenance_matches_the_code,
         test_course_documents_still_match_their_results,
     ]
     failures = 0

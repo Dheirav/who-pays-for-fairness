@@ -92,8 +92,8 @@ content parity asserted.
 | | | |
 |---|---|---|
 | 4.1 | **The circularity objection** — answered with measurement, `docs/74` | done |
-| 4.2 | **Guard provenance.** Distinguish exploratory design, confirmatory validation, and retrospective integration of the audit's thresholds | J |
-| 4.3 | **The 1.0-point guard is operational, not natural** — say so rather than letting it read as a discovered constant | M |
+| 4.2 | **Guard provenance** — audited from git, `docs/75` | done |
+| 4.3 | **The 1.0-point guard is operational, not natural** — swept and stated | done |
 
 **4.1, done.** The objection — *if locating the crossover requires sweeping the constraint,
 what has prediction bought over fitting once and measuring?* — now has a demonstrated answer
@@ -121,6 +121,47 @@ sub-1.0-point arms unanimous only 55% of the time) is reported and **explicitly 
 — repeated fits at one point would expose it too, so it is not something only a sweep sees.
 
 Guarded by `test_paper_circularity_answer_matches_the_sweeps`, negative-tested both ways.
+
+---
+
+**4.2, done — and it found two false statements in the paper.**
+
+A guard's provenance is a property of the **(guard, result) pair**, not of the guard. The
+paper had claimed all remaining guards "come from the exploratory phase" and that "every
+sealed test from the re-seal onward carried both rules frozen". Neither was true.
+
+- The **2-point void guard is retrospective**: written for the equalized-odds
+  pre-registration, imported *backwards* into the threshold sweep. It moved three
+  Connecticut arm sets from refutation to VOID — a change in the conjecture's favour. Doc 37
+  had checked the other direction and found zero confirmations manufactured; the paper now
+  says both halves.
+- The **0.10 advisory boundary descends from a refuted clause** — sealed as a prediction,
+  scored 4 of 8, withdrawn. It survives only as an exclusion, where it can refuse an arm but
+  cannot manufacture a correct call. Disclosed rather than left to be found.
+- **Three of four sealed analysers apply neither exclusion rule.** The re-seal scores all ten
+  populations raw. Only the race cohort carries both. This cuts *for* the paper — the sealed
+  record is less filtered than it had claimed — which is why nobody would have caught it.
+
+**A correction to my own audit, recorded in `docs/75`.** The first draft dated the noise
+floor and advisory boundary from the commits introducing the constants `NOISE_FLOOR` and
+`ADVISORY_RATE` (08-23) and called both retrospective. Both datings were wrong — they caught
+a *re-encoding*, not an introduction. The 2,500 floor is doc 15's, from 08-12. Searching a
+constant's name rather than its value is the exact error the document exists to catch.
+
+**4.3, done.** "Measured, not assumed" was doing two jobs. Sweeping the guard over the same
+forty sealed arms: **every floor from 0.25 to 5.00 separates**, by +13% to +35%; the best is
+0.25 (+35%) and the committed 1.0 gives +34%. The dip to +13% at 0.75 shows the estimate is
+noisy at forty arms, so no value can be argued to be *the* right one. The floor's
+**existence is measured; its value is operational.** New flag:
+`analyse_verdicts --magnitude-sensitivity`.
+
+Guarded by `test_paper_guard_provenance_matches_the_code`, which re-derives which analysers
+apply which rules rather than trusting the prose. Its first version passed for the wrong
+reason — a bare `"operational" in text` also matches `operationalizes` elsewhere — and is now
+site-anchored and negative-tested.
+
+**Cost:** paper stays 21 pages, 0 overfull, 80 pytest checks. The 10-page variant was retuned
+to 7.8pt/0.30in.
 
 **Cost:** paper 20 → 21 pages, 0 overfull, 79 pytest checks / 35 documented-claims checks.
 
