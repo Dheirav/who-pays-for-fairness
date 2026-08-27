@@ -217,3 +217,100 @@ is decided, because narrowing the claim may make 7.1 unnecessary.
 **The research is stronger than the paper.** Nothing on this list requires new data to make
 the paper substantially better; only 7.1 would make the *result* stronger, and only if 3.6
 goes that way.
+
+---
+
+## Panel review, round 3 — five blind referees plus one external
+
+Five agents read the paper cold (statistician, fairness domain, practitioner, structural
+editor, adversary) with no access to `PAPER-TODO.md`, `EVIDENCE-MAP.md` or the state note.
+All five plus the external reviewer returned **major revision**; none returned reject.
+
+**Question 0 converged.** All five wrote the same central claim unprompted, so §3 worked.
+**All five also flagged the same overreach in it** — "property of the population rather than
+the method" (contradicted by our own post-processing boundary) and "predict in advance" (the
+deployable version needs the sweep). Six independent readers; that sentence goes.
+
+### Fixed this pass
+
+| | Defect | Fix |
+|---|---|---|
+| 1 | Four methods used and uncited — Zhang, Kamishima (2 of 5 in the ablation table), Feldman (a column in it), Hardt (the abstract's scope condition) | All cited, verified against Crossref/dblp/proceedings; method citations moved to the caption to avoid an overfull box |
+| 2 | The ledger described four ways — 9 / "sixteen of which two" / "five failures" / **18 rows** | One canonical account derived from the table: 18 rows, 12 fail, 3 hold, 2 underpowered, 1 a reading. The 9-direction-test subset checks out and is now labelled as a subset |
+| 3 | Table I and Table II disagreed on lending — 66 arms/50 markets vs 70/42 | Recomputed: **66 arms over 40 states**. The four extra are LA and MS, which predate the recorded denominator and so have no selection rate. New module `analyse_lending_coverage.py`; `independence.py` now requires a computable rate |
+| 3b | **"All fifty markets" overstated by ten** — only 40 states carry a rate-bearing race arm | Corrected in four places, including the ledger |
+| 7 | "Located crossovers span 0.28 to 0.65", repeated 8 times including the abstract | True span is **0.22 to 0.81**. Corrected everywhere. This cuts against us — a wider span makes the transported prior worse |
+| 8 | Sequential correction applied at ×2 while our own abstract names a family of nine | Both readings now stated: ×2 gives 0.09, ×9 gives 0.41 |
+| 9 | The people-share denominator misstated in the paper *and* in `incidence.py`'s docstring | Both corrected — see below |
+
+**Guarded** by `test_paper_ledger_and_coverage_counts_are_derived_not_narrated`, which checks
+the paper against *itself* rather than against data. Every prior guard verified a number
+against the results; none checked whether the paper said the same thing twice. That gap
+produced four of these seven. Negative-tested both ways.
+
+### The finding that would have been fatal, and wasn't
+
+The statistician's lead item was that Table IV's people-share column is arithmetically
+impossible given its exchange rates: `share ≤ e/(1+e)`, and all five rows exceed it. The
+argument is sound; the premise came from our prose. The real denominator is
+`priv_lost + unpriv_gained`, a strict subset of "individuals whose decision changed", so the
+ceiling does not bind. **The numbers were right and the description was not** — in the paper
+and in the docstring, which also described `lost_per_gained` as a ratio it does not compute.
+A careful referee read our definition correctly and derived an impossibility. That is worse
+than a small numeric error, and it is fixed in both places.
+
+### Parked, with a reason
+
+**#4, post-processing counted as 17 populations and 18 of 18.** Both may be legitimate —
+the correlation needs a selection rate and the group-direction check does not, exactly the
+pattern that explains the lending discrepancy. But the post-processing cell has **no
+committed module**, so neither number is reproducible and I will not patch numbers I cannot
+derive. Same defect class as doc 72's fifty-market counts, which this pass did fix by
+writing the module. This one needs the same treatment.
+
+### Prior work — checked against the sources, not from memory
+
+**No work requires a rescope.** The predictor is unclaimed in all four.
+
+- **Hu & Chen (FAccT 2020)** is the real pre-emption, and it is on *our own dataset*: an
+  in-processing parity-proxy constraint leaving both groups with fewer favourable
+  classifications. Their existence claim is prior to ours; `docs/05-who-pays.md` must stop
+  reading as unanticipated. Cited and distinguished.
+- **Liu et al. (ICML 2018)** — the closest structural analogue, but a different quantity
+  (one group's score change over time), a different axis (that group's own rate) and a
+  different decision class (group-specific). Cited and distinguished in three respects.
+  *The referee who called this our most damaging omission cited a non-existent author* —
+  it is Rolf and Simchowitz, not "Ball".
+- **Menon & Williamson (2018)** — a per-instance threshold correction, not the base-rate
+  shift it was described as; it never evaluates the net. One sentence.
+- **The infra-marginal line (Corbett-Davies 2017; Corbett-Davies, Gaebler, Nilforoshan,
+  Shroff & Goel 2023 — five authors, not two)** does **not** supply our mechanism: their
+  flip is one group's share of a *fixed budget*, and their explanatory variable is group
+  prevalence, not the selection rate.
+
+**But the mechanism concession was stronger than the evidence supports**, and this is the
+substantive change. Zeng et al. give the parity-optimal thresholds in closed form for the
+attribute-*aware* Bayes case; to first order the group sizes cancel and the pool's direction
+is set by which group carries more score density at the margin. That is a candidate
+mechanism three lines from a published theorem. "We cannot say why" is not defensible once a
+referee finds it. The paper now says what is true: **we failed to extend a known marginal
+argument to the blind randomized case**, which is a different and more honest claim.
+
+### Still open
+
+- **The claim sentence** — six readers, same objection. Highest priority.
+- **#5** §V-D's floor-robustness defence is false for South Carolina's dense sweep (+0.012 at
+  floor 0.02), and Table IX's floor-0.05 column is byte-identical to Table V's dense sweeps.
+- **#6** The 12-of-12 lending count has no discriminating power — every arm sits above the
+  crossover, so a constant "up" ties it. `analyse_lending_coverage.py` now prints this;
+  the paper's ledger row says it; §VIII-A does not yet.
+- **#10** Dense-sweep p < 0.001 is pseudoreplicated — 12 thresholds on one score vector.
+- **The lottery: cut**, on the editor's argument, which is our own control experiment — the
+  signature does not appear at any natural operating point, and the rest of the paper
+  addresses teams at theirs. Four sentences plus Algorithm 1 line 19; publish separately.
+- **§5 structure.** The editor's measured cut list reaches 10.3 pages and puts the audit
+  third instead of on page 15.
+
+**Cost of this pass:** 21 → 22 pages, 0 overfull, 81 pytest checks. Variants retuned to
+7.65pt and 6.9pt, which is the last time that is honest — the type is now small enough that
+§5's cuts are the only real fix.

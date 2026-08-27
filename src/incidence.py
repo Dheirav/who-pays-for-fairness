@@ -161,9 +161,21 @@ def people_incidence(flips: pd.DataFrame) -> dict[str, float]:
     experiences. Reporting only the rate decomposition would understate how lopsided
     the transfer is.
 
-    ``lost_per_gained`` is the number of privileged subjects who lost a favourable
-    decision for each unprivileged subject who gained one. Above 1 means the
-    mitigation destroyed more favourable outcomes than it created.
+    Two quantities with two different denominators, and the difference has to be stated
+    because it is not guessable. ``lost_per_gained`` counts *every* subject who lost a
+    favourable decision against *every* subject who gained one, both groups pooled: above 1
+    means the mitigation destroyed more favourable outcomes than it created.
+    ``people_share_levelling_down`` counts only the two flows that close the gap --
+    privileged losers and unprivileged gainers -- and reports the privileged losers' share
+    of those two. It therefore excludes the smaller counter-flows (privileged gainers,
+    unprivileged losers) that the exchange rate includes.
+
+    An external reviewer, reading the paper's prose denominator for this as "individuals
+    whose decision changed", derived an arithmetic impossibility between the two columns:
+    on that denominator the share cannot exceed e/(1+e). It can here, because the
+    denominator is smaller. The numbers were right and the description was not, in both the
+    paper and this docstring, which previously described ``lost_per_gained`` as the
+    privileged-to-unprivileged ratio it is not.
     """
     lost = float(flips["lost"].sum())
     gained = float(flips["gained"].sum())

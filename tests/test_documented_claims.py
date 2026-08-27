@@ -1655,6 +1655,66 @@ def test_paper_guard_provenance_matches_the_code() -> None:
           f"exclusion rules applied by 1 of 4 sealed analysers")
 
 
+def test_paper_ledger_and_coverage_counts_are_derived_not_narrated() -> None:
+    """Counts that appear in more than one place must be derived from one source.
+
+    A panel review found the failure ledger described four different ways in the same
+    paper -- nine, "sixteen of which two", "five failures one pass", against a table of
+    eighteen rows -- and the two accounting tables disagreeing on lending coverage. Neither
+    was caught by any existing guard, because every guard checked a number against the data
+    and none checked the paper against itself. This one does that.
+    """
+    import re
+
+    from src.experiments.analyse_lending_coverage import coverage, load_arms
+
+    text = _paper_text()
+    raw = (ROOT / "research" / "paper" / "ieee" / "paper.tex").read_text()
+
+    # --- the ledger, counted from its own rows
+    i = raw.find("EO transfer &")
+    table = raw[raw.rfind("\\begin{table", 0, i):raw.find("\\end{table", i)]
+    body = table[table.find("\\midrule"):table.find("\\bottomrule")]
+    rows = [r for r in body.split("\\\\") if "&" in r]
+    holds = sum("holds" in r.split("&")[1] for r in rows if len(r.split("&")) > 1)
+    assert len(rows) == 18, f"the ledger has {len(rows)} rows; the paper says eighteen"
+    assert holds == 3, f"{holds} rows record a hold; the paper says three"
+    for phrase in ("holds \\textbf{eighteen} rows", "twelve fail, three",
+                   "nine that test a \\emph{direction} rule"):
+        assert phrase.replace("\\\\", "\\") in text, \
+            f"the ledger's canonical count no longer says {phrase!r}"
+    # The stale descriptions must not come back.
+    for stale in ("sixteen attempts at one claim, of which two succeeded",
+                  "The sealed record is five failures, one pass"):
+        assert stale not in text, f"a superseded ledger count has returned: {stale!r}"
+
+    # --- lending coverage: both accounting tables, from one computation
+    table2 = coverage(load_arms())
+    race = table2[table2.attribute == "race"].iloc[0]
+    total_arms = int(table2.arms.sum())
+    states = int(table2.states.max())
+    assert (total_arms, states) == (66, 40), (
+        f"lending coverage recomputes to {total_arms} arms over {states} states; "
+        f"the paper's two accounting tables both say 66 over 40")
+    assert (int(race.clears_both), int(race.both_up)) == (12, 12)
+    assert f"Lending coverage & {total_arms} & {states} & 1" in text, \
+        "the independence table no longer carries the recomputed lending denominators"
+    assert "40 race + 26 sex arms (66)" in text, \
+        "the accounting table no longer carries the recomputed lending arm count"
+    assert "all fifty markets" not in text and "all fifty\nstates" not in raw, \
+        "the overstated fifty-market coverage claim has returned"
+
+    # --- the crossover span, from the located brackets themselves
+    from src.experiments.analyse_circularity import distances, load_sweeps
+    span = distances(load_sweeps()).crossover
+    lo, hi = round(float(span.min()), 2), round(float(span.max()), 2)
+    assert (lo, hi) == (0.22, 0.81), f"located crossovers now span {lo}-{hi}"
+    assert "0.28 to 0.65" not in text, \
+        "the understated 0.28-0.65 crossover span has returned to the prose"
+    print(f"  ledger 18 rows / {holds} hold; lending {total_arms} arms / {states} states; "
+          f"crossovers {lo}-{hi}")
+
+
 def main() -> None:
     tests = [
         test_doc11_cross_flow_correlations,
@@ -1692,6 +1752,7 @@ def main() -> None:
         test_paper_draft_population_count_is_recomputed,
         test_paper_circularity_answer_matches_the_sweeps,
         test_paper_guard_provenance_matches_the_code,
+        test_paper_ledger_and_coverage_counts_are_derived_not_narrated,
         test_course_documents_still_match_their_results,
     ]
     failures = 0

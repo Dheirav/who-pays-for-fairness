@@ -108,10 +108,18 @@ def main() -> None:
     add("landscape survey", "78% of 50", _read("survey/survey_verdicts.csv"))
 
     # Lending coverage: read the natural arms straight off the directories.
+    # Arms with a computable selection rate, not directories -- and the difference is not
+    # cosmetic. Four stored HMDA arms (LA and MS, both attributes) predate the recorded
+    # test-set denominator, so they carry a measured pool change but no rate. Every lending
+    # claim in the paper is read against a rate, so those four cannot enter the ratio they
+    # would otherwise inflate. Counting directories reported 70 arms over 42 populations
+    # here while Table I and document 72 said 66 over 40; a panel review found the two
+    # tables disagreeing, and the rate-bearing set is the one the claims are about.
     lend = [d.name for d in R.glob("hmda_*_2018_*_levelling_up")
-            if len(d.name.replace("_levelling_up", "").split("_")) == 4]
+            if len(d.name.replace("_levelling_up", "").split("_")) == 4
+            and "n_test" in pd.read_csv(d / "levelling_up_runs.csv", nrows=0).columns]
     if lend:
-        rows.append(account("lending coverage, all markets", lend, "50 states"))
+        rows.append(account("lending coverage, all markets", lend, "40 race + 26 sex"))
 
     out = pd.DataFrame(rows)
     print(out.to_string(index=False))
