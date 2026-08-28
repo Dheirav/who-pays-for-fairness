@@ -798,3 +798,64 @@ arms over 75 populations, median exchange 1.32.
 markets, locate the crossover, then predict the remaining markets against *that* rather than a
 transported value. That is the sweep-conditional claim's own protocol and it has never been run
 prospectively.
+
+
+## 7.2: the located crossover loses, and doc 77 is retracted
+
+Sealed at `b60fae9`. **S1 FAILS**, and against the value this project located itself.
+
+| | located 0.405 | transported 0.660 | constant |
+|---|---:|---:|---:|
+| S1, guarded (3 arms) | **1** | 3 | 3 |
+| S2, unguarded (4 arms) | **2** | 3 | 3 |
+
+### The retraction, which matters more than the verdict
+
+Doc 77 reported ten manufactured arms running `---+++++++` — one sign change — and called it
+the phenomenon holding. **Sixteen arms give `-+---+--++++++++`: five sign changes.**
+
+The error was mine and it was specific: **the paper's monotonicity claim is *within* a
+population across operating points, and doc 77 applied it *across* populations at their
+natural rates** — a different object, and one the paper explicitly says does not transport.
+Ten markets happening to sort was luck. Doc 77 now carries the retraction at its head and both
+papers withdraw the reading.
+
+### What survives, and it is stronger than what was withdrawn
+
+**ρ = +0.747, p = 0.001, n = 16** — the cross-population correlation is now significant where
+it was not. The rate carries information about direction across manufactured markets; it just
+does not separate them at any single threshold:
+
+| threshold | correct |
+|---|---:|
+| best possible (0.450) | 14 of 16 |
+| 0.405 (located) | 13 of 16 |
+| best constant | 10 of 16 |
+| **0.660 (the paper's lending value)** | **9 of 16 — worse than a constant** |
+
+That 13-against-9 is **post-hoc and does not rescue the seal**: 0.405 was located from ten of
+those sixteen arms.
+
+### Why it failed where it did — a second design error
+
+Both sealed misses are inside 0.405's dead band: **MS 0.018 away, TX 0.043 away.** The paper's
+own calibration says the rule is 1-of-6 within 0.05 of a crossover. The cohort had two
+separating arms and both were in the band where the paper predicts failure. I wrote a void
+condition for the *previous* experiment's failure mode and did not write one for this.
+
+### The lending record: five sealed attempts, five distinct failures
+
+sweep unreliable → constant tied → nothing below the crossover → transported value badly
+placed → located value loses in its own dead band. **No transported crossover has yet predicted
+direction on real approvals.** The paper now says so.
+
+**Counts:** 179 populations, 170 from two instruments, ledger **21 rows** (15 fail), **12
+direction tests**, sequential factor 12 so the tail is 0.56, floor 95 arms over 78 populations.
+
+### What would actually test the claim
+
+A **within-population sweep** on one manufactured market — hold the market fixed, move the
+operating point. Everything above compares populations at their natural rates, which is the
+weaker object. The paper's actual claim has never been tested on real allocations, because no
+lending sweep has passed the audit and doc 71 found the sweep unreliable there. More markets
+will not close that gap.

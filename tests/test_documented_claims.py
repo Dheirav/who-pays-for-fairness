@@ -1667,9 +1667,9 @@ def test_paper_ledger_and_coverage_counts_are_derived_not_narrated() -> None:
     body = table[table.find("\\midrule"):table.find("\\bottomrule")]
     rows = [r for r in body.split("\\\\") if "&" in r]
     holds = sum("holds" in r.split("&")[1] for r in rows if len(r.split("&")) > 1)
-    assert len(rows) == 20, f"the ledger has {len(rows)} rows; the paper says twenty"
+    assert len(rows) == 21, f"the ledger has {len(rows)} rows; the paper says twenty-one"
     assert holds == 3, f"{holds} rows record a hold; the paper says three"
-    for phrase in ("holds \\textbf{twenty} rows", "fourteen fail, three",
+    for phrase in ("holds \\textbf{twenty-one} rows", "fifteen fail, three",
                    "that test a \\emph{direction} rule"):
         assert phrase.replace("\\\\", "\\") in text, \
             f"the ledger's canonical count no longer says {phrase!r}"
@@ -1815,18 +1815,18 @@ def test_paper_floor_table_matches_results() -> None:
     w = withdrawing(load())
     s = summarise(w)
 
-    assert (s["arms"], s["populations"]) == (92, 75), (
+    assert (s["arms"], s["populations"]) == (95, 78), (
         f"the floor now measures over {s['arms']} arms and {s['populations']} populations; "
-        f"the paper's table says 92 over 75")
+        f"the paper's table says 95 over 78")
     assert round(s["exchange_plain"], 2) == 1.32 and round(s["exchange_floor"], 2) == 0.94
-    assert (s["below_one_plain"], s["below_one_floor"]) == (0, 75), (
-        f"the paper says none of the 92 was at or below one-for-one before the floor and 75 "
+    assert (s["below_one_plain"], s["below_one_floor"]) == (0, 78), (
+        f"the paper says none of the 95 was at or below one-for-one before the floor and 78 "
         f"after; recomputed {s['below_one_plain']} and {s['below_one_floor']}")
-    assert round(s["pool_plain"], 2) == -2.83 and round(s["pool_floor"], 2) == 0.93, (
+    assert round(s["pool_plain"], 2) == -2.78 and round(s["pool_floor"], 2) == 0.97, (
         "the paper's claim that the floor reverses the median withdrawing arm no longer holds")
     assert abs(s["accuracy_cost"] - 0.05) < 0.005
 
-    for value in ("1.32", "0.94", "75 of 92", "$-2.83\\%$", "0.05 accuracy points"):
+    for value in ("1.32", "0.94", "78 of 95", "$-2.78\\%$", "0.05 accuracy points"):
         assert value in text, f"the floor table no longer carries {value!r}"
     # The coupled correlation must stay withdrawn: benefit = damage - remainder.
     assert "$r \\approx -0.99$" in text and "arithmetic rather than a finding" in text, \
@@ -1909,19 +1909,15 @@ def test_paper_dwelling_seal_matches_results() -> None:
     arms = pd.DataFrame(rows, columns=["rate", "pie"]).sort_values("rate")
     signs = "".join("-" if p < 0 else "+" for p in arms.pie)
     flips = sum(signs[i] != signs[i + 1] for i in range(len(signs) - 1))
-    assert len(arms) == 10, f"{len(arms)} manufactured arms, the paper describes ten"
-    assert signs == "---+++++++", f"the sign sequence is now {signs}, not ---+++++++"
-    assert flips == 1, f"{flips} sign changes; the paper reports a single crossing"
+    assert len(arms) == 16, f"{len(arms)} manufactured arms; 7.2 brought the total to 16"
+    assert signs != "---+++++++" and flips > 1, (
+        "the ten-market single crossing was retracted by experiment 7.2 on sixteen markets; "
+        "if it has returned, document 78's correction is wrong")
 
-    below = arms[arms.pie < 0].rate.max()
-    above = arms[arms.pie > 0].rate.min()
-    assert round(below, 2) == 0.39 and round(above, 2) == 0.42, (
-        f"the crossover bracket is now {below:.3f}-{above:.3f}; the paper says 0.39-0.42")
     rho = stats.spearmanr(arms.rate, arms.pie).statistic
-    assert 0.60 <= rho <= 0.65, f"Spearman is now {rho:+.3f}; the paper reports +0.624"
+    assert 0.73 <= rho <= 0.77, f"Spearman is now {rho:+.3f}; the paper reports +0.747"
 
-    for value in ("$-,-,-,+,+,+,+,+,+,+$", "0.39--0.42", "0.367 to 0.885",
-                  "Three cohorts, one pass"):
+    for value in ("\\rho = +0.747", "We withdraw the monotonicity", "Three cohorts, one pass"):
         assert value in text, f"the paper no longer states {value!r}"
     _quotes(_doc(77), "5 of 8", "10 of 10", "---+++++++", "0.405")
     print(f"  7.1b: S1 {s1['rule']}/{s1['n']} vs constant {s1['constant']}; "

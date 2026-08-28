@@ -5,6 +5,15 @@ fourteen arms existed.** Reproduce: `.venv/bin/python -m src.experiments.analyse
 
 ---
 
+> **CORRECTED BY [document 78](78-the-crossing-was-an-artefact-of-ten-markets.md).** The
+> single sign change reported below held on ten markets and does **not** survive sixteen:
+> six further manufactured-housing markets give five sign changes. The error was mine and it
+> was specific — the paper's monotonicity claim is *within* a population across operating
+> points, and this document applied it *across* populations at their natural rates, which the
+> paper explicitly says does not transport. What survives is the cross-population correlation,
+> now ρ = +0.747 (p = 0.001, n = 16). The sealed verdict below is unaffected: 7.1b failed then
+> and fails now. Read the rest of this document with that retraction in force.
+
 ## Both halves, and they point opposite ways
 
 **S1 FAILS.** The rule, transported at the published lending crossover of 0.660, scores 5 of 8
