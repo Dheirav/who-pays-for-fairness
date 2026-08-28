@@ -73,8 +73,13 @@ def build(name: str) -> DatasetLoader:
         # it so results cannot collide across years.
         state_part, _, rest = argument.partition(":")
         attribute, _, rest = rest.partition(":")
-        purpose, _, year = rest.partition(":")
-        options = {"year": year.strip()} if year.strip() else {}
+        purpose, _, rest = rest.partition(":")
+        year, _, dwelling = rest.partition(":")
+        options = {}
+        if year.strip():
+            options["year"] = year.strip()
+        if dwelling.strip():
+            options["dwelling"] = dwelling.strip()
         return HMDALoader(
             state=state_part.strip().upper() or "MS",
             protected=attribute.strip() or RACE,

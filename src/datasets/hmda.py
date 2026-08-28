@@ -144,6 +144,14 @@ EXCLUDED: dict[str, str] = {
 # income cutoff. See research/NEXT.md item 1.
 LOAN_PURPOSE = {1: "purchase", 2: "improvement", 31: "refinance", 32: "cashout", 4: "other"}
 
+# How the dwelling was built, which turns out to move the approval rate further than purpose
+# does: pooled over four 2021 states the race arm approves manufactured-housing applications
+# at 0.505 against 0.850 for site-built. Purpose was the paper's only route below the lending
+# crossover and it does not reach; this is the one slice of the register that does, which is
+# why it is exposed. The column is already a model feature and simply becomes constant
+# within a filtered population.
+CONSTRUCTION = {1: "sitebuilt", 2: "manufactured"}
+
 SEX, RACE = "derived_sex", "derived_race"
 
 PROTECTED_SCHEMES = {
@@ -189,10 +197,15 @@ class HMDALoader:
     """
 
     def __init__(self, state: str = "MS", *, protected: str = RACE,
-                 year: str = "2018", purpose: str | None = None) -> None:
+                 year: str = "2018", purpose: str | None = None,
+                 dwelling: str | None = None) -> None:
         if protected not in PROTECTED_SCHEMES:
             raise KeyError(
                 f"cannot protect '{protected}'; available: {sorted(PROTECTED_SCHEMES)}"
+            )
+        if dwelling is not None and dwelling not in set(CONSTRUCTION.values()):
+            raise ValueError(
+                f"unknown dwelling '{dwelling}'; available: {sorted(set(CONSTRUCTION.values()))}"
             )
         if purpose is not None and purpose not in set(LOAN_PURPOSE.values()):
             raise KeyError(
@@ -204,6 +217,7 @@ class HMDALoader:
         self.protected = protected
         self.year = year
         self.purpose = purpose
+        self.dwelling = dwelling
 
     @property
     def name(self) -> str:
@@ -218,7 +232,10 @@ class HMDALoader:
         # The purpose changes which applications are in the population, so it must reach the
         # name for the same reason the protected attribute does -- two arms sharing an output
         # directory is the silent-overwrite failure `results_io` exists to prevent.
-        return stem if self.purpose is None else f"{stem}_{self.purpose}"
+        for part in (self.purpose, self.dwelling):
+            if part is not None:
+                stem = f"{stem}_{part}"
+        return stem
 
     def _download(self, state: str) -> Path:
         path = DATA_DIR / f"hmda_{self.year}_{state}.csv"
@@ -247,6 +264,9 @@ class HMDALoader:
         if self.purpose is not None:
             codes = [c for c, name in LOAN_PURPOSE.items() if name == self.purpose]
             frame = frame[frame["loan_purpose"].isin(codes)]
+        if self.dwelling is not None:
+            codes = [c for c, name in CONSTRUCTION.items() if name == self.dwelling]
+            frame = frame[frame["construction_method"].isin(codes)]
         frame = frame[frame["action_taken"].isin([*APPROVED_CODES, DENIED_CODE])]
         # 1 is the favourable outcome throughout this project: here, the lender approved.
         y = frame["action_taken"].isin(APPROVED_CODES).astype(int)
@@ -324,6 +344,7 @@ class HMDALoader:
                 "reference": "Home Mortgage Disclosure Act, 2018 reporting year",
                 "states": self.states,
                 "loan_purpose": self.purpose,
+                "construction_method": self.dwelling,
                 "year": self.year,
                 "protected_attribute": self.protected,
                 "task": "did the lender approve the mortgage application",
