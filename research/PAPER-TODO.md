@@ -750,3 +750,51 @@ not 0.41, and the floor set 86 → **89 arms over 73 populations** (medians unmo
 below ~0.66 — a non-US mortgage register, a selective credit product, or an allocation domain
 that is not lending. Same conclusion the paper already had; the difference is that it is now
 measured rather than inferred.
+
+
+## 7.1b: the seal failed and the phenomenon held
+
+Sealed at `e5fbd85` with zero arms on disk, after the probe showed manufactured housing is the
+one HMDA slice reaching below the crossover. **S1 FAILS** — and it is the most informative
+result in the lending record.
+
+**The failure.** The rule transported at 0.660 scores 5 of 8 against a bar of 6 and a
+constant's 6 of 8. It beats the dwelling-only null (5 to 4), so it is not merely reading the
+dwelling category, but it loses to a constant.
+
+**The confirmation.** Sorted by selection rate, the ten manufactured arms run
+`- - - + + + + + + +`. **One sign change, no exceptions**, across real mortgage approvals from
+0.367 to 0.885, with the crossover bracketed at 0.39–0.42 and ρ = +0.624.
+
+| | score |
+|---|---|
+| transported prior at 0.660 | **5 of 10** |
+| crossover measured on these arms (≈0.405) | **10 of 10** |
+
+**The 10 of 10 is not claimed** — the crossover was located from the arms it then scores,
+which is the circularity this project refused in doc 47's "seven of eight". What *is* not
+post-hoc is the single crossing: that is a property of the arm set however the boundary is
+drawn, and it is the paper's central empirical claim shown on decisions actually made about
+people.
+
+**What it costs and what it buys.** The transported-prior claim is weaker: 9 of 10 sealed on
+ACS, 5 of 10 post-hoc on larger ACS states, 5 of 10 sealed on mortgage approvals. **Three
+cohorts, one pass.** Against that, the sweep-conditional claim gets its first confirmation on
+real allocations, and the paper's own thesis — crossovers are population-specific, nothing
+predicts their location — is demonstrated *against the paper's own published value*: 0.660 was
+located on site-built lending and manufactured housing crosses near 0.405.
+
+**A defect the guards caught.** `test_paper_draft_population_count_is_recomputed` carried its
+own copy of the population rule. When `independence.py` learned to fold dwelling slices onto
+their market, the copy did not, and the two disagreed by thirteen populations. The rule is now
+imported rather than restated — two implementations of one definition was the defect, not the
+mismatch it produced.
+
+**Counts, all recomputed:** 173 populations, 164 from two instruments, ledger **20 rows** (14
+fail), **11 direction tests**, sequential factor 11 so the corrected tail is 0.51, floor 92
+arms over 75 populations, median exchange 1.32.
+
+**The experiment now worth running**, and it needs no new instrument: sweep four manufactured
+markets, locate the crossover, then predict the remaining markets against *that* rather than a
+transported value. That is the sweep-conditional claim's own protocol and it has never been run
+prospectively.

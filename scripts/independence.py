@@ -39,7 +39,11 @@ ROOT = Path(__file__).resolve().parents[1]
 R = ROOT / "research" / "results"
 
 _METHOD = re.compile(r"_(eo|hgb|eps\d+|op[\d]+|post|aware|s60k)$")
-_PURPOSE = re.compile(r"_(purchase|refinance|cashout|improvement|other)$")
+# Loan purpose and dwelling category are both *slices of one market*, read two ways, so
+# they fold onto the market exactly as two attribute arms of one state do. Leaving the
+# dwelling slices unfolded counted each market twice and put the population total 17
+# too high the moment the 7.1b cohort landed.
+_PURPOSE = re.compile(r"_(purchase|refinance|cashout|improvement|other|manufactured|sitebuilt)$")
 
 
 def population(name: str) -> str:

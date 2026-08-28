@@ -1376,30 +1376,20 @@ def test_paper_draft_population_count_is_recomputed() -> None:
         return
     text = paper.read_text()
 
-    # `_aware` is the attribute-aware in-processing configuration (doc 63): the same
-    # persons under a different model input, a method suffix like the others here.
-    method = _re.compile(r"_(eo|hgb|eps\d+|op[\d]+|post|aware|s60k)$")
-    purpose = _re.compile(r"_(purchase|refinance|cashout|improvement|other)$")
-    names = set()
-    for directory in RESEARCH.glob("*"):
-        if directory.is_dir() and (directory / "levelling_up_runs.csv").exists():
-            stem = directory.name.replace("_levelling_up", "")
-            while method.search(stem):
-                stem = method.sub("", stem)
-            names.add(stem)
+    # The rule is imported, not restated. This test carried its own copy for months; when
+    # the dwelling slices arrived, `scripts/independence.py` learned to fold them onto their
+    # market and this copy did not, so the two disagreed by thirteen populations. Two
+    # implementations of one definition is the defect, not the mismatch it produced.
+    import sys as _sys
 
-    def population(stem: str) -> str:
-        stem = purpose.sub("", _re.sub(r"_t\d+", "", stem))
-        # The employment and coverage task arms draw from the same PUMS person
-        # samples as the income arms of the same state-year (an employment row set
-        # contains the income row set's workers), so by the paper's definition ---
-        # independent means disjoint person samples --- they are new *arms* of
-        # already-counted populations, never new populations (doc 60's accounting
-        # note, stated in the paper's accounting table).
-        stem = _re.sub(r"^acs_(employment|coverage)_", "acs_income_", stem)
-        return _re.sub(r"_(rac1p|race|sex)$", "", stem)
+    _sys.path.insert(0, str(ROOT))
+    from scripts.independence import population
 
-    pops = {population(n) for n in names}
+    pops = {
+        population(directory.name)
+        for directory in RESEARCH.glob("*")
+        if directory.is_dir() and (directory / "levelling_up_runs.csv").exists()
+    }
     # hmda_ms_la pools two populations already counted, so it is not independent of them.
     independent = {p for p in pops if p != "hmda_ms_la_2018"}
 
@@ -1677,9 +1667,9 @@ def test_paper_ledger_and_coverage_counts_are_derived_not_narrated() -> None:
     body = table[table.find("\\midrule"):table.find("\\bottomrule")]
     rows = [r for r in body.split("\\\\") if "&" in r]
     holds = sum("holds" in r.split("&")[1] for r in rows if len(r.split("&")) > 1)
-    assert len(rows) == 19, f"the ledger has {len(rows)} rows; the paper says nineteen"
+    assert len(rows) == 20, f"the ledger has {len(rows)} rows; the paper says twenty"
     assert holds == 3, f"{holds} rows record a hold; the paper says three"
-    for phrase in ("holds \\textbf{nineteen} rows", "thirteen fail, three",
+    for phrase in ("holds \\textbf{twenty} rows", "fourteen fail, three",
                    "that test a \\emph{direction} rule"):
         assert phrase.replace("\\\\", "\\") in text, \
             f"the ledger's canonical count no longer says {phrase!r}"
@@ -1825,18 +1815,18 @@ def test_paper_floor_table_matches_results() -> None:
     w = withdrawing(load())
     s = summarise(w)
 
-    assert (s["arms"], s["populations"]) == (89, 73), (
+    assert (s["arms"], s["populations"]) == (92, 75), (
         f"the floor now measures over {s['arms']} arms and {s['populations']} populations; "
-        f"the paper's table says 89 over 73")
-    assert round(s["exchange_plain"], 2) == 1.33 and round(s["exchange_floor"], 2) == 0.94
-    assert (s["below_one_plain"], s["below_one_floor"]) == (0, 72), (
-        f"the paper says none of the 89 was at or below one-for-one before the floor and 72 "
+        f"the paper's table says 92 over 75")
+    assert round(s["exchange_plain"], 2) == 1.32 and round(s["exchange_floor"], 2) == 0.94
+    assert (s["below_one_plain"], s["below_one_floor"]) == (0, 75), (
+        f"the paper says none of the 92 was at or below one-for-one before the floor and 75 "
         f"after; recomputed {s['below_one_plain']} and {s['below_one_floor']}")
-    assert round(s["pool_plain"], 2) == -2.78 and round(s["pool_floor"], 2) == 0.88, (
+    assert round(s["pool_plain"], 2) == -2.83 and round(s["pool_floor"], 2) == 0.93, (
         "the paper's claim that the floor reverses the median withdrawing arm no longer holds")
     assert abs(s["accuracy_cost"] - 0.05) < 0.005
 
-    for value in ("1.33", "0.94", "72 of 89", "$-2.78\\%$", "0.05 accuracy points"):
+    for value in ("1.32", "0.94", "75 of 92", "$-2.83\\%$", "0.05 accuracy points"):
         assert value in text, f"the floor table no longer carries {value!r}"
     # The coupled correlation must stay withdrawn: benefit = damage - remainder.
     assert "$r \\approx -0.99$" in text and "arithmetic rather than a finding" in text, \
@@ -1882,6 +1872,62 @@ def test_paper_allocation_seal_matches_results() -> None:
           f"{s1['down_calls']} down-calls")
 
 
+def test_paper_dwelling_seal_matches_results() -> None:
+    """Experiment 7.1b: the seal fails and the structure it tests holds. Both must stay true.
+
+    The interesting property is not the score but the sign sequence: sorted by selection
+    rate the manufactured arms run ---+++++++, one crossing, no exceptions. That is a
+    property of the arm set rather than of any boundary, and it is the paper's central
+    empirical claim shown on real allocative decisions. If a re-run breaks the monotonicity,
+    the paper's account of this cohort is wrong regardless of what the score does.
+    """
+    import pathlib as _pl
+
+    import pandas as pd
+    from scipy import stats
+
+    from src.experiments.analyse_dwelling_seal import SEALED, load, score
+
+    text = _paper_text()
+    frame = load()
+    assert len(frame) == len(SEALED) == 14, f"{len(frame)} of {len(SEALED)} arms present"
+
+    s1 = score(frame, guard=True)
+    assert s1["separating"] >= 1, (
+        "the cohort no longer separates the rate rule from the dwelling null, which the "
+        "protocol pre-registered as VOID rather than a pass")
+    assert s1["rule"] <= s1["constant"], "S1 is reported as a failure; it now passes"
+    assert (s1["rule"], s1["constant"], s1["n"]) == (5, 6, 8)
+
+    # the structural claim, over every manufactured arm including the three exploratory ones
+    rows = []
+    for d in sorted((RESEARCH).glob("hmda_*_2021_race_manufactured_levelling_up")):
+        df = pd.read_csv(d / "levelling_up_runs.csv")
+        b, e = df[df.arm == "baseline"], df[df.arm == "expgrad_dp"]
+        rows.append((float((b.positives / b.n_test).mean()),
+                     float(e.positives_pct_change.mean())))
+    arms = pd.DataFrame(rows, columns=["rate", "pie"]).sort_values("rate")
+    signs = "".join("-" if p < 0 else "+" for p in arms.pie)
+    flips = sum(signs[i] != signs[i + 1] for i in range(len(signs) - 1))
+    assert len(arms) == 10, f"{len(arms)} manufactured arms, the paper describes ten"
+    assert signs == "---+++++++", f"the sign sequence is now {signs}, not ---+++++++"
+    assert flips == 1, f"{flips} sign changes; the paper reports a single crossing"
+
+    below = arms[arms.pie < 0].rate.max()
+    above = arms[arms.pie > 0].rate.min()
+    assert round(below, 2) == 0.39 and round(above, 2) == 0.42, (
+        f"the crossover bracket is now {below:.3f}-{above:.3f}; the paper says 0.39-0.42")
+    rho = stats.spearmanr(arms.rate, arms.pie).statistic
+    assert 0.60 <= rho <= 0.65, f"Spearman is now {rho:+.3f}; the paper reports +0.624"
+
+    for value in ("$-,-,-,+,+,+,+,+,+,+$", "0.39--0.42", "0.367 to 0.885",
+                  "Three cohorts, one pass"):
+        assert value in text, f"the paper no longer states {value!r}"
+    _quotes(_doc(77), "5 of 8", "10 of 10", "---+++++++", "0.405")
+    print(f"  7.1b: S1 {s1['rule']}/{s1['n']} vs constant {s1['constant']}; "
+          f"signs {signs}, rho {rho:+.3f}")
+
+
 def main() -> None:
     tests = [
         test_doc11_cross_flow_correlations,
@@ -1924,6 +1970,7 @@ def main() -> None:
         test_paper_two_answer_rates_stay_distinguished,
         test_paper_floor_table_matches_results,
         test_paper_allocation_seal_matches_results,
+        test_paper_dwelling_seal_matches_results,
         test_course_documents_still_match_their_results,
     ]
     failures = 0
