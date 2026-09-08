@@ -202,8 +202,7 @@ We say \emph{predicts}, never \emph{causes}: no pooled slope transfers.
 \cite{backfire2026} establishes distribution-dependence in the blind regime without
 experiments, its conditions being orderings on score regions rather than measurable
 quantities. A percentile-relaxed form of that ordering agrees with the measured direction on
-24 of 26 arms and tracks our predictor at $r = +0.935$, holding across 150 arms at $r = +0.850$
-(population-clustered 95\% interval $+0.813$ to $+0.892$) and surviving a boosted-tree probe.
+24 of 26 arms and tracks our predictor at $r = +0.935$.
 The exact conditions were certified on none of the 26 by our plug-in estimator, whose ratio
 diverges in the $\hat\nu$ tail --- an estimator pathology, and we tried no other.
 
@@ -491,7 +490,7 @@ selection rate and crosses zero. Eight densely swept populations, every retained
 that reverse are marked, and both are sweeps whose viable band confines them below the
 crossover. Panels are deliberately \emph{not} pooled --- no pooled slope survives its
 pre-registered bar, so one scatter would assert a common curve the data reject. These eight
-are 5\% of the record and are shown for shape, not for scale; Figures~\ref{fig:survey} to~\ref{fig:calibration} carry the population-level evidence.}
+are 5\% of the record and are shown for shape, not for scale; Figures~\ref{fig:survey} and~\ref{fig:crossovers} carry the population-level evidence.}
 \label{fig:crossover}
 \end{figure*}
 
@@ -875,8 +874,8 @@ in the same set: Florida enters twice, once per attribute, at 0.284 by sex and 0
 
 The limit belongs with the answer. The sweep does not buy a better estimate of what the
 constraint does at today's threshold --- repeated fits at one point buy that. It buys
-\emph{shape}. Five of the 21 sit more than 0.20 from their crossover and would have decided
-the same from one fit; that 24\% over-states the waste, because every sample in the set has
+\emph{shape}. Five of the 22 sit more than 0.20 from their crossover and would have decided
+the same from one fit; that 23\% over-states the waste, because every sample in the set has
 already passed the monotonicity screen and the 22\% admitting no rule never enter it. A team
 cannot learn which group it is in without running the sweep, which is the reply: the audit is
 not circular, because its output is not the quantity a single fit measures.
@@ -899,7 +898,7 @@ committed to version control before any arm ran. Fifty draws resolve to 48 disjo
 samples, because two state-years were drawn under both attributes --- the same people read
 twice.
 
-\textbf{The result: 78\% admit a directional rule and 22\% do not}, of which 64\% are classic
+\textbf{The result: 78\% admit a directional rule and 22\% do not}; of those admitting a rule, 64\% are classic
 single-crossing landscapes. Resampling populations rather than draws puts the directional
 share at 66--89\%, and leaving each population out in turn never moves it below 77\%. Run over the 104 stored sweeps that resolve to a dataset spec, the audit returns 63 directional verdicts, 14 \textsc{non-monotone}, 15 \textsc{void}, eleven refused at the noise floor and one bracket with no natural arm --- so it gives a direction a little over six times in ten, tells a team the question is moot or the rule inapplicable in most of the remainder, and is silent on twelve of 104. Every one of the 63 matches what the fitted constraint did at that population's
 natural operating point, which is a consistency check on the audit's reading of its own sweep
@@ -1175,7 +1174,7 @@ two-threshold class that returns an empty feasible set, is reported separately.
 Table~\ref{tab:registered} is the complete ledger --- every registered or sealed test, with its
 committed bar and its outcome, failures included and uncorrected. Counted once and consistently it holds \textbf{twenty-two} rows: fifteen fail, three record a
 hold (one alongside
-a failed first stage), two returned underpowered, and one settled a reading rather than a pass
+a failed first stage), two returned underpowered, and two settled a reading rather than a pass
 or a fail. Of the \emph{twelve} that test a \emph{direction} rule on populations it had not seen, one
 passed. The rows should not be read as twenty-two attempts at one claim of which three
 succeeded: each targeted a different claim, each failure removed a stronger claim than the one
@@ -1207,7 +1206,7 @@ crossover was also downgraded by a bootstrap we chose to run against our own res
 
 
 \begin{table}[!t]
-\caption{The eight registered tests that impose a scope condition on the surviving claim. The ledger runs to twenty-two rows --- fifteen fail, three hold, two underpowered, one a reading rather than a verdict --- and the complete record carries all of them with their registration and scoring commits. Nothing is withdrawn here; ten rows are elsewhere.}
+\caption{The twelve registered tests that impose a scope condition on the surviving claim. The ledger runs to twenty-two rows --- fifteen fail, three hold, two underpowered, two readings rather than verdicts --- and the complete record carries all of them with their registration and scoring commits. Nothing is withdrawn here; ten rows are elsewhere.}
 \label{tab:registered}
 \centering
 \scriptsize
@@ -1229,7 +1228,7 @@ Re-seal, unrefined rule & 9 of 10 + beat constant; got 9, constant 6 --- \textbf
 the simple rule predicts populations it has never seen, from the rate alone \\
 Sealed magnitude model & beat predict-zero; MAE 4.50 v.\ 0.77 --- fail & size cannot be
 predicted from distance and band span; the direction-only concession is earned \\
-Regime deconfounding & two sealed readings; R1 18/18, $r=+0.672$ --- method reading &
+Regime deconfounding & two sealed readings; R1 18/18; R2 $r=+0.672$ (13 arms) --- method reading &
 the pool boundary is the optimizer family, not blindness; the theorem's group
 directions hold in every aware cell (Sec.~\ref{sec:regime}) \\
 Race cohort (screen-gated) & S1: 8/10, but 0.5-null 9 --- fail; S2 --- holds & the

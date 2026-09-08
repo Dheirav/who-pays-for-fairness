@@ -17,7 +17,7 @@ is set by the population rather than by which in-processing
 method is chosen, and is predictable before deployment from
 the rate at which the current model says yes, read against that
 population’s own crossover — the rate a team already has,
-the crossover it must measure. Across 161 disjoint population
+the crossover it must measure. Across 179 disjoint population
 samples spanning six decision domains, eight data sources and
 five countries, the constraint withdraws below a population’s
 crossover and extends above it: on UCI Adult five in-processing
@@ -29,15 +29,18 @@ The claim is narrow and sealed tests made it so. Direction is
 predictable within a population; magnitude is not, and below one
 percentage point the direction call is a coin flip. The practical
 output is an audit that locates a team’s own crossover and refuses
-when it cannot: on fifty populations drawn at random, frame and
-seed fixed in advance, 78% admit a directional rule and 22%
-do not, and the procedure returns the latter as unanswerable
-rather than scoring them. Two scope limits belong here: the
-relationship disappears under post-processing, and in five of the
-eight sources the favourable decisions are predicted labels rather
-than allocations actually made. Of nine sealed or registered
-direction tests, one passed; we report the failures because each
-removed a stronger claim than the one that survives.
+when it cannot: on fifty populations drawn at random, frame
+and seed fixed in advance, 78% admit a directional rule and
+22% do not. That is the monotonicity gate alone; run end to
+end with every gate applied, the audit returns a direction on
+63 of 104 stored sweeps — a little over six times in ten — and
+hands back the rest as unanswerable rather than scoring them.
+Two scope limits belong here: the relationship disappears under
+post-processing, and in five of the eight sources the favourable
+decisions are predicted labels rather than allocations actually
+made. Of twelve sealed or registered direction tests, one passed;
+we report the failures because each removed a stronger claim
+than the one that survives.
 Index Terms—algorithmic fairness, levelling down, demo-
 graphic parity, in-processing, selection rate, disparate impact
 
@@ -53,10 +56,10 @@ people were affected nor in which direction; and Hu and Chen
 [6] show, on the dataset this paper opens with, that a parity-
 proxy constraint can leave both groups with fewer favourable
 classifications at once. We take all of that as given.
+
 What the literature leaves open is the question a deploying
 team actually faces: when does each direction happen? The
 question is not academic, because the certifying number is
-
 not merely silent about the answer — it is equally content
 with either. On UCI Adult a demographic-parity constraint
 destroyed roughly a fifth of the favourable decisions, and the
@@ -100,6 +103,7 @@ drawn at random, frame and seed fixed before any arm
 ran, 78% admit a directional rule and 22% do not. The
 procedure refuses the 22% rather than guessing at them.
 
+
 • In-processing,
 not
 post-processing.
@@ -107,10 +111,8 @@ Under
 group-
 threshold post-processing [5] the relationship is absent
 (r = −0.024), and a sealed deconfounding test locates
-
-
 that boundary at the optimizer family rather than at access
-to the protected attribute (Section VI).
+to the protected attribute (Section VII).
 
 • Mostly predicted labels, not allocations. In five of the
 eight data sources the favourable decisions are model
@@ -158,7 +160,7 @@ one any law cleanly compels. Under post-processing the effect
 we report disappears, and a sealed deconfounding test shows
 the disappearance belongs to the method, not to the attribute:
 the same in-processing optimizer, given the attribute, preserves
-the relationship (Section VI). The blind regime remains the
+the relationship (Section VII). The blind regime remains the
 paper’s scope because it is where the record was built and
 where deployed systems sit — not because blindness is what
 the finding depends on.
@@ -168,12 +170,11 @@ B. Contributions
 The phenomenon. An attribute-blind parity constraint with-
 draws favourable decisions on some populations and extends
 them on others, and the certifying metric reports the same
-
 kind of number in both cases: on UCI Adult five in-processing
 methods each shrink the pool by 7.9–22.1% at an exchange
 rate of 2.68 destroyed per created, while on HMDA mortgage
 lending the identical constraint grows it by 4.3% at 0.50.
-Measured over 161 disjoint population samples, six domains,
+Measured over 179 disjoint population samples, six domains,
 eight sources, five countries. Counted in people rather than
 rates the burden is more lopsided still, and that divergence is
 itself predictable (r = +0.885).
@@ -191,11 +192,11 @@ The predictor, identified by elimination rather than
 asserted. Holding the task fixed and moving only the decision
 rule separates the rate from task difficulty. A screen-gated
 Brazilian race cohort — ten arms from two person-samples, so
-the confound breaks within populations — beat a cutoff-only
-null 8–9 to 5; a sealed lending cohort beat a loan-purpose null
-8 to 5 on real approvals; a five-domain comparison rules out
-the group gap. We say predicts, never causes: no pooled slope
-transfers.
+the confound breaks within populations, though leaving either
+out drops the rule to 60% — beat a cutoff-only null 8–9 to
+5; a sealed lending cohort beat a loan-purpose null 8 to 5 on
+real approvals; a five-domain comparison rules out the group
+gap. We say predicts, never causes: no pooled slope transfers.
 A conditionality theory predicts, now measured. Con-
 temporaneous theory [14] establishes distribution-dependence
 in the blind regime without experiments, its conditions being
@@ -220,29 +221,31 @@ strict bar on the race cohort, and on a second post-hoc cohort
 it scored 5 of 10 — each miss agreeing with that population’s
 own sweep.
 Boundaries stated rather than left for review to find,
-including a computable test for when the procedure cannot be
-used at all. Of nine sealed or registered direction tests, one
-passed; each failure removed a stronger claim than the one
-that survives, and one cohort built to strengthen the paired
-statistic showed the attempt self-defeating by construction. The
 
 
+including a computable test for when the procedure cannot
+be used at all. Of twelve sealed or registered direction tests,
+one passed; each failure removed a stronger claim than the
+one that survives, and one cohort built to strengthen the paired
+statistic showed the attempt self-defeating by construction. The
 relationship survives changes of route, tolerance, base learner
 and protected attribute, and disappears under post-processing.
 
 II. RELATED WORK
 
 What we take as given. Levelling down as a phenomenon
-and minimum-rate constraints as a remedy are Mittelstadt
-et al.’s [11]; the impact decomposition we use throughout
-is Krco et al.’s [12]; fairness gerrymandering is Kearns et
-al.’s [15]; the income-cutoff knob is Ding et al.’s [16]; the
-reductions we constrain with are [1]. Contemporaneous theory
-[14] establishes that in the blind regime the direction is
-distribution-dependent, so we do not claim the conditionality
-itself — what it contains is no experiments and conditions
-stated as orderings on score regions rather than measurable
-quantities.
+and minimum-rate constraints as a remedy are Mittelstadt et
+al.’s [11]; the impact decomposition we use throughout is Krco
+et al.’s [12]; fairness gerrymandering is Kearns et al.’s [15],
+which we replicate with a boundary attached (Section VI); the
+income-cutoff knob is Ding et al.’s [16]; the reductions we
+constrain with are [1], and we benchmark against minimax
+group fairness [20] rather than only against the unconstrained
+reduction. Contemporaneous theory [14] establishes that in the
+blind regime the direction is distribution-dependent, so we
+do not claim the conditionality itself — what it contains is
+no experiments and conditions stated as orderings on score
+regions rather than measurable quantities.
 Four adjacent results, and what each leaves open. Hu and
 Chen [6] come closest to the phenomenon: an in-processing
 parity-proxy constraint on this paper’s own dataset leaving
@@ -271,12 +274,13 @@ away from it — and a direction flip of its own, though theirs
 is one group’s share of a fixed budget rather than a pool that
 can change size.
 On not explaining the mechanism. Our sealed derivation
-lost to a constant (Section IX) and we claim no mechanism, but
+lost to a constant (Section X) and we claim no mechanism, but
 we should not overstate that into an absence of any account.
 For the attribute-aware Bayes-optimal case the parity-optimal
 thresholds are available in closed form [10] as opposite-signed
 shifts each inversely proportional to a group’s size; to first
 order the group sizes cancel and the sign of the pool change is
+
 set by which group carries more score density at the decision
 margin — an infra-marginality statement, and a property of
 the population rather than of the method, which is what we
@@ -284,129 +288,117 @@ measure. We could not extend it: our constraint is blind, our
 classifier is a reduction’s randomized mixture rather than a
 threshold rule, and the effects we measure are far outside a
 first-order regime. The honest statement is that we failed to
-
 extend a known marginal argument to the blind randomized
 case, not that no account exists.
 
 III. SETUP AND METHOD
 
-Data. 161 independent populations across eight data
-sources. Two are US surveys: UCI Adult (45,222 rows) and
-ACS Income [16] across 102 state-years and two protected
-attributes. One records real allocations: HMDA 2018 mortgage
-filings, 66 rate-bearing arms over 40 states (30,000–305,593
-records each). The remaining five are IPUMS International
-census extracts for Brazil and Mexico, COMPAS [18], LSAC
-bar passage, the Dutch national census of 2001 and Taiwanese
-credit-card default records of 2005. A population is one such
-unit — a state, cohort or census — and independent means
-disjoint person samples: no person appears in two, and arms
-within a population share people, so however many arms a
-population contributes it is counted once. Ratios here are over
-populations unless they say otherwise, because four counts in
-this project’s own history turned out to be arm counts wearing
-population clothes.
+Data. 179 independent populations across eight sources.
+Two are US surveys: UCI Adult (45,222 rows) and ACS
+Income [16] over 102 state-years and two protected attributes.
+One records real allocations: HMDA 2018 mortgage filings,
+66 rate-bearing arms over 40 states. The rest are IPUMS
+International census extracts for Brazil and Mexico, COMPAS
+[18], LSAC bar passage, the Dutch national census of 2001,
+and Taiwanese credit-card default records. The last three were
+added to leave the sources the finding was formed in, and
+chosen for what they test: the Dutch census carries a between-
+group gap of 0.298, roughly twice Adult’s, which makes
+it the hardest case for the standard “it is really the group
+gap” alternative; LSAC was chosen because bar passage is
+naturally generous (base rate 0.890) and should therefore be
+unsweepable.
 What a favourable decision is, and mostly is not. This
-belongs here rather than in Limitations, because it bounds
-everything that follows. In five of the eight sources no one
-receives anything: the favourable decisions are a classifier’s
-labels over people whose incomes, occupations or bar results
-already exist, so the pool being given and taken is a pool of
-predictions. HMDA is the one source recording real allocative
-decisions — and it is where the direction reverses, and
-where our sweep protocol failed its held-out test. Whether
-the construct transports from status-prediction benchmarks to
-allocation data is an open question rather than an assumption
-we are entitled to.
-The lending outcome, defined. On HMDA the outcome is
-the lender’s approval: action-taken codes 1 (originated) and 2
-(approved, not accepted) against 3 (denied), with withdrawn,
-incomplete, purchased and preapproval records excluded as
-not being a completed approve-or-deny. Features are restricted
-by allow-list to what exists when the application is filed. The
-race arm is White vs. Black applicants, the sex arm Male vs.
-Female (joint applications excluded), and loan purposes are
-sub-populations.
-COMPAS, LSAC and the Dutch census were added to leave
-the sources the finding was formed in. The Dutch census
-carries a between-group gap of 0.298, roughly twice Adult’s,
-making it the test of the standard alternative explanation.
-LSAC was chosen because bar passage is naturally generous
-(base rate 0.890).
-Definitions, in one place. An arm is one population under
-one configuration (a decision threshold, a label cutoff, a
-tolerance, a learner). The selection rate r is the fraction
-of the test split the baseline model marks favourable. The
-pool change ∆pool is the percentage change, baseline to
-mitigated, in the number of favourable decisions; up/extension
-and down/withdrawal name its sign. A population’s crossover
-is the rate at which its pool change changes sign, reported as
-the bracket between the highest rate that still shrinks the pool
+belongs here because it bounds everything after it. In five of
+the eight sources no one receives anything: the favourable
+decisions are a classifier’s labels over people whose incomes,
+occupations or bar results already exist, so the pool being
+given and taken is a pool of predictions. HMDA is the one
+source recording real allocative decisions — and it is where
+the direction reverses, and where our sweep protocol failed
+its held-out test. Whether the construct transports from status-
+prediction benchmarks to allocation data is an open question,
+not an assumption we are entitled to. On HMDA the outcome
+is the lender’s approval: action-taken codes 1 and 2 against
+3, with withdrawn, incomplete, purchased and preapproval
+records excluded as not being a completed approve-or-deny,
+and features allow-listed to what exists when the application
+is filed.
+Definitions. An arm is one population under one configu-
+ration — a decision threshold, a label cutoff, a tolerance, a
+learner. The selection rate r is the fraction of the test split
+the baseline marks favourable. The pool change ∆pool is
+the percentage change, baseline to mitigated, in the number
+of favourable decisions; extension and withdrawal name its
+sign. A population’s crossover is the rate at which that sign
+changes, reported as the bracket between the highest rate that
+still shrinks the pool and the lowest that grows it. The viable
+band is the span of rates over which the baseline stays above
+the trivial predictor. The exchange rate is favourable decisions
+destroyed per favourable decision created, an unweighted
+descriptive count.
 
 
-and the lowest that grows it. The viable band is the span of
-selection rates over which the baseline stays above the trivial
-predictor. The exchange rate is favourable decisions destroyed
-per favourable decision created, an unweighted descriptive
-count.
-Protocol. The baseline learner is an L2-regularised logistic
-regression on one-hot-encoded categorical and standardised
-numeric features; one section swaps in a boosted tree and says
-so. Each arm draws a 70/30 train/test split, stratified on group
-× label, re-drawn per seed. Five seeds per arm unless stated
-(the replication checks use twenty); every per-arm quantity in
-this paper is a mean over its arm’s seeds, and no single-seed
-number is comparable to the tables.
-Convention. y = 1 is always the favourable outcome. This
-required inverting COMPAS’s recorded target, which encodes
-recidivism, and declaring Female the advantaged group on its
-sex arm, since women in that cohort reoffend less. Both are
-enforced by automated checks, because either error produces
-every directional result sign-inverted without raising.
-Mitigation. ExponentiatedGradient [1] at ε
-=
-0.01 unless stated (ε is the library default and bounds
-the training-time empirical moment violation of the ran-
-domized classifier, so held-out gaps such as Table II’s
-0.018 can lawfully exceed it; the tolerance sweep spans
-0.002–0.05, a 25× range). Fairlearn 0.14.0 throughout, de-
-fault ExponentiatedGradient parameters beyond ε. No
-model reads the protected attribute at prediction time except
-where post-processing is explicitly under test.
-Exclusion rules. An arm is discarded if the baseline
-demographic-parity gap is below 0.05, or if the baseline
-classifier’s accuracy falls below max(p, 1−p) — the accuracy
-of always predicting the more common label. The second
-rule matters more than it sounds (Section IX). Provenance,
-because exclusion rules can select on outcomes: both rules
-were developed during the exploratory phase, in response to
-failures the ledger records, so retained-arm correlations from
-that phase are conditioned on in-sample-tuned filters and the
-sensitivity table reports the dependence. What the sealed tests
-then did with the two rules varies, and stating it as uniform
-would flatter them: the re-seal applies neither and scores all ten
-populations raw; the third-direction and lending cohorts apply
-the magnitude guard their own protocols fix, but not these two;
-and the screen-gated race cohort is the one that carries both,
+Protocol and convention. An L2-regularised logistic re-
+gression on a 70/30 split, five seeds per arm, with every
+reported figure a seed mean; the constraint is Fairlearn’s
+exponentiated-gradient reduction under demographic parity
+[1] at a tolerance of 0.01 unless stated. y = 1 is always
+the favourable outcome. That required inverting COMPAS’s
+recorded target, which encodes recidivism, and declaring Fe-
+male the advantaged group on its sex arm, since women in
+that cohort reoffend less. Both are enforced by automated
+checks, because either error produces every directional result
+sign-inverted without raising.
+Exclusion rules, and where they bite. An arm is discarded
+if the baseline parity gap is below 0.05, or if the baseline
+accuracy falls below max(p, 1 − p), the accuracy of always
+predicting the more common label. Both were developed
+during the exploratory phase in response to failures the ledger
+records, so exploratory correlations are conditioned on in-
+sample-tuned filters and Table VIII reports the dependence.
+What the sealed tests did with them varies, and stating it as
+uniform would flatter them: the re-seal applies neither and
+scores all ten populations raw; the third-direction and lending
+cohorts apply only the magnitude guard their own protocols
+fix; the screen-gated race cohort is the one carrying both,
 frozen before its extract existed. The sealed record is therefore
 less filtered than an unqualified claim of frozen guards would
 suggest, which is the direction that favours it.
-Accounting. Table I states which populations enter which
-analysis; the complete record gives, per headline ratio, the
-arms, the disjoint person samples and the instruments it is
-counted over. Four counts in this project’s own history turned
-out to be arm counts masquerading as population counts, so a
-ratio here is a ratio over populations unless it says otherwise.
-The second table is computed from the stored results by
-scripts/independence.py rather than maintained by
-hand, since the counts it reports are exactly the kind that drift.
-Read together they make one distinction unavoidable: a ratio
+Three survey conventions, because every crossover here
+depends on them. Inherited from the folktables benchmark
+[16]: ACS records are used unweighted, incomes are nominal
+without the inflation adjustment, and household clustering is
+not modelled. Every selection rate is therefore a property
+of the unweighted sample rather than a design-consistent
+state estimate, and the numeric locations — including the
+0.54 prior this paper argues about — are properties of that
+convention. The weighted re-analysis has run: under person
+weights every located crossover shifts down by 0.03–0.08,
+without changing any population’s ordering or any direction
+call. That shift is the same order as the 0.54-against-0.50
+distinction of Section IX-C, which is a reason to read the
+ordering as the finding and the value as a convention-relative
+landmark. Seed-resampled intervals are anti-conservative for
+the same reason.
+Accounting. A population is one unit — a state, cohort or
+census — and independent means disjoint person samples: no
+person appears in two, and arms within a population share
+people, so however many arms a population contributes it is
+counted once. Ratios here are over populations unless they
+say otherwise. Table III states which populations enter which
+analysis; the per-ratio denominators are computed from the
+stored results rather than maintained by hand, since four counts
+in this project’s own history turned out to be arm counts
+masquerading as population counts.
 
 TABLE I
-WHICH POPULATIONS ENTER WHICH ANALYSIS. AN arm IS ONE
-POPULATION UNDER ONE CONFIGURATION; POPULATIONS ARE COUNTED
-ONCE HOWEVER MANY ARMS THEY CONTRIBUTE.
+WHICH POPULATIONS ENTER WHICH ANALYSIS, FOR THE ANALYSES THIS
+PAPER REPORTS. THE COMPLETE RECORD CARRIES FURTHER ROWS FOR
+RESULTS THAT ARE CITED HERE BUT PRESENTED THERE.
 
+is one population under one configuration; populations are counted once
+however many arms they contribute.
 Analysis
 Populations (arms)
 
@@ -418,14 +410,11 @@ Label route (income cutoffs)
 AL sex; AL, MS, OR, UT race (4 each)
 Natural transition
 HMDA MS+LA (5 loan purposes)
-Threshold route, dense sweeps
-Dutch, SC, COMPAS, AL, KY (12 pts.)
+Threshold route, dense sweeps Dutch, SC, COMPAS, AL, KY (12 pts.)
 Tolerance, 25× range
 AL, CT, KY, OR, SC
 Boosted trees
 the same five states
-Intersectional
-Adult + 10 populations
 Post-processing regime
 17 populations (r = −0.024)
 Attribute-aware direction
@@ -438,17 +427,10 @@ Sealed test 1 (failed)
 8 scored + Taiwan, all fresh
 Re-seal (holds)
 10 fresh ACS states
-Residual campaign (underpow.) 10 fresh states (76 arms)
 Sealed magnitude (failed)
 NY + TX (16 arms)
-Cross-year shape seal (failed)
-8 fresh state-years (70 runs)
-Attr.-independence seal (failed)
-6 race arms (48 runs)
 Selection-rate floor
 10 pops. (19 arms)
-Cross-task shape seal (failed)
-6 task arms, 4 states’ persons; not indep.
 Third direction cohort (failed)
 24 fresh state-years, 2014 + 2019
 Sealed lending cohort (failed)
@@ -510,9 +492,6 @@ ExpGrad (EO)
 0.521
 −7.9%
 
-over arms is not a ratio over populations, and where the two
-differ this paper says which it means.
-
 IV. PARITY IS REACHED BY WITHDRAWAL — IN SOME
 POPULATIONS
 
@@ -527,6 +506,13 @@ report: every one of these methods shrinks the pool, by
 7.9% to 22.1%, and not one of them closes the gap primarily
 by extending decisions to the disadvantaged group. Eighteen of
 nineteen survey arms show the same pattern, which suggests
+this is a property of the populations rather than of any one
+method.
+
+A. Rates understate what is happening to people
+
+The decomposition of [12] splits the closed gap into the
+part paid by the advantaged group losing ground and the part
 
 
 TABLE III
@@ -559,13 +545,6 @@ ExpGrad (EO)
 0.660
 1.92
 
-this is a property of the populations rather than of any one
-method.
-
-A. Rates understate what is happening to people
-
-The decomposition of [12] splits the closed gap into the
-part paid by the advantaged group losing ground and the part
 gained by the disadvantaged group. Measured in rates, that
 split is close to even — 0.50 to 0.58 of the closure comes
 from withdrawal (Table III).
@@ -604,7 +583,6 @@ tables report make such weighted readings computable. What
 the accounting establishes is narrower and metric-relative: the
 certifying number cannot tell these outcomes apart, whatever
 one’s weights.
-
 On HMDA mortgage data, however, the direction reverses.
 The identical constraint grows the pool by 4.3%, at an ex-
 change rate of 0.50 — two favourable decisions created for
@@ -664,6 +642,16 @@ crossover measured, so both sweeps lie almost entirely on one
 side of the transition. We therefore claim the relationship
 across the crossover and withdraw any claim that it holds
 within the low-rate region alone.
+
+D. Five domains, and the group-gap alternative
+
+Fig. 1 shows every arm, and Table IV the summary. The
+table’s job is breadth, and its two halves carry different
+weight. The four- and five-arm rows are descriptive, exactly as
+Section V-C concedes for Alabama. The dense-sweep columns
+carry more, but not as much as a Pearson test would suggest:
+twelve thresholds applied to one fitted score vector over one
+sample are not twelve independent observations, so we quote
 
 
 −102
@@ -743,7 +731,7 @@ cuts some off above the crossover and others below it. Red = the 0.51–0.58 clu
 Fig. 1. Within a population, the change in the pool rises with the baseline selection rate and crosses zero. Eight densely swept populations, every retained
 arm; the two that reverse are marked, and both are sweeps whose viable band confines them below the crossover. Panels are deliberately not pooled — no
 pooled slope survives its pre-registered bar, so one scatter would assert a common curve the data reject. These eight are 5% of the record and are shown for
-shape, not for scale; Figures 2 to 4 carry the population-level evidence.
+shape, not for scale; Figures 2 to 3 carry the population-level evidence.
 
 0.0
 0.2
@@ -780,18 +768,60 @@ directional rule and 22% do not, and the non-monotone populations are scattered 
 threshold can screen for them. Note also what the sample does not contain: no population reaches a rate of 0.55, and 25 of the 47 with a computable rate sit
 inside the band where located crossovers fall, where reading “often” against “rarely” unaided has nothing to grip.
 
-D. Five domains, and the group-gap alternative
+no p-value on them — such a test describes whether a sweep
+is monotone, not whether the rate predicts across populations.
+The pre-registered alternative — “this is a property of in-
+come prediction and American mortgage lending”, requiring
 
-Fig. 1 shows every arm, and Table IV the summary. The
-table’s job is breadth, and its two halves carry different
-weight. The four- and five-arm rows are descriptive, exactly as
-
-Section V-C concedes for Alabama. The dense-sweep columns
-carry more, but not as much as a Pearson test would suggest:
-twelve thresholds applied to one fitted score vector over one
-sample are not twelve independent observations, so we quote
+|r| < 0.30 — is refuted on both new instruments, and refuted
+on their densely swept arms rather than their sparse ones:
+COMPAS gives +0.844 and the Dutch census +0.946 over
+twelve points each. Earlier versions of this paper attached
 
 
+10−2
+10−1
+100
+101
+
+|change in the pool of favourable decisions| (percentage points, log)
+
+0.0
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+baseline selection rate
+
+below the guard
+
+11/18 = 61%
+
+above the guard
+21/22 = 95%
+
+rule wrong
+
+rule correct
+
+The rule is not wrong at small effects so much as undefined: below one point it is a coin flip
+
+Fig. 3. Where the rule is undefined rather than wrong. All forty arms of
+the two sealed direction cohorts, by the size of the effect they were asked to
+call. Almost every miss sits left of the one-point guard: above it the rule is
+correct on 21 of 22, below it on 11 of 18, which is a coin flip. The misses
+are concentrated rather than scattered, and they are not concentrated at any
+particular selection rate — it is the magnitude that governs, not where the
+population sits. What this measures is the guard’s existence; its value is a
+round number fixed in a protocol, and every floor from 0.25 to 5.00 separates.
+
 0.0
 0.2
 0.4
@@ -848,7 +878,7 @@ that population's own operating rate
 
 Located crossovers span 0.22 to 0.81, not a cluster --- and Florida 2018 appears twice, at two boundaries
 
-Fig. 3.
+Fig. 4.
 Every located crossover, against the cluster we first published.
 Each population’s measured crossover (dot) and its own deployed operating
 rate (tick). The shaded band is the four-population cluster of the first version
@@ -857,47 +887,6 @@ of which populations had been swept. Florida 2018 appears twice — read by
 sex it crosses at 0.284, read by race at 0.439 — so a crossover belongs to
 a (population, attribute) pair and there is nothing here to look up instead of
 measuring.
-
-10−2
-10−1
-100
-101
-
-|change in the pool of favourable decisions| (percentage points, log)
-
-0.0
-
-0.2
-
-0.4
-
-0.6
-
-0.8
-
-1.0
-
-baseline selection rate
-
-below the guard
-
-11/18 = 61%
-
-above the guard
-21/22 = 95%
-
-rule wrong
-
-rule correct
-
-The rule is not wrong at small effects so much as undefined: below one point it is a coin flip
-
-Fig. 4. Where the rule is undefined rather than wrong. All forty arms of
-the two sealed direction cohorts, by the size of the effect they were asked to
-call. Almost every miss sits left of the one-point guard: above it the rule is
-correct on 21 of 22, below it on 11 of 18, which is a coin flip. The guard’s
-existence is what this measures; its value is a round number fixed in a protocol,
-and every floor from 0.25 to 5.00 separates.
 
 TABLE IV
 ONE POPULATION PER INSTRUMENT, ON WHATEVER ARMS THAT
@@ -956,13 +945,12 @@ unsweepable —
 —
 —
 
-no p-value on them — such a test describes whether a sweep
-is monotone, not whether the rate predicts across populations.
-The pre-registered alternative — “this is a property of in-
-come prediction and American mortgage lending”, requiring
-|r| < 0.30 — is refuted on both new instruments, and refuted
-on their densely swept arms rather than their sparse ones:
-COMPAS gives +0.844 and the Dutch census +0.946 over
+p < 0.001 to those coefficients; we withdraw it. Twelve
+thresholds on one fitted score vector over one sample are near-
+deterministic transformations of each other, so the Pearson null
+is the wrong reference and the effective sample size for a claim
+about populations is one. The population-level statistic this
+design supports is much weaker: across the six densely swept
 
 TABLE V
 WHAT EACH MANIPULATION PRESERVES
@@ -990,13 +978,6 @@ Optimiser → post-proc.
 vanishes
 —
 
-twelve points each. Earlier versions of this paper attached
-p < 0.001 to those coefficients; we withdraw it. Twelve
-thresholds on one fitted score vector over one sample are near-
-deterministic transformations of each other, so the Pearson null
-is the wrong reference and the effective sample size for a claim
-about populations is one. The population-level statistic this
-design supports is much weaker: across the six densely swept
 populations the within-population slope is positive in four and
 negative in two, a sign test at p = 0.34. We report it because
 it is the honest number, and note that the two negatives are the
@@ -1018,7 +999,7 @@ between +0.80 and +0.92 with no sign change at any floor
 (HMDA is floor-invariant outright; Alabama thins to two arms
 only at 0.10). The dense-sweep column is a different matter,
 and an earlier version of this paper claimed otherwise.
-Table VII’s 0.05 column is that dense-sweep column, and one
+Table VIII’s 0.05 column is that dense-sweep column, and one
 of its three entries is strongly floor-dependent: South Carolina
 reads +0.905 at the committed floor and +0.012 at 0.02
 and 0.01. So the floor is doing real work on a number this
@@ -1035,6 +1016,15 @@ attribute-blind regime, the selection rate predicts which
 way and orders how much. Neither transfers between
 populations: the signed distance from a population’s own
 crossover gives ρ of +0.96, +0.95 and +0.78 in three of
+four populations, but a pooled slope reaches only r = +0.487
+against a pre-registered +0.70 bar.
+
+VI. A CONSTRAINT ON ONE ATTRIBUTE LEAVES
+SUBGROUPS BEHIND
+
+A constraint is imposed on the attribute someone chose to
+name. Table VI is the gerrymandering failure of Kearns et al.
+[15] measured on Adult.
 
 
 0.1
@@ -1065,13 +1055,54 @@ Fig. 5. The design that separates the selection rate from the difficulty of the 
 problem is; moving the decision threshold changes neither, only where the fitted model draws its line. Both routes cross zero inside the same band. If difficulty
 were doing the work, the second curve would not reproduce the first.
 
-four populations, but a pooled slope reaches only r = +0.487
-against a pre-registered +0.70 bar.
+TABLE VI
+UCI ADULT. CONSTRAINING SEX TO 0.020 LEAVES THE WORST
+Sex×Race SUBGROUP GAP AT 0.178 — NINE TIMES LARGER — AND
+MOVES WHICH SUBGROUP IS WORST OFF.
 
-VI. THE REGIME BOUNDARY
+Arm
+Sex
+Subgroup
+Worst off
+
+Unconstrained
+0.190
+0.315
+F×Black
+Constrained on sex
+0.020
+0.178
+M×Black
+Constrained on both
+0.016
+0.048
+F×White
+
+Constraining sex drives its gap from 0.190 to 0.020 —
+a success by the certifying metric. The worst Sex×Race
+subgroup gap falls only from 0.315 to 0.178, which is nine
+times the gap that was constrained. The subgroup carrying the
+residual also changes, from Female × Black to Male × Black,
+so an auditor tracking the originally worst-off cell would see
+improvement while a different cell absorbed the cost.
+This replicates across populations and is more severe than
+Adult suggests: 13.2× in Mississippi. It is bounded, however,
+by how large the minority is — the effect scales with minority
+share at r = −0.671, and does not appear at all below a
+threshold. We present this as an empirical replication of [15]
+and [13] with a boundary attached, not as a new observation.
+A measurement hazard worth naming. Roughly five
+subgroups per population are too small to support any estimate.
+A rate with an empty denominator must return undefined rather
+than zero, or an unmeasurable subgroup masquerades as a
+perfectly fair one — which is the failure this analysis is most
+likely to produce and hardest to notice.
+
+VII. THE REGIME BOUNDARY
 
 The relationship stops where the optimizer family changes,
 not where the protected attribute becomes readable, and a
+
 sealed test with both readings’ bars committed in advance is
 what separates those. Under group-threshold post-processing
 [5], at each population’s natural operating point, the rate
@@ -1083,14 +1114,12 @@ available explanations: given the attribute under the same in-
 processing optimizer, the relationship survives at r = +0.672
 across thirteen natural arms — the method reading, not the
 blindness reading. Two cautions we would rather state than
-have computed for us: at thirteen arms the interval on that coef-
-ficient is wide enough to touch the competing reading’s region,
-and its difference from +0.585 is not itself a difference. What
-carries more weight than either coefficient is the mechanism
-the failure exposed — the post-processor re-derives its own
-thresholds and returned an identical model at all six operating
-points, so the measured effect was a constant divided by a
-shrinking baseline.
+have computed for us: at thirteen arms the interval on that
+coefficient is wide enough to touch the competing reading’s
+region, and its difference from +0.585 is not itself a difference.
+Neither coefficient carries much on its own; what the regime
+result rests on is the positive cell, and on the reduction
+retaining the relationship where the post-processor does not.
 The theory’s group-level claim is untouched. Where
 the attribute is readable the advantaged group loses and the
 disadvantaged gains, without exception across our attribute-
@@ -1098,7 +1127,6 @@ aware arms. That is a consistency check against a published
 theorem rather than a forecast — the theorem made the
 prior close to one — and it separates cleanly from the pool
 question: the theorem fixes each group’s direction wherever
-
 the attribute is readable, while the pool’s direction, the sum it
 does not constrain, stays rate-predictable under in-processing
 in both regimes and unpredictable only under post-processing.
@@ -1107,265 +1135,67 @@ the measured direction on 24 of 26 arms and tracks our
 predictor at r = +0.935, so the selection rate is a cheap
 proxy for a quantity the theory states expensively; the exact
 conditions were certified on none of the 26 by our plug-in
+
+
 estimator, whose ratio diverges in the ˆν tail, and we tried no
 other.
 
-VII. THE AUDIT: GIVE, TAKE, OR REFUSE
+VIII. THE AUDIT: GIVE, TAKE, OR REFUSE
 
-Algorithm 1 states the procedure. Three of its steps are
-worth drawing out, because each is a place where a plausible-
-looking run returns a meaningless answer.
-It can refuse before it fits anything. On a task generous
-enough that the trivial predictor is already close to the model’s
-accuracy, no deployable classifier can be moved far enough to
-cross anything: LSAC refuses at an accuracy floor of 0.890
-against a viable band of 0.056, and the test is arithmetic on
-the baseline, needing no constraint fit at all. Lines 6–8 compute
-that band and exit before any constraint is fitted, if no threshold
-reaches a low selection rate with a model still beating the
-trivial predictor. On LSAC that band is too narrow to sweep
-(Section VIII) and the procedure declines, rather than returning
-arms that would be discarded later.
-It can return VOID. Line 16 requires enough arms to
-survive the guards and the pool to have moved at all. A
-correlation computed over arms that barely move is fitted to
-noise: Connecticut returns r = −0.924 on a spread of a tenth
-of a percentage point, and without this test that number reads
-as a refutation of the whole finding.
+Algorithm 1 states the procedure. It has three outcomes
+rather than two, and the third is a third of what it does: the
+constraint will give, it will take, or the population admits no
+answer and the audit says so.
+Four ways to refuse, and each answers something.
 
-
-It can return NON-MONOTONE, and on current data it
-often will. Lines 20–22 exist because the assumption behind
-bracketing — one rising sign change — is itself population-
-dependent: among the ten largest states we swept, three are
-U-shaped and the 2022 vintages at nominal labels invert,
-so a bracket step that assumed monotonicity would return a
-confident wrong direction precisely there. A NON-MONOTONE
-verdict means the directional rule does not apply to this
-system, which is a first-class answer, not a failure of the
-audit. A sweep whose retained arms all share one sign is the
-opposite case and returns that direction (line 24): the constraint
-moves the pool the same way across the whole viable band,
-which is what “levels up throughout” means operationally.
-Two cautions the earlier version of this algorithm kept in prose
-are now steps: arms below a selection rate of 0.10 are marked
-advisory and excluded from the shape call (line 14), because
-below that boundary the two routes to a rate give opposite
-signs (Section VIII) and the accuracy guard does not catch
-it; and every fitted arm is probed for the flat keep-probability
-signature (line 19), because a lottery under the certificate is
-a finding the direction verdict alone would hide. The probe’s
-decision rule, stated so it can be implemented: flag an arm
-whose mean granted probability just below the boundary is
-under 0.10 while the keep-probability’s correlation with the
-score above it is ≈ 0 — the observed separation is wide (0.00–
-0.07 against 0.17–0.43, and ≈ 0 against +0.37 to +0.73).
-Guard provenance. A guard’s provenance belongs to the
-pair it forms with a result, not to the guard. The band span, the
-parity-gap floor and the threshold grid are exploratory, fixed
-in the threshold sweep’s own pre-registration and confirmatory
-for every seal after it; three others are not, and the complete
-record states for each whether it was fixed before, after, or —
-in one case, a void guard imported backwards from a later pre-
-registration that moved three arm sets from refutation to VOID
-— applied retrospectively in the conjecture’s favour, against
-which the same audit found no arm set that passed on noise.
-It can return INDETERMINATE. Lines 28–29 refuse a sign
-call when the deployed rate sits inside the located bracket,
-or when the nearest arms’ effects are within seed noise —
-precisely the two conditions under which this project’s own
-record shows a sign call has nothing to grip: Maryland’s miss
-sat at the cluster’s edge (Section VIII-B), and Minnesota’s was
-an effect of −0.04% that flips sign across seeds. The registered
-rubric of the re-seal did not have this verdict and was charged
-a miss for it; the algorithm inherits the lesson.
-The magnitude guard is measured, not assumed. Line
-28’s refusal rests on the claim that a near-zero effect has no
-sign to predict. Two sealed cohorts run after this algorithm was
-written put a number on it: across their forty arms the rule is
-correct on 21 of 22 arms whose effect exceeds one point and
-on 11 of 18 below it — 95% against 61%, which is a coin
-flip. Those arms span 19 and 15 disjoint person-samples, and
-clustering on the sample rather than the arm leaves the split
-intact: 85–100% above the threshold against 37–82% below,
-intervals that barely meet.
-What that measures is the floor’s existence, not its
+UNSWEEPABLE (lines 6–8) fires before any constraint is fitted.
+On a task generous enough that the trivial predictor is already
+close to the model’s accuracy, no deployable classifier can
+be moved far enough to cross anything: LSAC refuses at an
+accuracy floor of 0.890 against a viable band of 0.056, and the
+test is arithmetic on the baseline. VOID (line 16) means the
+pool change spans under two points across the entire viable
+band — median 1.47 — which tells a deployer the direction
+question is moot on their system, not that it is unanswerable,
+and is arguably the most useful verdict here. NON-MONOTONE
+(lines 20–22) exists because bracketing assumes one rising
+sign change and that assumption is population-dependent:
+among the ten largest states swept, three are U-shaped, and a
+bracket step assuming monotonicity would return a confident
+wrong direction precisely there. And INDETERMINATE (lines
+28–29) refuses when the deployed rate sits inside the located
+bracket or the nearest arms’ effects are within seed noise — the
+two conditions under which this project’s own record shows
+a sign call has nothing to grip.
+Two cautions the earlier version kept in prose are now steps.
+Arms below a rate of 0.10 are marked advisory and excluded
+from the shape call (line 14), because below that boundary the
+two routes to a rate diverge and the accuracy guard does not
+catch it. And every fitted arm is probed for the flat keep-
+probability signature (line 19), because a lottery under the
+certificate is a finding the direction verdict alone would hide:
+flag an arm whose mean granted probability just below the
+boundary is under 0.10 while the keep-probability’s correlation
+with the score above it is ≈ 0, a separation the data makes
+wide (0.00–0.07 against 0.17–0.43).
+The magnitude guard: existence measured, value oper-
+ational. Line 28’s refusal rests on the claim that a near-zero
+effect has no sign to predict, and two sealed cohorts put a
+number on it: across forty arms the rule is correct on 21 of 22
+above one point and 11 of 18 below — 95% against 61%, a
+coin flip — and clustering on the sample rather than the arm
+leaves the split intact. That measures the floor’s existence. It
+does not locate it: sweeping the guard over the same arms,
+every value from 0.25 to 5.00 points separates by between
+13 and 35 percentage points, with the largest separation at
+0.25 and the committed 1.0 giving +34. The guard’s value is
+a round number fixed in a protocol before its arms existed,
+which the data neither singles out nor contradicts.
+What it returns, and what it does not. A sign, never
+a size: distance from the crossover orders the effect within
+a population, so a team can rank its own segments, but no
+slope transfers between populations. The audit also applies
 
-location. The two read alike and are not the same claim.
-Sweeping the guard over the same forty sealed arms, every
-value from 0.25 to 5.00 points separates the reliable arms
-from the unreliable ones, by between 13 and 35 percentage
-points, with the largest separation at 0.25 and the committed
-1.0 giving +34. So the guard’s existence is measured and its
-value is operational — a round number fixed in a protocol
-before its arms existed, which the data neither singles out nor
-contradicts.
-It returns a sign, never a size. The distance from the
-crossover orders the effect within a population, so a team
-can rank its own segments; but no slope transfers between
-populations, so lines 32 and 34 return a direction and stop
-there.
-What it is for, and what it is not. The audit applies where
-the pool of favourable decisions can actually change size.
-Where the allocation is capacity-pinned — a fixed number
-of seats, beds, or slots — the total is constant by construction,
-the directional quantity this paper measures cannot arise, and
-the audit is out of scope from line 0; this is the fixed-resource
-regime of [17], and clinical triage and admission commonly
-live there. No natural operating point below 0.13 has been
-probed in this record, so deployed rates below that carry an
-untested-region caution on top of every verdict.
-What it needs, and what it costs. The audit requires a held-
-out sample carrying the protected attribute: audit-time access
-to a, which is legally and practically distinct from decision-
-time use and is the regime bias-testing provisions contem-
-plate (Section I-A) — in US credit, the self-test privilege
-of Regulation B (12 CFR §1002.15) exists for exactly this,
-though it is conditional: the privilege attaches to a lender’s own
-voluntary self-test and expects appropriate corrective action,
-and an analysis of public HMDA records, like this paper’s, is
-not itself a privileged self-test. It fits the constraint 12×seeds
-times; with five seeds and the linear learners used here, one
-fit takes 2–10 seconds at 15k–69k training rows (measured
-on a laptop CPU), so a full audit is minutes per population,
-scaling linearly in the base learner’s own fit time since each
-reduction call is a sequence of learner refits. On a production
-gradient-boosted model over millions of rows that multiplier
-is the binding cost, and we have not measured it there. A
-cheap pre-screen exists: the relaxed-ζ ordering of Section VI
-needs no constraint fits and correlates with the predictor at
-r = +0.935.
-What the sweep buys that one fit does not. A team able
-to run 12× seeds constrained fits could instead run one, at
-the operating point it already uses, and read the pool change
-off it — so what has prediction bought over measurement? A
-single fit returns a point; the sweep returns a neighbourhood.
-Two measurements separate them. Across 639 adjacent arm
-pairs whose effects both clear the 1.0-point guard, 69 — 11%
-— disagree on the sign, so the direction one fit reports is
-not reliably a property of the population rather than of the
-threshold that fit happened to use. And populations sit close
-to their own boundary: of 21 disjoint person samples carrying
-both a located crossover and a natural arm, 11 sit within 0.10
-
-
-of the crossover and 6 within 0.05, Florida 2018 sitting 0.004
-from it. For those teams the direction is not a fact to accept or
-refuse but a threshold they already control, and one fit reports
-the withdrawal without reporting the lever. That the crossover
-cannot be looked up rather than measured shows in the same
-set: Florida enters twice, once per attribute, crossing at 0.284
-read by sex and 0.439 read by race — the same people, two
-boundaries.
-The limit belongs with the answer. The sweep does not
-buy a better estimate of what the constraint does at today’s
-threshold; repeated fits at one point buy that. What it buys is
-shape. Five of the 21 sit more than 0.20 from their crossover
-and would have decided the same from one fit — and that
-24% over-states the waste, because every sample in the set has
-already passed the monotonicity screen, and the 22% admitting
-no rule never enter it. A team cannot learn which group it is
-in without running the sweep, which is the reply in one line:
-the audit is not circular, because its output is not the quantity
-a single fit measures.
-What it actually returns, totalled. Run over the 52
-population-label pairs whose stored sweeps resolve to a dataset
-spec — fourteen further IPUMS sweeps are stored but un-
-mapped, and are excluded rather than guessed at — the
-distribution is: 29 directional verdicts (20 WITHDRAWAL, 9
-
-EXTENSION), 8 NON-MONOTONE, 13 VOID, one refusal at the
-noise floor (COMPAS), and one bracket with no natural arm to
-read against. Every one of the 29 directional verdicts matches
-what the fitted constraint did at that population’s natural oper-
-ating point — a consistency check on the audit’s reading of its
-own sweep, not independent validation, since the natural arm
-is part of the curve being read. That distribution is computed
-over the sweeps this project happened to accumulate, which
-were never randomly chosen, so it answers a question about
-this project rather than about populations. A survey with a
-pre-committed frame answers the latter.
-The frame, since “at random” means nothing without
-one. Every combination of the fifty US states, the 2014, 2018
-and 2019 ACS vintages, and the two protected attributes, with
-the income cutoff held at $50,000 — 300 population-label
-pairs. The 2022 vintage is excluded because its inversion is
-a diagnosed nominal-label artifact, and including it would
-conflate a label problem with a landscape property. Fifty pairs
-were drawn uniformly at random under a fixed seed, and the
-frame, the seed, the draw and the exclusion were all committed
-to version control before any arm ran; the drawn list is in
-the repository. The draw came out balanced without being
-forced: 25 of each attribute, and 14, 14 and 22 across the three
-vintages. The fifty pairs span 48 disjoint person-samples, two
-state-years having been drawn under both attributes.
-The result: 78% admit a directional rule and 22% do
-not, of which 64% are classic single-crossing landscapes.
-Resampling populations rather than draws puts the directional
-share at 66–89%, and leaving each population out in turn never
-moves it below 77%. The convenience sample was mildly
-optimistic — it implied 15% non-monotone — and the larger
-number is the one to quote. The refusals are not silences. A
-
-VOID arm is one whose pool change spans under two points
-across the entire viable band — median 1.47 — which tells a
-deployer that the direction question is moot on their system,
-not that it is unanswerable; a NON-MONOTONE verdict says
-the rule does not apply here, which is a finding about the
-system; and the noise-floor refusal says the population is too
-small to audit at all. Counted that way, 48 of the 52 return
-something a team can act on and four return nothing — three
-sweeps too thin to read and one bracket with no natural arm.
-The honest summary: the audit gives a direction a little under
-six times in ten, tells a team the question is moot or the
-rule inapplicable in most of the remainder, and is silent on
-four of fifty-two. Finally, an ex-ante verdict earns trust only if
-checked: whatever the verdict, including refusals, the deployed
-system’s measured pool change and who-pays decomposition
-(Section IV-A) should be reported after the fact — the verdict
-is falsifiable at deployment, and Section XI makes this a
-requirement rather than advice.
-The direction survives the extraction a deployer must
-apply. Every direction result above is measured on the ran-
-domized mixture, but a lender under adverse-action-notice du-
-ties deploys a deterministic model, so we tested the extraction
-directly: thresholding the mixture’s per-person probability at
-0.5 on the natural arms of ten populations spanning both
-directions. The extracted model agrees with the mixture’s
-pool direction on 10 of 10, with the parity repair largely
-intact (extracted gaps 0.009–0.034 against baseline gaps 0.08–
-0.19). One deployment fact surfaced on the way: an extraction
-that instead tries to reproduce the mixture’s own operating
-point cannot generally do so, because the mixture’s probability
-takes few discrete values and the ties force the deterministic
-threshold off the target rate — on three cutting populations
-far enough off to flip the sign of the measured pool change.
-Thresholding at 0.5 is the well-defined extraction, and it is
-the one that preserves the verdict. The caveat composes with
-Section VIII-E: these are natural arms, where the mixture is
-graded; a flat-lottery arm has no score-respecting extraction,
-and derandomizing it undoes the parity it bought.
-
-VIII. BOUNDARIES
-
-A. Where the crossover sits, and what it cost to find out
-
-The crossover was first published as a cluster, on four
-populations of one instrument. It did not survive measurement.
-Two things about Table VI before its numbers are read.
-Separating whether a crossing exists from where it sits is not
-pedantry: read under seeds alone the Dutch census appeared
-to cross at 0.576 with a 95% interval of 0.572–0.580, an
-apparently precise estimate, while under the nested bootstrap
-no resample brackets a crossing at all — the published figure
-was a property of the six arms that produced it. An interval
-conditioned on an event that may not occur cannot be read as
-an interval. And the rates in that table are not one economic
-object: survey rows are predicted-status rates over sampled
-persons, lending rows are approval rates conditional on having
-applied, and COMPAS inverts a risk score, so a crossover
-
-
 Algorithm 1 Directional audit: decide whether the predictor
 applies at all; if it does, locate the crossover and decide
 whether to add a floor
@@ -1410,7 +1240,7 @@ VOID {nothing moved; not a refutation}
 18: end if
 
 19: probe each fitted arm’s mixture for a flat keep-probability
-(Sec. VIII-E); flag any flat arm
+(Sec. IX-E); flag any flat arm
 20: if sign(∆τ) changes more than once across the non-
 advisory arms, or changes from + to − as rτ rises then
 21:
@@ -1451,11 +1281,129 @@ EXTENSION; the floor buys little
 
 35: end if
 
-is comparable across them only as a position within each
-instrument’s own range.
-Located crossovers span 0.22 to 0.81 — 0.22 to 0.65
+only where the pool can change size — where the allocation
+is capacity-pinned, a fixed number of seats or beds or slots,
+the total is constant by construction and the audit is out of
 
-TABLE VI
+
+scope from line 0, which is the fixed-resource regime of [17].
+No natural operating point below 0.13 appears in this record,
+so deployed rates beneath it carry an untested-region caution
+on top of any verdict.
+What it needs and what it costs. A held-out sample
+carrying the protected attribute: audit-time access, which is
+legally and practically distinct from decision-time use and
+is the regime bias-testing provisions contemplate. It fits the
+constraint 12× seeds times; with five seeds and linear learners,
+one fit takes 2–10 seconds at 15k–69k training rows, so a full
+audit is minutes per population, scaling linearly in the base
+learner’s own fit time since each reduction call is a sequence
+of learner refits. On a production gradient-boosted model over
+millions of rows that multiplier is the binding cost, and we
+have not measured it there.
+What the sweep buys that one fit does not. A team able
+to run 12× seeds constrained fits could instead run one, at
+the operating point it already uses, and read the pool change
+off it — so what has prediction bought over measurement? A
+single fit returns a point; the sweep returns a neighbourhood.
+Across 644 adjacent arm pairs whose effects both clear the
+1.0-point guard, 70 — 11% — disagree on the sign, so the
+direction one fit reports is not reliably a property of the
+population rather than of the threshold that fit used. And
+populations sit close to their own boundary: of 22 disjoint
+person samples carrying both a located crossover and a natural
+arm, 12 sit within 0.10 of the crossover and 7 within 0.05,
+Texas manufactured-housing at 0.003 and Florida 2018 at
+0.004 the nearest. For those teams the direction is not a fact
+to accept but a threshold they control, and one fit reports
+the withdrawal without reporting the lever. That the crossover
+cannot be looked up rather than measured shows in the same
+set: Florida enters twice, once per attribute, at 0.284 by sex
+and 0.439 by race.
+The limit belongs with the answer. The sweep does not
+buy a better estimate of what the constraint does at today’s
+threshold — repeated fits at one point buy that. It buys shape.
+Five of the 21 sit more than 0.20 from their crossover and
+would have decided the same from one fit; that 24% over-
+states the waste, because every sample in the set has already
+passed the monotonicity screen and the 22% admitting no rule
+never enter it. A team cannot learn which group it is in without
+running the sweep, which is the reply: the audit is not circular,
+because its output is not the quantity a single fit measures.
+Two rates, and they are not the same rate. The survey’s
+78% and the audit’s 63 of 104 are different measurements
+and a reader is entitled to be confused by them meeting on
+one page. The 78% applies one gate — monotonicity — to
+fifty populations drawn at random, and answers how often a
+population is shaped so that a directional rule could apply. The
+63 of 104 applies every gate the algorithm states to the stored
+sweeps, which are a convenience set rather than a random
+draw, and answers how often the procedure returns a direction.
+The second is what a deploying team should plan against; the
+first bounds the claim.
+The frame, since “at random” means nothing without
+
+one. Every combination of the fifty US states, the 2014, 2018
+and 2019 ACS vintages and the two protected attributes, with
+the income cutoff held at $50,000 — 300 population-label
+pairs, from which fifty were drawn under a fixed seed. 2022 is
+excluded, for the diagnosed reason of Section XI. The frame,
+the seed, the draw and the exclusion were all committed to
+version control before any arm ran. Fifty draws resolve to 48
+disjoint person samples, because two state-years were drawn
+under both attributes — the same people read twice.
+The result: 78% admit a directional rule and 22%
+do not, of which 64% are classic single-crossing landscapes.
+Resampling populations rather than draws puts the directional
+share at 66–89%, and leaving each population out in turn
+never moves it below 77%. Run over the 104 stored sweeps
+that resolve to a dataset spec, the audit returns 63 directional
+verdicts, 14 NON-MONOTONE, 15 VOID, eleven refused at the
+noise floor and one bracket with no natural arm — so it gives a
+direction a little over six times in ten, tells a team the question
+is moot or the rule inapplicable in most of the remainder, and
+is silent on twelve of 104. Every one of the 63 matches what
+the fitted constraint did at that population’s natural operating
+point, which is a consistency check on the audit’s reading of
+its own sweep rather than independent validation, since the
+natural arm is part of the curve being read.
+The direction survives the extraction a deployer must
+apply. Every direction result here is measured on the ran-
+domized mixture, but a lender under adverse-action duties
+deploys a deterministic model. Thresholding the mixture’s per-
+person probability at 0.5 on the natural arms of ten populations
+spanning both directions, the extracted model agrees with
+the mixture’s pool direction on 10 of 10, with extracted
+gaps of 0.009–0.034 against baseline gaps of 0.08–0.19. The
+caveat composes with the lottery: these are natural arms where
+the mixture is graded, and a flat-lottery arm has no score-
+respecting extraction — derandomising it undoes the parity it
+bought.
+Guard provenance. A guard’s provenance belongs to the
+pair it forms with a result, not to the guard. The band span, the
+parity-gap floor and the threshold grid are exploratory, fixed
+in the threshold sweep’s own pre-registration and confirmatory
+for every seal after it. Three are not, and the complete
+record states which: a void guard written for a later pre-
+registration and imported backwards, moving three arm sets
+from refutation to VOID — a change in the conjecture’s favour,
+against which the same audit found no arm set that passed
+on noise; an advisory boundary descending from a clause that
+was sealed, scored 4 of 8 and withdrawn, surviving only where
+it can refuse an arm but not manufacture a correct call; and
+a noise floor this paper’s own drafting mis-dated, which is
+exploratory read from its value and retrospective read from
+the constant now carrying it.
+
+IX. BOUNDARIES
+
+A. Where the crossover sits, and what it cost to find out
+
+The crossover was first published as a cluster, on four
+populations spanning three instruments, three domains and two
+
+
+TABLE VII
 CROSSOVER LOCATIONS, WITH THE existence OF A CROSSING SEPARATED
 FROM ITS location. P(CROSSING) IS THE SHARE OF NESTED
 ROWS-BY-SEEDS RESAMPLES IN WHICH A SIGN CHANGE CAN BE
@@ -1523,7 +1471,44 @@ mortgages
 0.758
 point only
 
-TABLE VII
+countries. It did not survive measurement. Two things about
+Table VII before its numbers are read. Separating whether a
+crossing exists from where it sits is not pedantry: read under
+seeds alone the Dutch census appeared to cross at 0.576 with
+a 95% interval of 0.572–0.580, an apparently precise estimate,
+while under the nested bootstrap no resample brackets a
+crossing at all — the published figure was a property of the
+six arms that produced it. An interval conditioned on an event
+that may not occur cannot be read as an interval. And the rates
+in that table are not one economic object: survey rows are
+predicted-status rates over sampled persons, lending rows are
+approval rates conditional on having applied, and COMPAS
+inverts a risk score, so a crossover is comparable across them
+only as a position within each instrument’s own range.
+Located crossovers span 0.22 to 0.81 — 0.22 to 0.65
+across the ACS income sweeps, with the law-school and South
+Carolina mortgage brackets above 0.80 — so the location
+is population-specific and only sometimes near the middle.
+Nothing in this work predicts it: the sealed test of the two
+candidate predictors returned UNDERPOWERED with three
+crossovers located against a floor of six, and three of ten large
+states have no crossover to locate at all, sweeping U-shaped
+or levelling up throughout. The lending estimates come from
+one two-state market read three overlapping ways, so “lending
+is different” remains a hypothesis rather than a finding.
+That history is the case for measuring rather than trans-
+porting, and it is made by the prior’s own failures rather
+than against them. Sweeping the arms where a fixed 0.54
+fails shows they are populations with no directional rule to
+get right — non-monotone or outright inverted, including one
+the rule scored correct, whose correctness was therefore luck.
+Pooling every arm from all four sealed cohorts against its
+own cohort’s crossover gives the calibration that motivates the
+INDETERMINATE verdict: the rule is correct on 19 of 19 arms
+more than 0.30 from the crossover, 23 of 27 between 0.15
+and 0.30, 5 of 6 between 0.05 and 0.15 — and 1 of 6
+
+TABLE VIII
 SENSITIVITY TO THE PARITY-GAP EXCLUSION. CORRELATION PER
 POPULATION AS THE THRESHOLD IS LOOSENED.
 
@@ -1564,36 +1549,7 @@ Kentucky
 −0.654
 —
 
-across the ACS income sweeps, with the law-school and South
-Carolina mortgage brackets above 0.80 — so the location
-is population-specific and only sometimes near the middle.
-Nothing in this work predicts it: the sealed test of the two
-candidate predictors returned UNDERPOWERED with three
-crossovers located against a floor of six, and three of ten large
-states have no crossover to locate at all, sweeping U-shaped
-or levelling up throughout. The lending estimates come from
-one two-state market read three overlapping ways, so “lending
-is different” remains a hypothesis rather than a finding.
-That history is the case for measuring rather than transport-
-ing, and it is made by the prior’s own failures rather than
-against them. Sweeping the arms where a fixed 0.54 fails
-shows they are populations with no directional rule to get right
-— non-monotone or outright inverted, including one the rule
-scored correct, whose correctness was therefore luck. A prior
-read off a dashboard cannot detect that, because detecting it
-requires the sweep the prior exists to avoid. The audit refuses
-all of them; only the prior is exposed.
-
-B. A sealed prediction, and what it cost
-
-The first sealed direction test failed: 4 of 8 against a bar
-of 7, not beating a constant (Table VIII). What failed is a
-refinement, not the rule. Two hours before sealing we added
-a low-rate clause drawn from four in-sample populations —
-internally consistent, backed by a twenty-seed replication —
-
-
-TABLE VIII
+TABLE IX
 THE SEALED PREDICTION. POPULATIONS NEVER PREVIOUSLY
 MEASURED; PREDICTIONS COMMITTED BEFORE THE RUNS.
 
@@ -1650,7 +1606,43 @@ Taiwan 2005
 up
 up
 
-TABLE IX
+within 0.05. The last figure is not significant on six arms, but
+a prior read off a dashboard cannot detect any of it, because
+detecting it requires the sweep the prior exists to avoid. The
+audit refuses all of them; only the prior is exposed.
+
+B. A sealed prediction, and what it cost
+
+The first sealed direction test failed: 4 of 8 against a bar of 7,
+not beating a constant (Table IX). What failed is a refinement,
+not the rule. Two hours before sealing we added a low-rate
+clause drawn from four in-sample populations — internally
+consistent, backed by a twenty-seed replication — and it is the
+clause that lost: scored on the same eight arms, the unrefined
+rule we held before the refinement gives seven of eight, its only
+miss being Maryland at 0.508, within 0.032 of the crossover
+on an effect of +0.78%. That seven is post-hoc and we do
+not claim it; what was sealed scored four. The clause was
+route-specific: its own arms reach a low rate by thresholding
+one fixed score vector, while the sealed arms reach it with a
+genuinely rarer label, and at that rate the two routes disagree
+completely — the clause held where it was fitted and failed
+on every label-route arm it was sealed against. Nothing in
+the in-sample data could have shown that. It is withdrawn,
+the unrefined rule was re-sealed on ten fresh populations, and
+the low-rate observation survives only in the weaker role of
+an exclusion (Section VIII), where it can refuse an arm but
+cannot manufacture a correct call.
+
+C. The rule re-sealed, and it holds
+
+The unrefined rule — down below 0.54, up at or above
+— was committed with its ten populations and its pass mark
+before any of their arms existed: at least 9 of 10 correct and
+strictly beating the best constant. It holds: 9 of 10, best
+
+
+TABLE X
 THE RE-SEALED PREDICTION: THE UNREFINED RULE — DOWN BELOW
 0.54, UP AT OR ABOVE — COMMITTED BEFORE TEN NEVER-MEASURED
 STATES RAN. BAR: 9 OF 10 and BEAT THE BEST CONSTANT.
@@ -1712,24 +1704,7 @@ IA, $10k
 up
 up
 
-and it is the clause that lost: the unrefined rule scores 7 of
-8 on the same arms, missing only the population sitting at
-the boundary. The clause was route-specific, holding where
-a rate is reached by moving the label and failing where it
-is reached by moving the decision threshold, and nothing in
-the in-sample data could have shown that. It is withdrawn,
-the unrefined rule was re-sealed on ten fresh populations, and
-the low-rate observation survives only in the weaker role of an
-exclusion (Section VII), where it can refuse an arm but cannot
-manufacture a correct call.
-
-C. The rule re-sealed, and it holds
-
-The unrefined rule — down below 0.54, up at or above
-— was committed with its ten populations and its pass mark
-before any of their arms existed: at least 9 of 10 correct and
-strictly beating the best constant. It holds: 9 of 10, best
-constant 6 (Table IX). The re-seal applies none of this paper’s
+constant 6 (Table X). The re-seal applies none of this paper’s
 tuned guards and scores all ten populations raw, so it has
 nowhere to hide an exclusion, which makes it the cleanest
 scoring here.
@@ -1741,12 +1716,20 @@ of those five, and the one-sided sign test on the discordant calls
 gives p ≈ 0.19. Nor is this the first sealed attempt at a direction
 rule, so the binomial tail carries a sequential correction whose
 size is a judgement we should not make in our own favour:
-
 read narrowly it is a factor of two and the tail is near 0.09;
-read as this paper’s own abstract counts them — nine sealed
-or registered direction tests — it is a factor of nine and the
-tail is 0.41. Across the conventional line either way, and not
+read as this paper’s own abstract counts them — twelve sealed
+or registered direction tests — it is a factor of twelve and the
+tail is 0.56. Across the conventional line either way, and not
 close to it on the wider reading.
+One of the nine was luck, and the seed-level accounting
+says which. Sixteen of the nineteen sealed arms across both
+cohorts are unanimous in sign across their five seeds, and the
+three that split are exactly the near-zero effects. Minnesota,
+the miss, splits 3 of 5 — and Iowa, at +0.04%, splits
+3 of 5 identically and scored correct. Two statistically
+indistinguishable arms, one counted for the rule and one
+against it, which is what scoring near-zero magnitudes means
+and why Algorithm 1 now refuses them as INDETERMINATE.
 What the pass cannot establish, stated where the score is.
 Every arm reaches its rate by the income-cutoff route, and the
 achieved rates leave the interior of (0.30, 0.70) unsampled —
@@ -1755,13 +1738,19 @@ separate the selection rate from label rarity as the operative
 variable, nor the value 0.54 from any prior in that interval: a
 rule reading only the income cutoff scores identically here.
 The screen-gated race cohort was registered to break exactly
-this confound and did, on mixed-route arms off-instrument and
-off-continent, where the cutoff-only null scored 5 of 10 against
-the rate rules’ 8–9 — ten arms from two person-samples,
-so the confound breaks within populations rather than across
-them. Its sealed S1 nonetheless fails by its own letter, because
-a 0.50 prior edged the 0.54 prior 9 to 8: the rate carries the
-prediction and the specific value does not.
+this confound and did, on mixed-route arms off-instrument
+and off-continent, where the cutoff-only null scored 5 of
+10 against the rate rules’ 8–9. Ten arms from two person-
+samples is not ten independent tests: the confound breaks
+within populations rather than across them, two clusters admit
+no usable bootstrap, and leaving either population out drops
+the rate rule from 8 of 10 to 60%. The result is real and its
+
+effects are large — to −47% — and its replication rests on
+two person-samples and should be read that way. Its sealed S1
+nonetheless fails by its own letter, because a 0.50 prior edged
+the 0.54 prior 9 to 8: the rate carries the prediction and the
+specific value does not.
 The paired statistic has a ceiling this design cannot raise.
 A third cohort was built to supply the discordant arms the sign
 test needs, and its pre-committed magnitude guard removed
@@ -1772,10 +1761,12 @@ of four is p = 0.0625: the bar was arithmetically unreachable.
 The guard and the discordance a paired test needs are anti-
 correlated by construction, so the weakness does not yield
 to a larger balanced cohort. On a second, post-hoc cohort of
-larger states the fixed prior scored 5 of 10, and every miss
-agrees with that state’s own measured crossover — which is
-the case for measuring rather than transporting, made by the
-prior’s failures.
+larger states the fixed prior scored 5 of 10, every miss agreeing
+with that state’s own measured crossover — and on a third,
+sealed on real mortgage approvals where the rule could at last
+be tested below a crossover, 5 of 10 again (Section XI). Three
+cohorts, one pass, which is the case for measuring rather than
+transporting, made by the prior’s own failures.
 
 D. Small populations
 
@@ -1793,34 +1784,41 @@ COMPAS carries direction here and never magnitude.
 E. How the withdrawal is implemented: a lottery
 
 At severely cut operating points the fitted mixture stops
-being a graded adjustment and becomes a lottery: nobody be-
-low the threshold receives any probability, and every predicted
-positive of both groups is kept at one flat rate — 0.65 on the
-Dutch census arm, 0.135 on COMPAS — with keep probabil-
-ity uncorrelated with the person’s own score. The gap closes by
-random discard and the certificate is unchanged, which matters
-because a model that cannot generate a truthful individualized
+being a graded adjustment and becomes a lottery: nobody
+below the threshold receives any probability, and every pre-
+dicted positive of both groups is kept at one flat rate —
+0.65 on the Dutch census arm, 0.135 on COMPAS — with
+keep probability uncorrelated with the person’s own score.
+The gap closes by random discard and the certificate is
+unchanged. The charge here is deliberately narrower than “a
+lottery occurred”: randomness has been advocated as a fairness
+device [24], the optimal aware classifier is itself randomized
+[22], derandomization is a studied problem [23], and on a
+claims-based view a lottery among relevantly equal claims can
+be what fairness requires [29]. The charge is that a lottery
+occurred unannounced, under a certificate indistinguishable
+from an informed adjustment, in a setting where individualized
+reasons are owed. It is a checkable hazard rather than a
+cost of parity: a control at each population’s natural operating
+point finds every mixture graded, so the signature belongs
+to constraints pushed to extremes and not to withdrawal as
+such — which is why Algorithm 1 probes for it (line 19) and
 
 
-reason for a denial sits badly with adverse-action and notice
-duties. It is a checkable hazard rather than a cost of parity:
-a control at each population’s natural operating point finds
-every mixture graded, so the signature belongs to constraints
-pushed to extremes and not to withdrawal as such — which
-is why Algorithm 1 probes for it (line 19) and why the full
-treatment, including the search of a richer two-threshold class
-that returns an empty feasible set, is reported separately.
+why the full treatment, including the search of a richer two-
+threshold class that returns an empty feasible set, is reported
+separately.
 
-IX. METHOD, AND WHAT WE GOT WRONG
+X. METHOD, AND WHAT WE GOT WRONG
 
-Table X is the complete ledger — every registered or
+Table XI is the complete ledger — every registered or
 sealed test, with its committed bar and its outcome, failures
 included and uncorrected. Counted once and consistently it
-holds eighteen rows: twelve fail, three record a hold (one
+holds twenty-two rows: fifteen fail, three record a hold (one
 alongside a failed first stage), two returned underpowered, and
-one settled a reading rather than a pass or a fail. Of the nine
+one settled a reading rather than a pass or a fail. Of the twelve
 that test a direction rule on populations it had not seen, one
-passed. The rows should not be read as eighteen attempts at
+passed. The rows should not be read as twenty-two attempts at
 one claim of which three succeeded: each targeted a different
 claim, each failure removed a stronger claim than the one that
 survives, and the last column records what each row settled.
@@ -1840,31 +1838,36 @@ the prediction worse than the unrefined rule it replaced —
 nothing in the in-sample data could have shown that, which
 is the whole argument for sealing.
 Two published results of our own are withdrawn here rather
-than quietly corrected: two correlations previously reported at
-+0.979 and +0.968 are void, exposed by an exchange rate of
-exactly 0.000 — the post-processor had returned an identical
-model at every operating point, so the effect was a constant
-divided by a shrinking baseline. A published crossover was
-also downgraded by a bootstrap we chose to run against our
-own result.
+than quietly corrected, and they failed for different reasons.
+Correlations previously reported at +0.979 and +0.968 are
+void because the operating-point design varies the rate by
+degrading the classifier and nothing bounded how far: ex-
+cluding arms beaten by the trivial predictor leaves Alabama
+with two arms and LSAC with one. That same exclusion
+rescued mortgage lending, which had failed outright — one
+rule moving two results in opposite directions, which is why
+its provenance is stated in Section III. Separately, a post-
+processing comparison that appeared to show a clean reversal
+was arithmetic: the method re-derives its own thresholds and
+returned an identical model at all six operating points, so the
+effect was a constant divided by a shrinking baseline, and what
+exposed it was an exchange rate of exactly 0.000. A published
+crossover was also downgraded by a bootstrap we chose to run
+against our own result.
 
-X. LIMITATIONS
+XI. LIMITATIONS
 
-Most of the evidence is about predicted labels, not
-allocations. In five of the eight sources no one receives
-anything: “favourable decisions” are a classifier’s labels over
-people whose incomes, occupations or bar results already
-exist. HMDA is the one source recording real allocative
-decisions — and it is also where the direction reverses and
-where our sweep protocol failed its held-out test, so whether
-the construct transports from status-prediction benchmarks to
-allocation data is an open question rather than an assumption
-we are entitled to. The practical advice of Section VII is
+The lending evidence is thinner than its market count
+suggests. Forty markets carry a rate-bearing arm on each
+attribute, but every one of the twenty-six sex arms falls below
+the audit’s own disparity floor — median baseline gap 0.013
+against the race arms’ 0.079 — so the allocation result rests en-
+tirely on race arms. That is a property of US mortgage approval
 
-TABLE X
+TABLE XI
 THE EIGHT REGISTERED TESTS THAT IMPOSE A SCOPE CONDITION ON
-THE SURVIVING CLAIM. THE LEDGER RUNS TO EIGHTEEN ROWS —
-TWELVE FAIL, THREE HOLD, TWO UNDERPOWERED, ONE A READING
+THE SURVIVING CLAIM. THE LEDGER RUNS TO TWENTY-TWO ROWS —
+FIFTEEN FAIL, THREE HOLD, TWO UNDERPOWERED, ONE A READING
 RATHER THAN A VERDICT — AND THE COMPLETE RECORD CARRIES ALL
 OF THEM WITH THEIR REGISTRATION AND SCORING COMMITS. NOTHING
 IS WITHDRAWN HERE; TEN ROWS ARE ELSEWHERE.
@@ -1891,7 +1894,7 @@ r = −0.024
 
 the rule stops where the model may
 read the protected attribute — the
-boundary of Sec. VI
+boundary of Sec. VII
 Derivation
 beat a constant;
 beaten — fail
@@ -1942,7 +1945,7 @@ reading
 the pool boundary is the optimizer
 family, not blindness; the theorem’s
 group directions hold in every aware
-cell (Sec. VI)
+cell (Sec. VII)
 
 Race
 cohort
@@ -1964,21 +1967,146 @@ it is the rate, not label rarity; the
 0.54 value holds no in-band privi-
 lege; within-population passes off-
 instrument at ρ ≥ 0.9
+Sealed
+allocation
+co-
+hort
+12/16 + beat 3
+nulls; rule 7/8,
+constant 7/8 —
+fail
 
-addressed to teams making real allocations, and they should
-read this paragraph first.
-The lending evidence is thinner than its market count
-suggests. Forty markets carry a rate-bearing arm on each
-attribute, but every one of the twenty-six sex arms falls below
-the audit’s own disparity floor — median baseline gap 0.013
-against the race arms’ 0.079 — so the allocation result rests
-entirely on race arms. That is a property of US mortgage
-approval rather than a gap in the method, and the audit
-refuses those arms correctly. Nor does either lending count
-discriminate: every arm sits at a rate of 0.82 or above, so the
-rule predicts extension on all of them and a constant scores
-identically. US mortgage approval supplies no market whose
-rate straddles a crossover, so it cannot test the rule at all.
+HMDA
+2021
+at
+purpose
+level,
+sealed to reach below the crossover:
+0 of 8 arms sit below it, so a
+constant ties the rule. Third demon-
+stration that US mortgage approval
+cannot test the rule; the rate does
+beat the purpose-only null 7–6
+Dwelling cohort (7.1b)
+6/8 + beat 3
+nulls; rule 5/8,
+constant 6/8 —
+fail
+
+the transported 0.660 is badly placed
+for manufactured housing: on ten
+such arms the pool change is mono-
+tone in the rate with one sign
+change, bracketing a crossover at
+0.39–0.42. The prior scores 5 of 10
+there and a crossover measured on
+the same arms 10 of 10 — post-
+hoc, and not claimed. First real-
+allocation arms below any crossover
+Located crossover (7.2)
+beat
+transported
++ constant; 1/3
+v. 3/3 — fail
+
+0.405, located on ten manufactured
+markets, loses to the transported
+0.660 on the three fresh markets that
+separate them — and both misses sit
+inside 0.405’s own dead band. Over
+all sixteen arms 0.405 calls 13 and
+0.660 calls 9, but that is post-hoc
+TX
+manufactured
+sweep (7.2b)
+audit
+verdict,
+not a seal
+Algorithm 1 run on a within-market
+operating-point
+sweep
+—
+Texas
+2021 manufactured housing — re-
+turns
+WITHDRAWAL: signs − −
+− − +, one crossing bracketed
+at 0.448–0.495, natural arm agrees.
+First lending sweep the audit ac-
+cepts; the sweep is not uniformly
+unreliable here
+
+rather than a gap in the method, and the audit refuses those
+arms correctly. Nor does either lending count discriminate:
+every arm sits at a rate of 0.82 or above, so the rule predicts
+
+
+extension on all of them and a constant scores identically.
+US mortgage approval supplies no market whose rate
+straddles a crossover, and that is now established three
+ways rather than inferred once. The state-level arms sit
+at 0.82 and above; the fifty-market coverage sits at 0.82 and
+above; and a sealed cohort built specifically to reach lower —
+a reporting year this work had never touched, split by loan
+purpose because purpose is what moves the approval rate —
+returned 0 of 8 arms below the crossover and failed for
+exactly that reason, the rule scoring 7 of 8 against a constant’s
+7 of 8 (Section X).
+On real approvals the audit’s sweep has now run
+once to a clean verdict, and it is the one that holds.
+Manufactured housing is the single mortgage slice reaching
+below a crossover. Sweeping the operating point within one
+market — Texas 2021, the largest such market — the pool
+change crosses zero exactly once, signs − − − − + over
+selection rates 0.021 to 0.495, bracketing the crossover at
+0.448–0.495; the natural rate 0.448 sits just below it and the
+audit returns WITHDRAWAL, which the natural arm confirms.
+This is the first within-population sweep this work has run to
+a directional verdict on decisions actually made about people,
+and it is the object the central claim is about — not the cross-
+population comparison of the failed cohorts above. Two limits
+keep it honest: the natural direction was known before the
+sweep ran, so the agreement is a consistency check and not
+a forecast; and it is one market, so it shows the sweep is not
+uniformly unreliable on lending rather than that it is reliable
+there. On real approvals the rule and “always extend” are the
+same rule. Testing the direction claim on allocations needs a
+register whose accept rates reach below roughly 0.66, which is
+a statement about what is publicly available rather than about
+the rule.
+The one place the rule could finally be tested on real
+approvals, and what happened there. Every lending test
+above failed for the same non-reason: US mortgage approval
+sits above the crossover, so the rule predicts extension every-
+where and cannot be told apart from a constant. One slice of
+the register reaches lower — manufactured housing, approved
+at 0.505 against site-built’s 0.850 — and a cohort pairing
+both slices in each of seven markets was sealed on it, with
+a void condition committed in advance for the case where the
+rate rule and a dwelling-only null never separate. The sealed
+test fails: the rule transported at 0.660 scores 5 of 8 against
+a constant’s 6 of 8, though it does beat the dwelling null.
+On ten such arms the signs sorted; on sixteen they do
+not, and the difference is the whole lesson. The first ten
+manufactured arms ran monotone with a single sign change,
+bracketing a crossover near 0.405, and we reported that as
+the phenomenon holding. Six further markets, sealed against
+that located value, give five sign changes and the located
+rule loses to the transported one on the arms that separate
+them. We withdraw the monotonicity reading: this paper’s
+monotonicity claim is within a population across operating
+points, and ten populations compared at their natural rates is
+a different object — one this paper elsewhere says does not
+
+transport. What survives is a cross-population correlation that
+is now significant where it was not, ρ = +0.747 (p = 0.001,
+n = 16), and the fact that no single threshold separates these
+markets: the best possible calls 14 of 16, the located 0.405
+calls 13, and the paper’s own lending value of 0.660 calls 9
+— worse than a constant’s 10. Five sealed attempts on real
+approvals have now failed in five different ways, and what
+none of them has established is that any transported crossover
+predicts direction on allocative decisions.
 Magnitude does not transfer between populations, only
 within them, and a sealed model of it lost to predicting zero.
 The crossover’s location is unexplained and wider than
@@ -1990,15 +2118,13 @@ order account we could not extend to the blind randomized
 case is named in Section II.
 A label is not a task. A fixed nominal outcome definition
 is a different task each vintage: a dollar cutoff slides down
-
-
 an inflated income distribution, and restoring the earlier shape
 requires matching the label’s quantile, not its real price —
 CPI-anchoring is not enough. Four 2022 populations invert
 for this reason, and one 2014 state inverts at a lower cutoff,
 so this is a property of nominal labels rather than of a vintage.
 Coverage is eight data sources, five countries and two
-decades, of which 152 of 161 populations come from two
+decades, of which 170 of 179 populations come from two
 instruments; the eight sources remain the honest count of
 independent instruments. Taiwan, Brazil and Mexico are the
 non-Western populations and arrived late enough that most of
@@ -2006,7 +2132,7 @@ the record predates them. The only EU population is the 2001
 Dutch census, which by this paper’s own vintage standard
 grounds no claim about current EU deployments.
 
-XI. DISCUSSION
+XII. DISCUSSION
 
 What a practitioner can use. Run the audit on your own
 data. It will locate your crossover, tell you your system admits
@@ -2016,18 +2142,60 @@ of those is an answer. Where it returns a direction and that
 direction is withdrawal, a selection-rate floor is the remedy:
 not a new method, but a linear moment constraint inside the
 reductions framework [1] and a variant of the minimum-rate
-constraints of [11]. It costs about 0.12 accuracy points and
-moves the exchange rate from 1.47 destroyed per created to
-0.88. Two honest consequences follow. Because the floor is
-that cheap, a team that expects withdrawal and does not want
-to sweep should simply apply it; what the audit adds is the
-ability to tell in advance whether it is needed, how far the
-operating point sits from the sign change, and whether the
-population admits an answer at all. And whatever the audit
-returns, the deployed system’s pool change and who-pays
-decomposition should be measured afterwards and reported
-beside the parity number — so that escaping the ex-ante audit
-buys no escape from the accounting.
+constraints of [11]. Table XII is what it buys, measured on the
+branch the audit actually sends it to — the 95 natural arms
+across 78 populations that clear both of the audit’s gates
+and on which the plain constraint withdraws. It costs 0.05
+accuracy points on average, moves the median exchange rate
+from 1.32 destroyed per created to 0.94, and brings 78 of the
+95 below one-for-one, none of which were below it already.
+On the median arm it does not merely soften the withdrawal
+but reverses it, from −2.78% to +0.97%.
+Three things that should be said with those numbers rather
+than after them. The count is over arms and the populations
+are 78, so the ratio is not 95 independent trials. Sub-1.0 is a
+descriptive count of predicted labels and not a welfare verdict,
+
+
+TABLE XII
+WHAT THE SELECTION-RATE FLOOR BUYS, ON THE 95 NATURAL ARMS
+OVER 78 POPULATIONS THAT CLEAR THE AUDIT’S NOISE AND PARITY
+GATES AND ON WHICH THE PLAIN CONSTRAINT WITHDRAWS. MEDIANS
+EXCEPT WHERE STATED; EVERY FIGURE RECOMPUTED FROM STORED
+ARMS.
+
+plain
+with floor
+
+Exchange rate (destroyed per created)
+1.32
+0.94
+Arms at or below one-for-one
+0 of 95
+78 of 95
+Change in the pool
+−2.78%
++0.97%
+Accuracy, mean cost of the floor
+—
+0.05 pts
+
+per Section IV-A — the group-conditional flows are what
+a weighted reading would use. And earlier versions of this
+paper reported the floor’s benefit as scaling with the damage
+at r ≈ −0.99; we withdraw that, because the benefit is the
+damage minus the remainder and the two share a term, so
+the correlation is arithmetic rather than a finding. Two honest
+consequences follow. Because the floor is that cheap, a team
+that expects withdrawal and does not want to sweep should
+simply apply it; what the audit adds is the ability to tell in
+advance whether it is needed, how far the operating point sits
+from the sign change, and whether the population admits an
+answer at all. And whatever the audit returns, the deployed
+system’s pool change and who-pays decomposition should be
+measured afterwards and reported beside the parity number
+— so that escaping the ex-ante audit buys no escape from the
+accounting.
 What to report. The parity difference alone certifies both
 outcomes this paper distinguishes. A report that adds the
 pool change and the group-conditional flows costs nothing
@@ -2046,19 +2214,6 @@ on HMDA a single constraint earns “extension” on the pooled
 book while concentrating withdrawal in home improvement,
 so a segmentation chosen after the fact can hide the thing the
 audit exists to surface.
-What we are not claiming. The rule is not surprising
-once stated — say yes often and the constraint tends to give,
-say yes rarely and it tends to take. What is not available
-
-without measuring is where the boundary falls for a particular
-population, and located crossovers span 0.22 to 0.81. In the
-one setting where we drew populations at random rather than
-choosing them, no population’s operating rate reached 0.55
-and half of those with a computable rate sat inside the band
-where an unaided reading of “often” against “rarely” has
-nothing to say. A further fifth follow no directional rule at
-all, and there the intuition returns a confident answer while
-the audit declines to.
 
 APPENDIX: TWO WORKED TRACES OF ALGORITHM 1
 
@@ -2070,6 +2225,7 @@ bar, so the sweep proceeds (lines 6–9). The stored sweep holds
 worse than doing nothing, leaving 14 spanning rates 0.111–
 0.653, none below the 0.10 advisory boundary (lines 11–15).
 Their pool changes span 7.14 points, clearing the void guard
+
 (line 16). The signs, sorted by rate, are -----------+++:
 one rising change, so the landscape is monotone-crossing
 (lines 20–25) and the bracket is c = (0.528, 0.589) (line 26).
@@ -2091,12 +2247,12 @@ REPRODUCIBILITY
 Code, stored results and the full document trail are in the
 accompanying repository, which holds the per-test registration
 and scoring commits, the OpenTimestamps receipts for the
-seals that carry them, and the complete eighteen-row ledger.
+seals that carry them, and the complete twenty-two-row ledger.
 Every figure here is re-derived from stored results by a test
 suite that fails if a documented number and its experiment
 disagree, and counts appearing in more than one place are
 derived from one source and checked against each other —
-after an audit found four descriptions of the same table. One
+after an audit found three descriptions of the same table. One
 limit cannot be repaired retroactively: for ten of the sixteen
 seals the ordering rests on git commit timestamps from our
 own machine, which an outsider must take on trust. The later
@@ -2109,8 +2265,6 @@ REFERENCES
 [2] B. H. Zhang, B. Lemoine, and M. Mitchell, “Mitigating unwanted biases
 with adversarial learning,” in Proc. AAAI/ACM Conf. AI, Ethics, and
 Society (AIES), 2018, pp. 335–340.
-
-
 [3] T. Kamishima, S. Akaho, H. Asoh, and J. Sakuma, “Fairness-aware
 classifier with prejudice remover regularizer,” in Machine Learning and
 Knowledge Discovery in Databases (ECML PKDD), LNCS 7524, Part
@@ -2138,6 +2292,8 @@ group fairness,” arXiv:2202.09724, 2022.
 [11] B. Mittelstadt, S. Wachter, and C. Russell, “The unfairness of fair
 machine learning: Levelling down and strict egalitarianism by default,”
 Michigan Technology Law Review, vol. 30, no. 1, 2024.
+
+
 [12] N. Krco, T. Laugel, V. Grari, J.-M. Loubes, and M. Detyniecki, “When
 mitigating bias is unfair: Multiplicity and arbitrariness in algorithmic
 group fairness,” arXiv:2302.07185, 2023.

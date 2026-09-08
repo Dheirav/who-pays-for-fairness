@@ -183,7 +183,7 @@ crossover from their deployed model; three overlapping estimates of the mortgage
 agree, all from one two-state market. The refusal is not a caveat but half the contribution.
 How often a parity constraint's response is even \emph{shaped} so that a directional rule
 can apply had not been measured: on fifty populations drawn at random, frame and seed fixed
-before any arm ran, 78\% admit one and 22\% do not, of which 64\% are classic
+before any arm ran, 78\% admit one and 22\% do not; of those admitting a rule, 64\% are classic
 single-crossing landscapes. The procedure returns those 22\% as unanswerable rather than
 scoring them, which is what separates it from reading a number off a dashboard --- detecting
 a non-monotone landscape requires the sweep that transporting a prior exists to avoid
@@ -626,8 +626,7 @@ Panels are deliberately \emph{not} pooled: no pooled slope survives its pre-regi
 so one scatter would assert a common curve the data reject. Vertical band: the point-estimate
 cluster of Table~\ref{tab:crossover}, drawn as first published;
 Section~\ref{sec:boundaries} gives its later history. These eight populations are 5\% of
-the record and are drawn for shape, not scale; Figures~\ref{fig:survey}
-to~\ref{fig:calibration} carry the population-level evidence.}
+the record and are drawn for shape, not scale; Figures~\ref{fig:survey} and~\ref{fig:crossovers} carry the population-level evidence.}
 \label{fig:crossover}
 \end{figure*}
 
@@ -1552,15 +1551,14 @@ the constraint will do at today's threshold --- repeated fits at one operating p
 that, and would also expose the one place a single fit is unreliable on its own terms, since
 sub-1.0-point arms agree on their sign across seeds only 55\% of the time and the magnitude
 guard predicts that about as well as distance from the crossover does. What the sweep buys
-is \emph{shape}. Five of the 21 samples sit more than 0.20 from their crossover and would
-have reached the same decision from one fit; that 24\% over-states the waste, because every
+is \emph{shape}. Five of the 22 samples sit more than 0.20 from their crossover and would
+have reached the same decision from one fit; that 23\% over-states the waste, because every
 sample in that set has already passed the monotonicity screen, and the 22\% of populations
 admitting no directional rule at all never enter it. A team cannot learn which group it is
 in without running the sweep, which is the reply in one line: the audit is not circular,
 because its output is not the quantity a single fit measures.
 
-\textbf{Two rates, and they are not the same rate.} The survey's 78\% and the audit's
-29-of-52 are different measurements and a reader is entitled to be confused by them meeting on
+\textbf{Two rates, and they are not the same rate.} The survey's 78\% and the audit's 63 of 104 are different measurements and a reader is entitled to be confused by them meeting on
 one page. The 78\% applies \emph{one} gate --- monotonicity --- to fifty populations drawn at
 random, and answers ``how often is a population shaped so that a directional rule could
 apply''. The 63 of 104 applies \emph{every} gate the algorithm states --- the noise floor, the
@@ -1588,7 +1586,7 @@ draw came out balanced without being forced: 25 of each attribute, and 14, 14 an
 the three vintages. The fifty pairs span \textbf{48 disjoint person-samples}, two state-years
 having been drawn under both attributes.
 
-The result: \textbf{78\% admit a directional rule and 22\% do not}, of which 64\% are
+The result: \textbf{78\% admit a directional rule and 22\% do not}; of those admitting a rule, 64\% are
 classic single-crossing landscapes. Resampling \emph{populations} rather than draws puts the
 directional share at 66--89\%, and leaving each population out in turn never moves it below
 77\%. The convenience sample was mildly optimistic --- it implied 15\% non-monotone --- and
@@ -1597,9 +1595,7 @@ silences. A \textsc{void} arm is one whose pool change spans under two points ac
 entire viable band --- median 1.47 --- which tells a deployer that the direction question is
 \emph{moot} on their system, not that it is unanswerable; a \textsc{non-monotone} verdict
 says the rule does not apply here, which is a finding about the system; and the noise-floor
-refusal says the population is too small to audit at all. Counted that way, 48 of the 52
-return something a team can act on and four return nothing --- three sweeps too thin to read
-and one bracket with no natural arm. The honest summary: the audit gives a \emph{direction}
+refusal says the population is too small to audit at all. Counted that way, 92 of the 104 return something a team can act on and twelve return nothing --- eleven sweeps too thin to read and one bracket with no natural arm. The honest summary: the audit gives a \emph{direction}
 a little over six times in ten, tells a team the question is moot or the rule inapplicable in most of the remainder, and is silent on twelve of 104. Finally, an ex-ante verdict earns trust only if checked:
 whatever the verdict, including refusals, the deployed system's measured pool change and
 who-pays decomposition (Section~\ref{sec:whopays}) should be reported after the fact ---
@@ -1695,8 +1691,7 @@ the deployed system's pool change and who-pays decomposition, with and without t
 Every prediction was registered with its thresholds \emph{and the naive alternative it had to
 beat}, before the data existed. Table~\ref{tab:registered} is the complete ledger --- every
 registered or sealed test this work ran, with its committed bar and its outcome, failures
-included and uncorrected. Counted once and consistently, the table holds \textbf{twenty-two} rows: fifteen fail, three record a hold (one of them alongside a failed first stage), two returned underpowered, and one
-settled a reading rather than a pass or a fail. Of the \emph{twelve} that test a \emph{direction} rule on populations it had not seen, one
+included and uncorrected. Counted once and consistently, the table holds \textbf{twenty-two} rows: fifteen fail, three record a hold (one of them alongside a failed first stage), two returned underpowered, and two settled a reading rather than a pass or a fail. Of the \emph{twelve} that test a \emph{direction} rule on populations it had not seen, one
 passed. The rows should not be read as twenty-two attempts
 at one claim, of which three succeeded: each test targeted a \emph{different} claim, each failure removed a
 stronger claim than the one that survives, and the last column records what each row
@@ -1743,7 +1738,7 @@ at gap size as the governing variable \\
 Sealed cross-task shape & scored$-$1 + beat const.; 0 of 4 --- fail & the boundary does
 not transfer to two non-income tasks; every scored call inverted --- transferred
 structure with a flipped sign, unexplained (Sec.~\ref{sec:crosstask}) \\
-Regime deconfounding & two sealed readings; R1 18/18, $r=+0.672$ --- method reading &
+Regime deconfounding & two sealed readings; R1 18/18; R2 $r=+0.672$ (13 arms) --- method reading &
 the pool boundary is the optimizer family, not blindness; the theorem's group
 directions hold in every aware cell (Sec.~\ref{sec:regime}) \\
 Six-market lending seal & M2: scored$-$1; 2 of 6 --- fail. M1: floor 4; 2 located ---
@@ -1875,9 +1870,7 @@ Accuracy, mean cost of the floor & --- & $0.05$ pts \\
 \label{sec:limitations}
 
 \textbf{Of the twelve sealed or registered tests of a direction rule, one passed}; across the
-whole ledger of twenty-two, fifteen fail, three hold, two returned underpowered, and one --- the
-regime-deconfounding test, whose pre-committed two-reading design returned the method reading
---- is an outcome rather than a pass or a fail of ours. Earlier drafts of this paper described
+whole ledger of twenty-two, fifteen fail, three hold, two returned underpowered, and two --- the regime-deconfounding test, whose pre-committed two-reading design returned the method reading, and the Texas within-market sweep of Section~\ref{sec:limitations} --- are outcomes rather than passes or fails of ours. Earlier drafts of this paper described
 the same table three different ways; the counts above are derived from it and enforced against
 it. The first
 sealed test (Section~\ref{sec:sealed}) failed at four of eight, carrying an in-sample
