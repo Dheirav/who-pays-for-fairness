@@ -66,8 +66,7 @@ The claim is narrow and sealed tests made it so. Direction is predictable within
 The practical output is an audit that locates a team's own crossover and \emph{refuses} when
 it cannot: on fifty populations drawn at random, frame and seed fixed in advance, 78\% admit a
 directional rule and 22\% do not. That is the monotonicity gate alone; run end to end with every
-gate applied, the audit returns a direction on 29 of 52 stored sweeps --- \textbf{a little under
-six times in ten} --- and hands back the rest as unanswerable rather than scoring them. Two scope limits belong here: the relationship disappears under
+gate applied, the audit returns a direction on 63 of 104 stored sweeps --- \textbf{a little over six times in ten} --- and hands back the rest as unanswerable rather than scoring them. Two scope limits belong here: the relationship disappears under
 post-processing, and in five of the eight sources the favourable decisions are predicted
 labels rather than allocations actually made. Of twelve sealed or registered direction tests, one passed; we report the failures because each removed a stronger claim than the one that
 survives.
@@ -882,11 +881,11 @@ already passed the monotonicity screen and the 22\% admitting no rule never ente
 cannot learn which group it is in without running the sweep, which is the reply: the audit is
 not circular, because its output is not the quantity a single fit measures.
 
-\textbf{Two rates, and they are not the same rate.} The survey's 78\% and the audit's 29 of 52
+\textbf{Two rates, and they are not the same rate.} The survey's 78\% and the audit's 63 of 104
 are different measurements and a reader is entitled to be confused by them meeting on one
 page. The 78\% applies \emph{one} gate --- monotonicity --- to fifty populations drawn at
 random, and answers how often a population is shaped so that a directional rule could apply.
-The 29 of 52 applies \emph{every} gate the algorithm states to the stored sweeps, which are a
+The 63 of 104 applies \emph{every} gate the algorithm states to the stored sweeps, which are a
 convenience set rather than a random draw, and answers how often the procedure returns a
 direction. The second is what a deploying team should plan against; the first bounds the
 claim.
@@ -902,12 +901,7 @@ twice.
 
 \textbf{The result: 78\% admit a directional rule and 22\% do not}, of which 64\% are classic
 single-crossing landscapes. Resampling populations rather than draws puts the directional
-share at 66--89\%, and leaving each population out in turn never moves it below 77\%. Run over
-the 52 stored sweeps that resolve to a dataset spec, the audit returns 29 directional
-verdicts, 8 \textsc{non-monotone}, 13 \textsc{void}, one refusal at the noise floor and one
-bracket with no natural arm --- so it gives a direction a little under six times in ten, tells
-a team the question is moot or the rule inapplicable in most of the remainder, and is silent
-on four of 52. Every one of the 29 matches what the fitted constraint did at that population's
+share at 66--89\%, and leaving each population out in turn never moves it below 77\%. Run over the 104 stored sweeps that resolve to a dataset spec, the audit returns 63 directional verdicts, 14 \textsc{non-monotone}, 15 \textsc{void}, eleven refused at the noise floor and one bracket with no natural arm --- so it gives a direction a little over six times in ten, tells a team the question is moot or the rule inapplicable in most of the remainder, and is silent on twelve of 104. Every one of the 63 matches what the fitted constraint did at that population's
 natural operating point, which is a consistency check on the audit's reading of its own sweep
 rather than independent validation, since the natural arm is part of the curve being read.
 

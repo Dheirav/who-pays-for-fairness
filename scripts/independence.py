@@ -102,7 +102,7 @@ def main() -> None:
         add("effect-size split, below 1 pt", "11 of 18", both[both["indeterminate"]])
 
     v = _read("verdicts/verdicts.csv")
-    add("audit verdict distribution", "29 of 52", v,
+    add("audit verdict distribution", "63 of 104", v,
         keep=lambda d: d[d["verdict"] != "UNMAPPED"])
 
     z = _read("zeta/zeta_all_populations.csv")

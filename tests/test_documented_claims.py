@@ -1275,7 +1275,7 @@ def test_paper_denominator_table_matches_computed_independence() -> None:
         "third direction cohort": "Third direction, 13 of 14",
         "sealed lending cohort": "Sealed lending, 8 of 8",
         "race cohort S1": "Race cohort, 8 of 10",
-        "audit verdict distribution": "Audit verdicts, 29 of 52",
+        "audit verdict distribution": "Audit verdicts, 63 of 104",
         "landscape survey": "Landscape survey, 78\\%",
     }
     checked = 0
@@ -1797,8 +1797,8 @@ def test_paper_two_answer_rates_stay_distinguished() -> None:
         text = " ".join((ROOT / "research" / "paper" / "ieee" / name).read_text().split())
         assert "Two rates, and they are not the same rate" in text, \
             f"{name} no longer reconciles the survey rate against the audit's answer rate"
-        assert "a little under\nsix times in ten".replace("\n", " ") in text or \
-               "a little under six times in ten" in text, \
+        assert "a little over\nsix times in ten".replace("\n", " ") in text or \
+               "a little over six times in ten" in text, \
             f"{name}'s abstract no longer gives the end-to-end answer rate beside the 78%"
         assert "That is the monotonicity gate alone" in text, \
             f"{name}'s abstract no longer says which gate the 78% applies"

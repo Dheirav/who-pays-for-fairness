@@ -6,7 +6,7 @@ figure,what,arms,populations,sources
 8 of 10,race cohort S1,10,2,2
 21 of 22,"effect-size split, above 1 pt",22,19,2
 11 of 18,"effect-size split, below 1 pt",18,15,2
-29 of 52,audit verdict distribution,52,36,5
+63 of 104,audit verdict distribution,104,84,5
 150 arms,relaxed-zeta correspondence,150,67,8
 18 of 19,"zeta head-to-head, sealed",19,19,2
 78% of 50,landscape survey,50,48,1

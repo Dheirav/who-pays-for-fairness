@@ -38,8 +38,7 @@ population's crossover and extends above it; on UCI Adult five in-processing met
 7.9--22.1\%, while on mortgage lending the identical constraint grows it. The practical output is an
 audit that locates a team's own crossover and \emph{refuses} when it cannot: on fifty populations drawn at random, frame and seed fixed in advance, 78\% admit a
 directional rule and 22\% do not. That is the monotonicity gate alone; run end to end with every
-gate applied, the audit returns a direction on 29 of 52 stored sweeps --- \textbf{a little under
-six times in ten} --- and hands back the rest as unanswerable rather than scoring them.
+gate applied, the audit returns a direction on 63 of 104 stored sweeps --- \textbf{a little over six times in ten} --- and hands back the rest as unanswerable rather than scoring them.
 
 The claim is deliberately narrow, and sealed tests made it so. \textbf{Direction is
 predictable within a population; magnitude is not}, and a sealed model of it lost to
@@ -508,7 +507,7 @@ Sealed lending, 8 of 8 & 8 & \textbf{5} & 1 \\
 Race cohort, 8 of 10 & 10 & \textbf{2} & 2 \\
 Effect $>$1 pt, 21 of 22 & 22 & 19 & 2 \\
 Effect $<$1 pt, 11 of 18 & 18 & 15 & 2 \\
-Audit verdicts, 29 of 52 & 52 & 36 & 5 \\
+Audit verdicts, 63 of 104 & 104 & 84 & 5 \\
 Relaxed $\zeta$ ordering & 150 & \textbf{67} & 8 \\
 $\zeta$ head-to-head, 18 of 19 & 19 & 19 & 2 \\
 Landscape survey, 78\% & 50 & 48 & 1 \\
@@ -1564,7 +1563,7 @@ because its output is not the quantity a single fit measures.
 29-of-52 are different measurements and a reader is entitled to be confused by them meeting on
 one page. The 78\% applies \emph{one} gate --- monotonicity --- to fifty populations drawn at
 random, and answers ``how often is a population shaped so that a directional rule could
-apply''. The 29 of 52 applies \emph{every} gate the algorithm states --- the noise floor, the
+apply''. The 63 of 104 applies \emph{every} gate the algorithm states --- the noise floor, the
 two-point void span, monotonicity, and the indeterminate bracket --- to the stored sweeps,
 which are a convenience set rather than a random draw, and answers ``how often does the
 procedure actually return a direction''. The second is the number a deploying team should
@@ -1572,13 +1571,7 @@ plan against; the first bounds the claim. Neither is the other's denominator, an
 survey's fifty draws become forty-eight independent samples it is because two state-years were
 drawn under both protected attributes --- the same people read twice.
 
-\textbf{What it actually returns, totalled.} Run over the 52 population-label pairs whose
-stored sweeps resolve to a dataset spec --- fourteen further IPUMS sweeps are stored but
-unmapped, and are excluded rather than guessed at --- the distribution
-is: 29 directional verdicts (20 \textsc{withdrawal}, 9 \textsc{extension}), 8
-\textsc{non-monotone}, 13 \textsc{void}, one refusal at the noise floor (COMPAS), and
-one bracket with no natural arm to read against. Every one of the 29 directional
-verdicts matches what the fitted constraint did at that population's natural operating
+\textbf{What it actually returns, totalled.} Run over the 104 population-label pairs whose stored sweeps resolve to a dataset spec --- fourteen further IPUMS sweeps are stored but unmapped, and are excluded rather than guessed at --- the distribution is: 63 directional verdicts (49 \textsc{withdrawal}, 14 \textsc{extension}), 14 \textsc{non-monotone}, 15 \textsc{void}, eleven refused at the noise floor, and one bracket with no natural arm to read against. Every one of the 63 directional verdicts matches what the fitted constraint did at that population's natural operating
 point --- a consistency check on the audit's reading of its own sweep, not independent
 validation, since the natural arm is part of the curve being read. That distribution is computed over the sweeps this project happened to accumulate, which
 were never randomly chosen, so it answers a question about this project rather than about
@@ -1607,8 +1600,7 @@ says the rule does not apply here, which is a finding about the system; and the 
 refusal says the population is too small to audit at all. Counted that way, 48 of the 52
 return something a team can act on and four return nothing --- three sweeps too thin to read
 and one bracket with no natural arm. The honest summary: the audit gives a \emph{direction}
-a little under six times in ten, tells a team the question is moot or the rule inapplicable
-in most of the remainder, and is silent on four of fifty-two. Finally, an ex-ante verdict earns trust only if checked:
+a little over six times in ten, tells a team the question is moot or the rule inapplicable in most of the remainder, and is silent on twelve of 104. Finally, an ex-ante verdict earns trust only if checked:
 whatever the verdict, including refusals, the deployed system's measured pool change and
 who-pays decomposition (Section~\ref{sec:whopays}) should be reported after the fact ---
 the verdict is falsifiable at deployment, and Section~\ref{sec:discussion} makes this a
