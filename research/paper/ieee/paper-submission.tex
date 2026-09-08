@@ -57,13 +57,10 @@ before deployment from the rate at which the current model says yes, read agains
 population's own crossover --- the rate a team already has, the crossover it must measure.
 Across 179 disjoint population samples spanning six decision domains, eight data sources and
 five countries, the constraint withdraws below a population's crossover and extends above it:
-on UCI Adult five in-processing methods each shrink the pool by 7.9--22.1\%, while on mortgage
-lending the identical constraint grows it. Committed before ten never-measured populations,
-the rule scored \textbf{9 of 10} against a best constant of 6.
+on UCI Adult five in-processing methods each shrink the pool by 7.9--22.1\%, while on mortgage lending the identical constraint grows it.
 
 The claim is narrow and sealed tests made it so. Direction is predictable within a population;
-\textbf{magnitude is not}, and below one percentage point the direction call is a coin flip.
-The practical output is an audit that locates a team's own crossover and \emph{refuses} when
+\textbf{magnitude is not}, and below one percentage point the direction call is a coin flip. The only version testable before any measurement --- a fixed crossover transported between populations --- is weaker still: sealed before ten never-measured populations it scored \textbf{9 of 10} against a best constant of 6, but the paired sign test on the discordant calls is only $p \approx 0.19$ (0.56 under the twelve-test family correction) and it scored 5 of 10 on a second cohort, so we present it as a fallible prior, not a finding. The practical output is an audit that locates a team's own crossover and \emph{refuses} when
 it cannot: on fifty populations drawn at random, frame and seed fixed in advance, 78\% admit a
 directional rule and 22\% do not. That is the monotonicity gate alone; run end to end with every
 gate applied, the audit returns a direction on 63 of 104 stored sweeps --- \textbf{a little over six times in ten} --- and hands back the rest as unanswerable rather than scoring them. Two scope limits belong here: the relationship disappears under
@@ -152,7 +149,7 @@ This is a paper about \textbf{attribute-blind in-processing} constraints, meanin
 in which the protected attribute is unavailable at decision time. This is the regime most
 deployed systems occupy: in the United States, per-group decision thresholds face direct
 disparate-treatment exposure (\emph{Ricci v.\ DeStefano} \cite{ricci2009}; in credit, ECOA
-and Regulation B prohibit attribute-based terms outright), and commentators read the
+and Regulation B restrict attribute-based terms, with special-purpose credit programs a narrow exception), and commentators read the
 doctrine the same way \cite{barocas2016,corbett2017}. Two honest qualifications. First,
 the barrier is jurisdiction-specific, and the two major jurisdictions draw it in different
 places: in the US even \emph{training-time} use of the attribute --- which every
@@ -554,7 +551,7 @@ observation: 22 decisions are destroyed per one created at a rate of 0.03, compa
 The same transition also appears where nothing is manipulated at all. Pooling two states
 across five real loan products, home improvement at a selection rate of 0.555 levels
 \emph{down} ($-1.57\%$) while refinancing at 0.871 levels \emph{up} ($+2.95\%$), with
-$r = +0.803$ and Spearman $\rho = +0.900$. This means a bank running one constraint across
+$r = +0.803$ and Spearman $\rho = +0.900$ --- five arms, descriptive rather than inferential, like the four-point sweeps of Section~\ref{sec:tworoutes-note}. This means a bank running one constraint across
 its loan book would take opportunities away in one product while handing them out in
 another, and its fairness report would show success in both.
 
@@ -856,8 +853,7 @@ this record, so deployed rates beneath it carry an untested-region caution on to
 verdict.
 
 \textbf{What it needs and what it costs.} A held-out sample carrying the protected attribute:
-audit-time access, which is legally and practically distinct from decision-time use and is
-the regime bias-testing provisions contemplate. It fits the constraint $12 \times$ seeds
+audit-time access, which is legally and practically distinct from decision-time use --- available for mortgage, where HMDA compels attribute collection, but restricted under Regulation~B for much other US credit, where a team would face proxy attributes rather than recorded ones, a noise this procedure does not model. It fits the constraint $12 \times$ seeds
 times; with five seeds and linear learners, one fit takes 2--10 seconds at 15k--69k training
 rows, so a full audit is minutes per population, scaling linearly in the base learner's own
 fit time since each reduction call is a sequence of learner refits. On a production
@@ -1336,7 +1332,7 @@ deployments.
 \section{Discussion}
 \label{sec:discussion}
 
-\textbf{What a practitioner can use.} Run the audit on your own data. It will locate your
+\textbf{What a practitioner can use.} One caution belongs in the recommendation, not three sections upstream: this audit is prospectively validated only on prediction benchmarks; on real allocative decisions it has one within-market consistency check and no forecast, and every cross-population transport test on real approvals has failed. With that stated --- run the audit on your own data. It will locate your
 crossover, tell you your system admits no directional rule, or tell you the question is moot
 because the pool barely moves across your whole viable band --- and each of those is an
 answer. Where it returns a direction and that direction is withdrawal, a selection-rate floor is the

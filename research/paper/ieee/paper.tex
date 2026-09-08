@@ -142,7 +142,7 @@ This is a paper about \textbf{attribute-blind in-processing} constraints, meanin
 in which the protected attribute is unavailable at decision time. This is the regime most
 deployed systems occupy: in the United States, per-group decision thresholds face direct
 disparate-treatment exposure (\emph{Ricci v.\ DeStefano} \cite{ricci2009}; in credit, ECOA
-and Regulation B prohibit attribute-based terms outright), and commentators read the
+and Regulation B restrict attribute-based terms, with special-purpose credit programs a narrow exception), and commentators read the
 doctrine the same way \cite{barocas2016,corbett2017}. Two honest qualifications. First,
 the barrier is jurisdiction-specific, and the two major jurisdictions draw it in different
 places: in the US even \emph{training-time} use of the attribute --- which every
@@ -687,7 +687,7 @@ observation: 22 decisions are destroyed per one created at a rate of 0.03, compa
 The same transition also appears where nothing is manipulated at all. Pooling two states
 across five real loan products, home improvement at a selection rate of 0.555 levels
 \emph{down} ($-1.57\%$) while refinancing at 0.871 levels \emph{up} ($+2.95\%$), with
-$r = +0.803$ and Spearman $\rho = +0.900$. This means a bank running one constraint across
+$r = +0.803$ and Spearman $\rho = +0.900$ --- five arms, descriptive rather than inferential, like the four-point sweeps of Section~\ref{sec:tworoutes-note}. This means a bank running one constraint across
 its loan book would take opportunities away in one product while handing them out in
 another, and its fairness report would show success in both.
 
@@ -1514,9 +1514,7 @@ natural operating point below 0.13 has been probed in this record, so deployed r
 below that carry an untested-region caution on top of every verdict.
 
 \textbf{What it needs, and what it costs.} The audit requires a held-out sample carrying
-the protected attribute: audit-time access to $a$, which is legally and practically
-distinct from decision-time use and is the regime bias-testing provisions contemplate
-(Section~\ref{sec:scope}) --- in US credit, the self-test privilege of Regulation~B
+the protected attribute: audit-time access to $a$, which is legally and practically distinct from decision-time use and is the regime bias-testing provisions contemplate --- available for mortgage, where HMDA compels attribute collection, but restricted under Regulation~B for much other US credit, where a team would face proxy attributes rather than recorded ones (Section~\ref{sec:scope}) --- in US credit, the self-test privilege of Regulation~B
 (12~CFR~\S1002.15) exists for exactly this, though it is conditional: the privilege
 attaches to a lender's own voluntary self-test and expects appropriate corrective
 action, and an analysis of public HMDA records, like this paper's, is not itself a
@@ -2006,8 +2004,7 @@ should audit their own current data.
 \section{Discussion}
 \label{sec:discussion}
 
-The finding a practitioner can use is small and specific: \textbf{run the audit of
-Section~\ref{sec:procedure} on your own current data --- it will locate your crossover, or
+The finding a practitioner can use is small and specific, and it carries its own scope: this audit is prospectively validated only on prediction benchmarks, and on real allocative decisions it has one within-market consistency check and no forecast. \textbf{Run the audit of Section~\ref{sec:procedure} on your own current data --- it will locate your crossover, or
 tell you that your system has none --- and where it returns a direction, the rate predicts
 whether a parity constraint is about to give or to take.} The sweep itself is the vintage
 test: the 2022 episode --- an apparent inversion traced to a nominal label sliding down an
