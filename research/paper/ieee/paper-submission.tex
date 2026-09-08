@@ -228,8 +228,8 @@ and disappears under post-processing.
 
 \textbf{What we take as given.} Levelling down as a phenomenon and minimum-rate constraints as
 a remedy are Mittelstadt \emph{et al.}'s \cite{mittelstadt2023}; the impact decomposition we
-use throughout is Krco \emph{et al.}'s \cite{ferry2023}; fairness gerrymandering is Kearns
-\emph{et al.}'s \cite{kearns2018}; the income-cutoff knob is Ding \emph{et al.}'s
+use throughout is Krco \emph{et al.}'s \cite{ferry2023}; fairness gerrymandering is Kearns \emph{et al.}'s \cite{kearns2018}, which we replicate
+with a boundary attached (Section~\ref{sec:intersectional}); the income-cutoff knob is Ding \emph{et al.}'s
 \cite{ding2021}; the reductions we constrain with are \cite{agarwal2018}, and we benchmark against minimax
 group fairness \cite{diana2021} rather than only against the unconstrained reduction. Contemporaneous
 theory \cite{backfire2026} establishes that in the blind regime the direction is
@@ -683,6 +683,48 @@ Table~\ref{tab:robust} summarises. \textbf{Within a population, and in the attri
 predicts which way and orders how much. Neither transfers between populations}: the signed distance from a
 population's own crossover gives $\rho$ of $+0.96$, $+0.95$ and $+0.78$ in three of four
 populations, but a pooled slope reaches only $r = +0.487$ against a pre-registered $+0.70$ bar.
+
+\section{A Constraint on One Attribute Leaves Subgroups Behind}
+\label{sec:intersectional}
+
+\begin{table}[t]
+\caption{UCI Adult. Constraining sex to 0.020 leaves the worst \emph{Sex}$\times$\emph{Race}
+subgroup gap at 0.178 --- nine times larger --- and moves which subgroup is worst off.}
+\label{tab:intersectional}
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lccl@{}}
+\toprule
+\textbf{Arm} & \textbf{Sex} & \textbf{Subgroup} & \textbf{Worst off} \\
+\midrule
+Unconstrained & 0.190 & 0.315 & F$\times$Black \\
+Constrained on sex & \textbf{0.020} & \textbf{0.178} & M$\times$Black \\
+Constrained on both & 0.016 & 0.048 & F$\times$White \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+A constraint is imposed on the attribute someone chose to name.
+Table~\ref{tab:intersectional} is the gerrymandering failure of Kearns \emph{et al.}
+\cite{kearns2018} measured on Adult.
+
+Constraining sex drives its gap from 0.190 to 0.020 --- a success by the certifying metric.
+The worst \emph{Sex}$\times$\emph{Race} subgroup gap falls only from 0.315 to 0.178, which is
+\textbf{nine times} the gap that was constrained. The subgroup carrying the residual also
+\emph{changes}, from Female~$\times$~Black to Male~$\times$~Black, so an auditor tracking the
+originally worst-off cell would see improvement while a different cell absorbed the cost.
+
+This replicates across populations and is more severe than Adult suggests: 13.2$\times$ in
+Mississippi. It is bounded, however, by how large the minority is --- the effect scales with
+minority share at $r = -0.671$, and does not appear at all below a threshold. We present this
+as an empirical replication of \cite{kearns2018} and \cite{maheshwari2023} with a boundary
+attached, not as a new observation.
+
+\textbf{A measurement hazard worth naming.} Roughly five subgroups per population are too small
+to support any estimate. A rate with an empty denominator must return undefined rather than
+zero, or an unmeasurable subgroup masquerades as a perfectly fair one --- which is the failure
+this analysis is most likely to produce and hardest to notice.
 
 \section{The Regime Boundary}
 \label{sec:regime}
