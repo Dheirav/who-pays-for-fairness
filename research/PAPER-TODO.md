@@ -859,3 +859,41 @@ operating point. Everything above compares populations at their natural rates, w
 weaker object. The paper's actual claim has never been tested on real allocations, because no
 lending sweep has passed the audit and doc 71 found the sweep unreliable there. More markets
 will not close that gap.
+
+## 7.2b: the audit returns a verdict on a lending sweep — the missing result
+
+The within-population sweep that doc 78 named as "the experiment now worth running". Run on
+TX 2021 manufactured housing (largest such market, single worker after the memory crash), the
+operating point moved across the frozen lending grid. **Algorithm 1 returns WITHDRAWAL**:
+signs `----+`, one crossing bracketed 0.448–0.495, natural rate 0.448 below it, natural arm
+agrees. Written up in `docs/79`.
+
+It is **not a seal** — a sweep read by the audit's frozen guards — so it adds a ledger row but
+not a direction-test. Honest limits, both in the paper: the natural direction was known before
+the sweep (consistency check, not forecast), and it is one market. What it changes:
+
+- **doc 71's blanket claim is softened.** "The sweep is unreliable on mortgage data" becomes
+  "unreliable on the sweeps tried before this" — on manufactured housing it returns a clean
+  single crossing the audit accepts. Both papers reworded.
+- **First within-population confirmation of the phenomenon on real allocations**, which is the
+  object the central claim is about (not the cross-population comparison the failed cohorts
+  used). Added to Limitations in both papers.
+
+**Lending is now closed**, as framed before the run: sweep-conditional claim confirmed on one
+real-allocation market; transported-prior dead across five attempts.
+
+Counts: ledger **22 rows** (15 fail, TX verdict is not a fail); circularity **644 pairs / 70
+flip / 22 samples / 12 within 0.10 / 7 within 0.05** (TX manufactured now the nearest sample
+to its own boundary at 0.003). 87 pytest checks.
+
+### OPEN — a staleness the regeneration exposed, needs a decision (not today's work)
+
+Running `analyse_verdicts` today rewrote `verdicts.csv` and revealed that the **live audit now
+maps 104 population-label pairs, where Section IX states 52** (29 directional). Only **one** of
+the extra arms is from today (the TX sweep); the other ~51 accumulated across earlier sessions
+and Section IX was never recomputed. I **restored the committed 52-row `verdicts.csv`** so the
+paper and its artifact stay consistent, rather than bless a 104 I have not vetted — the extra
+arms may be genuine audit populations or may be variant conditions (epsilon, boosted-tree,
+post-processing, attribute-aware) that the distribution should exclude. **Decision needed:**
+recompute Section IX's distribution over a vetted corpus, or leave it as the frozen snapshot it
+declares itself to be. This predates today and does not block anything.

@@ -869,12 +869,7 @@ not measured it there.
 \textbf{What the sweep buys that one fit does not.} A team able to run $12 \times$ seeds
 constrained fits could instead run \emph{one}, at the operating point it already uses, and
 read the pool change off it --- so what has prediction bought over measurement? A single fit
-returns a point; the sweep returns a neighbourhood. Across 639 adjacent arm pairs whose
-effects both clear the 1.0-point guard, 69 --- 11\% --- disagree on the \emph{sign}, so the
-direction one fit reports is not reliably a property of the population rather than of the
-threshold that fit used. And populations sit close to their own boundary: of 21 disjoint
-person samples carrying both a located crossover and a natural arm, 11 sit within 0.10 of the
-crossover and 6 within 0.05, Florida 2018 sitting 0.004 from it. For those teams the direction
+returns a point; the sweep returns a neighbourhood. Across 644 adjacent arm pairs whose effects both clear the 1.0-point guard, 70 --- 11\% --- disagree on the \emph{sign}, so the direction one fit reports is not reliably a property of the population rather than of the threshold that fit used. And populations sit close to their own boundary: of 22 disjoint person samples carrying both a located crossover and a natural arm, 12 sit within 0.10 of the crossover and 7 within 0.05, Texas manufactured-housing at 0.003 and Florida 2018 at 0.004 the nearest. For those teams the direction
 is not a fact to accept but a threshold they control, and one fit reports the withdrawal
 without reporting the lever. That the crossover cannot be looked up rather than measured shows
 in the same set: Florida enters twice, once per attribute, at 0.284 by sex and 0.439 by race.
@@ -1184,11 +1179,11 @@ two-threshold class that returns an empty feasible set, is reported separately.
 \label{sec:failures}
 
 Table~\ref{tab:registered} is the complete ledger --- every registered or sealed test, with its
-committed bar and its outcome, failures included and uncorrected. Counted once and consistently it holds \textbf{twenty-one} rows: fifteen fail, three record a
+committed bar and its outcome, failures included and uncorrected. Counted once and consistently it holds \textbf{twenty-two} rows: fifteen fail, three record a
 hold (one alongside
 a failed first stage), two returned underpowered, and one settled a reading rather than a pass
 or a fail. Of the \emph{twelve} that test a \emph{direction} rule on populations it had not seen, one
-passed. The rows should not be read as twenty-one attempts at one claim of which three
+passed. The rows should not be read as twenty-two attempts at one claim of which three
 succeeded: each targeted a different claim, each failure removed a stronger claim than the one
 that survives, and the last column records what each row settled. The failures are boundary
 measurements; the passes are tests of the claim \emph{as those boundaries define it}.
@@ -1218,7 +1213,7 @@ crossover was also downgraded by a bootstrap we chose to run against our own res
 
 
 \begin{table}[!t]
-\caption{The eight registered tests that impose a scope condition on the surviving claim. The ledger runs to twenty-one rows --- fifteen fail, three hold, two underpowered, one a reading rather than a verdict --- and the complete record carries all of them with their registration and scoring commits. Nothing is withdrawn here; ten rows are elsewhere.}
+\caption{The eight registered tests that impose a scope condition on the surviving claim. The ledger runs to twenty-two rows --- fifteen fail, three hold, two underpowered, one a reading rather than a verdict --- and the complete record carries all of them with their registration and scoring commits. Nothing is withdrawn here; ten rows are elsewhere.}
 \label{tab:registered}
 \centering
 \scriptsize
@@ -1260,6 +1255,11 @@ Located crossover (7.2) & beat transported + constant; 1/3 v.\ 3/3 --- fail &
 0.405, located on ten manufactured markets, loses to the transported 0.660 on the three fresh
 markets that separate them --- and both misses sit inside 0.405's own dead band. Over all
 sixteen arms 0.405 calls 13 and 0.660 calls 9, but that is post-hoc \\
+TX manufactured sweep (7.2b) & audit verdict, not a seal & Algorithm~1 run on a
+\emph{within}-market operating-point sweep --- Texas 2021 manufactured housing --- returns
+\textsc{withdrawal}: signs $-\,-\,-\,-\,+$, one crossing bracketed at 0.448--0.495, natural
+arm agrees. First lending sweep the audit accepts; the sweep is not uniformly unreliable here
+\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1279,7 +1279,21 @@ above; the fifty-market coverage sits at 0.82 and above; and a sealed cohort bui
 to reach lower --- a reporting year this work had never touched, split by loan purpose because
 purpose is what moves the approval rate --- returned \textbf{0 of 8 arms below the crossover}
 and failed for exactly that reason, the rule scoring 7 of 8 against a constant's 7 of 8
-(Section~\ref{sec:failures}). On real approvals the rule and ``always extend'' are the same
+(Section~\ref{sec:failures}).
+
+\textbf{On real approvals the audit's sweep has now run once to a clean verdict, and it is the
+one that holds.} Manufactured housing is the single mortgage slice reaching below a crossover.
+Sweeping the operating point \emph{within} one market --- Texas 2021, the largest such market
+--- the pool change crosses zero exactly once, signs $-\,-\,-\,-\,+$ over selection rates
+0.021 to 0.495, bracketing the crossover at 0.448--0.495; the natural rate 0.448 sits just
+below it and the audit returns \textsc{withdrawal}, which the natural arm confirms. This is the
+first within-population sweep this work has run to a directional verdict on decisions actually
+made about people, and it is the object the central claim is about --- not the cross-population
+comparison of the failed cohorts above. Two limits keep it honest: the natural direction was
+known before the sweep ran, so the agreement is a consistency check and not a forecast; and it
+is one market, so it shows the sweep is not \emph{uniformly} unreliable on lending rather than
+that it is reliable there.
+ On real approvals the rule and ``always extend'' are the same
 rule. Testing the direction claim on allocations needs a register whose accept rates reach
 below roughly 0.66, which is a statement about what is publicly available rather than about
 the rule.
@@ -1413,7 +1427,7 @@ refuse; neither manufactures a direction.
 
 Code, stored results and the full document trail are in the accompanying repository, which
 holds the per-test registration and scoring commits, the OpenTimestamps receipts for the seals
-that carry them, and the complete twenty-one-row ledger. Every figure here is re-derived from
+that carry them, and the complete twenty-two-row ledger. Every figure here is re-derived from
 stored results by a test suite that fails if a documented number and its experiment disagree,
 and counts appearing in more than one place are derived from one source and checked against
 each other --- after an audit found three descriptions of the same table. One limit cannot be

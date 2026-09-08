@@ -1540,27 +1540,33 @@ def test_paper_circularity_answer_matches_the_sweeps() -> None:
     pairs = locality(sweeps)
     flipped = int(pairs.flipped.sum())
     share = flipped / len(pairs)
-    assert (len(pairs), flipped) == (639, 69), (
-        f"the paper reports 69 of 639 adjacent pairs flipping sign; recomputed "
+    assert (len(pairs), flipped) == (644, 70), (
+        f"the paper reports 70 of 644 adjacent pairs flipping sign; recomputed "
         f"{flipped} of {len(pairs)}")
     assert 0.105 <= share <= 0.115, f"the paper rounds that to 11%; it is {share:.1%}"
 
     d = distances(sweeps)
     samples = d.loc[d.gap.abs().groupby(d["sample"]).idxmin()]
     within = {lim: int((samples.gap.abs() <= lim).sum()) for lim in (0.05, 0.10, 0.20)}
-    assert len(samples) == 21, (
-        f"the paper reports 21 disjoint person samples with both a located crossover and "
+    assert len(samples) == 22, (
+        f"the paper reports 22 disjoint person samples with both a located crossover and "
         f"a natural arm; recomputed {len(samples)}")
-    assert within[0.10] == 11 and within[0.05] == 6, (
-        f"the paper reports 11 samples within 0.10 of their crossover and 6 within 0.05; "
+    assert within[0.10] == 12 and within[0.05] == 7, (
+        f"the paper reports 12 samples within 0.10 of their crossover and 7 within 0.05; "
         f"recomputed {within[0.10]} and {within[0.05]}")
     assert len(samples) - within[0.20] == 5, (
         "the paper concedes 5 of 21 samples sit beyond 0.20 and would not have needed the "
         f"sweep; recomputed {len(samples) - within[0.20]}")
 
+    # Texas manufactured-housing (7.2b) is now nearest at 0.003; Florida 2018 is second at
+    # 0.004. Both are named in the paper as the two nearest.
     closest = float(d.gap.abs().min())
-    assert abs(closest - 0.004) < 0.0005, (
-        f"the paper names Florida 2018 as 0.004 from its own crossover; it is {closest:.4f}")
+    assert abs(closest - 0.003) < 0.0007, (
+        f"the paper names Texas manufactured-housing as ~0.003 from its own crossover; "
+        f"it is {closest:.4f}")
+    fl_gap = float(d[d["sample"] == population("acs_income_fl_2018_levelling_up")].gap.abs().min())
+    assert abs(fl_gap - 0.004) < 0.0007, (
+        f"the paper names Florida 2018 as ~0.004 from its crossover; it is {fl_gap:.4f}")
 
     # Florida's two attributes must keep disagreeing -- it is the paper's evidence that a
     # crossover cannot be looked up rather than measured, and one number would kill it.
@@ -1577,7 +1583,7 @@ def test_paper_circularity_answer_matches_the_sweeps() -> None:
         f"the paper concedes sub-{MIN_MAGNITUDE}-point arms agree on their sign across "
         f"seeds only 55% of the time; recomputed {unanimous:.0%}")
 
-    for value in ("639", "11\\%", "0.284", "0.439", "0.004", "55\\%"):
+    for value in ("644", "11\\%", "0.284", "0.439", "0.004", "55\\%"):
         assert value in text, f"the paper's circularity paragraph no longer quotes {value}"
     _quotes(doc, "639", "11%", "0.284", "0.439", "52%", "55%")
     print(f"  {flipped}/{len(pairs)} pairs flip ({share:.0%}); {within[0.10]}/{len(samples)} "
@@ -1667,9 +1673,9 @@ def test_paper_ledger_and_coverage_counts_are_derived_not_narrated() -> None:
     body = table[table.find("\\midrule"):table.find("\\bottomrule")]
     rows = [r for r in body.split("\\\\") if "&" in r]
     holds = sum("holds" in r.split("&")[1] for r in rows if len(r.split("&")) > 1)
-    assert len(rows) == 21, f"the ledger has {len(rows)} rows; the paper says twenty-one"
+    assert len(rows) == 22, f"the ledger has {len(rows)} rows; the paper says twenty-two"
     assert holds == 3, f"{holds} rows record a hold; the paper says three"
-    for phrase in ("holds \\textbf{twenty-one} rows", "fifteen fail, three",
+    for phrase in ("holds \\textbf{twenty-two} rows", "fifteen fail, three",
                    "that test a \\emph{direction} rule"):
         assert phrase.replace("\\\\", "\\") in text, \
             f"the ledger's canonical count no longer says {phrase!r}"
@@ -1924,6 +1930,54 @@ def test_paper_dwelling_seal_matches_results() -> None:
           f"signs {signs}, rho {rho:+.3f}")
 
 
+def test_paper_tx_manufactured_sweep_verdict() -> None:
+    """The one lending sweep the audit accepts. It is a within-market single crossing.
+
+    This is the object the paper's central claim is about, on real approvals, and the first
+    time a lending sweep resolved to a directional verdict rather than being refused. If a
+    re-run turns it non-monotone, the paper's newly softened "not uniformly unreliable"
+    claim is wrong and the softening must come back out.
+    """
+    import pandas as pd
+
+    text = _paper_text()
+    stem = "hmda_tx_2021_race_manufactured"
+    pts = ["045", "055", "065", "075", "085", "092"]
+    rows = []
+    for pt in pts:
+        d = RESEARCH / f"{stem}_levelling_up_op{pt}" / "levelling_up_runs.csv"
+        assert d.exists(), f"missing sweep arm {pt}"
+        df = pd.read_csv(d)
+        b, e = df[df.arm == "baseline"], df[df.arm == "expgrad_dp"]
+        rows.append((float((b.positives / b.n_test).mean()),
+                     float(e.positives_pct_change.mean())))
+    arms = pd.DataFrame(rows, columns=["rate", "pie"]).sort_values("rate")
+    signs = "".join("-" if p < 0 else "+" for p in arms.pie)
+    flips = sum(signs[i] != signs[i + 1] for i in range(len(signs) - 1))
+    assert flips == 1, (
+        f"the TX-manufactured sweep is no longer a single crossing (signs {signs}); "
+        f"the paper's within-market confirmation and its softened reliability claim both rest "
+        f"on it")
+    # The audit brackets across sweep arms AND the natural arm; the natural arm at 0.448 is
+    # the highest negative-rate point, so the paper's 0.448-0.495 comes from it, not from the
+    # sweep grid alone (whose negative max is 0.395). Match the audit rather than recompute a
+    # narrower thing.
+    nat = pd.read_csv(RESEARCH / f"{stem}_levelling_up" / "levelling_up_runs.csv")
+    nb, ne = nat[nat.arm == "baseline"], nat[nat.arm == "expgrad_dp"]
+    nat_rate = float((nb.positives / nb.n_test).mean())
+    nat_pie = float(ne.positives_pct_change.mean())
+    allarms = pd.concat([arms, pd.DataFrame([(nat_rate, nat_pie)], columns=["rate", "pie"])])
+    below = allarms[allarms.pie < 0].rate.max()
+    above = allarms[allarms.pie > 0].rate.min()
+    assert round(below, 3) == 0.448 and round(above, 3) == 0.495, (
+        f"the crossover bracket is now {below:.3f}-{above:.3f}; the paper says 0.448-0.495")
+    for value in ("0.448--0.495", "within-population sweep", "not \\emph{uniformly} unreliable"):
+        assert value in text, f"the paper no longer states {value!r}"
+    _quotes(_doc(79), "WITHDRAWAL", "0.448", "not uniformly unreliable")
+    print(f"  TX manufactured sweep: signs {signs}, bracket {below:.3f}-{above:.3f}, WITHDRAWAL")
+
+
+
 def main() -> None:
     tests = [
         test_doc11_cross_flow_correlations,
@@ -1967,6 +2021,7 @@ def main() -> None:
         test_paper_floor_table_matches_results,
         test_paper_allocation_seal_matches_results,
         test_paper_dwelling_seal_matches_results,
+        test_paper_tx_manufactured_sweep_verdict,
         test_course_documents_still_match_their_results,
     ]
     failures = 0

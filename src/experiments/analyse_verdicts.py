@@ -75,13 +75,25 @@ def spec_for(stem: str) -> str | None:
         thr = acs.group("thr") or "50000"
         return f"acs:{acs.group('state').upper()}:{attr}:{thr}:{acs.group('year')}"
     hmda = re.match(
-        r"^hmda_(?P<states>[a-z]{2}(?:_[a-z]{2})?)_2018_(?P<attr>race|sex)"
-        r"(?:_(?P<purpose>[a-z]+))?$", stem)
+        r"^hmda_(?P<states>[a-z]{2}(?:_[a-z]{2})?)_(?P<year>\d{4})_(?P<attr>race|sex)"
+        r"(?:_(?P<slice>[a-z]+))?$", stem)
     if hmda:
         states = ",".join(s.upper() for s in hmda.group("states").split("_"))
         attr = "derived_race" if hmda.group("attr") == "race" else "derived_sex"
-        purpose = hmda.group("purpose") or ""
-        return f"hmda:{states}:{attr}:{purpose}".rstrip(":")
+        # The trailing slice is a loan purpose or, since the 7.1b cohort, a dwelling
+        # category; they occupy different spec segments. The 2018 forms keep emitting the
+        # exact spec string they always did, because a changed string here would silently
+        # re-identify every already-counted 2018 sweep.
+        slice_ = hmda.group("slice") or ""
+        dwelling = slice_ if slice_ in {"manufactured", "sitebuilt"} else ""
+        purpose = "" if dwelling else slice_
+        year = hmda.group("year")
+        spec = f"hmda:{states}:{attr}:{purpose}"
+        if year != "2018" or dwelling:
+            spec += f":{year}"
+        if dwelling:
+            spec += f":{dwelling}"
+        return spec.rstrip(":") if not dwelling else spec
     return {"adult": "adult", "compas_2016_race": "compas", "compas_2016_sex": "compas:sex",
             "dutch_2001_sex": "dutch", "lawschool_race": "lawschool",
             "lawschool_sex": "lawschool:male", "taiwan_2005_sex": "taiwan"}.get(stem)

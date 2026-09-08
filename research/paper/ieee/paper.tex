@@ -1538,13 +1538,10 @@ single fit answers the question it asks, and right that it is cheaper. It is wro
 question a single fit answers is the one a deploying team has, and the difference is
 measurable rather than rhetorical. A single fit returns a point; the sweep returns a
 neighbourhood. Two measurements over the stored sweeps separate them. First, \textbf{one
-fit's answer does not travel}: across 639 adjacent arm pairs whose effects both clear the
-1.0-point guard, 69 --- 11\% --- disagree on the \emph{sign}, so the direction a single fit
+fit's answer does not travel}: across 644 adjacent arm pairs whose effects both clear the 1.0-point guard, 70 --- 11\% --- disagree on the \emph{sign}, so the direction a single fit
 reports is not reliably a property of the population and the constraint rather than of the
 threshold that fit happened to use. Second, and this is what makes the difference a decision
-rather than an estimate, \textbf{populations sit close to their own boundary}: of 21 disjoint
-person samples carrying both a located crossover and a natural arm, 11 sit within 0.10 of
-that crossover and 6 within 0.05, with Florida 2018 sitting 0.004 from it. For those teams
+rather than an estimate, \textbf{populations sit close to their own boundary}: of 22 disjoint person samples carrying both a located crossover and a natural arm, 12 sit within 0.10 of that crossover and 7 within 0.05, with Texas manufactured-housing at 0.003 and Florida 2018 at 0.004 the nearest. For those teams
 the constraint's direction is not a fact about the population to be accepted or refused ---
 it is a threshold they already control, and one fit reports the withdrawal without reporting
 the lever. That the crossover cannot simply be looked up instead of measured shows in the
@@ -1706,9 +1703,9 @@ the deployed system's pool change and who-pays decomposition, with and without t
 Every prediction was registered with its thresholds \emph{and the naive alternative it had to
 beat}, before the data existed. Table~\ref{tab:registered} is the complete ledger --- every
 registered or sealed test this work ran, with its committed bar and its outcome, failures
-included and uncorrected. Counted once and consistently, the table holds \textbf{twenty-one} rows: fifteen fail, three record a hold (one of them alongside a failed first stage), two returned underpowered, and one
+included and uncorrected. Counted once and consistently, the table holds \textbf{twenty-two} rows: fifteen fail, three record a hold (one of them alongside a failed first stage), two returned underpowered, and one
 settled a reading rather than a pass or a fail. Of the \emph{twelve} that test a \emph{direction} rule on populations it had not seen, one
-passed. The rows should not be read as twenty-one attempts
+passed. The rows should not be read as twenty-two attempts
 at one claim, of which three succeeded: each test targeted a \emph{different} claim, each failure removed a
 stronger claim than the one that survives, and the last column records what each row
 settled. The failures are boundary measurements; the passes are tests of the claim
@@ -1758,7 +1755,7 @@ Regime deconfounding & two sealed readings; R1 18/18, $r=+0.672$ --- method read
 the pool boundary is the optimizer family, not blindness; the theorem's group
 directions hold in every aware cell (Sec.~\ref{sec:regime}) \\
 Six-market lending seal & M2: scored$-$1; 2 of 6 --- fail. M1: floor 4; 2 located ---
-underpow. & the sweep is unreliable on mortgage data on six independent markets; the natural-arm direction holds 12 of 12 on the auditable arms of 40 markets, where a
+underpow. & the sweep is unreliable on \emph{these} mortgage sweeps, though on manufactured housing it returns a clean single crossing (Sec.~\ref{sec:limitations}); the natural-arm direction holds 12 of 12 on the auditable arms of 40 markets, where a
 constant ``up'' also scores 12 of 12; both
 located midpoints sit at 0.80--0.85 \\
 Third cohort (deconfounding) & S1 floor 12: 7 --- underpow.; S2 floor 2: 1; S3 floor
@@ -1790,6 +1787,11 @@ Located crossover (7.2) & beat transported + constant; 1/3 v.\ 3/3 --- fail &
 0.405, located on ten manufactured markets, loses to the transported 0.660 on the three fresh
 markets that separate them --- and both misses sit inside 0.405's own dead band. Over all
 sixteen arms 0.405 calls 13 and 0.660 calls 9, but that is post-hoc \\
+TX manufactured sweep (7.2b) & audit verdict, not a seal & Algorithm~1 run on a
+\emph{within}-market operating-point sweep --- Texas 2021 manufactured housing --- returns
+\textsc{withdrawal}: signs $-\,-\,-\,-\,+$, one crossing bracketed at 0.448--0.495, natural
+arm agrees. First lending sweep the audit accepts; the sweep is not uniformly unreliable here
+\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1878,9 +1880,10 @@ Accuracy, mean cost of the floor & --- & $0.05$ pts \\
 \end{table}
 
 \section{Limitations}
+\label{sec:limitations}
 
 \textbf{Of the twelve sealed or registered tests of a direction rule, one passed}; across the
-whole ledger of twenty-one, fifteen fail, three hold, two returned underpowered, and one --- the
+whole ledger of twenty-two, fifteen fail, three hold, two returned underpowered, and one --- the
 regime-deconfounding test, whose pre-committed two-reading design returned the method reading
 --- is an outcome rather than a pass or a fail of ours. Earlier drafts of this paper described
 the same table three different ways; the counts above are derived from it and enforced against
@@ -1954,7 +1957,21 @@ arms sit at 0.82 and above; the fifty-market coverage sits at 0.82 and above; an
 cohort built specifically to reach lower --- a reporting year this work had never touched,
 split by loan purpose because purpose is what moves the approval rate --- returned
 \textbf{0 of 8 arms below the crossover} and failed for exactly that reason, the rule scoring
-7 of 8 against a constant's 7 of 8 (Section~\ref{sec:failures}). On real approvals the rule
+7 of 8 against a constant's 7 of 8 (Section~\ref{sec:failures}).
+
+\textbf{On real approvals the audit's sweep has now run once to a clean verdict, and it is the
+one that holds.} Manufactured housing is the single mortgage slice reaching below a crossover.
+Sweeping the operating point \emph{within} one market --- Texas 2021, the largest such market
+--- the pool change crosses zero exactly once, signs $-\,-\,-\,-\,+$ over selection rates
+0.021 to 0.495, bracketing the crossover at 0.448--0.495; the natural rate 0.448 sits just
+below it and the audit returns \textsc{withdrawal}, which the natural arm confirms. This is the
+first within-population sweep this work has run to a directional verdict on decisions actually
+made about people, and it is the object the central claim is about --- not the cross-population
+comparison of the failed cohorts above. Two limits keep it honest: the natural direction was
+known before the sweep ran, so the agreement is a consistency check and not a forecast; and it
+is one market, so it shows the sweep is not \emph{uniformly} unreliable on lending rather than
+that it is reliable there.
+ On real approvals the rule
 and ``always extend'' are the same rule, so neither lending count discriminates. Testing the
 direction claim on allocations needs a register whose accept rates reach below roughly 0.66,
 which is a statement about what is publicly available rather than about the rule.

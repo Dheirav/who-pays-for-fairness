@@ -16,8 +16,13 @@ Before this existed every run in the project was sequential with threading left 
 cost roughly an order of magnitude on lending work and three-quarters of the machine on
 everything else.
 
-The worker count defaults to the core count. It is deliberately not raised beyond it: the
-4-processor cap in this machine's .wslconfig is a considered choice, documented there.
+The worker count defaults to the core count — and that default is about CPU, not memory,
+which is the resource that actually kills this machine. Measured 2026-09-08: parsing one
+large-state HMDA CSV (TX 2021, 493MB, 1.35M rows) peaks at 3.8GB resident, so four workers
+on such states demand ~15GB against the 8GB .wslconfig cap, and that took the whole VM down
+with zero arms completed. Pass --workers 1 for large-state HMDA (roughly, anything over
+150MB in data/hmda/); the sys-time column of a single-arm profile exceeding its user time is
+the memory-pressure warning, not an I/O curiosity.
 
     python scripts/run_many.py --specs acs:WY acs:VT --seeds 0 1 2 3 4
     python scripts/run_many.py --file specs.txt --workers 4
@@ -41,11 +46,14 @@ PINNED = {"OMP_NUM_THREADS": "1", "OPENBLAS_NUM_THREADS": "1", "MKL_NUM_THREADS"
           "NUMEXPR_NUM_THREADS": "1"}
 
 
-def run_one(spec: str, seeds: list[str], extra: list[str]) -> tuple[str, bool, float, str]:
+def run_one(job: tuple[str, str | None], seeds: list[str],
+            extra: list[str]) -> tuple[str, bool, float, str]:
+    spec, model = job
     env = {**os.environ, **PINNED}
     start = time.time()
     proc = subprocess.run(
         [PY, "-m", "src.experiments.run_levelling_up", "--dataset", spec,
+         *(["--model", model] if model else []),
          "--seeds", *seeds, *extra],
         cwd=ROOT, capture_output=True, text=True, env=env)
     note = ""
@@ -58,18 +66,23 @@ def run_one(spec: str, seeds: list[str], extra: list[str]) -> tuple[str, bool, f
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--specs", nargs="*", default=[])
-    ap.add_argument("--file", help="file of dataset specs, one per line, # for comments")
+    ap.add_argument("--file", help="file of dataset specs, one per line, # for comments; "
+                                   "a second whitespace-separated token on a line is that "
+                                   "spec's --model (an operating-point sweep needs a "
+                                   "different threshold per arm, which one global --model "
+                                   "cannot express)")
     ap.add_argument("--seeds", nargs="+", default=["0", "1", "2", "3", "4"])
     ap.add_argument("--workers", type=int, default=os.cpu_count() or 4)
     ap.add_argument("--model", default=None, help="passed through, e.g. logistic_regression@0.42")
     args, unknown = ap.parse_known_args()
 
-    specs = list(args.specs)
+    specs: list[tuple[str, str | None]] = [(s, None) for s in args.specs]
     if args.file:
         for line in pathlib.Path(args.file).read_text().splitlines():
             line = line.split("#", 1)[0].strip()
             if line:
-                specs.append(line)
+                parts = line.split()
+                specs.append((parts[0], parts[1] if len(parts) > 1 else None))
     if not specs:
         sys.exit("no specs given")
 
@@ -79,7 +92,7 @@ def main() -> None:
     ok = 0
     with ThreadPoolExecutor(max_workers=args.workers) as pool:
         for i, (spec, good, secs, note) in enumerate(
-                pool.map(lambda s: run_one(s, args.seeds, extra), specs), 1):
+                pool.map(lambda j: run_one(j, args.seeds, extra), specs), 1):
             ok += good
             print(f"  [{i}/{len(specs)}] {spec:<34} {'ok' if good else 'FAIL'} {secs:6.0f}s"
                   + (f"  {note}" if note else ""), flush=True)
